@@ -2,6 +2,26 @@ spring:
   application:
     name: backend
 
+  # MySQL
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${DB_ID}
+    password: ${DB_PASSWORD}
+    url: jdbc:mysql://${DB_URL}/oauth2?socketTimeout=2000
+    hikari:
+      connection-timeout: 3000
+
+  # JPA
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: false
+        use_sql_comments: false
+    database-platform: org.hibernate.dialect.MySQLDialect
+
 oauth2:
   google:
     client-id: ${GOOGLE_CLIENT_ID}
@@ -12,3 +32,4 @@ oauth2:
     scope:
       - email
       - profile
+      - openid
