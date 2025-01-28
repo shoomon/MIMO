@@ -36,7 +36,6 @@ public class JwtUtil {
         this.refreshTokenExpiry = refreshTokenExpiry;
     }
 
-
     //===토큰 생성===//
 
     public UserTokens createLoginToken(String subject) {
