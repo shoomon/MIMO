@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import com.bisang.backend.auth.domain.UserTokens;
 import com.bisang.backend.common.exception.InvalidJwtException;
@@ -18,6 +19,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import javax.crypto.SecretKey;
 
+@Component
 public class JwtUtil {
 
     private final SecretKey secretKey;

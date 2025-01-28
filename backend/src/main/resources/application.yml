@@ -2,6 +2,12 @@ spring:
   application:
     name: backend
 
+  auth:
+    jwt:
+      secret-key: ${SECRET_KEY}
+      access-token-expiry: ${ACCESS_TOKEN_EXPIRY}
+      refresh-token-expiry: ${REFRESH_TOKEN_EXPIRY}
+
   # MySQL
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
