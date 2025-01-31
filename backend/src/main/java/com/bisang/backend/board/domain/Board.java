@@ -8,8 +8,10 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 
 import com.bisang.backend.common.domain.BaseTimeEntity;
 
@@ -17,6 +19,12 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = PROTECTED)
+@Table(
+        name = "board",
+        indexes = {
+            @Index(name = "idx_board_user", columnList = "user_id")
+        }
+)
 public class Board extends BaseTimeEntity {
     @Id @Column(name = "board_id")
     @GeneratedValue(strategy = IDENTITY)
