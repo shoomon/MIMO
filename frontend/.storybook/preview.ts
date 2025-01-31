@@ -1,4 +1,5 @@
 import type { Preview } from "@storybook/react";
+import '../src/index.css'; // Tailwind 테마 로드
 
 const preview: Preview = {
   parameters: {
