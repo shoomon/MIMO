@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bisang.backend.auth.controller.response.AccessTokenResponse;
 import com.bisang.backend.auth.domain.UserTokens;
-import com.bisang.backend.auth.domain.response.AccessTokenResponse;
 import com.bisang.backend.auth.service.OAuth2Service;
 import com.bisang.backend.common.utils.StringUtils;
 import com.bisang.backend.user.service.UserService;
