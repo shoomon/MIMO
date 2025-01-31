@@ -7,34 +7,36 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Getter
 @NoArgsConstructor(access = PROTECTED)
 @Table(
-    name = "board_like",
-    uniqueConstraints = {
-        @UniqueConstraint(columnNames = { "board_id", "team_user_id" })
+    name = "board_image",
+    indexes = {
+        @Index(name = "idx_board", columnList = "team_board_id")
     }
 )
-public class BoardLike {
-    @Id @Column(name = "board_like_id")
+public class BoardImage {
+    @Id @Column(name = "board_image_id")
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     @Column(name = "board_id", nullable = false)
     private Long boardId;
 
-    @Column(name = "team_user_id", nullable = false)
-    private Long teamUserId;
+    @Column(length = 10, name = "file_extension", nullable = false)
+    private String fileExtension;
 
-    private BoardLike(Long boardId, Long teamUserId) {
+    @Column(length = 100, name = "file_uri", nullable = false)
+    private String fileUri;
+
+    private BoardImage(Long boardId, String fileExtension, String fileUri) {
         this.boardId = boardId;
-        this.teamUserId = teamUserId;
+        this.fileExtension = fileExtension;
+        this.fileUri = fileUri;
     }
 }

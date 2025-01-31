@@ -22,7 +22,8 @@ import lombok.NoArgsConstructor;
 @Table(
         name = "board",
         indexes = {
-            @Index(name = "idx_board_user", columnList = "user_id")
+            @Index(name = "idx_board_user", columnList = "user_id"),
+            @Index(name = "idx_board", columnList = "team_board_id, board_id desc")
         }
 )
 public class Board extends BaseTimeEntity {
