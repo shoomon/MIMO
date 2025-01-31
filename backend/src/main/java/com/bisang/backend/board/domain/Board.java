@@ -1,18 +1,21 @@
-package com.bisang.backend.team_board.domain;
+package com.bisang.backend.board.domain;
 
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
-import com.bisang.backend.common.domain.BaseTimeEntity;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import com.bisang.backend.common.domain.BaseTimeEntity;
 
 import lombok.NoArgsConstructor;
 
 @Entity
-@EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = PROTECTED)
 public class Board extends BaseTimeEntity {
     @Id @Column(name = "board_id")

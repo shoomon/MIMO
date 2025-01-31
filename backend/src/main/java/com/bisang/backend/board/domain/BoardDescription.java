@@ -1,9 +1,15 @@
-package com.bisang.backend.team_board.domain;
-
-import jakarta.persistence.*;
-import lombok.NoArgsConstructor;
+package com.bisang.backend.board.domain;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
+import jakarta.persistence.Table;
+
+import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor
