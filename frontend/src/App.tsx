@@ -1,7 +1,8 @@
+import PrimaryButton from './components/atoms/PrimaryButton/PrimaryButton';
 function App() {
     return (
         <>
-            <div className="text-display-2xl">abcdefg</div>
+            <div className=""></div>
         </>
     );
 }
