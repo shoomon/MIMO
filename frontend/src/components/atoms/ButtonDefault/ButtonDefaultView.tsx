@@ -25,7 +25,7 @@ export const ButtonDefaultView = ({
             type={htmlType}
             onClick={onClick}
             disabled={disabled}
-            className={`flex h-[35px] w-fit items-center justify-center gap-2 rounded-md px-[8px] py-[4px] font-bold font-semibold ${buttonClass}`}
+            className={`flex h-[35px] w-fit items-center justify-center gap-2 rounded-sm px-[8px] py-[4px] font-semibold ${buttonClass}`}
         >
             {iconId && <Icon id={iconId} type={iconType || 'svg'} />}
             <span>{content}</span>
