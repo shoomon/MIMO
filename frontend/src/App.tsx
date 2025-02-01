@@ -1,4 +1,3 @@
-import PrimaryButton from './components/atoms/PrimaryButton/PrimaryButton';
 function App() {
     return (
         <>
