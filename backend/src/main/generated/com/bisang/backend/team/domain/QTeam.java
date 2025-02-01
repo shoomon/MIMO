@@ -38,6 +38,8 @@ public class QTeam extends EntityPathBase<Team> {
 
     public final EnumPath<TeamRecruitStatus> recruitStatus = createEnum("recruitStatus", TeamRecruitStatus.class);
 
+    public final NumberPath<Long> teamChatroomId = createNumber("teamChatroomId", Long.class);
+
     public final NumberPath<Long> teamLeaderId = createNumber("teamLeaderId", Long.class);
 
     public final StringPath teamProfileUri = createString("teamProfileUri");

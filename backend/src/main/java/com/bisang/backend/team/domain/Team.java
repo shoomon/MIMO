@@ -33,6 +33,9 @@ public class Team {
     @Column(name = "team_leader_id", nullable = false)
     private Long teamLeaderId;
 
+    @Column(name = "team_chatroom_id", nullable = false)
+    private Long teamChatroomId;
+
     @Column(name = "team_name", length = 30, nullable = false, unique = true)
     private String name;
 
@@ -64,6 +67,7 @@ public class Team {
 
     protected Team(
             Long teamLeaderId,
+            Long teamChatroomId,
             String name,
             String description,
             TeamRecruitStatus recruitStatus,
@@ -74,6 +78,7 @@ public class Team {
     ) {
         this.capacity = new Capacity(capacity);
         this.teamLeaderId = teamLeaderId;
+        this.teamChatroomId = teamChatroomId;
         this.name = name;
         this.description = new TeamDescription(description);
         this.recruitStatus = recruitStatus;
