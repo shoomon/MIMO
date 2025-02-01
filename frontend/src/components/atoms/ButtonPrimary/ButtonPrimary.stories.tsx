@@ -1,14 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import PrimaryButton from './PrimaryButton';
+import ButtonPrimary from './ButtonPrimary';
 
 const meta = {
     title: 'Components/Atoms/PrimaryButton/PrimaryButton',
-    component: PrimaryButton,
+    component: ButtonPrimary,
     parameters: {
         layout: 'centered',
     },
     tags: ['autodocs'],
-} satisfies Meta<typeof PrimaryButton>;
+} satisfies Meta<typeof ButtonPrimary>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -18,6 +18,7 @@ export const del: Story = {
         action: 'delete',
         onClick: () => alert('delete'),
     },
+    name: 'Delete',
 };
 
 export const confirm: Story = {
@@ -25,10 +26,12 @@ export const confirm: Story = {
         action: 'confirm',
         onClick: () => alert('confirm'),
     },
+    name: 'Confirm',
 };
 export const cancel: Story = {
     args: {
         action: 'cancel',
         onClick: () => alert('cancel'),
     },
+    name: 'Cancel',
 };
