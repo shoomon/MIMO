@@ -26,7 +26,7 @@ import lombok.NoArgsConstructor;
     }
 )
 public class Comment extends BaseTimeEntity {
-    @Id @Column(name = "commnet_id")
+    @Id @Column(name = "comment_id")
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
