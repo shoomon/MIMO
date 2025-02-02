@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Table(
     name = "board_image",
     indexes = {
-        @Index(name = "idx_board", columnList = "team_board_id")
+        @Index(name = "idx_board", columnList = "board_id")
     }
 )
 public class BoardImage {
