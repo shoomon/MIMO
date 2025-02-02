@@ -43,6 +43,9 @@ public class Team {
     @JoinColumn(name = "team_description_id", referencedColumnName = "team_description_id")
     private TeamDescription description;
 
+    @Column(length = 13, name = "team_account_number", nullable = false)
+    private String accountNumber;
+
     @Enumerated(STRING)
     @Column(name = "recruit_status", nullable = false)
     private TeamRecruitStatus recruitStatus;
@@ -69,7 +72,8 @@ public class Team {
             Long teamLeaderId,
             Long teamChatroomId,
             String name,
-            String description,
+            TeamDescription description,
+            String accountNumber,
             TeamRecruitStatus recruitStatus,
             TeamPrivateStatus privateStatus,
             String teamProfileUri,
@@ -80,7 +84,8 @@ public class Team {
         this.teamLeaderId = teamLeaderId;
         this.teamChatroomId = teamChatroomId;
         this.name = name;
-        this.description = new TeamDescription(description);
+        this.description = description;
+        this.accountNumber = accountNumber;
         this.recruitStatus = recruitStatus;
         this.privateStatus = privateStatus;
         this.teamProfileUri = teamProfileUri;
