@@ -1,9 +1,9 @@
 // ButtonToggleView.stories.tsx
 import type { Meta, StoryObj } from '@storybook/react';
-import { ButtonToggleView } from './ButtonToggleView';
+import ButtonToggleView from './ButtonToggle.view';
 
 const meta = {
-    title: 'Components/Atoms/ButtonToggleView',
+    title: 'Components/Atoms/ButtonToggle',
     component: ButtonToggleView,
     parameters: {
         layout: 'centered',

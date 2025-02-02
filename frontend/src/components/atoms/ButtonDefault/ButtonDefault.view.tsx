@@ -1,4 +1,3 @@
-import React from 'react';
 import Icon from '../Icon/Icon';
 
 interface ButtonDefaultViewProps {
@@ -11,7 +10,7 @@ interface ButtonDefaultViewProps {
     iconType?: 'svg' | 'png';
 }
 
-export const ButtonDefaultView = ({
+const ButtonDefaultView = ({
     htmlType,
     onClick,
     disabled,
@@ -32,3 +31,5 @@ export const ButtonDefaultView = ({
         </button>
     );
 };
+
+export default ButtonDefaultView;

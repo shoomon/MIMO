@@ -1,6 +1,3 @@
-// PrimaryButtonView.tsx
-import React from 'react';
-
 interface ButtonPrimaryViewProps {
     htmlType: 'button' | 'submit' | 'reset';
     onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
@@ -9,7 +6,7 @@ interface ButtonPrimaryViewProps {
     children: React.ReactNode;
 }
 
-export const ButtonPrimaryView = ({
+const ButtonPrimaryView = ({
     htmlType,
     onClick,
     disabled,
@@ -17,7 +14,7 @@ export const ButtonPrimaryView = ({
     children,
 }: ButtonPrimaryViewProps) => (
     <button
-        htmlType={htmlType}
+        type={htmlType}
         onClick={onClick}
         disabled={disabled}
         className={`flex h-[44px] w-[170px] justify-center rounded-lg px-[18px] py-[10px] font-bold ${className}`}
@@ -25,3 +22,5 @@ export const ButtonPrimaryView = ({
         {children}
     </button>
 );
+
+export default ButtonPrimaryView;
