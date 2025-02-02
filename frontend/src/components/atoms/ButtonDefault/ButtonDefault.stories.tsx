@@ -1,4 +1,3 @@
-// ButtonDefault.stories.tsx
 import type { Meta, StoryObj } from '@storybook/react';
 import ButtonDefault from './ButtonDefault';
 
@@ -19,7 +18,7 @@ export const PrimaryWithIcon: Story = {
         type: 'primary',
         htmlType: 'button',
         content: '확인',
-        iconId: 'check-icon',
+        iconId: 'MoneyTag',
         iconType: 'svg',
     },
 };
@@ -37,7 +36,7 @@ export const DefaultWithIcon: Story = {
         type: 'default',
         htmlType: 'button',
         content: '그냥버튼입니다.',
-        iconId: 'cancelicon',
+        iconId: 'MoneyTag',
         iconType: 'svg',
     },
 };

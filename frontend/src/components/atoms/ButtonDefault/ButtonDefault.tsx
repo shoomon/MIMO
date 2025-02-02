@@ -1,6 +1,4 @@
-// ButtonDefault.tsx
-import React from 'react';
-import { ButtonDefaultView } from './ButtonDefaultView';
+import ButtonDefaultView from './ButtonDefault.view';
 
 interface ButtonDefaultProps {
     type?: 'default' | 'primary' | 'fail';
@@ -12,6 +10,19 @@ interface ButtonDefaultProps {
     content: string;
 }
 
+/**
+ * ButtonDefault 컴포넌트는 다양한 스타일 타입과 아이콘 옵션을 가진 버튼을 렌더링합니다.
+ *
+ * @component
+ * @param {('default' | 'primary' | 'fail')} [type='default'] - 버튼의 스타일 타입입니다.
+ * @param {('button' | 'submit' | 'reset')} [htmlType='button'] - HTML 버튼의 동작 타입입니다.
+ * @param {(e: React.MouseEvent<HTMLButtonElement>) => void} [onClick] - 클릭 이벤트 핸들러입니다.
+ * @param {boolean} [disabled=false] - 버튼의 비활성화 여부를 결정합니다.
+ * @param {string} [iconId] - 아이콘의 고유 식별자입니다. 값이 있을 경우 아이콘이 렌더링됩니다.
+ * @param {('svg' | 'png')} [iconType='svg'] - 렌더링할 아이콘의 타입을 결정합니다.
+ * @param {string} content - 버튼에 표시할 텍스트입니다.
+ * @returns {JSX.Element} - 렌더링된 ButtonDefault 컴포넌트를 반환합니다.
+ */
 const ButtonDefault = ({
     type = 'default',
     htmlType = 'button',

@@ -1,6 +1,6 @@
 // ToggleButtonGroup.stories.tsx
 import type { Meta, StoryObj } from '@storybook/react';
-import { ButtonToggleGroup } from './ButtonToggleGroup';
+import ButtonToggleGroup from './ButtonToggleGroup';
 
 const meta = {
     title: 'Components/Atoms/ButtonToggleGroup',

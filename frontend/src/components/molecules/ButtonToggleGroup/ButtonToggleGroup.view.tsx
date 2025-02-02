@@ -1,11 +1,11 @@
-import { ButtonToggle } from '../../atoms/ButtonToggle/ButtonToggle';
-export interface ButtonToggleGroupViewProps {
+import ButtonToggle from '../../atoms/ButtonToggle/ButtonToggle';
+interface ButtonToggleGroupViewProps {
     options: { value: string; label: string }[];
     activeValue: string;
     onButtonClick: (value: string) => void;
 }
 
-export const ButtonToggleGroupView = ({
+const ButtonToggleGroupView = ({
     options,
     activeValue,
     onButtonClick,
@@ -25,3 +25,5 @@ export const ButtonToggleGroupView = ({
         </div>
     );
 };
+
+export default ButtonToggleGroupView;

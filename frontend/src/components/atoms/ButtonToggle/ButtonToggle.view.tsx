@@ -1,4 +1,4 @@
-export interface ButtonToggleViewProps {
+interface ButtonToggleViewProps {
     value: string;
     /** 버튼이 활성 상태인지 여부 */
     active: boolean;
@@ -11,7 +11,7 @@ export interface ButtonToggleViewProps {
 /**
  * ToggleButtonView 컴포넌트는 단일 토글 버튼의 UI를 렌더링합니다.
  */
-export const ButtonToggleView = ({
+const ButtonToggleView = ({
     active,
     onClick,
     children,
@@ -29,3 +29,5 @@ export const ButtonToggleView = ({
         </button>
     );
 };
+
+export default ButtonToggleView;

@@ -1,5 +1,4 @@
-// PrimaryButton.tsx
-import { ButtonPrimaryView } from './ButtonPrimaryView';
+import ButtonPrimaryView from './ButtonPrimary.view';
 
 interface ButtonPrimaryProps {
     htmlType?: 'button' | 'submit' | 'reset';
@@ -8,7 +7,17 @@ interface ButtonPrimaryProps {
     disabled?: boolean;
 }
 
-export const ButtonPrimary = ({
+/**
+ * ButtonPrimary 컴포넌트는 삭제, 확인, 취소와 같은 액션에 따른 스타일과 텍스트를 가진 기본 버튼을 렌더링합니다.
+ *
+ * @component
+ * @param {('button' | 'submit' | 'reset')} [htmlType='button'] - HTML 버튼의 타입입니다.
+ * @param {('delete' | 'confirm' | 'cancel')} action - 버튼의 액션 유형입니다.
+ * @param {(e: React.MouseEvent<HTMLButtonElement>) => void} [onClick] - 클릭 이벤트 핸들러입니다.
+ * @param {boolean} [disabled=false] - 버튼의 비활성화 여부입니다.
+ * @returns {JSX.Element} - 렌더링된 ButtonPrimary 컴포넌트를 반환합니다.
+ */
+const ButtonPrimary = ({
     htmlType = 'button',
     action,
     onClick,
