@@ -34,7 +34,7 @@ public class UserService {
 
     @Transactional
     public void updateProfileUri(User user, String profileUri) {
-        user.updateNickname(profileUri);
+        user.updateProfileUri(profileUri);
         userJpaRepository.save(user);
     }
 
