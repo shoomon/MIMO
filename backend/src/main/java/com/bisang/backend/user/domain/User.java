@@ -82,9 +82,15 @@ public class User extends BaseTimeEntity {
         return new User(socialLoginId, email, password, name, nickname, profileUri);
     }
 
-    public void update(String name, String nickname, String profileUri) {
+    public void updateName(String name) {
         this.name = name;
+    }
+
+    public void updateNickname(String nickname) {
         this.nickname = nickname;
+    }
+
+    public void updateProfileUri(String profileUri) {
         this.profileUri = profileUri;
     }
 }
