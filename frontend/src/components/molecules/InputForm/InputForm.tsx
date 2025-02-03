@@ -1,4 +1,4 @@
-import { forwardRef, useState, useEffect } from 'react';
+import { forwardRef, useState } from 'react';
 import Input from '../../atoms/Input/Input';
 
 export interface InputFormProps {
@@ -86,21 +86,8 @@ const InputForm = forwardRef<HTMLInputElement, InputFormProps>(
         );
 
         const [charCount, setCharCount] = useState(inputValue.length);
+
         const [internalError, setInternalError] = useState<string>('');
-
-        // 유효성 검사 함수 (글자수 제한 체크)
-        const validateInput = (val: string) => {
-            if (typeof count === 'number' && val.length >= count) {
-                return `최대 ${count}자까지 입력할 수 있습니다.`;
-            }
-            return '';
-        };
-
-        // 디바운스된 값이 변경될 때 유효성 검사 수행
-        useEffect(() => {
-            const validationError = validateInput(inputValue);
-            setInternalError(validationError);
-        }, [inputValue, count]);
 
         // 입력값 변경 시 처리 (즉시 상태 업데이트)
         const handleInputChange = (
@@ -109,6 +96,13 @@ const InputForm = forwardRef<HTMLInputElement, InputFormProps>(
             const val = e.target.value;
             setInputValue(val);
             setCharCount(val.length);
+
+            // 글자수 초과 체크를 onChange 핸들러 내부에서 바로 수행
+            if (typeof count === 'number' && val.length >= count) {
+                setInternalError(`최대 ${count}자까지 입력할 수 있습니다.`);
+            } else {
+                setInternalError('');
+            }
 
             if (onChange) {
                 onChange(e);
@@ -130,7 +124,7 @@ const InputForm = forwardRef<HTMLInputElement, InputFormProps>(
             <div className="flex h-fit w-full flex-col gap-1">
                 {/* 라벨, 에러 메시지, 글자수 표시 */}
                 <div className="flex items-end justify-between">
-                    <div className="flex items-end gap-2">
+                    <div className="flex items-end gap-2 pl-1">
                         {label && (
                             <label htmlFor={id} className="text-xl font-bold">
                                 {label}

@@ -47,79 +47,91 @@
 }
 
 .sprite {
-  background-image: url("/css_sprites.png");
-  background-repeat: no-repeat;
-  display: none;
+    background-image: url('/css_sprites.png');
+    background-repeat: no-repeat;
+    display: none;
 }
 
 .bg-Alarm {
-  width: 44px; height: 44px;
-  background: url('css_sprites.png') -102px -286px;
-  display: block;
+    width: 44px;
+    height: 44px;
+    background: url('css_sprites.png') -102px -286px;
+    display: block;
 }
 
 .bg-Bike {
-  width: 72px; height: 72px;
-  background: url('css_sprites.png') -10px -10px;
-  display: block;
+    width: 72px;
+    height: 72px;
+    background: url('css_sprites.png') -10px -10px;
+    display: block;
 }
 
 .bg-Book {
-  width: 72px; height: 72px;
-  background: url('css_sprites.png') -102px -10px;
-  display: block;
+    width: 72px;
+    height: 72px;
+    background: url('css_sprites.png') -102px -10px;
+    display: block;
 }
 
 .bg-Car {
-  width: 72px; height: 72px;
-  background: url('css_sprites.png') -10px -102px;
-  display: block;
+    width: 72px;
+    height: 72px;
+    background: url('css_sprites.png') -10px -102px;
+    display: block;
 }
 
 .bg-CarWash {
-  width: 72px; height: 72px;
-  background: url('css_sprites.png') -102px -102px;
-  display: block;
+    width: 72px;
+    height: 72px;
+    background: url('css_sprites.png') -102px -102px;
+    display: block;
 }
 
 .bg-Chat {
-  width: 44px; height: 44px;
-  background: url('css_sprites.png') -166px -286px;
-  display: block;
+    width: 44px;
+    height: 44px;
+    background: url('css_sprites.png') -166px -286px;
+    display: block;
 }
 
 .bg-Cooking {
-  width: 72px; height: 72px;
-  background: url('css_sprites.png') -194px -10px;
-  display: block;
+    width: 72px;
+    height: 72px;
+    background: url('css_sprites.png') -194px -10px;
+    display: block;
 }
 
 .bg-Dog {
-  width: 72px; height: 72px;
-  background: url('css_sprites.png') -194px -102px;
-  display: block;
+    width: 72px;
+    height: 72px;
+    background: url('css_sprites.png') -194px -102px;
+    display: block;
 }
 
 .bg-Exercise {
-  width: 72px; height: 72px;
-  background: url('css_sprites.png') -10px -194px;
-  display: block;
+    width: 72px;
+    height: 72px;
+    background: url('css_sprites.png') -10px -194px;
+    display: block;
 }
 
 .bg-Game {
-  width: 72px; height: 72px;
-  background: url('css_sprites.png') -102px -194px;
-  display: block;
+    width: 72px;
+    height: 72px;
+    background: url('css_sprites.png') -102px -194px;
+    display: block;
 }
 
 .bg-Gym {
-  width: 72px; height: 72px;
-  background: url('css_sprites.png') -194px -194px;
-  display: block;
+    width: 72px;
+    height: 72px;
+    background: url('css_sprites.png') -194px -194px;
+    display: block;
 }
 
 .bg-Music {
-  width: 72px; height: 72px;
-  background: url('css_sprites.png') -286px -10px;
-  display: block;
+    width: 72px;
+    height: 72px;
+    background: url('css_sprites.png') -286px -10px;
+    display: block;
 }

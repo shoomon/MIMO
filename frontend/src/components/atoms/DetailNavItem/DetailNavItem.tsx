@@ -1,4 +1,4 @@
-import { useNavActive } from '@/hooks/useNavigation';
+import { useNavActive } from '@/hooks/useNav';
 import DetailNavItemView from './DetailNavItem.view';
 
 export interface DetailNavItemProps {
