@@ -1,6 +1,5 @@
-@import 'tailwindcss';
-
 @import url('https://cdn.jsdelivr.net/gh/sun-typeface/SUIT@2/fonts/static/woff2/SUIT.css');
+@import 'tailwindcss';
 
 @theme {
     --font-sans: 'SUIT', 'sans-serif';
@@ -45,53 +44,6 @@
 
     /* Line Heights */
     --tracking-normal: 150%;
-}
-
-@import url('https://cdn.jsdelivr.net/gh/sun-typeface/SUIT@2/fonts/static/woff2/SUIT.css');
-
-@theme {
-  --font-sans: "SUIT", "sans-serif";
-  
-  /* Colors */
-  --color-brand-primary-50: #F6F7FF;
-  --color-brand-primary-100: #D9DAFF;
-  --color-brand-primary-200: #9A9BFA;
-  --color-brand-primary-300: #6263F0;
-  --color-brand-primary-400: #4B4DED;
-  --color-brand-primary-500: #3A3B9C;
-  
-  --color-gray-50: #FBFBFB;
-  --color-gray-100: #F5F5F5;
-  --color-gray-200: #D8D8D8;
-  --color-gray-300: #BCBCBC;
-  --color-gray-400: #A0A0A0;
-  --color-gray-500: #858585;
-  --color-gray-600: #6A6A6A;
-  --color-gray-700: #505050;
-  --color-gray-800: #363636;
-  --color-gray-900: #1C1C1C;
-  
-  --color-dark: #0E0E2C;
-  --color-text: #4A4A68;
-  --color-success: #38E068;
-  --color-fail: #E54242;
-  --color-white: #FFFFFF;
-
-  /* Font Sizes */
-  --text-display-2xl: 4.5rem;    /* 72px */
-  --text-display-xl: 3.75rem;    /* 60px */
-  --text-display-lg: 3rem;       /* 48px */
-  --text-display-md: 2.25rem;    /* 36px */
-  --text-display-sm: 1.875rem;   /* 30px */
-  --text-display-xs: 1.5rem;     /* 24px */
-  --text-xl: 1.25rem;            /* 20px */
-  --text-lg: 1.125rem;           /* 18px */
-  --text-md: 1rem;             /* 16px */
-  --text-sm: 0.875rem;           /* 14px */
-  --text-xs: 0.75rem;            /* 12px */
-
-  /* Line Heights */
-  --tracking-normal: 150%;
 }
 
 .sprite {
