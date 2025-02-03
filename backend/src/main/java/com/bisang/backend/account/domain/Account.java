@@ -20,7 +20,6 @@ import lombok.NoArgsConstructor;
     }
 )
 public class Account extends BaseTimeEntity {
-
     @Id @Column(length = 13, name = "account_number")
     private String accountNumber;
 

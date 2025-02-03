@@ -16,7 +16,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import com.bisang.backend.user.domain.request.UserCreateOrLoginRequest;
+import com.bisang.backend.user.controller.request.UserCreateOrLoginRequest;
 
 import lombok.extern.slf4j.Slf4j;
 
