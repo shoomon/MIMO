@@ -28,6 +28,7 @@ import com.bisang.backend.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 
+
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
