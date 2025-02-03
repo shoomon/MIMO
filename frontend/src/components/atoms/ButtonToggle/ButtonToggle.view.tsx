@@ -19,10 +19,12 @@ const ButtonToggleView = ({
     return (
         <button
             onClick={onClick}
-            className={`h-fit w-fit justify-center rounded-sm border-2 px-[8px] py-[4px] text-lg font-bold${
+            className={`h-fit w-fit justify-center rounded-sm px-[8px] py-[2px] text-lg font-bold${
                 active
-                    ? ' ' + 'border-brand-primary-400 bg-white text-black'
-                    : ' ' + 'text-dark border-black bg-gray-50 opacity-60'
+                    ? ' ' +
+                      'outline-brand-primary-400 bg-white text-black outline-2'
+                    : ' ' +
+                      'text-dark border-black bg-gray-50 opacity-60 hover:bg-gray-200'
             }`}
         >
             {children}

@@ -18,9 +18,8 @@ const ButtonToggleGroupView = ({
                     value={option.value}
                     active={activeValue === option.value}
                     onClick={onButtonClick}
-                >
-                    {option.label}
-                </ButtonToggle>
+                    content={option.label}
+                ></ButtonToggle>
             ))}
         </div>
     );
