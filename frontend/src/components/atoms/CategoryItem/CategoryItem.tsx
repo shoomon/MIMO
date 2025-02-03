@@ -6,7 +6,21 @@ interface CategoryItemProps {
     onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
-const CategoryItem = ({ iconId, content, onClick }: CategoryItemProps) => {
+/**
+ * `CategoryItem` 컴포넌트는 아이콘과 텍스트를 포함한 버튼을 렌더링합니다.
+ *
+ * @component
+ * @param {string} iconId - 아이콘의 ID입니다.
+ * @param {string} content - 버튼의 텍스트 내용입니다.
+ * @param {(e: React.MouseEvent<HTMLButtonElement>) => void} [onClick] - 클릭 이벤트 핸들러입니다.
+ * @returns {JSX.Element} - 렌더링된 `CategoryItem` 컴포넌트를 반환합니다.
+ */
+
+const CategoryItem = ({
+    iconId,
+    content,
+    onClick,
+}: CategoryItemProps): JSX.Element => {
     return (
         <button
             onClick={onClick}
