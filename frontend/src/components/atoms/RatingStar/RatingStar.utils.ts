@@ -11,8 +11,9 @@
 export const getStarRatingData = (
     rating: number,
 ): { fullStars: number; hasHalfStar: boolean } => {
-    const fullStars = Math.floor(rating);
-    const hasHalfStar = rating - fullStars >= 0.5;
+    const clampedRating = Math.min(5, Math.max(0, rating));
+    const fullStars = Math.floor(clampedRating);
+    const hasHalfStar = clampedRating - fullStars >= 0.5;
 
     return { fullStars, hasHalfStar };
 };
