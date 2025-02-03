@@ -16,7 +16,11 @@ interface CategoryItemProps {
  * @returns {JSX.Element} - 렌더링된 `CategoryItem` 컴포넌트를 반환합니다.
  */
 
-const CategoryItem = ({ iconId, content, onClick }: CategoryItemProps) => {
+const CategoryItem = ({
+    iconId,
+    content,
+    onClick,
+}: CategoryItemProps): JSX.Element => {
     return (
         <button
             onClick={onClick}
