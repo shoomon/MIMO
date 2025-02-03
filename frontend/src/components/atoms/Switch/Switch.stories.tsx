@@ -1,10 +1,7 @@
-import React from 'react';
-import { Meta, Story } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import Switch from './Switch';
 
-type SwitchProps = React.ComponentProps<typeof Switch>;
-
-export default {
+const meta = {
     title: 'Components/Atoms/Switch',
     component: Switch,
     argTypes: {
@@ -12,24 +9,28 @@ export default {
         isactive: { control: 'boolean' },
         onClick: { action: 'clicked' },
     },
-} as Meta;
+} satisfies Meta<typeof Switch>;
 
-const Template: Story<SwitchProps> = (args) => <Switch {...args} />;
+export default meta;
+type Story = StoryObj<typeof meta>;
 
-export const Active = Template.bind({});
-Active.args = {
-    isactive: true,
-    disabled: false,
+export const Active: Story = {
+    args: {
+        isactive: true,
+        disabled: false,
+    },
 };
 
-export const Inactive = Template.bind({});
-Inactive.args = {
-    isactive: false,
-    disabled: false,
+export const Inactive: Story = {
+    args: {
+        isactive: false,
+        disabled: false,
+    },
 };
 
-export const Disabled = Template.bind({});
-Disabled.args = {
-    isactive: false,
-    disabled: true,
+export const Disabled: Story = {
+    args: {
+        isactive: false,
+        disabled: true,
+    },
 };
