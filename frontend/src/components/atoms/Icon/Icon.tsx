@@ -1,5 +1,5 @@
-import PngIconView from './PngIconView';
-import SvgIconView from './SvgIconView';
+import PngIconView from './PngIcon.view';
+import SvgIconView from './SvgIcon.view';
 
 interface IconProps extends React.SVGProps<SVGSVGElement> {
     /** 보여줄 아이콘의 타입을 지정합니다. svg 또는 png 를 선택 */
