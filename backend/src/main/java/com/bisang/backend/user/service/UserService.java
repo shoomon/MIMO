@@ -2,8 +2,6 @@ package com.bisang.backend.user.service;
 
 import java.util.Optional;
 
-import com.bisang.backend.common.exception.AccountException;
-import com.bisang.backend.common.exception.ExceptionCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,8 +9,6 @@ import com.bisang.backend.user.domain.User;
 import com.bisang.backend.user.repository.UserJpaRepository;
 
 import lombok.RequiredArgsConstructor;
-
-import static com.bisang.backend.common.exception.ExceptionCode.INVALID_REQUEST;
 
 @RequiredArgsConstructor
 @Service
@@ -25,32 +21,24 @@ public class UserService {
     }
 
     @Transactional
-    public void updateNickname(Long userId, String nickname) {
-        User findUser = findUserById(userId);
-        findUser.updateNickname(nickname);
-        userJpaRepository.save(findUser);
+    public void updateNickname(User user, String nickname) {
+        user.updateNickname(nickname);
+        userJpaRepository.save(user);
     }
 
     @Transactional
-    public void updateName(Long userId, String name) {
-        User findUser = findUserById(userId);
-        findUser.updateName(name);
-        userJpaRepository.save(findUser);
+    public void updateName(User user, String name) {
+        user.updateName(name);
+        userJpaRepository.save(user);
     }
 
     @Transactional
-    public void updateProfileUri(Long userId, String profileUri) {
-        User findUser = findUserById(userId);
-        findUser.updateNickname(profileUri);
-        userJpaRepository.save(findUser);
+    public void updateProfileUri(User user, String profileUri) {
+        user.updateNickname(profileUri);
+        userJpaRepository.save(user);
     }
 
     public Optional<User> findUserByEmail(String email) {
         return userJpaRepository.findByEmail(email);
-    }
-
-    private User findUserById(Long userId) {
-        return userJpaRepository.findById(userId)
-                                .orElseThrow(() -> new AccountException(INVALID_REQUEST));
     }
 }
