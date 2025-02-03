@@ -14,9 +14,13 @@ import static lombok.AccessLevel.PROTECTED;
         }
 )
 public class Account extends BaseTimeEntity {
+<<<<<<< HEAD
 
     @Id
     @Column(name = "account_number", length = 13)
+=======
+    @Id @Column(length = 13, name = "account_number")
+>>>>>>> 15f939e (feat: myInfo 로직 추가)
     private String accountNumber;
 
     @Embedded
