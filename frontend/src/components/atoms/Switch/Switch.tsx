@@ -33,11 +33,7 @@ interface SwitchViewProps {
  * @param {(e: React.MouseEvent<HTMLButtonElement>) => void} onClick - 클릭 이벤트 핸들러입니다.
  * @returns {JSX.Element} - 렌더링된 `SwitchView` 컴포넌트를 반환합니다.
  */
-const SwitchView = ({
-    disabled,
-    isOn,
-    onClick,
-}: SwitchViewProps): JSX.Element => (
+const SwitchView = ({ disabled, isOn, onClick }: SwitchViewProps) => (
     <button
         onClick={onClick}
         disabled={disabled}
