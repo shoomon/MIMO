@@ -90,7 +90,7 @@ const Input = forwardRef<
             onKeyDown,
             ariaLabel,
             maxLength,
-            className,
+            className = 'focus:outline-brand-primary-400 focus:outline-2',
         },
         ref,
     ) => {

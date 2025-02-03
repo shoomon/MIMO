@@ -36,11 +36,11 @@ const MemberCount = ({
     return (
         <button
             onClick={onClick}
-            className="h-fit w-fit rounded-sm border-1 border-gray-500 px-2 py-1"
+            className="hover:outline-brand-primary-400 h-fit w-fit rounded-sm border-1 border-gray-500 bg-white px-2 py-1 hover:outline-2"
         >
             <div className="flex gap-1">
                 <Icon type="svg" id="User" />
-                <div className="flex justify-center text-sm font-semibold text-gray-700">
+                <div className="flex items-center text-sm font-semibold text-gray-700">
                     {memberCount}/{memberLimit}
                 </div>
             </div>
