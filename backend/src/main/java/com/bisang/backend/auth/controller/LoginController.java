@@ -61,6 +61,7 @@ public class LoginController {
                 "https://accounts.google.com/o/oauth2/v2/auth?client_id={}&redirect_uri={}&response_type=code&scope={}",
                 clientId, redirectUri, scope
         );
+        log.info(googleAuthUrl);
 
         response.sendRedirect(googleAuthUrl);
     }
