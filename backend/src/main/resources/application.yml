@@ -7,6 +7,8 @@ spring:
       secret-key: ${SECRET_KEY}
       access-token-expiry: ${ACCESS_TOKEN_EXPIRY}
       refresh-token-expiry: ${REFRESH_TOKEN_EXPIRY}
+    redis-uri: ${REDIS_URI}
+    redis-port: ${REDIS_PORT}
 
   # MySQL
   datasource:
