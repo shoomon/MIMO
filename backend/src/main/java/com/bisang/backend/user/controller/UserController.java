@@ -23,7 +23,7 @@ public class UserController {
     @PatchMapping("/nickname")
     public ResponseEntity<Void> updateNickname(
         @AuthUser User user,
-        UpdateNicknameRequest request
+        @RequestBody UpdateNicknameRequest request
     ) {
         userService.updateNickname(user, request.nickname());
         return ResponseEntity.ok().build();
@@ -32,16 +32,16 @@ public class UserController {
     @PatchMapping("/name")
     public ResponseEntity<Void> updateName(
         @AuthUser User user,
-        UpdateNameRequest request
+        @RequestBody UpdateNameRequest request
     ) {
         userService.updateName(user, request.name());
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("/profileUri")
+    @PatchMapping("/profile-uri")
     public ResponseEntity<Void> updateNickname(
         @AuthUser User user,
-        UpdateProfileUriRequest request
+        @RequestBody UpdateProfileUriRequest request
     ) {
         userService.updateProfileUri(user, request.profileUri());
         return ResponseEntity.ok().build();
