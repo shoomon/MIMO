@@ -6,4 +6,5 @@ export { default as Icon } from "./Icon/Icon";
 export { default as Input } from "./Input/Input";
 export { default as DetailNavItem } from "./DetailNavItem/DetailNavItem";
 export { default as Search } from "./Search/Search";
-export {default as RelatedSearchItem} from "./RelatedSearchItem/RelatedSearchItem"
+export { default as RelatedSearchItem } from "./RelatedSearchItem/RelatedSearchItem";
+export { default as ProfileImage } from "./ProfileImage/ProfileImage";
