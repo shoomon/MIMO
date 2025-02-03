@@ -1,5 +1,8 @@
 !backend/gradle/wrapper/gradle-wrapper.jar
 
+### 환경 변수
+.env
+
 ### STS ###
 
 ### IntelliJ IDEA ###
