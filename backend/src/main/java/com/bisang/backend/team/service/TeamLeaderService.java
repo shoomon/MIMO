@@ -78,6 +78,16 @@ public class TeamLeaderService {
         teamUserJpaRepository.save(teamUser);
     }
 
+    @TeamLeader
+    @Transactional
+    public void deleteUser(Long userId, Long teamId, Long teamUserId) {
+        Team team = findTeamById(teamId);
+        leaderValidation(team, userId);
+
+        TeamUser teamUser = findTeamUserById(teamUserId);
+        teamUserJpaRepository.delete(teamUser);
+    }
+
     @TeamCoLeader
     @Transactional(readOnly = true)
     public List<TeamUserDto> findTeamUser(Long userId, Long teamId) {
