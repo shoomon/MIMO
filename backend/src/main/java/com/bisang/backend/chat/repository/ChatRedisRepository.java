@@ -1,6 +1,7 @@
 package com.bisang.backend.chat.repository;
 
 import com.bisang.backend.chat.domain.redis.RedisChatMessage;
+import com.bisang.backend.chat.domain.response.ChatMessageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
@@ -57,15 +58,22 @@ public class ChatRedisRepository {
         return Boolean.TRUE.equals(template.opsForSet().isMember("teamMember" + teamId, teamUserId));
     }
 
-    public List<Object> getMessages(Long teamId) {
+    public List<ChatMessageResponse> getMessages(Long teamId) {
         String key = "teamMessage"+teamId;
 
         Long size = template.opsForList().size(key);
+        List<Object> messageList = template.opsForList().range(key, 0, 99);
         if (size == null || size < 100) {
-            //TODO: DB에 더 저장된 게 있는지 확인해야함
-            return template.opsForList().range(key, 0, size == null ? -1 : size - 1);
+            messageList = template.opsForList().range(key, 0, size == null ? -1 : size - 1);
         }
 
-        return template.opsForList().range(key, 0, 99);
+        if (messageList == null) {
+            return Collections.emptyList();
+        }
+
+        return messageList
+                .stream()
+                .map( m -> (ChatMessageResponse) m)
+                .collect(Collectors.toList());
     }
 }

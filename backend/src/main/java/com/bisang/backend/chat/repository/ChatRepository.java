@@ -1,12 +1,17 @@
 package com.bisang.backend.chat.repository;
 
 import com.bisang.backend.chat.domain.redis.RedisChatMessage;
+import com.bisang.backend.chat.domain.response.ChatMessageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 import java.util.List;
 =======
+=======
+import java.util.List;
+>>>>>>> 7a73166 (feat: 채팅 기록 조회 기능 (개발중))
 import java.util.Map;
 >>>>>>> 70af064 (feat: 유저정보 레디스 캐싱 처리)
 import java.util.Set;
@@ -72,5 +77,19 @@ public class ChatRepository {
 
         return userInfo;
 >>>>>>> 70af064 (feat: 유저정보 레디스 캐싱 처리)
+    }
+
+    public List<ChatMessageResponse> getMessages(Long roomId) {
+        List<ChatMessageResponse> messageList = chatRedisRepository.getMessages(roomId);
+        if (messageList == null || messageList.isEmpty()) {
+            //TODO: db에서 최대 100개 가져온다.
+            return null;
+        }
+
+        if (messageList.size() < 100) {
+            //TODO: db에서 부족한 수만큼 채워서 가져온다.
+        }
+
+        return messageList;
     }
 }

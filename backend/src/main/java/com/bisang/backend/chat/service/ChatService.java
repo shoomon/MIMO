@@ -13,8 +13,12 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 <<<<<<< HEAD
+<<<<<<< HEAD
 import java.util.List;
 =======
+=======
+import java.util.List;
+>>>>>>> 7a73166 (feat: 채팅 기록 조회 기능 (개발중))
 import java.util.Map;
 >>>>>>> 70af064 (feat: 유저정보 레디스 캐싱 처리)
 import java.util.Set;
@@ -82,7 +86,13 @@ public class ChatService {
         return repository.isMember(userId, teamId);
     }
 
+<<<<<<< HEAD
     public List<Object> getMessages(Long teamId) {
         return repository.redisGetMessages(teamId);
+=======
+    public List<ChatMessageResponse> getMessages(Long roomId) {
+        List<ChatMessageResponse> messageList = repository.getMessages(roomId);
+        return messageList;
+>>>>>>> 7a73166 (feat: 채팅 기록 조회 기능 (개발중))
     }
 }
