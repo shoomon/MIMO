@@ -11,5 +11,8 @@ public interface ChatroomUserJpaRepository extends JpaRepository<ChatroomUser, L
     @Query("SELECT u.userId FROM ChatroomUser u WHERE u.chatroomId = :teamId")
     Set<Long> findUserIdsByTeamId(@Param("teamId") Long teamId);
 
+    @Query("SELECT u.nickname FROM ChatroomUser u WHERE u.id = :id")
+    String findNicknameById(@Param("id") Long id);
+
     boolean existsByIdAndChatroomId(Long id, Long chatroomId);
 }

@@ -24,9 +24,9 @@ public class ChatController {
     @MessageMapping("/chat/{roomId}")
     public void sendMessage(@DestinationVariable Long roomId, ChatMessageRequest chat) {
         if (chatService.isMember(chat.teamUserId(), roomId)) {
-          RedisChatMessage redisMessage = new RedisChatMessage(chat.teamUserId(), chat.nickname(), chat.chat(), LocalDateTime.now(), ChatType.MESSAGE);
+          RedisChatMessage redisMessage = new RedisChatMessage(chat.teamUserId(), chat.chat(), LocalDateTime.now(), ChatType.MESSAGE);
 
-          chatService.broadcastMessage(roomId, redisMessage, chat.teamName(), chat.chatroomStatus());
+          chatService.broadcastMessage(roomId, redisMessage);
         }
     }
 
