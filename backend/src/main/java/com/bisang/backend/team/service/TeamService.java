@@ -3,6 +3,8 @@ package com.bisang.backend.team.service;
 import static com.bisang.backend.common.exception.ExceptionCode.INVALID_REQUEST;
 import static com.bisang.backend.common.exception.ExceptionCode.NOT_FOUND_TEAM;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,11 +15,14 @@ import com.bisang.backend.team.controller.dto.TeamDto;
 import com.bisang.backend.team.domain.Area;
 import com.bisang.backend.team.domain.Team;
 import com.bisang.backend.team.domain.TeamDescription;
+import com.bisang.backend.team.domain.TeamNotificationStatus;
 import com.bisang.backend.team.domain.TeamPrivateStatus;
 import com.bisang.backend.team.domain.TeamRecruitStatus;
+import com.bisang.backend.team.domain.TeamUser;
 import com.bisang.backend.team.repository.TeamDescriptionJpaRepository;
 import com.bisang.backend.team.repository.TeamJpaRepository;
 import com.bisang.backend.team.repository.TeamQuerydslRepository;
+import com.bisang.backend.team.repository.TeamUserJpaRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,11 +34,14 @@ public class TeamService {
     private final TeamJpaRepository teamJpaRepository;
     private final TeamDescriptionJpaRepository teamDescriptionJpaRepository;
     private final TeamQuerydslRepository teamQuerydslRepository;
+    private final TeamUserJpaRepository teamUserJpaRepository;
 
     @TeamLeader
     @Transactional
     public void createTeam(
             Long leaderId,
+            String nickname,
+            TeamNotificationStatus notificationStatus,
             String name,
             String description,
             TeamRecruitStatus teamRecruitStatus,
@@ -59,6 +67,9 @@ public class TeamService {
                             .areaCode(area)
                             .capacity(MAX_TEAM_CAPACITY).build();
         teamJpaRepository.save(newTeam);
+
+        var teamUser = TeamUser.createTeamLeader(leaderId, newTeam.getId(), nickname, notificationStatus);
+        teamUserJpaRepository.save(teamUser);
     }
 
     @EveryOne
@@ -128,6 +139,21 @@ public class TeamService {
             team.updateAreaCode(areaCode);
         }
         teamJpaRepository.save(team);
+    }
+
+    @TeamLeader
+    @Transactional
+    public void deleteTeam(Long userId, Long teamId) {
+        Team team = findTeamById(teamId);
+        if (isTeamLeader(team, userId)) {
+            List<TeamUser> teamUsers = teamUserJpaRepository.findByTeamId(teamId);
+            if (teamUsers.size() == 1) {
+                // TODO 계좌 삭제
+                // TODO 채팅방 삭제
+                teamUserJpaRepository.delete(teamUsers.get(0));
+                teamJpaRepository.delete(team);
+            }
+        }
     }
 
     private Team findTeamById(Long teamId) {
