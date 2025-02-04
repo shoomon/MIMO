@@ -5,6 +5,7 @@ import com.bisang.backend.chat.domain.redis.RedisUserChatroom;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Set;
 
 @Repository
@@ -46,5 +47,9 @@ public class ChatRepository {
             return true;
         }
         return chatroomUserJpaRepository.existsByIdAndChatroomId(teamUserId, teamId);
+    }
+
+    public List<Object> redisGetMessages(Long teamId) {
+        return chatRedisRepository.getMessages(teamId);
     }
 }
