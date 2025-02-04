@@ -9,7 +9,6 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Getter
-@NoArgsConstructor
 public class RedisChatMessage implements Serializable {
 
     @Setter
