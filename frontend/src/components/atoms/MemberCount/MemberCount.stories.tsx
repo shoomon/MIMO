@@ -18,14 +18,14 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
     args: {
-        memberCount: '3',
-        memberLimit: '10',
+        memberCount: 3,
+        memberLimit: 10,
     },
 };
 
 export const WithClick: Story = {
     args: {
-        memberCount: '7',
-        memberLimit: '10',
+        memberCount: 7,
+        memberLimit: 10,
     },
 };
