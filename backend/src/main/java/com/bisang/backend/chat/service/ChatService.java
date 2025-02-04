@@ -1,6 +1,7 @@
 package com.bisang.backend.chat.service;
 
 import com.bisang.backend.chat.domain.ChatType;
+import com.bisang.backend.chat.domain.ChatroomStatus;
 import com.bisang.backend.chat.domain.redis.RedisChatMessage;
 import com.bisang.backend.chat.domain.redis.RedisUserChatroom;
 import com.bisang.backend.chat.repository.ChatRepository;
@@ -32,7 +33,7 @@ public class ChatService {
         RedisChatMessage message = new RedisChatMessage(userId, nickname, "", LocalDateTime.now(), ChatType.ENTER);
 
         repository.redisInsertMemberUser(teamId, userId);
-        broadcastMessage(teamId, message, teamName);
+        broadcastMessage(teamId, message, teamName, ChatroomStatus.GROUP);
     }
 
     /**
@@ -44,20 +45,20 @@ public class ChatService {
      */
     public void leaveChatroom(Long userId, String nickname, Long teamId, String teamName) {
         RedisChatMessage message = new RedisChatMessage(userId, nickname, "", LocalDateTime.now(), ChatType.LEAVE);
-        RedisUserChatroom userChatroom = new RedisUserChatroom(teamId, teamName);
+        RedisUserChatroom userChatroom = new RedisUserChatroom(teamId, teamName, ChatroomStatus.GROUP);
 
         repository.redisRemoveMember(teamId, userId);
         repository.redisDeleteUserChatroom(teamId, userChatroom);
-        broadcastMessage(teamId, message, teamName);
+        broadcastMessage(teamId, message, teamName, ChatroomStatus.GROUP);
     }
 
-    public void broadcastMessage(Long teamId, RedisChatMessage message, String teamName) {
+    public void broadcastMessage(Long teamId, RedisChatMessage message, String teamName, ChatroomStatus status) {
         Set<Long> teamMembers = repository.getTeamMembers(teamId);
 
         //여기에 teamMember 없으면 log 찍어야하나? 없을 수 없는 곳인데 없는 경우임
 
         for (Object userId : teamMembers) {
-            RedisUserChatroom userChatroom = new RedisUserChatroom(teamId, teamName);
+            RedisUserChatroom userChatroom = new RedisUserChatroom(teamId, teamName, status);
             repository.redisUpdateUserChatroom(Long.parseLong(userId.toString()), userChatroom, (double)message.getTimestamp().toInstant(ZoneOffset.ofTotalSeconds(0)).toEpochMilli());
         }
 
