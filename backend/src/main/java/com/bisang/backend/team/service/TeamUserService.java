@@ -87,11 +87,11 @@ public class TeamUserService {
 
     private Team findTeamById(Long teamId) {
         return teamJpaRepository.findTeamById(teamId)
-                .orElseThrow(() -> new TeamException(NOT_FOUND_TEAM));
+                .orElseThrow(() -> new TeamException(NOT_FOUND));
     }
 
     private TeamUser findTeamUserByTeamIdAndUserId(Long teamId, Long userId) {
         return teamUserJpaRepository.findByTeamIdAndUserId(teamId, userId)
-                .orElseThrow(() -> new TeamException(NOT_FOUND_TEAM));
+                .orElseThrow(() -> new TeamException(NOT_FOUND));
     }
 }

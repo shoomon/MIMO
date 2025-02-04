@@ -1,7 +1,6 @@
 package com.bisang.backend.team.service;
 
-import static com.bisang.backend.common.exception.ExceptionCode.INVALID_REQUEST;
-import static com.bisang.backend.common.exception.ExceptionCode.NOT_FOUND_TEAM;
+import static com.bisang.backend.common.exception.ExceptionCode.*;
 
 import java.util.List;
 
@@ -157,7 +156,7 @@ public class TeamService {
 
     private Team findTeamById(Long teamId) {
         return teamJpaRepository.findById(teamId)
-                .orElseThrow(() -> new TeamException(NOT_FOUND_TEAM));
+                .orElseThrow(() -> new TeamException(NOT_FOUND));
     }
 
     private Boolean isTeamLeader(Team team, Long userId) {

@@ -1,6 +1,6 @@
 package com.bisang.backend.team.repository;
 
-import static com.bisang.backend.common.exception.ExceptionCode.NOT_FOUND_TEAM;
+import static com.bisang.backend.common.exception.ExceptionCode.NOT_FOUND;
 import static com.bisang.backend.team.domain.QTeam.team;
 import static com.bisang.backend.team.domain.QTeamDescription.teamDescription;
 import static com.bisang.backend.team.domain.QTeamUser.teamUser;
@@ -45,6 +45,6 @@ public class TeamQuerydslRepository {
                         Expressions.constant(currentMemberCount)))
                 .from(team)
                 .where(team.id.eq(teamId))
-                .fetchOne()).orElseThrow(() -> new TeamException(NOT_FOUND_TEAM));
+                .fetchOne()).orElseThrow(() -> new TeamException(NOT_FOUND));
     }
 }
