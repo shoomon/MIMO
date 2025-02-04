@@ -35,6 +35,13 @@ public class ChatService {
         broadcastMessage(teamId, message, teamName);
     }
 
+    /**
+     * 모임 탈퇴, 강퇴 시 호출
+     * @param userId
+     * @param nickname
+     * @param teamId
+     * @param teamName
+     */
     public void leaveChatroom(Long userId, String nickname, Long teamId, String teamName) {
         RedisChatMessage message = new RedisChatMessage(userId, nickname, "", LocalDateTime.now(), ChatType.LEAVE);
 
