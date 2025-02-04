@@ -44,13 +44,17 @@ public class ChatService {
      */
     public void leaveChatroom(Long userId, String nickname, Long teamId, String teamName) {
         RedisChatMessage message = new RedisChatMessage(userId, nickname, "", LocalDateTime.now(), ChatType.LEAVE);
+        RedisUserChatroom userChatroom = new RedisUserChatroom(teamId, teamName);
 
         repository.redisRemoveMember(teamId, userId);
+        repository.redisDeleteUserChatroom(teamId, userChatroom);
         broadcastMessage(teamId, message, teamName);
     }
 
     public void broadcastMessage(Long teamId, RedisChatMessage message, String teamName) {
         Set<Long> teamMembers = repository.getTeamMembers(teamId);
+
+        //여기에 teamMember 없으면 log 찍어야하나? 없을 수 없는 곳인데 없는 경우임
 
         for (Object userId : teamMembers) {
             RedisUserChatroom userChatroom = new RedisUserChatroom(teamId, teamName);
