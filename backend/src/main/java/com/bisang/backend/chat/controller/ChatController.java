@@ -22,7 +22,7 @@ public class ChatController {
         if (chatService.isMember(chat.teamUserId(), roomId)) {
           RedisChatMessage redisMessage = new RedisChatMessage(chat.teamUserId(), chat.nickname(), chat.chat(), LocalDateTime.now(), ChatType.MESSAGE);
 
-          chatService.broadcastMessage(roomId, redisMessage, chat.teamName());
+          chatService.broadcastMessage(roomId, redisMessage, chat.teamName(), chat.chatroomStatus());
         }
     }
 }
