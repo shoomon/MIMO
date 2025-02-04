@@ -28,4 +28,8 @@ public class TeamDescription {
     public TeamDescription(String description) {
         this.description = description;
     }
+
+    public void updateDescription(String description) {
+        this.description = description;
+    }
 }

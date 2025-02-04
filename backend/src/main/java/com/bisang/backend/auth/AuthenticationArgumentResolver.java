@@ -8,19 +8,19 @@ import java.util.Arrays;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
-import com.bisang.backend.auth.annotation.AuthUser;
-import com.bisang.backend.common.exception.AccountException;
-import com.bisang.backend.common.exception.ExceptionCode;
-import com.bisang.backend.common.exception.InvalidJwtException;
-import com.bisang.backend.user.domain.User;
-import com.bisang.backend.user.repository.UserJpaRepository;
-
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
+
+import com.bisang.backend.auth.annotation.AuthUser;
+import com.bisang.backend.common.exception.AccountException;
+import com.bisang.backend.common.exception.ExceptionCode;
+import com.bisang.backend.common.exception.InvalidJwtException;
+import com.bisang.backend.user.domain.User;
+import com.bisang.backend.user.repository.UserJpaRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +38,10 @@ public class AuthenticationArgumentResolver implements HandlerMethodArgumentReso
     }
 
     @Override
-    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+    public Object resolveArgument(MethodParameter parameter,
+                                  ModelAndViewContainer mavContainer,
+                                  NativeWebRequest webRequest,
+                                  WebDataBinderFactory binderFactory) throws Exception {
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
 
         if (request == null) {
