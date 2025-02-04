@@ -41,7 +41,7 @@ public class TeamQuerydslRepository {
                         team.recruitStatus,
                         team.privateStatus,
                         team.areaCode,
-                        team.capacity,
+                        team.maxCapacity,
                         Expressions.constant(currentMemberCount)))
                 .from(team)
                 .where(team.id.eq(teamId))

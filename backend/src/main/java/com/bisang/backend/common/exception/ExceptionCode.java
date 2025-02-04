@@ -22,8 +22,14 @@ public enum ExceptionCode {
     BALANCE_TRANSFER_FAIL(4002, "송금에 실패했습니다.");
 =======
 
+<<<<<<< HEAD
     NOT_FOUND_TEAM(5000, "팀을 찾을 수가 없습니다.");
 >>>>>>> bd3abfa (feat: 팀 생성, 조회, 변경 로직 작성)
+=======
+    NOT_FOUND_TEAM(5000, "팀을 찾을 수가 없습니다."),
+    ALREADY_JOINED_MEMBER(5001, "이미 가입된 회원입니다."),
+    ALREADY_REQUEST_MEMBER(5002, "이미 회원 가입을 요청한 회원입니다.");
+>>>>>>> 4e2227b (feat: 회원 가입 및 가입 요청 리퀘스트 로직 추가)
 
     private final int code;
     private final String message;
