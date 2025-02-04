@@ -21,18 +21,14 @@ import lombok.NoArgsConstructor;
 )
 public class Account extends BaseTimeEntity {
 
-    @Id @Column(length = 13, name = "account_number")
+    @Id @Column(name = "account_number", length = 13)
     private String accountNumber;
-
-    @Column(length = 60, name = "memo")
-    private String memo;
 
     @Embedded
     private Balance balance;
 
-    public Account(String accountNumber, String memo, Long balance) {
+    public Account(String accountNumber) {
         this.accountNumber = accountNumber;
-        this.memo = memo;
         this.balance = new Balance();
     }
 
