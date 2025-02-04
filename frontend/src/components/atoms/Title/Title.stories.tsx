@@ -3,7 +3,7 @@ import Title from './Title';
 import { BrowserRouter } from 'react-router-dom';
 
 const meta = {
-    title: 'Components/Title',
+    title: 'Components/Atoms/Title',
     component: Title,
     decorators: [
         (Story) => (
