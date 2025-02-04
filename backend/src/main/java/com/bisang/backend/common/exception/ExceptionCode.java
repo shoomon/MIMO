@@ -28,8 +28,13 @@ public enum ExceptionCode {
 =======
     NOT_FOUND_TEAM(5000, "팀을 찾을 수가 없습니다."),
     ALREADY_JOINED_MEMBER(5001, "이미 가입된 회원입니다."),
+<<<<<<< HEAD
     ALREADY_REQUEST_MEMBER(5002, "이미 회원 가입을 요청한 회원입니다.");
 >>>>>>> 4e2227b (feat: 회원 가입 및 가입 요청 리퀘스트 로직 추가)
+=======
+    ALREADY_REQUEST_MEMBER(5002, "이미 회원 가입을 요청한 회원입니다."),
+    NOT_FOUND_TEAM_USER(5003, "팀 내에 존재하지 않는 회원입니다.");
+>>>>>>> 571d3df (feat: 팀 회원 닉네임 변경 및 탈퇴 로직 추가)
 
     private final int code;
     private final String message;

@@ -114,4 +114,8 @@ public class TeamUser {
                 .role(MEMBER)
                 .status(status).build();
     }
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
 }

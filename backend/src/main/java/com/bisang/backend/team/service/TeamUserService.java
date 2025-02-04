@@ -55,6 +55,22 @@ public class TeamUserService {
         }
     }
 
+    @Transactional
+    public void updateNickname(Long userId, Long teamId, String nickname) {
+        TeamUser teamUser = findTeamUserByTeamIdAndUserId(teamId, userId);
+        teamUser.updateNickname(nickname);
+        teamUserJpaRepository.save(teamUser);
+    }
+
+    /**
+     * 글은 남아있는데 탈퇴한 회원은 어떻게 하지?
+     */
+    @Transactional
+    public void deleteUser(Long userId, Long teamId) {
+        TeamUser teamUser = findTeamUserByTeamIdAndUserId(teamId, userId);
+        teamUserJpaRepository.delete(teamUser);
+    }
+
     private void isAlreadyJoinChecker(Long teamId, Long userId) {
         var optionalTeamUser = teamUserJpaRepository.findByTeamIdAndUserId(teamId, userId);
         if (optionalTeamUser.isPresent()) {
@@ -71,6 +87,11 @@ public class TeamUserService {
 
     private Team findTeamById(Long teamId) {
         return teamJpaRepository.findTeamById(teamId)
+                .orElseThrow(() -> new TeamException(NOT_FOUND_TEAM));
+    }
+
+    private TeamUser findTeamUserByTeamIdAndUserId(Long teamId, Long userId) {
+        return teamUserJpaRepository.findByTeamIdAndUserId(teamId, userId)
                 .orElseThrow(() -> new TeamException(NOT_FOUND_TEAM));
     }
 }
