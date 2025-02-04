@@ -8,3 +8,4 @@ export { default as DetailNavItem } from "./DetailNavItem/DetailNavItem";
 export { default as Search } from "./Search/Search";
 export { default as RelatedSearchItem } from "./RelatedSearchItem/RelatedSearchItem";
 export { default as ProfileImage } from "./ProfileImage/ProfileImage";
+export { default as MainNavItem } from "./MainNavItem/MainNavItem";
