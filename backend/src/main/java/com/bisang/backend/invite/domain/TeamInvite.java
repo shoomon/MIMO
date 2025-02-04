@@ -49,7 +49,7 @@ public class TeamInvite {
         this.memo = memo;
     }
 
-    public TeamInvite createInviteRequest(Long teamId, Long userId, String memo) {
+    public static TeamInvite createInviteRequest(Long teamId, Long userId, String memo) {
         return new TeamInvite(teamId, userId, WAITING, memo);
     }
 }
