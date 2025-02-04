@@ -3,6 +3,7 @@ package com.bisang.backend.chat.controller;
 import com.bisang.backend.chat.domain.ChatType;
 import com.bisang.backend.chat.domain.redis.RedisChatMessage;
 import com.bisang.backend.chat.domain.request.ChatMessageRequest;
+import com.bisang.backend.chat.domain.response.ChatMessageResponse;
 import com.bisang.backend.chat.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -31,10 +32,10 @@ public class ChatController {
     }
 
     @GetMapping("/messages/{roomId}")
-    public ResponseEntity<List<Object>> getMessages(@PathVariable Long roomId) {
+    public ResponseEntity<List<ChatMessageResponse>> getMessages(@PathVariable Long roomId) {
         //TODO: 사용자가 해당 팀에 포함된 유저인지 확인 필요
 
-        List<Object> list = chatService.getMessages(roomId);
+        List<ChatMessageResponse> list = chatService.getMessages(roomId);
         return ResponseEntity.ok().body(list);
     }
 }

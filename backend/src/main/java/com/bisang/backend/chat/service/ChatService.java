@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -76,5 +77,10 @@ public class ChatService {
 
     public boolean isMember(Long userId, Long teamId) {
         return repository.isMember(userId, teamId);
+    }
+
+    public List<ChatMessageResponse> getMessages(Long roomId) {
+        List<ChatMessageResponse> messageList = repository.getMessages(roomId);
+        return messageList;
     }
 }
