@@ -1,11 +1,24 @@
-import { Link } from 'react-router-dom';
-import Icon from '../Icon/Icon';
+import MileageStatusView from './MileageStatus.view';
 
-interface MileageStatusProps {
+/**
+ * MileageStatus 컴포넌트의 props 타입 정의
+ */
+export interface MileageStatusProps {
+    /** 마일리지 상태 유형 ('balance' | 'income' | 'expense') */
     type: 'balance' | 'income' | 'expense';
+    /** 마일리지 금액 */
     amount: number;
 }
 
+/**
+ * 마일리지 상태를 표시하는 컴포넌트
+ *
+ * @param {MileageStatusProps} props - 컴포넌트 props
+ * @param {'balance' | 'income' | 'expense'} props.type - 마일리지 유형 (잔액, 수입, 지출)
+ * @param {number} props.amount - 마일리지 금액
+ *
+ * @returns {JSX.Element} 마일리지 상태 UI를 렌더링하는 React 컴포넌트
+ */
 const MileageStatus = ({ type, amount }: MileageStatusProps) => {
     let iconColor = '';
     let icon = '';
@@ -19,40 +32,38 @@ const MileageStatus = ({ type, amount }: MileageStatusProps) => {
             break;
 
         case 'income':
-            iconColor = '';
-            icon = 'Group';
+            iconColor = 'bg-blue-100';
+            icon = 'Income';
             label = '마일리지 수입';
             break;
 
         case 'expense':
-            iconColor = '';
-            icon = 'Medical';
+            iconColor = 'bg-red-100';
+            icon = 'Expense';
             label = '마일리지 지출';
             break;
     }
 
+    /** 특정 금액 이상이면 폰트 크기를 조정 */
     const MAX_AMOUNT_LENGTH = 1000000;
-
     const amountSizeFix =
         amount >= MAX_AMOUNT_LENGTH
-            ? 'text-display-xs font-extrabold'
-            : 'text-xl font-extrabold';
+            ? 'text-lg font-extrabold'
+            : 'text-display-xs font-extrabold';
+
+    /** 금액을 천 단위로 포맷팅 */
+    const formattedNumber = amount.toLocaleString();
+    const resultAmount = `${formattedNumber}원`;
 
     return (
-        <Link
-            to={type}
-            className="flex h-fit w-[255px] justify-center gap-3 rounded-2xl border-[1px] border-gray-200 bg-white px-5 py-6"
-        >
-            <span className={`rounded-full p-5 ${iconColor}`}>
-                <Icon id={icon} size={30} type="svg" />
-            </span>
-            <div className="flex h-fit w-full flex-col">
-                <span className="text-md font-normal text-blue-950">
-                    {label}
-                </span>
-                <span className={amountSizeFix}>{amount}원</span>
-            </div>
-        </Link>
+        <MileageStatusView
+            to="/"
+            iconColor={iconColor}
+            icon={icon}
+            label={label}
+            amountSizeFix={amountSizeFix}
+            resultAmount={resultAmount}
+        />
     );
 };
 
