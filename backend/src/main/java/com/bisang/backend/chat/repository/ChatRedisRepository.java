@@ -7,6 +7,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -57,4 +58,15 @@ public class ChatRedisRepository {
         return Boolean.TRUE.equals(template.opsForSet().isMember("teamMember" + teamId, teamUserId));
     }
 
+    public List<Object> getMessages(Long teamId) {
+        String key = "teamMessage"+teamId;
+
+        Long size = template.opsForList().size(key);
+        if (size == null || size < 100) {
+            //TODO: DB에 더 저장된 게 있는지 확인해야함
+            return template.opsForList().range(key, 0, size == null ? -1 : size - 1);
+        }
+
+        return template.opsForList().range(key, 0, 99);
+    }
 }
