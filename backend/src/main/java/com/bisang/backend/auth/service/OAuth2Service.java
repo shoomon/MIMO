@@ -11,8 +11,8 @@ import com.bisang.backend.auth.domain.UserTokens;
 import com.bisang.backend.auth.infrastructure.GoogleOAuthProvider;
 import com.bisang.backend.auth.repository.RefreshTokenRepository;
 import com.bisang.backend.common.exception.InvalidJwtException;
-import com.bisang.backend.user.domain.User;
 import com.bisang.backend.user.controller.request.UserCreateOrLoginRequest;
+import com.bisang.backend.user.domain.User;
 import com.bisang.backend.user.service.UserService;
 
 import lombok.Getter;
