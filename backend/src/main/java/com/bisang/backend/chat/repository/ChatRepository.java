@@ -33,6 +33,10 @@ public class ChatRepository {
         chatRedisRepository.updateUserChatroom(teamUserId, userChatroom, timestamp);
     }
 
+    public void redisDeleteUserChatroom(long teamUserId, RedisUserChatroom userChatroom) {
+        chatRedisRepository.deleteUserChatroom(teamUserId, userChatroom);
+    }
+
     public void redisSaveMessage(long teamId, RedisChatMessage message) {
         chatRedisRepository.saveMessage(teamId, message);
     }

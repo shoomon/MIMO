@@ -38,8 +38,12 @@ public class ChatRedisRepository {
                 .collect(Collectors.toSet());
     }
 
-    public void updateUserChatroom(long userId, RedisUserChatroom chatroom, Double timestamp) {
-        template.opsForZSet().add("userChatroom"+userId, chatroom, timestamp);
+    public void updateUserChatroom(long teamUserId, RedisUserChatroom userChatroom, Double timestamp) {
+        template.opsForZSet().add("userChatroom"+teamUserId, userChatroom, timestamp);
+    }
+
+    public void deleteUserChatroom(long teamUserId, RedisUserChatroom userChatroom) {
+        template.opsForZSet().remove("userChatroom"+teamUserId, userChatroom);
     }
 
     public void saveMessage(long teamId, RedisChatMessage message) {
@@ -52,4 +56,5 @@ public class ChatRedisRepository {
     public boolean isMember(Long teamUserId, Long teamId) {
         return Boolean.TRUE.equals(template.opsForSet().isMember("teamMember" + teamId, teamUserId));
     }
+
 }
