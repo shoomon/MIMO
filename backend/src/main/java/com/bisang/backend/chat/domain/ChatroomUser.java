@@ -39,6 +39,9 @@ public class ChatroomUser {
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
+    @Column(name = "nickname", nullable = false)
+    private String nickname;
+
     @LastModifiedDate
     @Column(name = "last_modified_at")
     private LocalDateTime lastModifiedAt;

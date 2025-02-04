@@ -1,7 +1,6 @@
 package com.bisang.backend.chat.repository;
 
 import com.bisang.backend.chat.domain.redis.RedisChatMessage;
-import com.bisang.backend.chat.domain.redis.RedisUserChatroom;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
@@ -38,12 +37,12 @@ public class ChatRedisRepository {
                 .collect(Collectors.toSet());
     }
 
-    public void updateUserChatroom(long teamUserId, RedisUserChatroom userChatroom, Double timestamp) {
-        template.opsForZSet().add("userChatroom"+teamUserId, userChatroom, timestamp);
+    public void updateUserChatroom(long teamUserId, long teamId, Double timestamp) {
+        template.opsForZSet().add("userChatroom"+teamUserId, teamId, timestamp);
     }
 
-    public void deleteUserChatroom(long teamUserId, RedisUserChatroom userChatroom) {
-        template.opsForZSet().remove("userChatroom"+teamUserId, userChatroom);
+    public void deleteUserChatroom(long teamUserId, long teamId) {
+        template.opsForZSet().remove("userChatroom"+teamUserId, teamId);
     }
 
     public void saveMessage(long teamId, RedisChatMessage message) {
