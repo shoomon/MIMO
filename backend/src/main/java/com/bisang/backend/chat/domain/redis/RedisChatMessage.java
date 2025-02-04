@@ -2,18 +2,20 @@ package com.bisang.backend.chat.domain.redis;
 
 import com.bisang.backend.chat.domain.ChatType;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Getter
+@NoArgsConstructor
 public class RedisChatMessage implements Serializable {
 
     @Setter
     private Long id;
 
-    private Long userId;
+    private Long teamUserId;
 
     private String nickname;
 
@@ -24,13 +26,13 @@ public class RedisChatMessage implements Serializable {
     private ChatType type;
 
     public RedisChatMessage(
-            Long userId,
+            Long teamUserId,
             String nickname,
             String chat,
             LocalDateTime timestamp,
             ChatType type
     ) {
-        this.userId = userId;
+        this.teamUserId = teamUserId;
         this.nickname = nickname;
         this.chat = chat;
         this.timestamp = timestamp;
