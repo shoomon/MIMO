@@ -2,53 +2,54 @@ package com.bisang.backend.account.service;
 
 import com.bisang.backend.account.domain.Account;
 import com.bisang.backend.account.repository.AccountJpaRepository;
-import com.bisang.backend.user.repository.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
+import java.util.Optional;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor
 public class AccountService {
+    private static final int MAX_RETRY = 3;
     private static final String TEAM_ACCOUNT_PREFIX = "1001";
     private static final String USER_ACCOUNT_PREFIX = "1002";
-    private static final String TEAM_TYPE = "T";
-    private static final String USER_TYPE = "U";
+    private static final int RANDOM_NUMBER_RANGE_MIN = 100_000_000;
+    private static final int RANDOM_NUMBER_RANGE_MAX = 1_000_000_000;
 
     private final AccountJpaRepository accountJpaRepository;
 
     public Account createTeamAccount(
     ) {
-        String accountNumber = createAccountNumber(TEAM_TYPE);
-        Account account = new Account(accountNumber);
+        String accountNumber = IntStream.range(0, MAX_RETRY)
+                .mapToObj(i -> TEAM_ACCOUNT_PREFIX + createRandomNineNumber())
+                .filter(this::validateAccountNumber)
+                .findFirst()
+                .orElseThrow(()
+                        -> new IllegalStateException("세 번의 시도 끝에도 유효한 계좌번호를 생성하지 못했습니다."));
 
-        return accountJpaRepository.createAccount(account);
+        return accountJpaRepository.createAccount(new Account(accountNumber));
     }
 
     public Account createUserAccount(
     ) {
-        String accountNumber = createAccountNumber(USER_TYPE);
-        Account account = new Account(accountNumber);
+        String accountNumber = IntStream.range(0, MAX_RETRY)
+                .mapToObj(i -> USER_ACCOUNT_PREFIX + createRandomNineNumber())
+                .filter(this::validateAccountNumber)
+                .findFirst()
+                .orElseThrow(()
+                        -> new IllegalStateException("세 번의 시도 끝에도 유효한 계좌번호를 생성하지 못했습니다."));
 
-        return accountJpaRepository.createAccount(account);
+        return accountJpaRepository.createAccount(new Account(accountNumber));
     }
 
-    private String createAccountNumber(String type) {
-        String accountNumber = "";
+    private String createRandomNineNumber() {
+        return String.valueOf(ThreadLocalRandom.current().nextInt(RANDOM_NUMBER_RANGE_MIN, RANDOM_NUMBER_RANGE_MAX));
+    }
 
-        String uuid = UUID.randomUUID().toString();
-        String nineDigit = uuid.substring(0, 9);
-        String accountSuffix = Integer.parseInt(nineDigit, 16) % 1000000 + "";
-
-        if (type.equals("T")) {
-            accountNumber = TEAM_ACCOUNT_PREFIX + accountSuffix;
-        }
-
-        if (type.equals("U")) {
-            accountNumber = USER_ACCOUNT_PREFIX + accountSuffix;
-        }
-
-        return accountNumber;
+    private Boolean validateAccountNumber(String accountNumber) {
+        Optional<Account> optionalAccount = accountJpaRepository.findById(accountNumber);
+        return optionalAccount.isEmpty();
     }
 }
