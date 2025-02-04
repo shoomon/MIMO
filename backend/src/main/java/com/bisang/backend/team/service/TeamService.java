@@ -1,7 +1,6 @@
 package com.bisang.backend.team.service;
 
-import static com.bisang.backend.common.exception.ExceptionCode.INVALID_REQUEST;
-import static com.bisang.backend.common.exception.ExceptionCode.NOT_FOUND_TEAM;
+import static com.bisang.backend.common.exception.ExceptionCode.*;
 
 import java.util.List;
 
@@ -29,8 +28,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class TeamService {
-    private static final Long MAX_TEAM_CAPACITY = 200L;
-
     private final TeamJpaRepository teamJpaRepository;
     private final TeamDescriptionJpaRepository teamDescriptionJpaRepository;
     private final TeamQuerydslRepository teamQuerydslRepository;
@@ -47,7 +44,8 @@ public class TeamService {
             TeamRecruitStatus teamRecruitStatus,
             TeamPrivateStatus teamPrivateStatus,
             String teamProfileUri,
-            Area area
+            Area area,
+            Long maxCapacity
     ) {
         TeamDescription teamDescription = new TeamDescription(description);
         teamDescriptionJpaRepository.save(teamDescription);
@@ -65,7 +63,7 @@ public class TeamService {
                             .privateStatus(teamPrivateStatus)
                             .teamProfileUri(teamProfileUri)
                             .areaCode(area)
-                            .capacity(MAX_TEAM_CAPACITY).build();
+                            .maxCapacity(maxCapacity).build();
         teamJpaRepository.save(newTeam);
 
         var teamUser = TeamUser.createTeamLeader(leaderId, newTeam.getId(), nickname, notificationStatus);
@@ -158,7 +156,7 @@ public class TeamService {
 
     private Team findTeamById(Long teamId) {
         return teamJpaRepository.findById(teamId)
-                .orElseThrow(() -> new TeamException(NOT_FOUND_TEAM));
+                .orElseThrow(() -> new TeamException(NOT_FOUND));
     }
 
     private Boolean isTeamLeader(Team team, Long userId) {

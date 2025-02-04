@@ -20,10 +20,12 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
+@Getter
 @NoArgsConstructor(access = PROTECTED)
 @Table(
         name = "team_user",
@@ -113,5 +115,29 @@ public class TeamUser {
                 .nickname(nickname)
                 .role(MEMBER)
                 .status(status).build();
+    }
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void upgradeRole() {
+        this.role = CO_LEADER;
+    }
+
+    public void downgradeRole() {
+        this.role = MEMBER;
+    }
+
+    public Boolean isCoLeader() {
+        return role == CO_LEADER;
+    }
+
+    public Boolean isLeader() {
+        return role == LEADER;
+    }
+
+    public Boolean isMember() {
+        return role == MEMBER;
     }
 }

@@ -8,7 +8,6 @@ import static lombok.AccessLevel.PROTECTED;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.Enumerated;
@@ -64,8 +63,8 @@ public class Team {
     @Column(name = "team_area_code")
     private Area areaCode;
 
-    @Embedded
-    private Capacity capacity;
+    @Column(nullable = false)
+    protected Long maxCapacity;
 
     @CreatedDate
     @Column(updatable = false)
@@ -82,9 +81,9 @@ public class Team {
             TeamPrivateStatus privateStatus,
             String teamProfileUri,
             Area areaCode,
-            Long capacity
+            Long maxCapacity
     ) {
-        this.capacity = new Capacity(capacity);
+        this.maxCapacity = maxCapacity;
         this.teamLeaderId = teamLeaderId;
         this.teamChatroomId = teamChatroomId;
         this.name = name;
@@ -98,10 +97,6 @@ public class Team {
 
     public void updateTeamName(String name) {
         this.name = name;
-    }
-
-    public void updateTeamDescription(TeamDescription description) {
-        this.description = description;
     }
 
     public void updateRecruitStatus(TeamRecruitStatus recruitStatus) {
