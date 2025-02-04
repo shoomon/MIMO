@@ -1,11 +1,11 @@
 package com.bisang.backend.user.controller.response;
 
+import java.util.List;
+
 import com.bisang.backend.board.controller.dto.BoardDto;
 import com.bisang.backend.board.controller.dto.CommentDto;
-import lombok.Builder;
 
-import java.util.ArrayList;
-import java.util.List;
+import lombok.Builder;
 
 @Builder
 public record UserMyResponse(
@@ -17,7 +17,7 @@ public record UserMyResponse(
         Long mileage,
         Long mileageIncome,
         Long mileageOutcome,
-        List<BoardDto>boards,
+        List<BoardDto> boards,
         List<CommentDto> comments
 ) {
 }
