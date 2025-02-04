@@ -1,6 +1,6 @@
 package com.bisang.backend.invite.domain;
 
-import static com.bisang.backend.invite.domain.InviteStatus.WAITING;
+import static com.bisang.backend.invite.domain.InviteStatus.*;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
@@ -12,6 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 
 import lombok.NoArgsConstructor;
 
@@ -20,7 +21,9 @@ import lombok.NoArgsConstructor;
 @Table(
         name = "team_invite",
         indexes = {
-            @Index(name = "idx_status_teamId_id", columnList = "invite_status, team_id, team_invite_id desc"),
+            @Index(name = "idx_team_id_status", columnList = "team_id, invite_status"),
+        }, uniqueConstraints = {
+            @UniqueConstraint(name = "UK_team_user", columnNames = {"team_id", "user_id"})
         }
 )
 public class TeamInvite {
@@ -51,5 +54,13 @@ public class TeamInvite {
 
     public static TeamInvite createInviteRequest(Long teamId, Long userId, String memo) {
         return new TeamInvite(teamId, userId, WAITING, memo);
+    }
+
+    public void approveInvitation() {
+        status = ACCEPTED;
+    }
+
+    public void rejectInvitation() {
+        status = REJECTED;
     }
 }
