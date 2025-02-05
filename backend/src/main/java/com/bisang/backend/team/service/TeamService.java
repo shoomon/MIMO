@@ -33,7 +33,6 @@ public class TeamService {
     private final TeamQuerydslRepository teamQuerydslRepository;
     private final TeamUserJpaRepository teamUserJpaRepository;
 
-    @TeamLeader
     @Transactional
     public void createTeam(
             Long leaderId,
@@ -80,11 +79,8 @@ public class TeamService {
     @Transactional
     public void updateTeamName(Long userId, Long teamId, String name) {
         Team team = findTeamById(teamId);
-
-        if (isTeamLeader(team, userId)) {
-            team.updateTeamName(name);
-            teamJpaRepository.save(team);
-        }
+        team.updateTeamName(name);
+        teamJpaRepository.save(team);
     }
 
     @TeamLeader
@@ -92,20 +88,16 @@ public class TeamService {
     public void updateTeamDescription(Long userId, Long teamId, String description) {
         Team team = findTeamById(teamId);
 
-        if (isTeamLeader(team, userId)) {
-            var teamDescription = team.getDescription();
-            teamDescription.updateDescription(description);
-            teamDescriptionJpaRepository.save(teamDescription);
-        }
+        var teamDescription = team.getDescription();
+        teamDescription.updateDescription(description);
+        teamDescriptionJpaRepository.save(teamDescription);
     }
 
     @TeamLeader
     @Transactional
     public void updateTeamRecruitStatus(Long userId, Long teamId, TeamRecruitStatus recruitStatus) {
         Team team = findTeamById(teamId);
-        if (isTeamLeader(team, userId)) {
-            team.updateRecruitStatus(recruitStatus);
-        }
+        team.updateRecruitStatus(recruitStatus);
         teamJpaRepository.save(team);
     }
 
@@ -113,9 +105,7 @@ public class TeamService {
     @Transactional
     public void updateTeamPrivateStatus(Long userId, Long teamId, TeamPrivateStatus privateStatus) {
         Team team = findTeamById(teamId);
-        if (isTeamLeader(team, userId)) {
-            team.updatePrivateStatus(privateStatus);
-        }
+        team.updatePrivateStatus(privateStatus);
         teamJpaRepository.save(team);
     }
 
@@ -123,9 +113,7 @@ public class TeamService {
     @Transactional
     public void updateTeamProfileUri(Long userId, Long teamId, String profileUri) {
         Team team = findTeamById(teamId);
-        if (isTeamLeader(team, userId)) {
-            team.updateTeamProfileUri(profileUri);
-        }
+        team.updateTeamProfileUri(profileUri);
         teamJpaRepository.save(team);
     }
 
@@ -133,9 +121,7 @@ public class TeamService {
     @Transactional
     public void updateTeamArea(Long userId, Long teamId, Area areaCode) {
         Team team = findTeamById(teamId);
-        if (isTeamLeader(team, userId)) {
-            team.updateAreaCode(areaCode);
-        }
+        team.updateAreaCode(areaCode);
         teamJpaRepository.save(team);
     }
 
@@ -143,14 +129,12 @@ public class TeamService {
     @Transactional
     public void deleteTeam(Long userId, Long teamId) {
         Team team = findTeamById(teamId);
-        if (isTeamLeader(team, userId)) {
-            List<TeamUser> teamUsers = teamUserJpaRepository.findByTeamId(teamId);
-            if (teamUsers.size() == 1) {
-                // TODO 계좌 삭제
-                // TODO 채팅방 삭제
-                teamUserJpaRepository.delete(teamUsers.get(0));
-                teamJpaRepository.delete(team);
-            }
+        List<TeamUser> teamUsers = teamUserJpaRepository.findByTeamId(teamId);
+        if (teamUsers.size() == 1) {
+            // TODO 계좌 삭제
+            // TODO 채팅방 삭제
+            teamUserJpaRepository.delete(teamUsers.get(0));
+            teamJpaRepository.delete(team);
         }
     }
 
