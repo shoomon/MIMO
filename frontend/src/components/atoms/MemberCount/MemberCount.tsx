@@ -17,7 +17,7 @@ interface MemberCountProps {
      * @param {React.MouseEvent<HTMLButtonElement>} e - 클릭 이벤트 객체
      */
     onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
-    addStyle: string;
+    addStyle?: string;
 }
 
 /**
