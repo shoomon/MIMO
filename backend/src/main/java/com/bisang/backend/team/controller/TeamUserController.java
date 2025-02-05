@@ -15,6 +15,8 @@ import com.bisang.backend.team.controller.request.InviteTeamRequest;
 import com.bisang.backend.team.controller.request.JoinTeamRequest;
 import com.bisang.backend.team.controller.request.UpdateTeamUserNicknameRequest;
 import com.bisang.backend.team.controller.response.SingleTeamUserInfoResponse;
+import com.bisang.backend.team.controller.response.TeamUserResponse;
+import com.bisang.backend.team.domain.TeamUserRole;
 import com.bisang.backend.team.service.TeamUserService;
 import com.bisang.backend.user.domain.User;
 
@@ -25,6 +27,17 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/team-user")
 public class TeamUserController {
     private final TeamUserService teamUserService;
+
+    @GetMapping("/users")
+    public ResponseEntity<TeamUserResponse> getTeamUser(
+        @AuthUser User user,
+        @RequestParam Long teamId,
+        @RequestParam(required = false) TeamUserRole role,
+        @RequestParam(required = false) Long teamUserId
+    ) {
+        var response = teamUserService.findTeamUsers(user.getId(), teamId, role, teamUserId);
+        return ResponseEntity.ok(response);
+    }
 
     @PostMapping
     public ResponseEntity<Void> joinTeam(

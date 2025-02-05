@@ -1,6 +1,9 @@
 package com.bisang.backend.team.service;
 
 import static com.bisang.backend.common.exception.ExceptionCode.*;
+import static com.bisang.backend.common.utils.PageUtils.PAGE_SIZE;
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
 
 import java.util.List;
 
@@ -14,7 +17,9 @@ import com.bisang.backend.team.annotation.TeamCoLeader;
 import com.bisang.backend.team.annotation.TeamLeader;
 import com.bisang.backend.team.controller.dto.TeamInviteDto;
 import com.bisang.backend.team.controller.dto.TeamUserDto;
+import com.bisang.backend.team.controller.response.TeamUserResponse;
 import com.bisang.backend.team.domain.TeamUser;
+import com.bisang.backend.team.domain.TeamUserRole;
 import com.bisang.backend.team.repository.TeamUserJpaRepository;
 import com.bisang.backend.team.repository.TeamUserQuerydslRepository;
 
@@ -72,8 +77,26 @@ public class TeamLeaderService {
 
     @TeamCoLeader
     @Transactional(readOnly = true)
-    public List<TeamUserDto> findTeamUser(Long userId, Long teamId) {
-        return teamUserQuerydslRepository.getTeamUserInfo(teamId);
+    public TeamUserResponse findTeamUsers(Long userId, Long teamId, TeamUserRole role, Long teamUserId) {
+        List<TeamUserDto> teamUserInfos = teamUserQuerydslRepository.getTeamUserInfos(teamId, role, teamUserId);
+
+        if (teamUserInfos.size() > PAGE_SIZE) {
+            List<TeamUserDto> result = teamUserInfos.stream().limit(PAGE_SIZE).toList();
+            return new TeamUserResponse(
+                PAGE_SIZE,
+                TRUE,
+                teamUserInfos.get(PAGE_SIZE).role(),
+                teamUserInfos.get(PAGE_SIZE).teamUserId(),
+                result);
+        }
+
+        return new TeamUserResponse(
+            teamUserInfos.size(),
+            FALSE,
+            null,
+            null,
+            teamUserInfos
+        );
     }
 
     @TeamCoLeader
