@@ -6,10 +6,12 @@ import static com.bisang.backend.team.domain.TeamPrivateStatus.PRIVATE;
 import static com.bisang.backend.team.domain.TeamPrivateStatus.PUBLIC;
 import static com.bisang.backend.team.domain.TeamUser.createTeamMember;
 
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bisang.backend.common.exception.TeamException;
+import com.bisang.backend.team.controller.response.SingleTeamUserInfoResponse;
 import com.bisang.backend.invite.domain.TeamInvite;
 import com.bisang.backend.invite.repository.TeamInviteJpaRepository;
 import com.bisang.backend.team.annotation.EveryOne;
@@ -60,6 +62,19 @@ public class TeamUserService {
         TeamUser teamUser = findTeamUserByTeamIdAndUserId(teamId, userId);
         teamUser.updateNickname(nickname);
         teamUserJpaRepository.save(teamUser);
+    }
+
+    @Transactional(readOnly = true)
+    public SingleTeamUserInfoResponse getSingleTeamUserInfo(Long userId, Long teamId) {
+        TeamUser teamUser = findTeamUserByTeamIdAndUserId(teamId, userId);
+
+        return SingleTeamUserInfoResponse.builder()
+            .teamUserId(teamUser.getId())
+            .nickname(teamUser.getNickname())
+            .role(teamUser.getRole())
+            .status(teamUser.getStatus())
+            .joinDate(teamUser.getCreatedAt().toLocalDate())
+            .build();
     }
 
     /**
