@@ -1,4 +1,4 @@
-package com.bisang.backend.account.charge.controller;
+package com.bisang.backend.account.balance.charge.controller;
 
 import com.bisang.backend.auth.annotation.AuthUser;
 import com.bisang.backend.user.domain.User;
@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bisang.backend.account.charge.controller.request.PaymentResultRequest;
-import com.bisang.backend.account.charge.service.ChargeService;
+import com.bisang.backend.account.balance.charge.controller.request.PaymentResultRequest;
+import com.bisang.backend.account.balance.charge.service.ChargeService;
 
 import lombok.RequiredArgsConstructor;
 
