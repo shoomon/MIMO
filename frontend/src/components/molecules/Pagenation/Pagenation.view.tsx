@@ -27,6 +27,7 @@ const PagenationView = ({
             {currentPageList.map((item) => {
                 return (
                     <button
+                        key={item}
                         type="button"
                         onClick={onClick}
                         className={`${item === currentPage ? 'text-brand-primary-400' : 'hover:text-brand-primary-400 text-gray-500'} h-8 w-8 cursor-pointer rounded-xs bg-gray-100 text-sm`}
