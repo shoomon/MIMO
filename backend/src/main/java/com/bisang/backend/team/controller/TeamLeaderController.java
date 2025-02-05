@@ -1,0 +1,73 @@
+package com.bisang.backend.team.controller;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.bisang.backend.auth.annotation.AuthUser;
+import com.bisang.backend.team.controller.request.DowngradeRoleRequest;
+import com.bisang.backend.team.controller.request.InviteApproveRequest;
+import com.bisang.backend.team.controller.request.InviteRejectRequest;
+import com.bisang.backend.team.controller.request.LeaderDeleteUserRequest;
+import com.bisang.backend.team.controller.request.UpgradeRoleRequest;
+import com.bisang.backend.team.service.TeamLeaderService;
+import com.bisang.backend.user.domain.User;
+
+import lombok.RequiredArgsConstructor;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/team-leader")
+public class TeamLeaderController {
+    private final TeamLeaderService teamLeaderService;
+
+    @PatchMapping("/invite-approve")
+    public ResponseEntity<Void> inviteApprove(
+        @AuthUser User user,
+        @RequestBody InviteApproveRequest req
+    ) {
+        teamLeaderService.approveInviteRequest(user.getId(), req.teamId(), req.inviteId());
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/invite-reject")
+    public ResponseEntity<Void> inviteReject(
+        @AuthUser User user,
+        @RequestBody InviteRejectRequest req
+    ) {
+        teamLeaderService.rejectInviteRequest(user.getId(), req.teamId(), req.inviteId());
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/role-upgrade")
+    public ResponseEntity<Void> upgradeRole(
+        @AuthUser User user,
+        @RequestBody UpgradeRoleRequest req
+    ) {
+        teamLeaderService.upgradeRole(user.getId(), req.teamId(), req.teamUserId());
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/role-downgrade")
+    public ResponseEntity<Void> downgradeRole(
+        @AuthUser User user,
+        @RequestBody DowngradeRoleRequest req
+    ) {
+        teamLeaderService.downgradeRole(user.getId(), req.teamId(), req.teamUserId());
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> delete(
+        @AuthUser User user,
+        @RequestBody LeaderDeleteUserRequest req
+    ) {
+        teamLeaderService.deleteUser(user.getId(), req.teamId(), req.teamUserId());
+        return ResponseEntity.ok().build();
+    }
+
+
+}

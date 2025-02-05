@@ -15,7 +15,6 @@ import com.bisang.backend.team.annotation.TeamLeader;
 import com.bisang.backend.team.controller.dto.TeamInviteDto;
 import com.bisang.backend.team.controller.dto.TeamUserDto;
 import com.bisang.backend.team.domain.TeamUser;
-import com.bisang.backend.team.repository.TeamJpaRepository;
 import com.bisang.backend.team.repository.TeamUserJpaRepository;
 import com.bisang.backend.team.repository.TeamUserQuerydslRepository;
 
@@ -24,7 +23,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class TeamLeaderService {
-    private final TeamJpaRepository teamJpaRepository;
     private final TeamUserJpaRepository teamUserJpaRepository;
     private final TeamUserQuerydslRepository teamUserQuerydslRepository;
     private final TeamInviteJpaRepository teamInviteJpaRepository;
