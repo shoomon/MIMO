@@ -32,11 +32,11 @@ public class Account extends BaseTimeEntity {
         this.balance = new Balance();
     }
 
-    public void increaseBalance(Long money) {
-        this.balance.increaseBalance(money);
+    public void increaseBalance(Long point) {
+        this.balance.increaseBalance(point);
     }
 
-    public void decreaseBalance(Long money) {
-        this.balance.decreaseBalance(money);
+    public void decreaseBalance(Long point) {
+        this.balance.decreaseBalance(point);
     }
 }
