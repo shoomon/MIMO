@@ -13,9 +13,6 @@ import com.bisang.backend.user.controller.request.UpdateNicknameRequest;
 import com.bisang.backend.user.controller.request.UpdateProfileUriRequest;
 import com.bisang.backend.user.controller.response.UserMyResponse;
 import com.bisang.backend.user.domain.User;
-import com.bisang.backend.user.domain.request.UpdateNameRequest;
-import com.bisang.backend.user.domain.request.UpdateNicknameRequest;
-import com.bisang.backend.user.domain.request.UpdateProfileUriRequest;
 import com.bisang.backend.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;
