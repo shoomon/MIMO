@@ -5,6 +5,7 @@ export interface ProfileImageProps {
     userName: string;
     imgSrc?: string;
     size?: number;
+    addStyle?: string;
 }
 
 const ProfileImage = ({
@@ -12,6 +13,7 @@ const ProfileImage = ({
     imgSrc,
     userName,
     size = 40,
+    addStyle,
 }: ProfileImageProps) => {
     const user_url = `/${userId}`;
     const img_url = imgSrc === undefined ? '/ProfileImage.png' : imgSrc;
@@ -22,6 +24,7 @@ const ProfileImage = ({
             userName={userName}
             imgSrc={img_url}
             size={size}
+            addStyle={addStyle}
         />
     );
 };
