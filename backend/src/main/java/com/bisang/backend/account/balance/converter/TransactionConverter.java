@@ -1,9 +1,9 @@
-package com.bisang.backend.account.converter;
+package com.bisang.backend.account.balance.converter;
 
-import com.bisang.backend.account.domain.Transaction;
-import com.bisang.backend.account.charge.controller.request.PaymentResultRequest;
-import com.bisang.backend.account.domain.TransactionCategory;
-import com.bisang.backend.account.domain.TransactionStatus;
+import com.bisang.backend.account.balance.domain.Transaction;
+import com.bisang.backend.account.balance.charge.controller.request.PaymentResultRequest;
+import com.bisang.backend.account.balance.domain.TransactionCategory;
+import com.bisang.backend.account.balance.domain.TransactionStatus;
 import jakarta.persistence.Converter;
 
 @Converter

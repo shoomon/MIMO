@@ -1,15 +1,15 @@
-package com.bisang.backend.account.charge.service;
+package com.bisang.backend.account.balance.charge.service;
 
-import com.bisang.backend.account.charge.controller.request.PaymentResultRequest;
-import com.bisang.backend.account.converter.TransactionConverter;
+import com.bisang.backend.account.balance.charge.controller.request.PaymentResultRequest;
+import com.bisang.backend.account.balance.converter.TransactionConverter;
+import com.bisang.backend.account.balance.domain.Transaction;
+import com.bisang.backend.account.balance.domain.TransactionStatus;
+import com.bisang.backend.account.balance.repository.TransactionJpaRepository;
 import com.bisang.backend.account.domain.Account;
-import com.bisang.backend.account.domain.Transaction;
-import com.bisang.backend.account.domain.TransactionStatus;
 import com.bisang.backend.account.repository.AccountJpaRepository;
-import com.bisang.backend.account.repository.TransactionJpaRepository;
 import com.bisang.backend.common.annotation.DistributedLock;
-import com.bisang.backend.common.exception.ExceptionCode;
 import com.bisang.backend.common.exception.ChargeException;
+import com.bisang.backend.common.exception.ExceptionCode;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
