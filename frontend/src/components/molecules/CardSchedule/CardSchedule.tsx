@@ -19,6 +19,8 @@ export interface CardScheduleProps {
     label: string;
     /** 참가비 (문자열, 원 단위) */
     entryFee: string;
+    /**종료된 일정 */
+    isClosed: boolean;
 }
 
 /**
@@ -37,6 +39,7 @@ const CardSchedule: React.FC<CardScheduleProps> = ({
     label,
     entryFee,
     memberList,
+    isClosed = false,
 }) => {
     /** 일정까지 남은 시간을 계산 */
     const targetDate = new Date(scheduledDateTime);
@@ -46,7 +49,7 @@ const CardSchedule: React.FC<CardScheduleProps> = ({
 
     let timeLeftStr = '';
     if (diffMs < 0) {
-        timeLeftStr = 'false';
+        isClosed = true;
     } else if (diffMs < oneDayMs) {
         // 1일 미만이면 시간과 분을 표시
         const hours = Math.floor(diffMs / (60 * 60 * 1000));
@@ -116,6 +119,7 @@ const CardSchedule: React.FC<CardScheduleProps> = ({
             feeText={feeText}
             memberProfiles={memberProfiles}
             detailLink={detailLink}
+            isClosed={isClosed}
         />
     );
 };
