@@ -1,67 +1,144 @@
-@import "tailwindcss";
+@import url('https://cdn.jsdelivr.net/gh/sun-typeface/SUIT@2/fonts/static/woff2/SUIT.css');
+@import 'tailwindcss';
+
+@theme {
+    --font-sans: 'SUIT', 'sans-serif';
+
+    /* Colors */
+    --color-brand-primary-50: #f6f7ff;
+    --color-brand-primary-100: #d9daff;
+    --color-brand-primary-200: #9a9bfa;
+    --color-brand-primary-300: #6263f0;
+    --color-brand-primary-400: #4b4ded;
+    --color-brand-primary-500: #3a3b9c;
+
+    --color-gray-50: #fbfbfb;
+    --color-gray-100: #f5f5f5;
+    --color-gray-200: #d8d8d8;
+    --color-gray-300: #bcbcbc;
+    --color-gray-400: #a0a0a0;
+    --color-gray-500: #858585;
+    --color-gray-600: #6a6a6a;
+    --color-gray-700: #505050;
+    --color-gray-800: #363636;
+    --color-gray-900: #1c1c1c;
+
+    --color-dark: #0e0e2c;
+    --color-text: #4a4a68;
+    --color-success: #38e068;
+    --color-fail: #e54242;
+    --color-white: #ffffff;
+
+    /* Font Sizes */
+    --text-display-2xl: 4.5rem; /* 72px */
+    --text-display-xl: 3.75rem; /* 60px */
+    --text-display-lg: 3rem; /* 48px */
+    --text-display-md: 2.25rem; /* 36px */
+    --text-display-sm: 1.875rem; /* 30px */
+    --text-display-xs: 1.5rem; /* 24px */
+    --text-xl: 1.25rem; /* 20px */
+    --text-lg: 1.125rem; /* 18px */
+    --text-md: 1rem; /* 16px */
+    --text-sm: 0.875rem; /* 14px */
+    --text-xs: 0.75rem; /* 12px */
+
+    /* Line Heights */
+    --tracking-normal: 150%;
+}
 
 .sprite {
-  background-image: url("/css_sprites.png");
-  background-repeat: no-repeat;
-  display: block;
+    background-image: url('/css_sprites.png');
+    background-repeat: no-repeat;
+    display: none;
 }
 
 .bg-Alarm {
-  width: 44px; height: 44px;
-  background: url('css_sprites.png') -102px -286px;
+    width: 44px;
+    height: 44px;
+    background: url('css_sprites.png') -102px -286px;
+    display: block;
 }
 
 .bg-Bike {
-  width: 72px; height: 72px;
-  background: url('css_sprites.png') -10px -10px;
+    width: 72px;
+    height: 72px;
+    background: url('css_sprites.png') -10px -10px;
+    display: block;
 }
 
 .bg-Book {
-  width: 72px; height: 72px;
-  background: url('css_sprites.png') -102px -10px;
+    width: 72px;
+    height: 72px;
+    background: url('css_sprites.png') -102px -10px;
+    display: block;
 }
 
 .bg-Car {
-  width: 72px; height: 72px;
-  background: url('css_sprites.png') -10px -102px;
+    width: 72px;
+    height: 72px;
+    background: url('css_sprites.png') -10px -102px;
+    display: block;
 }
 
 .bg-CarWash {
-  width: 72px; height: 72px;
-  background: url('css_sprites.png') -102px -102px;
+    width: 72px;
+    height: 72px;
+    background: url('css_sprites.png') -102px -102px;
+    display: block;
 }
 
 .bg-Chat {
-  width: 44px; height: 44px;
-  background: url('css_sprites.png') -166px -286px;
+    width: 44px;
+    height: 44px;
+    background: url('css_sprites.png') -166px -286px;
+    display: block;
+}
+
+.bg-User{
+    width: 44px;
+    height: 44px;
+    background: url('css_sprites.png') -228px -286px;
+    display: block;
 }
 
 .bg-Cooking {
-  width: 72px; height: 72px;
-  background: url('css_sprites.png') -194px -10px;
+    width: 72px;
+    height: 72px;
+    background: url('css_sprites.png') -194px -10px;
+    display: block;
 }
 
 .bg-Dog {
-  width: 72px; height: 72px;
-  background: url('css_sprites.png') -194px -102px;
+    width: 72px;
+    height: 72px;
+    background: url('css_sprites.png') -194px -102px;
+    display: block;
 }
 
 .bg-Exercise {
-  width: 72px; height: 72px;
-  background: url('css_sprites.png') -10px -194px;
+    width: 72px;
+    height: 72px;
+    background: url('css_sprites.png') -10px -194px;
+    display: block;
 }
 
 .bg-Game {
-  width: 72px; height: 72px;
-  background: url('css_sprites.png') -102px -194px;
+    width: 72px;
+    height: 72px;
+    background: url('css_sprites.png') -102px -194px;
+    display: block;
 }
 
 .bg-Gym {
-  width: 72px; height: 72px;
-  background: url('css_sprites.png') -194px -194px;
+    width: 72px;
+    height: 72px;
+    background: url('css_sprites.png') -194px -194px;
+    display: block;
 }
 
 .bg-Music {
-  width: 72px; height: 72px;
-  background: url('css_sprites.png') -286px -10px;
+    width: 72px;
+    height: 72px;
+    background: url('css_sprites.png') -286px -10px;
+    display: block;
 }
