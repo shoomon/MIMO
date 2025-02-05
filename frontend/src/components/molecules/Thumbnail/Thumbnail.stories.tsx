@@ -16,19 +16,26 @@ export const Default: Story = {
     args: {
         memberCount: 5,
         memberLimit: 10,
-        memberClick: () => {
-            alert('모임 인원 현황으로 이동~');
-        },
+        showMember: true,
     },
 };
 
 export const Image: Story = {
     args: {
+        showMember: true,
         memberCount: 5,
         memberLimit: 10,
-        memberClick: () => {
-            alert('모임 인원 현황으로 이동~');
-        },
+
+        imgSrc: 'https://cloudfront-ap-northeast-1.images.arcpublishing.com/chosun/2TKUKXYMQF7ASZEUJLG7L4GM4I.jpg',
+        imgAlt: '박성문',
+    },
+};
+
+export const noShowMember: Story = {
+    args: {
+        showMember: false,
+        memberCount: 0,
+        memberLimit: 0,
         imgSrc: 'https://cloudfront-ap-northeast-1.images.arcpublishing.com/chosun/2TKUKXYMQF7ASZEUJLG7L4GM4I.jpg',
         imgAlt: '박성문',
     },

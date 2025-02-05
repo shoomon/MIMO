@@ -4,6 +4,7 @@ import Icon from './../Icon/Icon';
 export interface RatingStarViewProps {
     fullStars: number;
     hasHalfStar: boolean;
+    rating: number;
 }
 
 /**
@@ -17,13 +18,19 @@ export interface RatingStarViewProps {
 const RatingStarView: React.FC<RatingStarViewProps> = ({
     fullStars,
     hasHalfStar,
+    rating,
 }) => {
     return (
-        <div className="flex items-center">
-            {Array.from({ length: fullStars }, (_, index) => (
-                <Icon key={`star-full-${index}`} type="svg" id="Star" />
-            ))}
-            {hasHalfStar && <Icon key="star-half" type="svg" id="Star-Half" />}
+        <div className="flex items-center gap-1">
+            <div className="flex items-center">
+                {Array.from({ length: fullStars }, (_, index) => (
+                    <Icon key={`star-full-${index}`} type="svg" id="Star" />
+                ))}
+                {hasHalfStar && (
+                    <Icon key="star-half" type="svg" id="Star-Half" />
+                )}
+            </div>
+            <span className="text-md font-bold">{rating}</span>
         </div>
     );
 };

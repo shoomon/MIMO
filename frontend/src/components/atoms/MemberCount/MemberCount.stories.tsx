@@ -8,9 +8,6 @@ const meta = {
         layout: 'centered',
     },
     tags: ['autodocs'],
-    argTypes: {
-        onClick: { action: 'clicked' },
-    },
 } satisfies Meta<typeof MemberCount>;
 
 export default meta;

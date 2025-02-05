@@ -37,7 +37,7 @@ const memberListMock = [
 ];
 
 const meta = {
-    title: 'Components/Atoms/CardSchedule',
+    title: 'Components/Molecules/CardSchedule',
     component: CardSchedule,
     decorators: [
         (Story) => (

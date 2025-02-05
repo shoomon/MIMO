@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-interface TagProps {
+export interface TagProps {
     to: string;
     label: string;
 }
