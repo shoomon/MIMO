@@ -1,6 +1,7 @@
 package com.bisang.backend.chat.repository;
 
 import com.bisang.backend.chat.domain.ChatMessage;
+import com.bisang.backend.chat.domain.ChatType;
 import com.bisang.backend.chat.domain.ChatroomUser;
 import com.bisang.backend.chat.domain.redis.RedisChatMessage;
 import com.bisang.backend.chat.domain.redis.RedisTeamMember;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 >>>>>>> 70af064 (feat: 유저정보 레디스 캐싱 처리)
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -65,12 +67,10 @@ public class ChatRepository {
 
     public boolean isMember(Long teamId, RedisTeamMember teamMember) {
         if (chatRedisRepository.isMember(teamId, teamMember)) {
-            System.out.println("redis true");
             return true;
         }
 
         if (chatroomUserJpaRepository.existsByIdAndUserIdAndChatroomId(teamMember.getTeamUserId(), teamMember.getUserId(), teamId)) {
-            System.out.println("jpa true");
             chatRedisRepository.insertMember(teamId, teamMember);
             return true;
         }
@@ -84,7 +84,6 @@ public class ChatRepository {
 =======
     public Map<Object, Object> getUserInfo(Long teamUserId, Long userId) {
         Map<Object, Object> userInfo = redisCacheRepository.getUserProfile(teamUserId);
-        System.out.println(teamUserId + ":" + userInfo.get("name"));
         if (userInfo.isEmpty()) {
             String nickname = chatroomUserJpaRepository.findNicknameById(teamUserId);
             //TODO: 유저쪽에서 프로필 이미지 받아오는 메서드 받아와서 넣어야함
@@ -107,7 +106,7 @@ public class ChatRepository {
     public List<RedisChatMessage> getMessages(Long roomId) {
         List<RedisChatMessage> messageList = chatRedisRepository.getMessages(roomId);
         int size = messageList.size();
-
+        System.out.println(size);
         if (size < 100) {
             List<RedisChatMessage> newMessageList = getMessagesFromDB(100-size, roomId);
             newMessageList.addAll(messageList);
@@ -119,8 +118,24 @@ public class ChatRepository {
     private List<RedisChatMessage> getMessagesFromDB(int size, Long roomId) {
         List<ChatMessage> messages = chatMessageJpaRepository.findTop100ByChatroomIdOrderByIdDesc(roomId);
         List<RedisChatMessage> result = new LinkedList<>();
-        //TODO: 가져와서 RedisChatMessage로 매핑해서 result에 넣어주기
+
+        int limit = Math.min(size, messages.size());
+
+        for (int i = limit - 1; i >= 0; i--) {
+            ChatMessage chatMessage = messages.get(i);
+
+            RedisChatMessage redisChatMessage = new RedisChatMessage(
+                    chatMessage.getId(),
+                    chatMessage.getTeamUserId(),
+                    chatMessage.getMessage(),
+                    chatMessage.getCreatedAt(),
+                    ChatType.MESSAGE
+            );
+
+            result.add(redisChatMessage);
+        }
 
         return result;
     }
+
 }

@@ -37,4 +37,18 @@ public class RedisChatMessage implements Serializable {
         this.type = type;
     }
 
+    public RedisChatMessage(
+            Long id,
+            Long teamUserId,
+            String chat,
+            LocalDateTime timestamp,
+            ChatType type
+    ) {
+        this.id = id;
+        this.teamUserId = teamUserId;
+        this.chat = chat;
+        this.timestamp = timestamp;
+        this.type = type;
+    }
+
 }
