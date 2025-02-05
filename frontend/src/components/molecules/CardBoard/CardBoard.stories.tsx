@@ -4,7 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import type { ThumbnailProps } from '../Thumbnail/Thumbnail.view';
 
 const meta = {
-    title: 'Components/Atoms/CardBoard',
+    title: 'Components/Molecules/CardBoard',
     component: CardBoard,
     decorators: [
         (Story) => (
