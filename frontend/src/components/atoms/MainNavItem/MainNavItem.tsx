@@ -1,4 +1,3 @@
-import { useNavActive } from '@/hooks/useNav';
 import MainNavItemView from './MainNavItem.view';
 
 export interface MainNavItemProps {
@@ -7,9 +6,7 @@ export interface MainNavItemProps {
 }
 
 const MainNavItem = (props: MainNavItemProps) => {
-    const isActive = useNavActive(props.path);
-
-    return <MainNavItemView {...props} active={isActive} />;
+    return <MainNavItemView {...props} />;
 };
 
 export default MainNavItem;

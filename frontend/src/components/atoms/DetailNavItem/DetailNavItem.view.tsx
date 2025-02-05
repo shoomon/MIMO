@@ -1,33 +1,23 @@
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import Icon from '../Icon/Icon';
 
 export interface DetailNavItemViewProps {
     item: string;
     icon: string;
     link: string;
-    active: boolean;
 }
 
-const DetailNavItemView = ({
-    link,
-    item,
-    icon,
-    active,
-}: DetailNavItemViewProps) => {
-    const COLOR = active ? 'border-brand-primary-400' : 'border-gray-300';
-
+const DetailNavItemView = ({ link, item, icon }: DetailNavItemViewProps) => {
     return (
-        <Link
+        <NavLink
             to={link}
-            className={`border-b-2 ${COLOR} hover:border-brand-primary-400 flex gap-1`}
+            className={({ isActive }) =>
+                `hover:border-brand-primary-400 flex gap-1 border-b-2 ${isActive ? 'border-brand-primary-400 font-extrabold' : 'border-gray-300 font-medium'}`
+            }
         >
-            <span
-                className={`text-text ${active ? 'font-extrabold' : 'font-medium'}`}
-            >
-                {item}
-            </span>
+            <span className="text-text">{item}</span>
             <Icon type="svg" id={icon} />
-        </Link>
+        </NavLink>
     );
 };
 
