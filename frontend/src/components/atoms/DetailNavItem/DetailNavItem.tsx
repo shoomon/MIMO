@@ -1,4 +1,3 @@
-import { useNavActive } from '@/hooks/useNav';
 import DetailNavItemView from './DetailNavItem.view';
 
 export interface DetailNavItemProps {
@@ -8,16 +7,7 @@ export interface DetailNavItemProps {
 }
 
 const DetailNavItem = ({ item, icon, link }: DetailNavItemProps) => {
-    const isActive = useNavActive(link);
-
-    return (
-        <DetailNavItemView
-            item={item}
-            icon={icon}
-            link={link}
-            active={isActive}
-        />
-    );
+    return <DetailNavItemView item={item} icon={icon} link={link} />;
 };
 
 export default DetailNavItem;

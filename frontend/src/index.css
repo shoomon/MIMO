@@ -94,6 +94,13 @@
     display: block;
 }
 
+.bg-User{
+    width: 44px;
+    height: 44px;
+    background: url('css_sprites.png') -228px -286px;
+    display: block;
+}
+
 .bg-Cooking {
     width: 72px;
     height: 72px;

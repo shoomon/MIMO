@@ -6,6 +6,7 @@ export { default as ChatItem } from "./ChatItem/ChatItem";
 export { default as DetailNavItem } from "./DetailNavItem/DetailNavItem";
 export { default as Icon } from "./Icon/Icon";
 export { default as Input } from "./Input/Input";
+export { default as Logo } from "./Logo/Logo";
 export { default as MainNavItem } from "./MainNavItem/MainNavItem";
 export { default as MemberCount } from "./MemberCount/MemberCount";
 export { default as MenuItem } from "./MenuItem/MenuItem";
