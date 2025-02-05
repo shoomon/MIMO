@@ -16,7 +16,8 @@ public enum ExceptionCode {
     FAILED_TO_VALIDATE_TOKEN(3002, "토큰 검증에 실패했습니다."),
     INVALID_ACCESS_TOKEN(3003, "유효하지 않은 Access Token입니다."),
 
-    NOT_ENOUGH_MONEY(4000, "잔고 잔액이 부족합니다.");
+    NOT_ENOUGH_MONEY(4000, "잔고 잔액이 부족합니다."),
+    BALANCE_CHARGE_FAIL(4001, "충전에 실패했습니다.");
 
     private final int code;
     private final String message;
