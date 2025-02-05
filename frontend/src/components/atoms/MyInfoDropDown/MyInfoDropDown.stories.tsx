@@ -27,15 +27,14 @@ export const Default: Story = {
             userName: '박성문',
             imgSrc: 'https://cloudfront-ap-northeast-1.images.arcpublishing.com/chosun/2TKUKXYMQF7ASZEUJLG7L4GM4I.jpg',
         },
-        onClick: () => {
-            alert('로그아웃!');
-        },
+        active: true,
+        addStyle: '',
     },
 };
 
 export const NoData: Story = {
     args: {
-        userInfo: undefined,
-        onClick: () => {},
+        active: true,
+        addStyle: '',
     },
 };
