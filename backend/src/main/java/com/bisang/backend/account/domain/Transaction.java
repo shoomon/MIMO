@@ -1,62 +1,99 @@
 package com.bisang.backend.account.domain;
 
-import static jakarta.persistence.GenerationType.IDENTITY;
+import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import org.springframework.data.annotation.CreatedDate;
+
+import java.time.LocalDateTime;
+
+import static jakarta.persistence.EnumType.STRING;
 import static lombok.AccessLevel.PROTECTED;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.Table;
-
-import lombok.NoArgsConstructor;
-
-@Entity
+@Getter
+@ToString
 @NoArgsConstructor(access = PROTECTED)
 @Table(
-    name = "transaction",
-    indexes = {
-        @Index(name = "idx_sender", columnList = "sender_account"),
-        @Index(name = "idx_receiver", columnList = "receiver_account")
-    }
+        name = "AccountTransaction",
+        indexes = {
+                @Index(name = "idx_sender_tx_category",
+                        columnList = "senderAccountNumber, transactionCategory"),
+                @Index(name = "idx_receiver_tx_category",
+                        columnList = "receiverAccountNumber, transactionCategory"),
+                @Index(name = "idx_tx_category",
+                        columnList = "transactionCategory"
+                )
+        }
 )
 public class Transaction {
-    @Id @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "transaction_id")
-    private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long transactionId;
 
-    @Column(length = 13, name = "sender_account", nullable = false)
-    private String senderAccount;
-
-    @Column(length = 13, name = "receiver_account", nullable = false)
-    private String receiverAccount;
-
-    @Column(length = 20, name = "sender_name", nullable = false)
-    private String senderName;
-
-    @Column(length = 20, name = "receiver_name", nullable = false)
-    private String receiverName;
-
-    @Column(name = "balance", nullable = false)
+    @Column(nullable = false)
     private Long balance;
 
-    @Column(length = 60, name = "memo", nullable = false)
+    @Column(nullable = true)
+    private String senderAccountNumber;
+
+    @Column(nullable = false)
+    private String receiverAccountNumber;
+
+    @Column(nullable = true)
+    private String senderName;
+
+    @Column(nullable = false)
+    private String receiverName;
+
+    @Column(nullable = true)
     private String memo;
 
-    private Transaction(
-        String senderAccount,
-        String receiverAccount,
-        String senderName,
-        String receiverName,
-        Long balance,
-        String memo
+    @Column(nullable = true)
+    private String impUid;
+
+    @Column(nullable = true)
+    private String merchantUid;
+
+    @Enumerated(STRING)
+    @Column(nullable = false)
+    private TransactionCategory transactionCategory;
+
+    @Enumerated(STRING)
+    @Column(nullable = false)
+    private TransactionStatus transactionStatus;
+
+    @CreatedDate
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
+
+    @Builder
+    public Transaction(
+            Long balance,
+            String senderAccountNumber,
+            String receiverAccountNumber,
+            String senderName,
+            String receiverName,
+            String memo,
+            String impUid,
+            String merchantUid,
+            TransactionCategory transactionCategory,
+            TransactionStatus transactionStatus
     ) {
-        this.senderAccount = senderAccount;
-        this.receiverAccount = receiverAccount;
+        this.balance = balance;
+        this.senderAccountNumber = senderAccountNumber;
+        this.receiverAccountNumber = receiverAccountNumber;
         this.senderName = senderName;
         this.receiverName = receiverName;
-        this.balance = balance;
         this.memo = memo;
+        this.impUid = impUid;
+        this.merchantUid = merchantUid;
+        this.transactionCategory = transactionCategory;
+        this.transactionStatus = transactionStatus;
+    }
+
+    public void updateTransactionStatus(TransactionStatus transactionStatus) {
+        this.transactionStatus = transactionStatus;
     }
 }
