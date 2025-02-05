@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import ButtonToggleGroup from './ButtonToggleGroup';
 
 const meta = {
-    title: 'Components/Atoms/ButtonToggleGroup',
+    title: 'Components/Molecules/ButtonToggleGroup',
     component: ButtonToggleGroup,
     parameters: {
         layout: 'centered',

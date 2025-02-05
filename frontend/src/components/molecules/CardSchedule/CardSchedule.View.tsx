@@ -28,7 +28,7 @@ const CardScheduleView: React.FC<CardScheduleViewProps> = ({
     return (
         <Link
             to={detailLink}
-            className="block flex h-[300px] w-[344px] flex-col justify-between overflow-hidden rounded-lg bg-white pb-3"
+            className="flex h-[300px] w-[344px] flex-col justify-between overflow-hidden rounded-lg bg-white pb-3"
         >
             <div className="text-display-xs flex w-full justify-center gap-1 bg-gray-700 px-4 py-3 font-bold text-white">
                 <span className="text-display-xs font-semibold">
