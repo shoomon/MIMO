@@ -1,4 +1,4 @@
-package com.bisang.backend.user.domain.request;
+package com.bisang.backend.user.controller.request;
 
 public record UpdateProfileUriRequest(
     String profileUri
