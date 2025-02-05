@@ -1,4 +1,4 @@
-package com.bisang.backend.chat.domain.response;
+package com.bisang.backend.chat.controller.response;
 
 import com.bisang.backend.chat.domain.ChatType;
 
