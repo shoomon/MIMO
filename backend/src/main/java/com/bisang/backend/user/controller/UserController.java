@@ -1,14 +1,18 @@
 package com.bisang.backend.user.controller;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.bisang.backend.auth.annotation.AuthUser;
 import com.bisang.backend.user.domain.User;
 import com.bisang.backend.user.domain.request.UpdateNameRequest;
 import com.bisang.backend.user.domain.request.UpdateNicknameRequest;
 import com.bisang.backend.user.domain.request.UpdateProfileUriRequest;
 import com.bisang.backend.user.service.UserService;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user")
