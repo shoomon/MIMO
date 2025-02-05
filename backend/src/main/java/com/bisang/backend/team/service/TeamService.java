@@ -142,11 +142,4 @@ public class TeamService {
         return teamJpaRepository.findById(teamId)
                 .orElseThrow(() -> new TeamException(NOT_FOUND));
     }
-
-    private Boolean isTeamLeader(Team team, Long userId) {
-        if (team.getTeamLeaderId().equals(userId)) {
-            return true;
-        }
-        throw new TeamException(INVALID_REQUEST);
-    }
 }
