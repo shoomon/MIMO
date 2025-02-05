@@ -1,4 +1,4 @@
-package com.bisang.backend.point.charge.controller.request;
+package com.bisang.backend.account.charge.controller.request;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
