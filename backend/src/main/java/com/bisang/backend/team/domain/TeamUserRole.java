@@ -15,11 +15,13 @@ import lombok.Getter;
  */
 @Getter
 public enum TeamUserRole {
-    LEADER("방장"), CO_LEADER("부방장"), MEMBER("멤버");
+    LEADER("방장", 1), CO_LEADER("부방장", 2), MEMBER("멤버", 3);
 
     String description;
+    Integer weight;
 
-    TeamUserRole(String description) {
+    TeamUserRole(String description, Integer weight) {
         this.description = description;
+        this.weight = weight;
     }
 }

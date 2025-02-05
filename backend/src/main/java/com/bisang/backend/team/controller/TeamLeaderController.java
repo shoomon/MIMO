@@ -2,9 +2,11 @@ package com.bisang.backend.team.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bisang.backend.auth.annotation.AuthUser;
@@ -13,6 +15,8 @@ import com.bisang.backend.team.controller.request.InviteApproveRequest;
 import com.bisang.backend.team.controller.request.InviteRejectRequest;
 import com.bisang.backend.team.controller.request.LeaderDeleteUserRequest;
 import com.bisang.backend.team.controller.request.UpgradeRoleRequest;
+import com.bisang.backend.team.controller.response.TeamUserResponse;
+import com.bisang.backend.team.domain.TeamUserRole;
 import com.bisang.backend.team.service.TeamLeaderService;
 import com.bisang.backend.user.domain.User;
 
@@ -23,6 +27,17 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/team-leader")
 public class TeamLeaderController {
     private final TeamLeaderService teamLeaderService;
+
+    @GetMapping("/users")
+    public ResponseEntity<TeamUserResponse> getTeamUser(
+        @AuthUser User user,
+        @RequestParam Long teamId,
+        @RequestParam(required = false) TeamUserRole role,
+        @RequestParam(required = false) Long teamUserId
+    ) {
+        var response = teamLeaderService.findTeamUsers(user.getId(), teamId, role, teamUserId);
+        return ResponseEntity.ok(response);
+    }
 
     @PatchMapping("/invite-approve")
     public ResponseEntity<Void> inviteApprove(
