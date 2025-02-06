@@ -14,7 +14,6 @@ public class RedisChatMessage implements Serializable {
     @Setter
     private Long id;
 
-    //TODO: 이거 온오프라인 처리할 때 필요할거임. 생성자에 넣고 처리해야함
     private Long userId;
 
     private Long teamUserId;
@@ -27,11 +26,13 @@ public class RedisChatMessage implements Serializable {
 
     public RedisChatMessage(
             Long teamUserId,
+            Long userId,
             String chat,
             LocalDateTime timestamp,
             ChatType type
     ) {
         this.teamUserId = teamUserId;
+        this.userId = userId;
         this.chat = chat;
         this.timestamp = timestamp;
         this.type = type;
@@ -40,12 +41,14 @@ public class RedisChatMessage implements Serializable {
     public RedisChatMessage(
             Long id,
             Long teamUserId,
+            Long userId,
             String chat,
             LocalDateTime timestamp,
             ChatType type
     ) {
         this.id = id;
         this.teamUserId = teamUserId;
+        this.userId = userId;
         this.chat = chat;
         this.timestamp = timestamp;
         this.type = type;

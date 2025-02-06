@@ -2,16 +2,21 @@ package com.bisang.backend.chat.controller;
 
 import com.bisang.backend.auth.annotation.AuthUser;
 import com.bisang.backend.chat.controller.response.ChatroomResponse;
+import com.bisang.backend.chat.domain.Chatroom;
+import com.bisang.backend.chat.domain.ChatroomStatus;
 import com.bisang.backend.chat.service.ChatroomService;
 import com.bisang.backend.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
+@Controller
 @RequestMapping("/chatroom")
 @RequiredArgsConstructor
 public class ChatroomController {
@@ -29,13 +34,20 @@ public class ChatroomController {
 
 
     //테스트용
-    @GetMapping("/test/enterChatroom")
+
+    @GetMapping("/test/create-chatroom")
+    public ResponseEntity<String> createChatroom(@AuthUser User user, @RequestParam("title") String title) {
+        chatroomService.createChatroom(user.getId(), user.getNickname(), title, ChatroomStatus.GROUP);
+        return ResponseEntity.ok().body(title + " 생성 성공");
+    }
+
+    @GetMapping("/test/enter-chatroom")
     public ResponseEntity<String> enterChatroom(@RequestParam("userId") Long userId, @RequestParam("nickname") String nickname, @RequestParam("teamId") Long teamId) {
         chatroomService.enterChatroom(teamId, userId, nickname);
         return ResponseEntity.ok().body(nickname + "님 입장");
     }
 
-    @GetMapping("/test/leaveChatroom")
+    @GetMapping("/test/leave-chatroom")
     public ResponseEntity<String> leaveChatroom(@RequestParam("userId") Long userId, @RequestParam("teamId") Long teamId) {
         if (chatroomService.leaveChatroom(userId, teamId)) {
             return ResponseEntity.ok().body(userId + "번 유저 퇴장");

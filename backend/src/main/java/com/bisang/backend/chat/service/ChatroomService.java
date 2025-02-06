@@ -2,6 +2,8 @@ package com.bisang.backend.chat.service;
 
 import com.bisang.backend.chat.controller.response.ChatroomResponse;
 import com.bisang.backend.chat.domain.ChatType;
+import com.bisang.backend.chat.domain.Chatroom;
+import com.bisang.backend.chat.domain.ChatroomStatus;
 import com.bisang.backend.chat.domain.ChatroomUser;
 import com.bisang.backend.chat.domain.redis.RedisChatMessage;
 import com.bisang.backend.chat.domain.redis.RedisTeamMember;
@@ -19,12 +21,23 @@ public class ChatroomService {
     private final ChatRepository repository;
     private final ChatMessageService chatMessageService;
 
+
+    public void createChatroom(Long userId, String nickname, String title, ChatroomStatus status) {
+        Chatroom chatroom = Chatroom.createChatroom(userId, title, status);
+
+        //TODO: 팀사진도 같이 넣으면 좋겠는데 그럼 db 바꿔야하는데 바꿀까말까
+        repository.insertChatroom(chatroom);
+        //TODO: 팀 관련 정보 캐싱 바로 해버려? 알아서 될 듯? 아닌가
+
+        enterChatroom(chatroom.getId(), userId, nickname);
+    }
+
     public void enterChatroom(Long teamId, Long userId, String nickname) {
         ChatroomUser chatroomUser = ChatroomUser.createChatroomUser(teamId, userId, nickname, LocalDateTime.now());
         //TODO: 이미 userId, teamId에 해당하는 멤버가 존재하면?
         repository.insertJpaMemberUser(chatroomUser);
 
-        RedisChatMessage message = new RedisChatMessage(chatroomUser.getId(), "", LocalDateTime.now(), ChatType.ENTER);
+        RedisChatMessage message = new RedisChatMessage(chatroomUser.getId(), userId, "", LocalDateTime.now(), ChatType.ENTER);
         RedisTeamMember teamMember = new RedisTeamMember(chatroomUser.getId(), userId);
 
         repository.insertRedisMemberUser(teamId, teamMember);
@@ -37,7 +50,7 @@ public class ChatroomService {
             return false;
         }
 
-        RedisChatMessage message = new RedisChatMessage(teamUserId, "", LocalDateTime.now(), ChatType.LEAVE);
+        RedisChatMessage message = new RedisChatMessage(teamUserId, userId, "", LocalDateTime.now(), ChatType.LEAVE);
         RedisTeamMember teamMember = new RedisTeamMember(teamUserId, userId);
 
         repository.removeMember(teamId, teamMember);
