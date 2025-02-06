@@ -5,6 +5,7 @@ export interface RatingStarViewProps {
     fullStars: number;
     hasHalfStar: boolean;
     rating: number;
+    reviewCount: number;
 }
 
 /**
@@ -19,6 +20,7 @@ const RatingStarView: React.FC<RatingStarViewProps> = ({
     fullStars,
     hasHalfStar,
     rating,
+    reviewCount,
 }) => {
     return (
         <div className="flex items-center gap-1">
@@ -30,7 +32,8 @@ const RatingStarView: React.FC<RatingStarViewProps> = ({
                     <Icon key="star-half" type="svg" id="Star-Half" />
                 )}
             </div>
-            <span className="text-md font-bold">{rating}</span>
+            <span className="text-md font-extrabold">{rating}</span>
+            <span className="text-md text-text font-medium">{`(${reviewCount})`}</span>
         </div>
     );
 };

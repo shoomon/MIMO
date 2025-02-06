@@ -16,7 +16,7 @@ export interface CardMeetingViewProps {
     /** 카드 제목 */
     label: string;
     /** 리뷰 개수 문자열 (예: "(100)") */
-    reviewCount: string;
+    reviewCount: number;
     /** 카드 클릭 시 이동할 링크 */
     to: string;
 }
@@ -43,8 +43,7 @@ const CardMeetingView: React.FC<CardMeetingViewProps> = ({
             />
             <div className="flex flex-col gap-1">
                 <div className="flex gap-1">
-                    <RatingStar rating={rating} />
-                    <span className="text-md text-text font-medium">{`(${reviewCount})`}</span>
+                    <RatingStar rating={rating} reviewCount={reviewCount} />
                 </div>
                 <div className="text-lg font-extrabold">{label}</div>
                 <div
