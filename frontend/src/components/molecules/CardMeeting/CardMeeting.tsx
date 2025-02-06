@@ -2,7 +2,6 @@ import CardMeetingView from './CardMeetingView';
 import { TagProps } from '@/components/atoms/Tag/Tag';
 import { ThumbnailProps } from './../Thumbnail/Thumbnail.view';
 import textCutter from '@/utils/textCutter';
-import filterTagsByLength from '@/utils/filterTagsByLength';
 import getDisplayedTags from '@/utils/filterTagsByLength';
 
 /**
