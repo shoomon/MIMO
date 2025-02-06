@@ -2,6 +2,13 @@ spring:
   application:
     name: backend
 
+  # 파일 업로드 용량 제한, resolve-lazily: 스프링 내부 서버까지 응답을 받기 위함.
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 10MB
+      resolve-lazily: true
+
   auth:
     jwt:
       secret-key: ${SECRET_KEY}
