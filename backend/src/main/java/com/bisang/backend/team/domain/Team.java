@@ -63,6 +63,10 @@ public class Team {
     @Column(name = "team_area_code")
     private Area areaCode;
 
+    @Enumerated(STRING)
+    @Column(name = "team_category")
+    private TeamCategory category;
+
     @Column(nullable = false)
     protected Long maxCapacity;
 
@@ -81,6 +85,7 @@ public class Team {
             TeamPrivateStatus privateStatus,
             String teamProfileUri,
             Area areaCode,
+            TeamCategory category,
             Long maxCapacity
     ) {
         this.maxCapacity = maxCapacity;
@@ -93,6 +98,7 @@ public class Team {
         this.privateStatus = privateStatus;
         this.teamProfileUri = teamProfileUri;
         this.areaCode = areaCode;
+        this.category = category;
     }
 
     public void updateTeamName(String name) {

@@ -47,6 +47,7 @@ public class TeamController {
             req.teamPrivateStatus(),
             req.teamProfileUri(),
             req.area(),
+            req.category(),
             req.maxCapacity()
         );
         return ResponseEntity.status(CREATED).build();
