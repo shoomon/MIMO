@@ -14,8 +14,8 @@ public class RedisCacheRepository {
     private static final String USER_KEY = "user:";
     private static final String CHATROOM_KEY = "chatroom:";
 
-    public void cacheUserProfile(Long userId, String name, String imageUrl) {
-        String key = USER_KEY + userId;
+    public void cacheUserProfile(Long teamUserId, String name, String imageUrl) {
+        String key = USER_KEY + teamUserId;
         redisTemplate.opsForHash().put(key, "name", name);
         redisTemplate.opsForHash().put(key, "profileImage", imageUrl);
     }

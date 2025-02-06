@@ -1,10 +1,14 @@
 package com.bisang.backend.chat.repository;
 
+import com.bisang.backend.chat.controller.response.ChatroomResponse;
 import com.bisang.backend.chat.domain.ChatMessage;
 import com.bisang.backend.chat.domain.ChatType;
 import com.bisang.backend.chat.domain.ChatroomUser;
 import com.bisang.backend.chat.domain.redis.RedisChatMessage;
 import com.bisang.backend.chat.domain.redis.RedisTeamMember;
+import com.bisang.backend.common.exception.AccountException;
+import com.bisang.backend.user.domain.User;
+import com.bisang.backend.user.repository.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -13,10 +17,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static com.bisang.backend.common.exception.ExceptionCode.NOT_FOUND;
+
 @Repository
 @RequiredArgsConstructor
 public class ChatRepository {
     private final ChatRedisRepository chatRedisRepository;
+    private final UserJpaRepository userJpaRepository;
     private final ChatroomUserJpaRepository chatroomUserJpaRepository;
     private final ChatMessageJpaRepository chatMessageJpaRepository;
     private final RedisCacheRepository redisCacheRepository;
@@ -71,8 +78,9 @@ public class ChatRepository {
         Map<Object, Object> userInfo = redisCacheRepository.getUserProfile(teamUserId);
         if (userInfo.isEmpty()) {
             String nickname = chatroomUserJpaRepository.findNicknameById(teamUserId);
-            //TODO: 유저쪽에서 프로필 이미지 받아오는 메서드 받아와서 넣어야함
-            String profileImage = "";
+
+            User user = userJpaRepository.findById(userId).orElseThrow(() -> new AccountException(NOT_FOUND));
+            String profileImage = user.getProfileUri();
 
             redisCacheRepository.cacheUserProfile(teamUserId, nickname, profileImage);
 
@@ -123,4 +131,9 @@ public class ChatRepository {
         return result;
     }
 
+    public List<ChatroomResponse> getChatroom(Long userId) {
+        //TODO: 만들기
+
+        return null;
+    }
 }
