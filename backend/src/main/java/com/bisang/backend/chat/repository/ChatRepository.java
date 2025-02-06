@@ -103,20 +103,20 @@ public class ChatRepository {
         return chatroomUserJpaRepository.findTeamUserIdByUserIdAndChatroomId(userId, teamId);
     }
 
-    public List<RedisChatMessage> getMessages(Long roomId) {
-        List<RedisChatMessage> messageList = chatRedisRepository.getMessages(roomId);
+    public List<RedisChatMessage> getMessages(Long roomId, Long messageId) {
+        List<RedisChatMessage> messageList = chatRedisRepository.getMessages(roomId, messageId);
         int size = messageList.size();
         System.out.println(size);
         if (size < 100) {
-            List<RedisChatMessage> newMessageList = getMessagesFromDB(100-size, roomId);
+            List<RedisChatMessage> newMessageList = getMessagesFromDB(100-size, roomId, messageId);
             newMessageList.addAll(messageList);
             return newMessageList;
         }
         return messageList;
     }
 
-    private List<RedisChatMessage> getMessagesFromDB(int size, Long roomId) {
-        List<ChatMessage> messages = chatMessageJpaRepository.findTop100ByChatroomIdOrderByIdDesc(roomId);
+    private List<RedisChatMessage> getMessagesFromDB(int size, Long roomId, Long messageId) {
+        List<ChatMessage> messages = chatMessageJpaRepository.findByChatroomIdAndIdLessThanOrderByIdDesc(roomId, messageId);
         List<RedisChatMessage> result = new LinkedList<>();
 
         int limit = Math.min(size, messages.size());

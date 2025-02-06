@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface ChatMessageJpaRepository extends JpaRepository<ChatMessage, Long> {
 
-    List<ChatMessage> findTop100ByChatroomIdOrderByIdDesc(Long roomId);
+    List<ChatMessage> findByChatroomIdAndIdLessThanOrderByIdDesc(Long chatroomId, Long givenId);
 }

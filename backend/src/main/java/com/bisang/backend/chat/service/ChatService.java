@@ -91,6 +91,7 @@ public class ChatService {
 
         Map<Object, Object> userInfo = repository.getUserInfo(message.getTeamUserId(), message.getUserId());
         ChatMessageResponse messageResponse = new ChatMessageResponse(
+                message.getId(),
                 message.getTeamUserId(),
                 (String)userInfo.get("name"),
                 (String)userInfo.get("profileImage"),
@@ -108,6 +109,7 @@ public class ChatService {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     public List<Object> getMessages(Long teamId) {
         return repository.redisGetMessages(teamId);
 =======
@@ -118,11 +120,16 @@ public class ChatService {
 >>>>>>> 7a73166 (feat: 채팅 기록 조회 기능 (개발중))
 =======
         List<RedisChatMessage> messageList = repository.getMessages(roomId);
+=======
+    public List<ChatMessageResponse> getMessages(Long roomId, Long messageId) {
+        List<RedisChatMessage> messageList = repository.getMessages(roomId, messageId);
+>>>>>>> fca93df (feat: 채팅 기록 메시지id 기준 100개씩 가져오기 기능 구현)
         List<ChatMessageResponse> responseList = new LinkedList<>();
 
         for (RedisChatMessage message : messageList) {
             Map<Object, Object> userInfo = repository.getUserInfo(message.getTeamUserId(), message.getUserId());
             ChatMessageResponse messageResponse = new ChatMessageResponse(
+                    message.getId(),
                     message.getTeamUserId(),
                     (String)userInfo.get("name"),
                     (String)userInfo.get("profileImage"),
