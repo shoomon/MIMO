@@ -91,8 +91,8 @@ public class ChatRepository {
         List<RedisChatMessage> messageList = chatRedisRepository.getMessages(roomId, messageId);
         int size = messageList.size();
         System.out.println(size);
-        if (size < 100) {
-            List<RedisChatMessage> newMessageList = getMessagesFromDB(100-size, roomId, messageId);
+        if (size < 30) {
+            List<RedisChatMessage> newMessageList = getMessagesFromDB(30-size, roomId, messageId);
             newMessageList.addAll(messageList);
             return newMessageList;
         }
