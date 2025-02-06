@@ -21,6 +21,9 @@ import com.bisang.backend.team.controller.request.UpdateTeamNameRequest;
 import com.bisang.backend.team.controller.request.UpdateTeamPrivateStatusRequest;
 import com.bisang.backend.team.controller.request.UpdateTeamProfileUriRequest;
 import com.bisang.backend.team.controller.request.UpdateTeamRecruitStatusRequest;
+import com.bisang.backend.team.controller.response.TeamInfosResponse;
+import com.bisang.backend.team.domain.Area;
+import com.bisang.backend.team.domain.TeamCategory;
 import com.bisang.backend.team.service.TeamService;
 import com.bisang.backend.user.domain.User;
 
@@ -31,6 +34,22 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/team")
 public class TeamController {
     private final TeamService teamService;
+
+    @GetMapping("/area")
+    public ResponseEntity<TeamInfosResponse> getTeamsByArea(
+        @RequestParam("area") Area area,
+        @RequestParam(required = false) Long teamId
+    ) {
+        return ResponseEntity.ok(teamService.getTeamInfosByArea(area, teamId));
+    }
+
+    @GetMapping("/category")
+    public ResponseEntity<TeamInfosResponse> getTeamsByCategory(
+        @RequestParam("category") TeamCategory category,
+        @RequestParam(required = false) Long teamId
+    ) {
+        return ResponseEntity.ok(teamService.getTeamInfosByCategory(category, teamId));
+    }
 
     @PostMapping
     public ResponseEntity<Void> createTeam(
