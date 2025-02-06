@@ -15,26 +15,26 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 @ToString
 @NoArgsConstructor(access = PROTECTED)
-/**
- *  1, 2번 인덱스 : 트랜잭션 오류시 개발자 수동 수정을 위한 인덱스
- *  3 번 인덱스 : 배치 작업을 통한 실패 트랜잭션 자동 복구를 위한 인덱스
- */
 @Table(
-        name = "AccountTransaction",
+        name = "AccountDetails",
         indexes = {
-                @Index(name = "idx_sender_tx_status",
-                        columnList = "senderAccountNumber, transactionStatus, transactionId"),
-                @Index(name = "idx_receiver_tx_status",
-                        columnList = "receiverAccountNumber, transactionStatus, transactionId"),
-                @Index(name = "idx_tx_status",
-                        columnList = "transactionStatus, transactionId"
+                @Index(name = "idx_sender_tx_category",
+                        columnList = "senderAccountNumber, transactionStatus, transactionId desc"),
+                @Index(name = "idx_receiver_tx_category",
+                        columnList = "receiverAccountNumber, transactionStatus, transactionId desc"),
+                @Index(name = "idx_tx_status, transaction_id",
+                        columnList = "transactionStatus"
                 )
         }
 )
-public class Transaction {
+public class AccountDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long transactionId;
+    private Long accountDetailsId;
+
+    @OneToOne
+    @JoinColumn(name = "transaction_id", unique = true, nullable = false)
+    private Transaction transactionId;
 
     @Column(nullable = false)
     private Long balance;
@@ -54,50 +54,32 @@ public class Transaction {
     @Column(nullable = true)
     private String memo;
 
-    @Column(nullable = true)
-    private String impUid;
-
-    @Column(nullable = true)
-    private String merchantUid;
-
     @Enumerated(STRING)
     @Column(nullable = false)
     private TransactionCategory transactionCategory;
-
-    @Enumerated(STRING)
-    @Column(nullable = false)
-    private TransactionStatus transactionStatus;
 
     @CreatedDate
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
     @Builder
-    public Transaction(
+    public AccountDetails(
+            Transaction transactionId,
             Long balance,
             String senderAccountNumber,
             String receiverAccountNumber,
             String senderName,
             String receiverName,
             String memo,
-            String impUid,
-            String merchantUid,
-            TransactionCategory transactionCategory,
-            TransactionStatus transactionStatus
+            TransactionCategory transactionCategory
     ) {
+        this.transactionId = transactionId;
         this.balance = balance;
         this.senderAccountNumber = senderAccountNumber;
         this.receiverAccountNumber = receiverAccountNumber;
         this.senderName = senderName;
         this.receiverName = receiverName;
         this.memo = memo;
-        this.impUid = impUid;
-        this.merchantUid = merchantUid;
         this.transactionCategory = transactionCategory;
-        this.transactionStatus = transactionStatus;
-    }
-
-    public void updateTransactionStatus(TransactionStatus transactionStatus) {
-        this.transactionStatus = transactionStatus;
     }
 }
