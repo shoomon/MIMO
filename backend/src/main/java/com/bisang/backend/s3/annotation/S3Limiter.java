@@ -1,4 +1,4 @@
-package com.bisang.backend.common.annotation;
+package com.bisang.backend.s3.annotation;
 
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
