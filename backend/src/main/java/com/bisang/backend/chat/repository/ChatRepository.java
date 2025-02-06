@@ -12,7 +12,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -114,6 +113,7 @@ public class ChatRepository {
                     chatMessage.getTeamUserId(),
                     chatMessage.getMessage(),
                     chatMessage.getCreatedAt(),
+                    //TODO: ChatMessage에 type 추가해야함
                     ChatType.MESSAGE
             );
 

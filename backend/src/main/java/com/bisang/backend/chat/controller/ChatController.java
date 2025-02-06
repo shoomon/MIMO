@@ -1,5 +1,8 @@
 package com.bisang.backend.chat.controller;
 
+import com.bisang.backend.auth.annotation.AuthSimpleUser;
+import com.bisang.backend.auth.annotation.AuthUser;
+import com.bisang.backend.auth.domain.SimpleUser;
 import com.bisang.backend.chat.domain.ChatType;
 import com.bisang.backend.chat.domain.redis.RedisChatMessage;
 import com.bisang.backend.chat.controller.request.ChatMessageRequest;
@@ -7,6 +10,7 @@ import com.bisang.backend.chat.controller.response.ChatMessageResponse;
 import com.bisang.backend.chat.service.ChatService;
 import com.bisang.backend.common.exception.ChatAccessInvalidException;
 import com.bisang.backend.common.exception.ExceptionCode;
+import com.bisang.backend.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -25,9 +29,8 @@ public class ChatController {
     private final ChatService chatService;
 
     @MessageMapping("/{roomId}")
-    public void sendMessage(@DestinationVariable Long roomId, ChatMessageRequest chat) {
-        //TODO: SimpleUser? 어노테이션으로 userId 가져와서 아래 if문에 teamUserId를 userId로 바꿔야함
-        Long userId = 1L;
+    public void sendMessage(@DestinationVariable Long roomId, @AuthSimpleUser User user, ChatMessageRequest chat) {
+        Long userId = user.getId();
         if (chatService.isMember(roomId, userId, chat.teamUserId())) {
           RedisChatMessage redisMessage = new RedisChatMessage(chat.teamUserId(), chat.chat(), LocalDateTime.now(), ChatType.MESSAGE);
 
@@ -37,12 +40,12 @@ public class ChatController {
 
     @GetMapping("/messages/{roomId}")
     public ResponseEntity<List<ChatMessageResponse>> getMessages(
-//            @AuthUser User user,
+            @AuthUser User user,
             @PathVariable("roomId") Long roomId,
             @RequestParam("teamUserId") Long teamUserId,
             @RequestParam("messageId") Long messageId
     ) {
-        if (chatService.isMember(roomId, 1L, teamUserId)) {
+        if (chatService.isMember(roomId, user.getId(), teamUserId)) {
             List<ChatMessageResponse> list = chatService.getMessages(roomId, messageId);
             return ResponseEntity.ok().body(list);
         }
@@ -55,8 +58,11 @@ public class ChatController {
 
     //테스트용
     @PostMapping("/test/{roomId}")
-    public ResponseEntity<String> sendM(@PathVariable Long roomId, @RequestBody ChatMessageRequest chat) {
-        if (chatService.isMember(roomId, 1L, chat.teamUserId())) {
+    public ResponseEntity<String> sendM(
+            @AuthSimpleUser SimpleUser user,
+            @PathVariable Long roomId,
+            @RequestBody ChatMessageRequest chat) {
+        if (chatService.isMember(roomId, user.userId(), chat.teamUserId())) {
             RedisChatMessage redisMessage = new RedisChatMessage(chat.teamUserId(), chat.chat(), LocalDateTime.now(), ChatType.MESSAGE);
 
             chatService.broadcastMessage(roomId, redisMessage);
