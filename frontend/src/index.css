@@ -115,6 +115,13 @@
     display: block;
 }
 
+.bg-Camera {
+    width: 72px;
+    height: 72px;
+    background: url('css_sprites.png') -286px -102px;
+    display: block;
+}
+
 .bg-Exercise {
     width: 72px;
     height: 72px;
@@ -141,4 +148,17 @@
     height: 72px;
     background: url('css_sprites.png') -286px -10px;
     display: block;
+}
+
+.embla{
+    overflow: hidden;
+}
+
+.embla__container{
+    display: flex;
+}
+
+.embla__slide {
+    flex: 0 0 fit-content;
+    min-width: 0;
 }
