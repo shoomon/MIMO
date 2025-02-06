@@ -72,13 +72,18 @@ public class ChatRedisRepository {
         if (messageId < 0) {
             // maxId가 0보다 작으면 모든 요소에서 내림차순으로 100개를 가져오기
             result = redisChatMessageTemplate.opsForZSet()
-                    .reverseRangeByScoreWithScores(key, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0, 100);
-        } else {
-            // maxId가 0 이상이면, maxId보다 작은 값을 내림차순으로 100개 가져옴
-            result = redisChatMessageTemplate.opsForZSet()
-                    .reverseRangeByScoreWithScores(key, Double.NEGATIVE_INFINITY, messageId - 1, 0, 100);
+                    .reverseRangeByScoreWithScores(key, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0, 30);
+            return getRedisChatMessages(result);
         }
 
+        // maxId가 0 이상이면, maxId보다 작은 값을 내림차순으로 100개 가져옴
+        result = redisChatMessageTemplate.opsForZSet()
+                .reverseRangeByScoreWithScores(key, Double.NEGATIVE_INFINITY, messageId - 1, 0, 30);
+
+        return getRedisChatMessages(result);
+    }
+
+    private static List<RedisChatMessage> getRedisChatMessages(Set<ZSetOperations.TypedTuple<RedisChatMessage>> result) {
         if (result == null) {
             return Collections.emptyList();
         }

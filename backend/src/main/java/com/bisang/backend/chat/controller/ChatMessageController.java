@@ -3,11 +3,12 @@ package com.bisang.backend.chat.controller;
 import com.bisang.backend.auth.annotation.AuthSimpleUser;
 import com.bisang.backend.auth.annotation.AuthUser;
 import com.bisang.backend.auth.domain.SimpleUser;
-import com.bisang.backend.chat.domain.ChatType;
-import com.bisang.backend.chat.domain.redis.RedisChatMessage;
 import com.bisang.backend.chat.controller.request.ChatMessageRequest;
 import com.bisang.backend.chat.controller.response.ChatMessageResponse;
-import com.bisang.backend.chat.service.ChatService;
+import com.bisang.backend.chat.domain.ChatType;
+import com.bisang.backend.chat.domain.redis.RedisChatMessage;
+import com.bisang.backend.chat.service.ChatMessageService;
+import com.bisang.backend.chat.service.ChatroomUserService;
 import com.bisang.backend.common.exception.ChatAccessInvalidException;
 import com.bisang.backend.common.exception.ExceptionCode;
 import com.bisang.backend.user.domain.User;
@@ -15,26 +16,25 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Controller
-@RequestMapping("/chat")
+@RequestMapping("/chat-message")
 @RequiredArgsConstructor
-public class ChatController {
+public class ChatMessageController {
 
-    private final ChatService chatService;
+    private final ChatMessageService chatMessageService;
+    private final ChatroomUserService chatroomUserService;
 
     @MessageMapping("/{roomId}")
     public void sendMessage(@DestinationVariable Long roomId, @AuthSimpleUser User user, ChatMessageRequest chat) {
         Long userId = user.getId();
-        if (chatService.isMember(roomId, userId, chat.teamUserId())) {
-          RedisChatMessage redisMessage = new RedisChatMessage(chat.teamUserId(), chat.chat(), LocalDateTime.now(), ChatType.MESSAGE);
+        if (chatroomUserService.isMember(roomId, userId, chat.teamUserId())) {
+            RedisChatMessage redisMessage = new RedisChatMessage(chat.teamUserId(), chat.chat(), LocalDateTime.now(), ChatType.MESSAGE);
 
-          chatService.broadcastMessage(roomId, redisMessage);
+            chatMessageService.broadcastMessage(roomId, redisMessage);
         }
     }
 
@@ -45,14 +45,13 @@ public class ChatController {
             @RequestParam("teamUserId") Long teamUserId,
             @RequestParam("messageId") Long messageId
     ) {
-        if (chatService.isMember(roomId, user.getId(), teamUserId)) {
-            List<ChatMessageResponse> list = chatService.getMessages(roomId, messageId);
+        if (chatroomUserService.isMember(roomId, user.getId(), teamUserId)) {
+            List<ChatMessageResponse> list = chatMessageService.getMessages(roomId, messageId);
             return ResponseEntity.ok().body(list);
         }
 
         throw new ChatAccessInvalidException(ExceptionCode.UNAUTHORIZED_ACCESS);
     }
-
 
 
 
@@ -62,27 +61,13 @@ public class ChatController {
             @AuthSimpleUser SimpleUser user,
             @PathVariable Long roomId,
             @RequestBody ChatMessageRequest chat) {
-        if (chatService.isMember(roomId, user.userId(), chat.teamUserId())) {
+        if (chatroomUserService.isMember(roomId, user.userId(), chat.teamUserId())) {
             RedisChatMessage redisMessage = new RedisChatMessage(chat.teamUserId(), chat.chat(), LocalDateTime.now(), ChatType.MESSAGE);
 
-            chatService.broadcastMessage(roomId, redisMessage);
+            chatMessageService.broadcastMessage(roomId, redisMessage);
             return ResponseEntity.ok().body("전송 성공");
         }
 
         return ResponseEntity.badRequest().body("전송 실패");
-    }
-
-    @GetMapping("/test/enterChatroom")
-    public ResponseEntity<String> enterChatroom(@RequestParam("userId") Long userId, @RequestParam("nickname") String nickname, @RequestParam("teamId") Long teamId) {
-        chatService.enterChatroom(teamId, userId, nickname);
-        return ResponseEntity.ok().body(nickname + "님 입장");
-    }
-
-    @GetMapping("/test/leaveChatroom")
-    public ResponseEntity<String> leaveChatroom(@RequestParam("userId") Long userId, @RequestParam("teamId") Long teamId) {
-        if (chatService.leaveChatroom(userId, teamId)) {
-            return ResponseEntity.ok().body(userId + "번 유저 퇴장");
-        }
-        return ResponseEntity.badRequest().body("퇴장 실패");
     }
 }

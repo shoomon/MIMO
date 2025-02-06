@@ -1,70 +1,24 @@
 package com.bisang.backend.chat.service;
 
-import com.bisang.backend.chat.domain.ChatType;
-import com.bisang.backend.chat.domain.ChatroomUser;
-import com.bisang.backend.chat.domain.redis.RedisChatMessage;
-import com.bisang.backend.chat.domain.redis.RedisTeamMember;
 import com.bisang.backend.chat.controller.response.ChatMessageResponse;
+import com.bisang.backend.chat.domain.redis.RedisChatMessage;
 import com.bisang.backend.chat.repository.ChatRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
-public class ChatService {
+public class ChatMessageService {
 
     private final ChatRepository repository;
     private final SimpMessagingTemplate template;
-
-    /**
-     * 새로운 모임에 가입 시 호출
-     * @param teamId
-     * @param userId
-     * @param nickname
-     */
-    public void enterChatroom(Long teamId, Long userId, String nickname) {
-        ChatroomUser chatroomUser = ChatroomUser.createChatroomUser(teamId, userId, nickname, LocalDateTime.now());
-        //TODO: 이미 userId, teamId에 해당하는 멤버가 존재하면?
-        repository.insertJpaMemberUser(chatroomUser);
-
-        RedisChatMessage message = new RedisChatMessage(chatroomUser.getId(), "", LocalDateTime.now(), ChatType.ENTER);
-        RedisTeamMember teamMember = new RedisTeamMember(chatroomUser.getId(), userId);
-
-        repository.insertRedisMemberUser(teamId, teamMember);
-        broadcastMessage(teamId, message);
-    }
-
-    /**
-     * 모임 탈퇴, 강퇴 시 호출
-     * @param userId
-     * @param teamId
-     * @return 유저가 실제로 이 채팅방에 소속되어있는지 확인해줌
-     */
-    public boolean leaveChatroom(Long userId, Long teamId) {
-        Long teamUserId = repository.getTeamUserId(userId, teamId);
-        if (teamUserId == null) {
-            return false;
-        }
-
-        RedisChatMessage message = new RedisChatMessage(teamUserId, "", LocalDateTime.now(), ChatType.LEAVE);
-        RedisTeamMember teamMember = new RedisTeamMember(teamUserId, userId);
-
-        repository.removeMember(teamId, teamMember);
-        repository.redisDeleteUserChatroom(userId, teamId);
-        broadcastMessage(teamId, message);
-
-        return true;
-    }
 
     public void broadcastMessage(Long teamId, RedisChatMessage message) {
         Set<Long> teamMembers = repository.getTeamMembers(teamId);
@@ -91,11 +45,6 @@ public class ChatService {
         );
 
         //template.convertAndSend(messageResponse);
-    }
-
-    public boolean isMember(Long teamId, Long userId, Long teamUserId) {
-        RedisTeamMember teamMember = new RedisTeamMember(teamUserId, userId);
-        return repository.isMember(teamId, teamMember);
     }
 
     public List<ChatMessageResponse> getMessages(Long roomId, Long messageId) {
