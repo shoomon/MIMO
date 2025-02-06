@@ -15,7 +15,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-import com.bisang.backend.auth.annotation.AuthUser;
+import com.bisang.backend.auth.annotation.AuthSimpleUser;
 import com.bisang.backend.auth.domain.SimpleUser;
 import com.bisang.backend.common.exception.ExceptionCode;
 import com.bisang.backend.common.exception.InvalidJwtException;
