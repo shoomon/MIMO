@@ -11,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -19,6 +20,8 @@ import lombok.NoArgsConstructor;
         name = "chatroom"
 )
 public class Chatroom {
+
+    @Getter
     @Id @GeneratedValue(strategy = IDENTITY)
     @Column(name = "chatroom_id")
     private Long id;
@@ -37,5 +40,9 @@ public class Chatroom {
         this.userId = userId;
         this.title = title;
         this.status = status;
+    }
+
+    public static Chatroom createChatroom(Long userId, String title, ChatroomStatus status) {
+        return new Chatroom(userId, title, status);
     }
 }
