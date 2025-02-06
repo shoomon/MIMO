@@ -1,6 +1,9 @@
 package com.bisang.backend.team.service;
 
 import static com.bisang.backend.common.exception.ExceptionCode.*;
+import static com.bisang.backend.common.utils.PageUtils.PAGE_SIZE;
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
 
 import java.util.List;
 
@@ -14,9 +17,9 @@ import com.bisang.backend.team.annotation.TeamCoLeader;
 import com.bisang.backend.team.annotation.TeamLeader;
 import com.bisang.backend.team.controller.dto.TeamInviteDto;
 import com.bisang.backend.team.controller.dto.TeamUserDto;
-import com.bisang.backend.team.domain.Team;
+import com.bisang.backend.team.controller.response.TeamUserResponse;
 import com.bisang.backend.team.domain.TeamUser;
-import com.bisang.backend.team.repository.TeamJpaRepository;
+import com.bisang.backend.team.domain.TeamUserRole;
 import com.bisang.backend.team.repository.TeamUserJpaRepository;
 import com.bisang.backend.team.repository.TeamUserQuerydslRepository;
 
@@ -25,7 +28,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class TeamLeaderService {
-    private final TeamJpaRepository teamJpaRepository;
     private final TeamUserJpaRepository teamUserJpaRepository;
     private final TeamUserQuerydslRepository teamUserQuerydslRepository;
     private final TeamInviteJpaRepository teamInviteJpaRepository;
@@ -33,9 +35,6 @@ public class TeamLeaderService {
     @TeamCoLeader
     @Transactional
     public void approveInviteRequest(Long userId, Long teamId, Long inviteId) {
-        TeamUser teamUser = findTeamUserByTeamIdAndUserId(teamId, userId);
-        coLeaderValidation(teamUser);
-
         TeamInvite teamInvite = findTeamInviteById(inviteId);
         teamInvite.approveInvitation();
         teamInviteJpaRepository.save(teamInvite);
@@ -44,9 +43,6 @@ public class TeamLeaderService {
     @TeamCoLeader
     @Transactional
     public void rejectInviteRequest(Long userId, Long teamId, Long inviteId) {
-        TeamUser teamUser = findTeamUserByTeamIdAndUserId(teamId, userId);
-        coLeaderValidation(teamUser);
-
         TeamInvite teamInvite = findTeamInviteById(inviteId);
         teamInvite.rejectInvitation();
         teamInviteJpaRepository.save(teamInvite);
@@ -55,9 +51,6 @@ public class TeamLeaderService {
     @TeamLeader
     @Transactional
     public void upgradeRole(Long userId, Long teamId, Long teamUserId) {
-        Team team = findTeamById(teamId);
-        leaderValidation(team, userId);
-
         TeamUser teamUser = findTeamUserById(teamUserId);
         leaderCantDownGradeValidation(teamUser, userId);
 
@@ -68,9 +61,6 @@ public class TeamLeaderService {
     @TeamLeader
     @Transactional
     public void downgradeRole(Long userId, Long teamId, Long teamUserId) {
-        Team team = findTeamById(teamId);
-        leaderValidation(team, userId);
-
         TeamUser teamUser = findTeamUserById(teamUserId);
         leaderCantDownGradeValidation(teamUser, userId);
 
@@ -81,34 +71,38 @@ public class TeamLeaderService {
     @TeamLeader
     @Transactional
     public void deleteUser(Long userId, Long teamId, Long teamUserId) {
-        Team team = findTeamById(teamId);
-        leaderValidation(team, userId);
-
         TeamUser teamUser = findTeamUserById(teamUserId);
         teamUserJpaRepository.delete(teamUser);
     }
 
     @TeamCoLeader
     @Transactional(readOnly = true)
-    public List<TeamUserDto> findTeamUser(Long userId, Long teamId) {
-        TeamUser teamUser = findTeamUserByTeamIdAndUserId(teamId, userId);
-        coLeaderValidation(teamUser);
+    public TeamUserResponse findTeamUsers(Long userId, Long teamId, TeamUserRole role, Long teamUserId) {
+        List<TeamUserDto> teamUserInfos = teamUserQuerydslRepository.getTeamUserInfos(teamId, role, teamUserId);
 
-        return teamUserQuerydslRepository.getTeamUserInfo(teamId);
+        if (teamUserInfos.size() > PAGE_SIZE) {
+            List<TeamUserDto> result = teamUserInfos.stream().limit(PAGE_SIZE).toList();
+            return new TeamUserResponse(
+                PAGE_SIZE,
+                TRUE,
+                teamUserInfos.get(PAGE_SIZE).role(),
+                teamUserInfos.get(PAGE_SIZE).teamUserId(),
+                result);
+        }
+
+        return new TeamUserResponse(
+            teamUserInfos.size(),
+            FALSE,
+            null,
+            null,
+            teamUserInfos
+        );
     }
 
     @TeamCoLeader
     @Transactional(readOnly = true)
     public List<TeamInviteDto> findTeamInviteRequest(Long userId, Long teamId) {
-        TeamUser teamUser = findTeamUserByTeamIdAndUserId(teamId, userId);
-        coLeaderValidation(teamUser);
-
         return teamUserQuerydslRepository.getTeamInviteInfo(teamId);
-    }
-
-    private Team findTeamById(Long teamId) {
-        return teamJpaRepository.findTeamById(teamId)
-                .orElseThrow(() -> new TeamException(NOT_FOUND));
     }
 
     private TeamInvite findTeamInviteById(Long teamInviteId) {
@@ -116,26 +110,9 @@ public class TeamLeaderService {
                 .orElseThrow(() -> new TeamException(NOT_FOUND));
     }
 
-    private TeamUser findTeamUserByTeamIdAndUserId(Long teamId, Long userId) {
-        return teamUserJpaRepository.findByTeamIdAndUserId(teamId, userId)
-                .orElseThrow(() -> new TeamException(NOT_FOUND));
-    }
-
     private TeamUser findTeamUserById(Long teamUserId) {
         return teamUserJpaRepository.findById(teamUserId)
                 .orElseThrow(() -> new TeamException(NOT_FOUND));
-    }
-
-    private void coLeaderValidation(TeamUser teamUser) {
-        if (teamUser.isMember()) {
-            throw new TeamException(INVALID_REQUEST);
-        }
-    }
-
-    private void leaderValidation(Team team, Long userId) {
-        if (!team.getTeamLeaderId().equals(userId)) {
-            throw new TeamException(INVALID_REQUEST);
-        }
     }
 
     private void leaderCantDownGradeValidation(TeamUser teamUser, Long userId) {
