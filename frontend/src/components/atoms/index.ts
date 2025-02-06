@@ -4,6 +4,7 @@ export { default as ButtonToggle } from './ButtonToggle/ButtonToggle';
 export { default as CategoryItem } from './CategoryItem/CategoryItem';
 export { default as ChatItem } from './ChatItem/ChatItem';
 export { default as DetailNavItem } from './DetailNavItem/DetailNavItem';
+export { default as FilterDropDown } from "./FilterDropDown/FilterDropDown";
 export { default as Icon } from './Icon/Icon';
 export { default as Input } from './Input/Input';
 export { default as Logo } from './Logo/Logo';
