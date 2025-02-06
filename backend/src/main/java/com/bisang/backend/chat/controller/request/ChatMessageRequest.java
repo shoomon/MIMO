@@ -1,4 +1,4 @@
-package com.bisang.backend.chat.domain.request;
+package com.bisang.backend.chat.controller.request;
 
 import com.bisang.backend.chat.domain.ChatroomStatus;
 

@@ -36,4 +36,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.badRequest()
                 .body(new ExceptionResponse(exception.getCode(), exception.getMessage()));
     }
+
+    @ExceptionHandler(ChatAccessInvalidException.class)
+    public ResponseEntity<ExceptionResponse> handleChatException(ChatAccessInvalidException exception) {
+        log.warn(exception.getMessage(), exception);
+        return ResponseEntity.badRequest()
+                .body(new ExceptionResponse(exception.getCode(), exception.getMessage()));
+    }
 }
