@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 public enum ExceptionCode {
     INVALID_REQUEST(1000, "유효하지 않은 요청입니다."),
     NOT_FOUND(1001, "자원을 찾을 수가 없습니다."),
+    UNSUPPORTED_EXTENSIONS(1002, "지원하지 않는 파일 형식입니다."
+        + " 지원하는 파일 양식(\"jpg\", \"png\", \"gif\", \"jpeg\""),
 
     UNABLE_TO_GET_USER_INFO(2001, "소셜 로그인 공급자로부터 유저 정보를 받아올 수 없습니다."),
     UNABLE_TO_GET_ACCESS_TOKEN(2002, "소셜 로그인 공급자로부터 인증 토큰을 받아올 수 없습니다."),
