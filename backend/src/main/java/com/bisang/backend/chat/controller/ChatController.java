@@ -35,14 +35,15 @@ public class ChatController {
         }
     }
 
-    @GetMapping("/messages/{roomId}/{teamUserId}")
+    @GetMapping("/messages/{roomId}")
     public ResponseEntity<List<ChatMessageResponse>> getMessages(
 //            @AuthUser User user,
             @PathVariable("roomId") Long roomId,
-            @PathVariable("teamUserId") Long teamUserId
+            @RequestParam("teamUserId") Long teamUserId,
+            @RequestParam("messageId") Long messageId
     ) {
         if (chatService.isMember(roomId, 1L, teamUserId)) {
-            List<ChatMessageResponse> list = chatService.getMessages(roomId);
+            List<ChatMessageResponse> list = chatService.getMessages(roomId, messageId);
             return ResponseEntity.ok().body(list);
         }
 

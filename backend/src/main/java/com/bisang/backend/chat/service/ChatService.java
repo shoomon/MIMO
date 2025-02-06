@@ -81,6 +81,7 @@ public class ChatService {
 
         Map<Object, Object> userInfo = repository.getUserInfo(message.getTeamUserId(), message.getUserId());
         ChatMessageResponse messageResponse = new ChatMessageResponse(
+                message.getId(),
                 message.getTeamUserId(),
                 (String)userInfo.get("name"),
                 (String)userInfo.get("profileImage"),
@@ -97,13 +98,14 @@ public class ChatService {
         return repository.isMember(teamId, teamMember);
     }
 
-    public List<ChatMessageResponse> getMessages(Long roomId) {
-        List<RedisChatMessage> messageList = repository.getMessages(roomId);
+    public List<ChatMessageResponse> getMessages(Long roomId, Long messageId) {
+        List<RedisChatMessage> messageList = repository.getMessages(roomId, messageId);
         List<ChatMessageResponse> responseList = new LinkedList<>();
 
         for (RedisChatMessage message : messageList) {
             Map<Object, Object> userInfo = repository.getUserInfo(message.getTeamUserId(), message.getUserId());
             ChatMessageResponse messageResponse = new ChatMessageResponse(
+                    message.getId(),
                     message.getTeamUserId(),
                     (String)userInfo.get("name"),
                     (String)userInfo.get("profileImage"),

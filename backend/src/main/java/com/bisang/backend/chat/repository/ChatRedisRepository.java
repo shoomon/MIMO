@@ -4,12 +4,14 @@ import com.bisang.backend.chat.domain.redis.RedisChatMessage;
 import com.bisang.backend.chat.domain.redis.RedisTeamMember;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -59,17 +61,30 @@ public class ChatRedisRepository {
         Long messageId = redisChatMessageTemplate.opsForValue().increment(messageIdKey);
         message.setId(messageId);
 
-        redisChatMessageTemplate.opsForList().rightPush("teamMessage"+teamId, message);
+        redisChatMessageTemplate.opsForZSet().add("teamMessage"+teamId, message, message.getId());
     }
 
-    public List<RedisChatMessage> getMessages(Long teamId) {
+    public List<RedisChatMessage> getMessages(Long teamId, Long messageId) {
         String key = "teamMessage"+teamId;
 
-        Long size = redisChatMessageTemplate.opsForList().size(key);
-        if (size == null || size < 100) {
-            return redisChatMessageTemplate.opsForList().range(key, 0, size == null ? -1 : size - 1);
+        Set<ZSetOperations.TypedTuple<RedisChatMessage>> result;
+
+        if (messageId < 0) {
+            // maxId가 0보다 작으면 모든 요소에서 내림차순으로 100개를 가져오기
+            result = redisChatMessageTemplate.opsForZSet()
+                    .reverseRangeByScoreWithScores(key, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0, 100);
+        } else {
+            // maxId가 0 이상이면, maxId보다 작은 값을 내림차순으로 100개 가져옴
+            result = redisChatMessageTemplate.opsForZSet()
+                    .reverseRangeByScoreWithScores(key, Double.NEGATIVE_INFINITY, messageId - 1, 0, 100);
         }
 
-        return redisChatMessageTemplate.opsForList().range(key, 0, 99);
+        if (result == null) {
+            return Collections.emptyList();
+        }
+
+        return result.stream()
+                .map(ZSetOperations.TypedTuple::getValue)
+                .collect(Collectors.toList());
     }
 }
