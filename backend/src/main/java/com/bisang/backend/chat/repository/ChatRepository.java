@@ -59,6 +59,10 @@ public class ChatRepository {
         chatRedisRepository.deleteUserChatroom(userId, teamId);
     }
 
+    public List<Long> redisGetUserChatroom(long userId) {
+        return chatRedisRepository.getUserChatroom(userId);
+    }
+
     public void redisSaveMessage(long teamId, RedisChatMessage message) {
         chatRedisRepository.saveMessage(teamId, message);
     }
