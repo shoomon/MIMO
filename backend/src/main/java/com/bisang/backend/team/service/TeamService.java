@@ -1,6 +1,7 @@
 package com.bisang.backend.team.service;
 
 import static com.bisang.backend.common.exception.ExceptionCode.*;
+import static com.bisang.backend.common.utils.PageUtils.SHORT_PAGE_SIZE;
 
 import java.util.List;
 
@@ -10,7 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bisang.backend.common.exception.TeamException;
 import com.bisang.backend.team.annotation.EveryOne;
 import com.bisang.backend.team.annotation.TeamLeader;
+import com.bisang.backend.team.controller.dto.SimpleTeamDto;
 import com.bisang.backend.team.controller.dto.TeamDto;
+import com.bisang.backend.team.controller.response.TeamInfosResponse;
 import com.bisang.backend.team.domain.Area;
 import com.bisang.backend.team.domain.Tag;
 import com.bisang.backend.team.domain.Team;
@@ -40,6 +43,7 @@ public class TeamService {
     private final TeamTagJpaRepository teamTagJpaRepository;
     private final TeamUserJpaRepository teamUserJpaRepository;
 
+    @EveryOne
     @Transactional
     public void createTeam(
             Long leaderId,
@@ -92,6 +96,32 @@ public class TeamService {
 
     @EveryOne
     @Transactional(readOnly = true)
+    public TeamInfosResponse getTeamInfosByArea(Area area, Long teamId) {
+        List<SimpleTeamDto> teams = teamQuerydslRepository.getTeamsByAreaCode(area, teamId);
+        Boolean hasNext = teams.size() > SHORT_PAGE_SIZE;
+        Integer size = hasNext ? SHORT_PAGE_SIZE : teams.size();
+        Long lastTeamId = teams.get(size - 1).teamId();
+        if (hasNext) {
+            teams.remove(size - 1);
+        }
+        return new TeamInfosResponse(size, hasNext, lastTeamId, teams);
+    }
+
+    @EveryOne
+    @Transactional(readOnly = true)
+    public TeamInfosResponse getTeamInfosByCategory(TeamCategory category, Long teamId) {
+        List<SimpleTeamDto> teams = teamQuerydslRepository.getTeamsByCategory(category, teamId);
+        Boolean hasNext = teams.size() > SHORT_PAGE_SIZE;
+        Integer size = hasNext ? SHORT_PAGE_SIZE : teams.size();
+        Long lastTeamId = teams.get(size - 1).teamId();
+        if (hasNext) {
+            teams.remove(size - 1);
+        }
+        return new TeamInfosResponse(size, hasNext, lastTeamId, teams);
+    }
+
+    @EveryOne
+    @Transactional(readOnly = true)
     public TeamDto getTeamGeneralInfo(Long teamId) {
         return teamQuerydslRepository.getTeamInfo(teamId);
     }
@@ -112,6 +142,9 @@ public class TeamService {
         var teamDescription = team.getDescription();
         teamDescription.updateDescription(description);
         teamDescriptionJpaRepository.save(teamDescription);
+
+        team.updateShortDescription(description);
+        teamJpaRepository.save(team);
     }
 
     @TeamLeader
