@@ -1,6 +1,7 @@
 package com.bisang.backend.team.service;
 
 import static com.bisang.backend.common.exception.ExceptionCode.*;
+import static com.bisang.backend.common.utils.PageUtils.SHORT_PAGE_SIZE;
 
 import java.util.List;
 
@@ -10,17 +11,24 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bisang.backend.common.exception.TeamException;
 import com.bisang.backend.team.annotation.EveryOne;
 import com.bisang.backend.team.annotation.TeamLeader;
+import com.bisang.backend.team.controller.dto.SimpleTeamDto;
 import com.bisang.backend.team.controller.dto.TeamDto;
+import com.bisang.backend.team.controller.response.TeamInfosResponse;
 import com.bisang.backend.team.domain.Area;
+import com.bisang.backend.team.domain.Tag;
 import com.bisang.backend.team.domain.Team;
+import com.bisang.backend.team.domain.TeamCategory;
 import com.bisang.backend.team.domain.TeamDescription;
 import com.bisang.backend.team.domain.TeamNotificationStatus;
 import com.bisang.backend.team.domain.TeamPrivateStatus;
 import com.bisang.backend.team.domain.TeamRecruitStatus;
+import com.bisang.backend.team.domain.TeamTag;
 import com.bisang.backend.team.domain.TeamUser;
+import com.bisang.backend.team.repository.TagJpaRepository;
 import com.bisang.backend.team.repository.TeamDescriptionJpaRepository;
 import com.bisang.backend.team.repository.TeamJpaRepository;
 import com.bisang.backend.team.repository.TeamQuerydslRepository;
+import com.bisang.backend.team.repository.TeamTagJpaRepository;
 import com.bisang.backend.team.repository.TeamUserJpaRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -28,12 +36,14 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class TeamService {
-    private final TeamJpaRepository teamJpaRepository;
+    private final TagJpaRepository tagJpaRepository;
     private final TeamDescriptionJpaRepository teamDescriptionJpaRepository;
+    private final TeamJpaRepository teamJpaRepository;
     private final TeamQuerydslRepository teamQuerydslRepository;
+    private final TeamTagJpaRepository teamTagJpaRepository;
     private final TeamUserJpaRepository teamUserJpaRepository;
 
-    @TeamLeader
+    @EveryOne
     @Transactional
     public void createTeam(
             Long leaderId,
@@ -45,14 +55,17 @@ public class TeamService {
             TeamPrivateStatus teamPrivateStatus,
             String teamProfileUri,
             Area area,
+            TeamCategory teamCategory,
             Long maxCapacity
     ) {
+        // 팀 설명 생성
         TeamDescription teamDescription = new TeamDescription(description);
         teamDescriptionJpaRepository.save(teamDescription);
 
         // TODO: 채팅 룸 관련 생성 기능 추가
         // TODO: 계좌 관련 생성 기능 추가
 
+        // 팀 생성
         Team newTeam = Team.builder()
                             .teamLeaderId(leaderId)
                             .teamChatroomId(0L) // 추후 추가 필요, 챗룸 구현 이후
@@ -63,11 +76,48 @@ public class TeamService {
                             .privateStatus(teamPrivateStatus)
                             .teamProfileUri(teamProfileUri)
                             .areaCode(area)
+                            .category(teamCategory)
                             .maxCapacity(maxCapacity).build();
         teamJpaRepository.save(newTeam);
 
+        // 기본 태그 저장
+        Tag areaTag = findTagByName(area.getName());
+        TeamTag areaTeamTag = new TeamTag(newTeam.getId(), areaTag.getId());
+        teamTagJpaRepository.save(areaTeamTag);
+
+        Tag categoryTag = findTagByName(teamCategory.getName());
+        TeamTag categoryTeamTag = new TeamTag(newTeam.getId(), categoryTag.getId());
+        teamTagJpaRepository.save(categoryTeamTag);
+
+        // 팀 유저 저장
         var teamUser = TeamUser.createTeamLeader(leaderId, newTeam.getId(), nickname, notificationStatus);
         teamUserJpaRepository.save(teamUser);
+    }
+
+    @EveryOne
+    @Transactional(readOnly = true)
+    public TeamInfosResponse getTeamInfosByArea(Area area, Long teamId) {
+        List<SimpleTeamDto> teams = teamQuerydslRepository.getTeamsByAreaCode(area, teamId);
+        Boolean hasNext = teams.size() > SHORT_PAGE_SIZE;
+        Integer size = hasNext ? SHORT_PAGE_SIZE : teams.size();
+        Long lastTeamId = teams.get(size - 1).teamId();
+        if (hasNext) {
+            teams.remove(size - 1);
+        }
+        return new TeamInfosResponse(size, hasNext, lastTeamId, teams);
+    }
+
+    @EveryOne
+    @Transactional(readOnly = true)
+    public TeamInfosResponse getTeamInfosByCategory(TeamCategory category, Long teamId) {
+        List<SimpleTeamDto> teams = teamQuerydslRepository.getTeamsByCategory(category, teamId);
+        Boolean hasNext = teams.size() > SHORT_PAGE_SIZE;
+        Integer size = hasNext ? SHORT_PAGE_SIZE : teams.size();
+        Long lastTeamId = teams.get(size - 1).teamId();
+        if (hasNext) {
+            teams.remove(size - 1);
+        }
+        return new TeamInfosResponse(size, hasNext, lastTeamId, teams);
     }
 
     @EveryOne
@@ -80,11 +130,8 @@ public class TeamService {
     @Transactional
     public void updateTeamName(Long userId, Long teamId, String name) {
         Team team = findTeamById(teamId);
-
-        if (isTeamLeader(team, userId)) {
-            team.updateTeamName(name);
-            teamJpaRepository.save(team);
-        }
+        team.updateTeamName(name);
+        teamJpaRepository.save(team);
     }
 
     @TeamLeader
@@ -92,20 +139,19 @@ public class TeamService {
     public void updateTeamDescription(Long userId, Long teamId, String description) {
         Team team = findTeamById(teamId);
 
-        if (isTeamLeader(team, userId)) {
-            var teamDescription = team.getDescription();
-            teamDescription.updateDescription(description);
-            teamDescriptionJpaRepository.save(teamDescription);
-        }
+        var teamDescription = team.getDescription();
+        teamDescription.updateDescription(description);
+        teamDescriptionJpaRepository.save(teamDescription);
+
+        team.updateShortDescription(description);
+        teamJpaRepository.save(team);
     }
 
     @TeamLeader
     @Transactional
     public void updateTeamRecruitStatus(Long userId, Long teamId, TeamRecruitStatus recruitStatus) {
         Team team = findTeamById(teamId);
-        if (isTeamLeader(team, userId)) {
-            team.updateRecruitStatus(recruitStatus);
-        }
+        team.updateRecruitStatus(recruitStatus);
         teamJpaRepository.save(team);
     }
 
@@ -113,9 +159,7 @@ public class TeamService {
     @Transactional
     public void updateTeamPrivateStatus(Long userId, Long teamId, TeamPrivateStatus privateStatus) {
         Team team = findTeamById(teamId);
-        if (isTeamLeader(team, userId)) {
-            team.updatePrivateStatus(privateStatus);
-        }
+        team.updatePrivateStatus(privateStatus);
         teamJpaRepository.save(team);
     }
 
@@ -123,9 +167,7 @@ public class TeamService {
     @Transactional
     public void updateTeamProfileUri(Long userId, Long teamId, String profileUri) {
         Team team = findTeamById(teamId);
-        if (isTeamLeader(team, userId)) {
-            team.updateTeamProfileUri(profileUri);
-        }
+        team.updateTeamProfileUri(profileUri);
         teamJpaRepository.save(team);
     }
 
@@ -133,9 +175,7 @@ public class TeamService {
     @Transactional
     public void updateTeamArea(Long userId, Long teamId, Area areaCode) {
         Team team = findTeamById(teamId);
-        if (isTeamLeader(team, userId)) {
-            team.updateAreaCode(areaCode);
-        }
+        team.updateAreaCode(areaCode);
         teamJpaRepository.save(team);
     }
 
@@ -143,14 +183,12 @@ public class TeamService {
     @Transactional
     public void deleteTeam(Long userId, Long teamId) {
         Team team = findTeamById(teamId);
-        if (isTeamLeader(team, userId)) {
-            List<TeamUser> teamUsers = teamUserJpaRepository.findByTeamId(teamId);
-            if (teamUsers.size() == 1) {
-                // TODO 계좌 삭제
-                // TODO 채팅방 삭제
-                teamUserJpaRepository.delete(teamUsers.get(0));
-                teamJpaRepository.delete(team);
-            }
+        List<TeamUser> teamUsers = teamUserJpaRepository.findByTeamId(teamId);
+        if (teamUsers.size() == 1) {
+            // TODO 계좌 삭제
+            // TODO 채팅방 삭제
+            teamUserJpaRepository.delete(teamUsers.get(0));
+            teamJpaRepository.delete(team);
         }
     }
 
@@ -159,10 +197,8 @@ public class TeamService {
                 .orElseThrow(() -> new TeamException(NOT_FOUND));
     }
 
-    private Boolean isTeamLeader(Team team, Long userId) {
-        if (team.getTeamLeaderId().equals(userId)) {
-            return true;
-        }
-        throw new TeamException(INVALID_REQUEST);
+    private Tag findTagByName(String name) {
+        return tagJpaRepository.findByName(name)
+            .orElseThrow(() -> new TeamException(NOT_FOUND));
     }
 }

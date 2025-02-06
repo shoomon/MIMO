@@ -6,7 +6,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum Area {
-    GYEONGGI("경기도"),
+    GYEONGGI("서울, 경기도"),
     GANGWON("강원도"),
     CHUNGCHEONG_NORTH("충청북도"),
     CHUNGCHEONG_SOUTH("충청남도"),

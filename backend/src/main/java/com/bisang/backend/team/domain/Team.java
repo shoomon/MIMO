@@ -13,8 +13,10 @@ import jakarta.persistence.EntityListeners;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -27,6 +29,13 @@ import lombok.NoArgsConstructor;
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @NoArgsConstructor(access = PROTECTED)
+@Table(
+    name = "team",
+    indexes = {
+        @Index(name = "idx_team_area", columnList = "team_area_code, team_id desc"),
+        @Index(name = "idx_team_category", columnList = "team_category, team_id desc")
+    }
+)
 public class Team {
     @Id @Column(name = "team_id")
     @GeneratedValue(strategy = IDENTITY)
@@ -40,6 +49,9 @@ public class Team {
 
     @Column(name = "team_name", length = 30, nullable = false, unique = true)
     private String name;
+
+    @Column(name = "short_description", length = 100, nullable = false)
+    private String shortDescription;
 
     @OneToOne(cascade = ALL, orphanRemoval = true)
     @JoinColumn(name = "team_description_id", referencedColumnName = "team_description_id")
@@ -63,7 +75,11 @@ public class Team {
     @Column(name = "team_area_code")
     private Area areaCode;
 
-    @Column(nullable = false)
+    @Enumerated(STRING)
+    @Column(name = "team_category")
+    private TeamCategory category;
+
+    @Column(name = "max_capacity", nullable = false)
     protected Long maxCapacity;
 
     @CreatedDate
@@ -81,18 +97,21 @@ public class Team {
             TeamPrivateStatus privateStatus,
             String teamProfileUri,
             Area areaCode,
+            TeamCategory category,
             Long maxCapacity
     ) {
         this.maxCapacity = maxCapacity;
         this.teamLeaderId = teamLeaderId;
         this.teamChatroomId = teamChatroomId;
         this.name = name;
+        this.shortDescription = description.getDescription().substring(100);
         this.description = description;
         this.accountNumber = accountNumber;
         this.recruitStatus = recruitStatus;
         this.privateStatus = privateStatus;
         this.teamProfileUri = teamProfileUri;
         this.areaCode = areaCode;
+        this.category = category;
     }
 
     public void updateTeamName(String name) {
@@ -113,5 +132,9 @@ public class Team {
 
     public void updateAreaCode(Area areaCode) {
         this.areaCode = areaCode;
+    }
+
+    public void updateShortDescription(String shortDescription) {
+        this.shortDescription = shortDescription;
     }
 }

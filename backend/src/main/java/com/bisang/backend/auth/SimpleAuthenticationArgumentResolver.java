@@ -31,7 +31,7 @@ public class SimpleAuthenticationArgumentResolver implements HandlerMethodArgume
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(AuthUser.class);
+        return parameter.hasParameterAnnotation(AuthSimpleUser.class);
     }
 
     @Override
