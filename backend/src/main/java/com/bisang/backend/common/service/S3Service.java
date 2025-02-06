@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import com.bisang.backend.common.annotation.S3Limiter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,7 +40,8 @@ public class S3Service {
     private String maxSizeString;
 
     // 파일 삭제
-    public void deleteFile(String fileUrl) {
+    @S3Limiter
+    public void deleteFile(Long userId, String fileUrl) {
         String[] urlParts = fileUrl.split("/");
         String fileBucket = urlParts[2].split("\\.")[0];
 
@@ -65,7 +67,8 @@ public class S3Service {
     }
 
     // 단일 파일 저장
-    public String saveFile(MultipartFile file) {
+    @S3Limiter
+    public String saveFile(Long userId, MultipartFile file) {
         String randomFilename = generateRandomFilename(file);
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(file.getSize());
@@ -87,7 +90,7 @@ public class S3Service {
     }
 
     // 요청에 중복되는 파일 여부 확인
-    private boolean isDuplicate(MultipartFile multipartFile) {
+    private boolean isDuplicate(Long userId, MultipartFile multipartFile) {
         String fileName = multipartFile.getOriginalFilename();
         Long fileSize = multipartFile.getSize();
 
