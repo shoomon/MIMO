@@ -70,8 +70,11 @@ public class ChatroomService {
     }
 
     public List<ChatroomResponse> getChatroom(Long userId) {
-        //TODO: 채팅방 목록 조회 - 레디스에서 조회해오고 없으면 db가서 가져와야함
+        List<Long> chatroom = repository.redisGetUserChatroom(userId);
 
+        if (chatroom.isEmpty()) {
+            //TODO: DB 조회. 레디스에서 소실됐다는 의미임. 조회 후 레디스에도 넣어줘야함
+        }
         //TODO: 가져온 목록을 기반으로 채팅방 이름, 프로필 이미지, 마지막 채팅 등 가져오기
 
         return null;
