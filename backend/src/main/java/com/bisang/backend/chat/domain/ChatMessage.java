@@ -30,6 +30,8 @@ import lombok.NoArgsConstructor;
         }
 )
 public class ChatMessage {
+    //TODO chat_message_id GeneratedValue 말고 그냥 넣어주는 값으로 해야함
+
     @Id @GeneratedValue(strategy = IDENTITY)
     @Column(name = "chat_message_id")
     private Long id;
