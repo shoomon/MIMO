@@ -1,4 +1,4 @@
-package com.bisang.backend.common.service;
+package com.bisang.backend.s3.service;
 
 import static com.bisang.backend.common.exception.ExceptionCode.INVALID_REQUEST;
 import static com.bisang.backend.common.exception.ExceptionCode.UNSUPPORTED_EXTENSIONS;
@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import com.bisang.backend.common.annotation.S3Limiter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +19,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.bisang.backend.common.exception.S3Exception;
+import com.bisang.backend.s3.annotation.S3Limiter;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
