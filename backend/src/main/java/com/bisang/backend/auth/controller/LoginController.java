@@ -71,7 +71,7 @@ public class LoginController {
             @RequestParam("code") String code,
             HttpServletResponse response
     ) {
-        System.out.println("안녕하세요");
+        log.info("code");
         // 로그인 처리 및 UserTokens 생성
         UserTokens userTokens = oAuth2Service.login(code);
 

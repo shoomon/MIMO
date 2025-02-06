@@ -3,10 +3,10 @@ package com.bisang.backend.user.service;
 import java.util.ArrayList;
 import java.util.Optional;
 
-import com.bisang.backend.user.controller.response.UserMyResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bisang.backend.user.controller.response.UserMyResponse;
 import com.bisang.backend.user.domain.User;
 import com.bisang.backend.user.repository.UserJpaRepository;
 

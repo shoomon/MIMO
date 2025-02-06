@@ -16,11 +16,9 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import com.bisang.backend.auth.annotation.AuthUser;
-import com.bisang.backend.common.exception.AccountException;
+import com.bisang.backend.auth.domain.SimpleUser;
 import com.bisang.backend.common.exception.ExceptionCode;
 import com.bisang.backend.common.exception.InvalidJwtException;
-import com.bisang.backend.user.domain.User;
-import com.bisang.backend.user.repository.UserJpaRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,8 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class AuthenticationArgumentResolver implements HandlerMethodArgumentResolver {
-    private final UserJpaRepository userJpaRepository;
+public class SimpleAuthenticationArgumentResolver implements HandlerMethodArgumentResolver {
     private final JwtUtil jwtUtil;
 
     @Override
@@ -41,7 +38,8 @@ public class AuthenticationArgumentResolver implements HandlerMethodArgumentReso
     public Object resolveArgument(MethodParameter parameter,
                                   ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest,
-                                  WebDataBinderFactory binderFactory) throws Exception {
+                                  WebDataBinderFactory binderFactory
+    ) throws Exception {
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
 
         if (request == null) {
@@ -80,10 +78,9 @@ public class AuthenticationArgumentResolver implements HandlerMethodArgumentReso
             .getValue();
     }
 
-    private User extractUser(String accessToken) {
+    private SimpleUser extractUser(String accessToken) {
         Long userId = Long.valueOf(jwtUtil.getSubject(accessToken));
 
-        return userJpaRepository.findById(userId)
-            .orElseThrow(() -> new AccountException(INVALID_REQUEST));
+        return new SimpleUser(userId);
     }
 }
