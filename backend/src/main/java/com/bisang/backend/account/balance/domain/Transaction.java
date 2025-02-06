@@ -15,15 +15,19 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 @ToString
 @NoArgsConstructor(access = PROTECTED)
+/**
+ *  1, 2번 인덱스 : 트랜잭션 오류시 개발자 수동 수정을 위한 인덱스
+ *  3 번 인덱스 : 배치 작업을 통한 실패 트랜잭션 자동 복구를 위한 인덱스
+ */
 @Table(
         name = "AccountTransaction",
         indexes = {
-                @Index(name = "idx_sender_tx_category",
-                        columnList = "senderAccountNumber, transactionCategory"),
-                @Index(name = "idx_receiver_tx_category",
-                        columnList = "receiverAccountNumber, transactionCategory"),
-                @Index(name = "idx_tx_category",
-                        columnList = "transactionCategory"
+                @Index(name = "idx_sender_tx_status",
+                        columnList = "senderAccountNumber, transactionStatus, transactionId"),
+                @Index(name = "idx_receiver_tx_status",
+                        columnList = "receiverAccountNumber, transactionStatus, transactionId"),
+                @Index(name = "idx_tx_status",
+                        columnList = "transactionStatus, transactionId"
                 )
         }
 )
@@ -35,7 +39,7 @@ public class Transaction {
     @Column(nullable = false)
     private Long balance;
 
-    @Column(nullable = true)
+    @Column(name = "sender_account_number", nullable = true)
     private String senderAccountNumber;
 
     @Column(nullable = false)
