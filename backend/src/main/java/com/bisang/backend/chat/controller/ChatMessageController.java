@@ -16,11 +16,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Controller
 @RequestMapping("/chat-message")
 @RequiredArgsConstructor
 public class ChatMessageController {
@@ -32,7 +34,7 @@ public class ChatMessageController {
     public void sendMessage(@DestinationVariable Long roomId, @AuthSimpleUser User user, ChatMessageRequest chat) {
         Long userId = user.getId();
         if (chatroomUserService.isMember(roomId, userId, chat.teamUserId())) {
-            RedisChatMessage redisMessage = new RedisChatMessage(chat.teamUserId(), chat.chat(), LocalDateTime.now(), ChatType.MESSAGE);
+            RedisChatMessage redisMessage = new RedisChatMessage(chat.teamUserId(), userId, chat.chat(), LocalDateTime.now(), ChatType.MESSAGE);
 
             chatMessageService.broadcastMessage(roomId, redisMessage);
         }
@@ -62,7 +64,7 @@ public class ChatMessageController {
             @PathVariable Long roomId,
             @RequestBody ChatMessageRequest chat) {
         if (chatroomUserService.isMember(roomId, user.userId(), chat.teamUserId())) {
-            RedisChatMessage redisMessage = new RedisChatMessage(chat.teamUserId(), chat.chat(), LocalDateTime.now(), ChatType.MESSAGE);
+            RedisChatMessage redisMessage = new RedisChatMessage(chat.teamUserId(), user.userId(), chat.chat(), LocalDateTime.now(), ChatType.MESSAGE);
 
             chatMessageService.broadcastMessage(roomId, redisMessage);
             return ResponseEntity.ok().body("전송 성공");

@@ -3,6 +3,7 @@ package com.bisang.backend.chat.repository;
 import com.bisang.backend.chat.controller.response.ChatroomResponse;
 import com.bisang.backend.chat.domain.ChatMessage;
 import com.bisang.backend.chat.domain.ChatType;
+import com.bisang.backend.chat.domain.Chatroom;
 import com.bisang.backend.chat.domain.ChatroomUser;
 import com.bisang.backend.chat.domain.redis.RedisChatMessage;
 import com.bisang.backend.chat.domain.redis.RedisTeamMember;
@@ -26,6 +27,7 @@ public class ChatRepository {
     private final UserJpaRepository userJpaRepository;
     private final ChatroomUserJpaRepository chatroomUserJpaRepository;
     private final ChatMessageJpaRepository chatMessageJpaRepository;
+    private final ChatroomJpaRepository chatroomJpaRepository;
     private final RedisCacheRepository redisCacheRepository;
 
     public void insertRedisMemberUser(long teamId, RedisTeamMember teamMember) {
@@ -119,6 +121,7 @@ public class ChatRepository {
             RedisChatMessage redisChatMessage = new RedisChatMessage(
                     chatMessage.getId(),
                     chatMessage.getTeamUserId(),
+                    chatMessage.getUserId(),
                     chatMessage.getMessage(),
                     chatMessage.getCreatedAt(),
                     //TODO: ChatMessage에 type 추가해야함
@@ -129,6 +132,10 @@ public class ChatRepository {
         }
 
         return result;
+    }
+
+    public void insertChatroom(Chatroom chatroom) {
+        chatroomJpaRepository.save(chatroom);
     }
 
     public List<ChatroomResponse> getChatroom(Long userId) {
