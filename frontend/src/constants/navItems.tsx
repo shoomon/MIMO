@@ -12,3 +12,10 @@ export const DETAIL_NAV_ITEMS = [
     { item: '멤버', icon: 'ThreePeople', link: '/member' },
     { item: '마일리지', icon: 'Coin', link: '/mileage' },
 ];
+
+export const ROUTER_CONFIG: Record<string, { name: string }> = {
+    main: { name: '홈' },
+    team: { name: '팀' },
+    board: { name: '게시판' },
+    edit: { name: '수정' },
+};

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-interface TitleProps {
+export interface TitleProps {
     label: string;
     to?: string;
     onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void;

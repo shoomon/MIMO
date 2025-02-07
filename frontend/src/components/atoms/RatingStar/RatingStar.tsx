@@ -3,6 +3,7 @@ import { getStarRatingData } from './RatingStar.utils';
 
 export interface RatingStarProps {
     rating: number;
+    reviewCount: number;
 }
 
 /**
@@ -13,11 +14,19 @@ export interface RatingStarProps {
  *
  * @param {RatingStarProps} props - rating 값을 포함한 props
  * @returns {JSX.Element} 렌더링된 별점 컴포넌트
+ *
  */
-const RatingStar: React.FC<RatingStarProps> = ({ rating }) => {
+const RatingStar: React.FC<RatingStarProps> = ({ rating, reviewCount }) => {
     const { fullStars, hasHalfStar } = getStarRatingData(rating);
 
-    return <RatingStarView fullStars={fullStars} hasHalfStar={hasHalfStar} />;
+    return (
+        <RatingStarView
+            rating={rating}
+            fullStars={fullStars}
+            hasHalfStar={hasHalfStar}
+            reviewCount={reviewCount}
+        />
+    );
 };
 
 export default RatingStar;
