@@ -1,6 +1,8 @@
 package com.bisang.backend.schedule.domain;
 
+import static com.bisang.backend.schedule.domain.ScheduleStatus.*;
 import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
@@ -8,6 +10,7 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
@@ -63,6 +66,10 @@ public class TeamSchedule extends BaseTimeEntity {
     @Column(name = "current_participants", nullable = false)
     private Long currentParticipants;
 
+    @Enumerated(STRING)
+    @Column(name = "schedule_status", nullable = false)
+    private ScheduleStatus scheduleStatus;
+
     @Builder
     public TeamSchedule(
         Long teamId,
@@ -71,7 +78,8 @@ public class TeamSchedule extends BaseTimeEntity {
         ScheduleDescription description,
         String location,
         LocalDateTime date,
-        Long maxParticipants
+        Long maxParticipants,
+        String status
     ) {
         this.teamId = teamId;
         this.teamUserId = teamUserId;
@@ -82,6 +90,11 @@ public class TeamSchedule extends BaseTimeEntity {
         this.date = date;
         this.maxParticipants = maxParticipants;
         this.currentParticipants = 1L;
+        if (status.equals("A")) {
+            this.scheduleStatus = AD_HOC;
+            return;
+        }
+        this.scheduleStatus = REGURAL;
     }
 
     public void increaseCurrentParticipants() {
@@ -111,5 +124,9 @@ public class TeamSchedule extends BaseTimeEntity {
     public void updateDescription(String newDescription) {
         this.shortDescription = newDescription.substring(100 - 3) + "...";
         this.description.updateDescription(newDescription);
+    }
+
+    public void closeSchedule() {
+        this.scheduleStatus = CLOSED;
     }
 }
