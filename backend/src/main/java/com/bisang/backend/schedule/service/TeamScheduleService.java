@@ -1,10 +1,13 @@
 package com.bisang.backend.schedule.service;
 
+import static com.bisang.backend.common.exception.ExceptionCode.NOT_FOUND;
+
 import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bisang.backend.common.exception.ScheduleException;
 import com.bisang.backend.schedule.domain.ScheduleDescription;
 import com.bisang.backend.schedule.domain.ScheduleParticipants;
 import com.bisang.backend.schedule.domain.TeamSchedule;
@@ -52,5 +55,50 @@ public class TeamScheduleService {
         scheduleParticipantsJpaRepository.save(creator);
 
         return teamSchedule;
+    }
+
+    @TeamLeader
+    @Transactional
+    public void updateTitle(Long userId, Long teamId, Long teamScheduleId, String title) {
+        TeamSchedule teamSchedule = findTeamScheduleById(teamScheduleId);
+        teamSchedule.updateTitle(title);
+        teamScheduleJpaRepository.save(teamSchedule);
+    }
+
+    @TeamLeader
+    @Transactional
+    public void updateDescription(Long userId, Long teamId, Long teamScheduleId, String description) {
+        TeamSchedule teamSchedule = findTeamScheduleById(teamScheduleId);
+        teamSchedule.updateDescription(description);
+        teamScheduleJpaRepository.save(teamSchedule);
+    }
+
+    @TeamLeader
+    @Transactional
+    public void updateLocation(Long userId, Long teamId, Long teamScheduleId, String location) {
+        TeamSchedule teamSchedule = findTeamScheduleById(teamScheduleId);
+        teamSchedule.updateLocation(location);
+        teamScheduleJpaRepository.save(teamSchedule);
+    }
+
+    @TeamLeader
+    @Transactional
+    public void updateDate(Long userId, Long teamId, Long teamScheduleId, LocalDateTime date) {
+        TeamSchedule teamSchedule = findTeamScheduleById(teamScheduleId);
+        teamSchedule.updateDate(date);
+        teamScheduleJpaRepository.save(teamSchedule);
+    }
+
+    @TeamLeader
+    @Transactional
+    public void updateParticipants(Long userId, Long teamId, Long teamScheduleId, Long maxParticipants) {
+        TeamSchedule teamSchedule = findTeamScheduleById(teamScheduleId);
+        teamSchedule.updateMaxParticipants(maxParticipants);
+        teamScheduleJpaRepository.save(teamSchedule);
+    }
+
+    private TeamSchedule findTeamScheduleById(Long teamScheduleId) {
+        return teamScheduleJpaRepository.findById(teamScheduleId)
+            .orElseThrow(() -> new ScheduleException(NOT_FOUND));
     }
 }
