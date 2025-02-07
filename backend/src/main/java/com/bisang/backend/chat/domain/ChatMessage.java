@@ -1,17 +1,12 @@
 package com.bisang.backend.chat.domain;
 
+import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
 import java.time.LocalDateTime;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
@@ -30,9 +25,8 @@ import lombok.NoArgsConstructor;
         }
 )
 public class ChatMessage {
-    //TODO chat_message_id GeneratedValue 말고 그냥 넣어주는 값으로 해야함
 
-    @Id @GeneratedValue(strategy = IDENTITY)
+    @Id
     @Column(name = "chat_message_id")
     private Long id;
 
@@ -49,8 +43,12 @@ public class ChatMessage {
     private String message;
 
     @CreatedDate
-    @Column(name = "craeted_at", updatable = false)
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
+
+    @Enumerated(STRING)
+    @Column(name = "type", nullable = false)
+    private ChatType chatType;
 
     private ChatMessage(
             Long chatroomId,

@@ -59,6 +59,10 @@ public class ChatRepository {
         chatRedisRepository.deleteUserChatroom(userId, teamId);
     }
 
+    public List<Long> redisGetUserChatroom(long userId) {
+        return chatRedisRepository.getUserChatroom(userId);
+    }
+
     public void redisSaveMessage(long teamId, RedisChatMessage message) {
         chatRedisRepository.saveMessage(teamId, message);
     }
@@ -124,8 +128,7 @@ public class ChatRepository {
                     chatMessage.getUserId(),
                     chatMessage.getMessage(),
                     chatMessage.getCreatedAt(),
-                    //TODO: ChatMessage에 type 추가해야함
-                    ChatType.MESSAGE
+                    chatMessage.getChatType()
             );
 
             result.add(redisChatMessage);

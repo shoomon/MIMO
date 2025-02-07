@@ -22,10 +22,9 @@ public class ChatroomService {
     private final ChatMessageService chatMessageService;
 
 
-    public void createChatroom(Long userId, String nickname, String title, ChatroomStatus status) {
-        Chatroom chatroom = Chatroom.createChatroom(userId, title, status);
+    public void createChatroom(Long userId, String nickname, String title, String profileUri, ChatroomStatus status) {
+        Chatroom chatroom = Chatroom.createChatroom(userId, title, profileUri, status);
 
-        //TODO: 팀사진도 같이 넣으면 좋겠는데 그럼 db 바꿔야하는데 바꿀까말까
         repository.insertChatroom(chatroom);
         //TODO: 팀 관련 정보 캐싱 바로 해버려? 알아서 될 듯? 아닌가
 
@@ -61,8 +60,11 @@ public class ChatroomService {
     }
 
     public List<ChatroomResponse> getChatroom(Long userId) {
-        //TODO: 채팅방 목록 조회 - 레디스에서 조회해오고 없으면 db가서 가져와야함
+        List<Long> chatroom = repository.redisGetUserChatroom(userId);
 
+        if (chatroom.isEmpty()) {
+            //TODO: DB 조회. 레디스에서 소실됐다는 의미임. 조회 후 레디스에도 넣어줘야함
+        }
         //TODO: 가져온 목록을 기반으로 채팅방 이름, 프로필 이미지, 마지막 채팅 등 가져오기
 
         return null;
