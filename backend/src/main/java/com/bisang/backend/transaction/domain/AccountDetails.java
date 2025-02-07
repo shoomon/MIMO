@@ -1,5 +1,6 @@
 package com.bisang.backend.transaction.domain;
 
+import com.bisang.backend.board.domain.BoardDescription;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,6 +10,7 @@ import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 
+import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.EnumType.STRING;
 import static lombok.AccessLevel.PROTECTED;
 
@@ -17,62 +19,56 @@ import static lombok.AccessLevel.PROTECTED;
 @ToString
 @NoArgsConstructor(access = PROTECTED)
 @Table(
-        name = "AccountDetails",
-        indexes = {
-                @Index(name = "idx_sender_tx_category",
-                        columnList = "senderAccountNumber, transactionStatus, transactionId desc"),
-                @Index(name = "idx_receiver_tx_category",
-                        columnList = "receiverAccountNumber, transactionStatus, transactionId desc"),
-                @Index(name = "idx_tx_status, transaction_id",
-                        columnList = "transactionStatus"
-                )
-        }
+    name = "account_details",
+    indexes = {
+    }
 )
 public class AccountDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "account_details_id")
     private Long accountDetailsId;
 
     @OneToOne
-    @JoinColumn(name = "transaction_id", unique = true, nullable = false)
+    @JoinColumn(name = "transaction_id", referencedColumnName = "transaction_id", unique = true, nullable = false)
     private Transaction transactionId;
 
-    @Column(nullable = false)
+    @Column(name = "balance", nullable = false)
     private Long balance;
 
     @Column(name = "sender_account_number", nullable = true)
     private String senderAccountNumber;
 
-    @Column(nullable = false)
+    @Column(name = "receiver_account_number", nullable = false)
     private String receiverAccountNumber;
 
-    @Column(nullable = true)
+    @Column(name = "sender_name", nullable = true)
     private String senderName;
 
-    @Column(nullable = false)
+    @Column(name = "receiver_name", nullable = false)
     private String receiverName;
 
-    @Column(nullable = true)
+    @Column(name = "memo", nullable = true)
     private String memo;
 
     @Enumerated(STRING)
-    @Column(nullable = false)
+    @Column(name = "transaction_category", nullable = false)
     private TransactionCategory transactionCategory;
 
     @CreatedDate
-    @Column(updatable = false)
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
     @Builder
     public AccountDetails(
-            Transaction transactionId,
-            Long balance,
-            String senderAccountNumber,
-            String receiverAccountNumber,
-            String senderName,
-            String receiverName,
-            String memo,
-            TransactionCategory transactionCategory
+        Transaction transactionId,
+        Long balance,
+        String senderAccountNumber,
+        String receiverAccountNumber,
+        String senderName,
+        String receiverName,
+        String memo,
+        TransactionCategory transactionCategory
     ) {
         this.transactionId = transactionId;
         this.balance = balance;

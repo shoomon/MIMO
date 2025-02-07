@@ -20,7 +20,7 @@ spring:
   # MySQL
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: ${DB_ID}wwq
+    username: ${DB_ID}
     password: ${DB_PASSWORD}
     url: jdbc:mysql://${DB_URL}/s12p12a504?socketTimeout=2000
     hikari:
@@ -30,7 +30,7 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: none
+      ddl-auto: create
     properties:
       hibernate:
         format_sql: false
