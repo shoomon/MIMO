@@ -1,36 +1,11 @@
 package com.bisang.backend.user.controller;
 
 import org.springframework.http.ResponseEntity;
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.bisang.backend.auth.annotation.AuthUser;
-import com.bisang.backend.user.domain.User;
-import com.bisang.backend.user.domain.request.UpdateNameRequest;
-import com.bisang.backend.user.domain.request.UpdateNicknameRequest;
-import com.bisang.backend.user.domain.request.UpdateProfileUriRequest;
-import com.bisang.backend.user.service.UserService;
-
-import lombok.RequiredArgsConstructor;
-=======
-import org.springframework.web.bind.annotation.*;
->>>>>>> 15f939e (feat: myInfo 로직 추가)
-=======
-=======
->>>>>>> c2ef2c3ad1b114c63bb08433ea1de0d8e5853cac
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-<<<<<<< HEAD
->>>>>>> bd3abfa (feat: 팀 생성, 조회, 변경 로직 작성)
-=======
->>>>>>> c2ef2c3ad1b114c63bb08433ea1de0d8e5853cac
 
 import com.bisang.backend.auth.annotation.AuthUser;
 import com.bisang.backend.user.controller.request.UpdateNameRequest;
@@ -41,6 +16,8 @@ import com.bisang.backend.user.domain.User;
 import com.bisang.backend.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;
+
+
 
 @RestController
 @RequestMapping("/user")
