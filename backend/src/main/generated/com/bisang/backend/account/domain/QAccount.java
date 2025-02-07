@@ -1,4 +1,4 @@
-package com.bisang.backend.account.domain;
+package com.bisang.backend.Transaction.domain.account.domain;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
