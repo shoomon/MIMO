@@ -1,8 +1,8 @@
 package com.bisang.backend.chat.controller.response;
 
-import com.bisang.backend.chat.domain.ChatType;
-
 import java.time.LocalDateTime;
+
+import com.bisang.backend.chat.domain.ChatType;
 
 public record ChatMessageResponse(
         Long id,

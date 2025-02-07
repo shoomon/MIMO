@@ -13,13 +13,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 
-
-import lombok.Builder;
-import lombok.Getter;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -51,10 +50,10 @@ public class ChatroomUser {
     private LocalDateTime lastModifiedAt;
 
     private ChatroomUser(
-      Long chatroomId,
-      Long userId,
-      String nickname,
-      LocalDateTime lastModifiedAt
+            Long chatroomId,
+            Long userId,
+            String nickname,
+            LocalDateTime lastModifiedAt
     ) {
         this.chatroomId = chatroomId;
         this.userId = userId;
@@ -62,7 +61,12 @@ public class ChatroomUser {
         this.lastModifiedAt = lastModifiedAt;
     }
 
-    public static ChatroomUser createChatroomUser(Long chatroomId, Long userId, String nickname, LocalDateTime lastModifiedAt) {
+    public static ChatroomUser createChatroomUser(
+            Long chatroomId,
+            Long userId,
+            String nickname,
+            LocalDateTime lastModifiedAt
+    ) {
         return new ChatroomUser(chatroomId, userId, nickname, lastModifiedAt);
     }
 
