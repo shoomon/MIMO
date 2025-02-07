@@ -84,8 +84,32 @@ public class TeamSchedule extends BaseTimeEntity {
         this.currentParticipants = 1L;
     }
 
-    public void updateDescription(String description) {
-        this.shortDescription = description.substring(100 - 3) + "...";
-        this.description.updateDescription(description);
+    public void increaseCurrentParticipants() {
+        currentParticipants++;
+    }
+
+    public void decreaseCurrentParticipants() {
+        currentParticipants--;
+    }
+
+    public void updateMaxParticipants(Long maxParticipants) {
+        this.maxParticipants = maxParticipants;
+    }
+
+    public void updateDate(LocalDateTime date) {
+        this.date = date;
+    }
+
+    public void updateLocation(String location) {
+        this.location = location;
+    }
+
+    public void updateTitle(String newTitle) {
+        this.title = newTitle;
+    }
+
+    public void updateDescription(String newDescription) {
+        this.shortDescription = newDescription.substring(100 - 3) + "...";
+        this.description.updateDescription(newDescription);
     }
 }

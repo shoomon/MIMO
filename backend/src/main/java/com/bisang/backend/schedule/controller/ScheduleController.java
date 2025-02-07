@@ -1,6 +1,7 @@
 package com.bisang.backend.schedule.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,6 +9,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bisang.backend.auth.annotation.AuthUser;
 import com.bisang.backend.schedule.controller.request.TeamScheduleCreateRequest;
+import com.bisang.backend.schedule.controller.request.TeamScheduleUpdateDateRequest;
+import com.bisang.backend.schedule.controller.request.TeamScheduleUpdateDescriptionRequest;
+import com.bisang.backend.schedule.controller.request.TeamScheduleUpdateLocationRequest;
+import com.bisang.backend.schedule.controller.request.TeamScheduleUpdateParticipantsRequest;
+import com.bisang.backend.schedule.controller.request.TeamScheduleUpdateTitleRequest;
 import com.bisang.backend.schedule.controller.response.TeamScheduleCreateResponse;
 import com.bisang.backend.schedule.domain.TeamSchedule;
 import com.bisang.backend.schedule.service.TeamScheduleService;
@@ -37,5 +43,80 @@ public class ScheduleController {
             request.maxParticipants());
 
         return ResponseEntity.ok(new TeamScheduleCreateResponse(teamSchedule.getId()));
+    }
+
+    @PatchMapping("/title")
+    public ResponseEntity<Void> updateTitle(
+        @AuthUser User user,
+        @RequestBody TeamScheduleUpdateTitleRequest request
+    ) {
+        teamScheduleService.updateTitle(
+            user.getId(),
+            request.teamId(),
+            request.teamScheduleId(),
+            request.title()
+        );
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/description")
+    public ResponseEntity<Void> updateDescription(
+        @AuthUser User user,
+        @RequestBody TeamScheduleUpdateDescriptionRequest request
+    ) {
+        teamScheduleService.updateDescription(
+            user.getId(),
+            request.teamId(),
+            request.teamScheduleId(),
+            request.description()
+        );
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/date")
+    public ResponseEntity<Void> updateDate(
+        @AuthUser User user,
+        @RequestBody TeamScheduleUpdateDateRequest request
+    ) {
+        teamScheduleService.updateDate(
+            user.getId(),
+            request.teamId(),
+            request.teamScheduleId(),
+            request.date()
+        );
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/location")
+    public ResponseEntity<Void> updateLocation(
+        @AuthUser User user,
+        @RequestBody TeamScheduleUpdateLocationRequest request
+    ) {
+        teamScheduleService.updateLocation(
+            user.getId(),
+            request.teamId(),
+            request.teamScheduleId(),
+            request.location()
+        );
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/max-participants")
+    public ResponseEntity<Void> updateParticipants(
+        @AuthUser User user,
+        @RequestBody TeamScheduleUpdateParticipantsRequest request
+    ) {
+        teamScheduleService.updateParticipants(
+            user.getId(),
+            request.teamId(),
+            request.teamScheduleId(),
+            request.maxParticipants()
+        );
+
+        return ResponseEntity.ok().build();
     }
 }
