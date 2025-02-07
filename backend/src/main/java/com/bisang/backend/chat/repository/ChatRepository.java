@@ -165,8 +165,7 @@ public class ChatRepository {
                     chatMessage.getUserId(),
                     chatMessage.getMessage(),
                     chatMessage.getCreatedAt(),
-                    //TODO: ChatMessage에 type 추가해야함
-                    ChatType.MESSAGE
+                    chatMessage.getChatType()
             );
 
             result.add(redisChatMessage);
