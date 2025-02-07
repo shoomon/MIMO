@@ -1,20 +1,10 @@
 package com.bisang.backend.chat.repository;
 
-<<<<<<< HEAD
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-=======
-import com.bisang.backend.chat.domain.redis.RedisChatMessage;
-import com.bisang.backend.chat.domain.redis.RedisTeamMember;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ZSetOperations;
-import org.springframework.stereotype.Repository;
-
-import java.util.*;
->>>>>>> 399e19f (feat: 유저별 채팅방 레디스 조회)
 import java.util.stream.Collectors;
 
 import org.springframework.data.redis.core.RedisTemplate;
@@ -64,28 +54,22 @@ public class ChatRedisRepository {
     }
 
     public void updateUserChatroom(long userId, long teamId, Double timestamp) {
-<<<<<<< HEAD
         template.opsForZSet().add("userChatroom" + userId, teamId, timestamp);
     }
 
     public void deleteUserChatroom(long teamUserId, long teamId) {
         template.opsForZSet().remove("userChatroom" + teamUserId, teamId);
-=======
-        redisUserChatroomTemplate.opsForZSet().add("userChatroom"+userId, teamId, timestamp);
-    }
-
-    public void deleteUserChatroom(long userId, long teamId) {
-        redisUserChatroomTemplate.opsForZSet().remove("userChatroom"+userId, teamId);
     }
 
     public List<Long> getUserChatroom(long userId) {
-        Set<ZSetOperations.TypedTuple<Long>> result = redisUserChatroomTemplate.opsForZSet().reverseRangeWithScores("userChatroom"+userId, 0, 19);
+        Set<ZSetOperations.TypedTuple<Long>> result
+                = redisUserChatroomTemplate.opsForZSet()
+                .reverseRangeWithScores("userChatroom" + userId, 0, 19);
 
         return (result == null) ? new ArrayList<>() :
                 result.stream()
                         .map(ZSetOperations.TypedTuple::getValue)
                         .collect(Collectors.toList());
->>>>>>> 399e19f (feat: 유저별 채팅방 레디스 조회)
     }
 
     public void saveMessage(long teamId, RedisChatMessage message) {

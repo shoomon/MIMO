@@ -8,10 +8,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.bisang.backend.auth.AuthenticationArgumentResolver;
-<<<<<<< HEAD
 import com.bisang.backend.auth.SimpleAuthenticationArgumentResolver;
-=======
->>>>>>> bd3abfa (feat: 팀 생성, 조회, 변경 로직 작성)
 
 import lombok.RequiredArgsConstructor;
 

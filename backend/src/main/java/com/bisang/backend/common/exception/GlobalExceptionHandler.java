@@ -37,13 +37,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .body(new ExceptionResponse(exception.getCode(), exception.getMessage()));
     }
 
-<<<<<<< HEAD
-    @ExceptionHandler(TransactionException.class)
-    public ResponseEntity<ExceptionResponse> handlePointException(TransactionException exception) {
-=======
     @ExceptionHandler(ChatAccessInvalidException.class)
     public ResponseEntity<ExceptionResponse> handleChatException(ChatAccessInvalidException exception) {
->>>>>>> f46c218 (feat: 채팅방 멤버 추가 삭제 로직 추가, 사용자 인증 로직 추가 (아직 테스트용))
+        log.warn(exception.getMessage(), exception);
+        return ResponseEntity.badRequest()
+                .body(new ExceptionResponse(exception.getCode(), exception.getMessage()));
+    }
+
+    @ExceptionHandler(TransactionException.class)
+    public ResponseEntity<ExceptionResponse> handlePointException(TransactionException exception) {
         log.warn(exception.getMessage(), exception);
         return ResponseEntity.badRequest()
                 .body(new ExceptionResponse(exception.getCode(), exception.getMessage()));

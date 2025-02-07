@@ -21,27 +21,6 @@ import com.bisang.backend.user.domain.User;
 import com.bisang.backend.user.repository.UserJpaRepository;
 
 import lombok.RequiredArgsConstructor;
-<<<<<<< HEAD
-import org.springframework.stereotype.Repository;
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-import java.util.LinkedList;
->>>>>>> f46c218 (feat: 채팅방 멤버 추가 삭제 로직 추가, 사용자 인증 로직 추가 (아직 테스트용))
-import java.util.List;
-=======
-=======
-import java.util.List;
->>>>>>> 7a73166 (feat: 채팅 기록 조회 기능 (개발중))
-import java.util.Map;
->>>>>>> 70af064 (feat: 유저정보 레디스 캐싱 처리)
-import java.util.Set;
-
-import static com.bisang.backend.common.exception.ExceptionCode.NOT_FOUND;
-=======
->>>>>>> 4358564 (style: checkstyle fixed)
 
 @Repository
 @RequiredArgsConstructor
@@ -107,10 +86,6 @@ public class ChatRepository {
         return false;
     }
 
-<<<<<<< HEAD
-    public List<Object> redisGetMessages(Long teamId) {
-        return chatRedisRepository.getMessages(teamId);
-=======
     public Map<Object, Object> getUserInfo(Long teamUserId, Long userId) {
         Map<Object, Object> userInfo = redisCacheRepository.getUserProfile(teamUserId);
         if (userInfo.isEmpty()) {
@@ -126,7 +101,6 @@ public class ChatRepository {
         }
 
         return userInfo;
->>>>>>> 70af064 (feat: 유저정보 레디스 캐싱 처리)
     }
 
     public Long getTeamUserId(Long userId, Long teamId) {
