@@ -1,9 +1,9 @@
 import CategoryListView from './CategoryList.view';
 
-const CategoryList = () => {
+const CategoryList = ({ to }: { to?: string }) => {
     // api로 해야함 나중에 수정 필요
     const categoryList = [
-        { iconId: 'Bike', content: '바이크', path: '/' },
+        { iconId: 'Bike', content: '바이크', path: 'category/12' },
         { iconId: 'Book', content: '독서', path: '/' },
         { iconId: 'Car', content: '자동차', path: '/' },
         { iconId: 'CarWash', content: '세차', path: '/' },
@@ -16,7 +16,7 @@ const CategoryList = () => {
         { iconId: 'Camera', content: '사진 / 영상상', path: '/' },
     ];
 
-    return <CategoryListView items={categoryList} />;
+    return <CategoryListView items={categoryList} label="카테고리" to={to} />;
 };
 
 export default CategoryList;

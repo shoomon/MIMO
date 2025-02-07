@@ -1,5 +1,7 @@
+import CategoryList from '@/components/molecules/CategoryList/CategoryList';
+
 const Category = () => {
-    return <div>카테고리</div>;
+    return <CategoryList />;
 };
 
 export default Category;

@@ -47,7 +47,7 @@ const LoginedMenu = ({
     onClickInfo: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }) => {
     return (
-        <div className="flex gap-9">
+        <div className="flex gap-4">
             <Link to="/">
                 <Icon type="png" id="Alarm" size={44} />
             </Link>
@@ -93,9 +93,9 @@ const HeaderView = ({
     };
 
     return (
-        <header className="w-full px-4 py-5 lg:w-[1440px]">
+        <header className="w-full py-5">
             <div className="flex flex-wrap items-center justify-between gap-4">
-                <h1 className="w-48">
+                <h1 className="">
                     <Link to="/">
                         <Logo />
                     </Link>

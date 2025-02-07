@@ -1,5 +1,7 @@
+import CategoryList from '@/components/molecules/CategoryList/CategoryList';
+
 const Home = () => {
-    return <div>홈</div>;
+    return <CategoryList />;
 };
 
 export default Home;

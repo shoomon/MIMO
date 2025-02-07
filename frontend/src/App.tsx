@@ -1,8 +1,10 @@
+import AppRoutes from './AppRoutes';
+
 function App() {
     return (
-        <>
-            <div className=""></div>
-        </>
+        <div className="mx-auto w-full max-w-[1440px]">
+            <AppRoutes />
+        </div>
     );
 }
 

@@ -21,7 +21,7 @@ const CategoryItem = ({ iconId, content, path }: CategoryItemProps) => {
     return (
         <Link
             to={path}
-            className="flex h-fit w-[100px] flex-col items-center justify-center gap-3 rounded-lg bg-white py-2 hover:bg-gray-100"
+            className="flex h-fit w-[100px] flex-col items-center justify-center gap-3 rounded-lg bg-white py-2 hover:bg-gray-200"
         >
             <div>
                 <Icon type="png" id={iconId} />
