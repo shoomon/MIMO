@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
 
 import com.bisang.backend.chat.controller.response.ChatroomResponse;
 import com.bisang.backend.chat.domain.ChatMessage;
-import com.bisang.backend.chat.domain.ChatType;
 import com.bisang.backend.chat.domain.Chatroom;
 import com.bisang.backend.chat.domain.ChatroomUser;
 import com.bisang.backend.chat.domain.redis.RedisChatMessage;
@@ -59,6 +58,10 @@ public class ChatRepository {
 
     public void redisDeleteUserChatroom(long userId, long teamId) {
         chatRedisRepository.deleteUserChatroom(userId, teamId);
+    }
+
+    public List<Long> redisGetUserChatroom(long userId) {
+        return chatRedisRepository.getUserChatroom(userId);
     }
 
     public void redisSaveMessage(long teamId, RedisChatMessage message) {
@@ -135,8 +138,7 @@ public class ChatRepository {
                     chatMessage.getUserId(),
                     chatMessage.getMessage(),
                     chatMessage.getCreatedAt(),
-                    //TODO: ChatMessage에 type 추가해야함
-                    ChatType.MESSAGE
+                    chatMessage.getChatType()
             );
 
             result.add(redisChatMessage);

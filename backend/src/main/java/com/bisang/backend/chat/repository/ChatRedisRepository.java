@@ -1,5 +1,6 @@
 package com.bisang.backend.chat.repository;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -21,6 +22,7 @@ public class ChatRedisRepository {
     private final RedisTemplate<String, Object> template;
     private final RedisTemplate<String, RedisTeamMember> redisTeamMemberTemplate;
     private final RedisTemplate<String, RedisChatMessage> redisChatMessageTemplate;
+    private final RedisTemplate<String, Long> redisUserChatroomTemplate;
 
     private static final String messageIdKey = "chat:message:id"; // 채팅 메시지 ID를 관리할 key
 
@@ -52,11 +54,22 @@ public class ChatRedisRepository {
     }
 
     public void updateUserChatroom(long userId, long teamId, Double timestamp) {
-        template.opsForZSet().add("userChatroom" + userId, teamId, timestamp);
+        redisUserChatroomTemplate.opsForZSet().add("userChatroom" + userId, teamId, timestamp);
     }
 
-    public void deleteUserChatroom(long teamUserId, long teamId) {
-        template.opsForZSet().remove("userChatroom" + teamUserId, teamId);
+    public void deleteUserChatroom(long userId, long teamId) {
+        redisUserChatroomTemplate.opsForZSet().remove("userChatroom" + userId, teamId);
+    }
+
+    public List<Long> getUserChatroom(long userId) {
+        Set<ZSetOperations.TypedTuple<Long>> result
+                = redisUserChatroomTemplate.opsForZSet()
+                .reverseRangeWithScores("userChatroom" + userId, 0, 19);
+
+        return (result == null) ? new ArrayList<>() :
+                result.stream()
+                        .map(ZSetOperations.TypedTuple::getValue)
+                        .collect(Collectors.toList());
     }
 
     public void saveMessage(long teamId, RedisChatMessage message) {

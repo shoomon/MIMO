@@ -37,7 +37,7 @@ public class ChatroomController {
 
     @GetMapping("/test/create-chatroom")
     public ResponseEntity<String> createChatroom(@AuthUser User user, @RequestParam("title") String title) {
-        chatroomService.createChatroom(user.getId(), user.getNickname(), title, ChatroomStatus.GROUP);
+        chatroomService.createChatroom(user.getId(), user.getNickname(), title, "", ChatroomStatus.GROUP);
         return ResponseEntity.ok().body(title + " 생성 성공");
     }
 
