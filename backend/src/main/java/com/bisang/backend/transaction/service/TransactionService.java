@@ -1,5 +1,10 @@
 package com.bisang.backend.transaction.service;
 
+import org.springframework.stereotype.Service;
+
+import com.bisang.backend.common.annotation.DistributedLock;
+import com.bisang.backend.common.exception.ExceptionCode;
+import com.bisang.backend.common.exception.TransactionException;
 import com.bisang.backend.transaction.controller.request.PaymentResultRequest;
 import com.bisang.backend.transaction.controller.request.TransferRequest;
 import com.bisang.backend.transaction.converter.TransactionConverter;
@@ -8,12 +13,9 @@ import com.bisang.backend.transaction.domain.TransactionStatus;
 import com.bisang.backend.transaction.repository.TransactionLogJpaRepository;
 import com.bisang.backend.transaction.service.charge.ChargeService;
 import com.bisang.backend.transaction.service.transfer.TransferService;
-import com.bisang.backend.common.annotation.DistributedLock;
-import com.bisang.backend.common.exception.ExceptionCode;
-import com.bisang.backend.common.exception.TransactionException;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
@@ -29,7 +31,7 @@ public class TransactionService {
     @DistributedLock(name = "관리자 계좌번호", key = ADMIN_ACCOUNT_NUMBER, waitTime = 3, leaseTime = 3)
     public void chargeBalance(PaymentResultRequest paymentResultRequest) {
         Transaction transaction
-                = TransactionConverter.PaymentResultRequestToTransaction(paymentResultRequest);
+                = TransactionConverter.paymentResultRequestToTransaction(paymentResultRequest);
 
         transaction = saveTransactionLog(transaction);
 
@@ -46,7 +48,7 @@ public class TransactionService {
 
     public void transferBalance(TransferRequest transferRequest) {
         Transaction transaction
-                = TransactionConverter.TransferRequestToTransaction(transferRequest);
+                = TransactionConverter.transferRequestToTransaction(transferRequest);
 
         transaction = saveTransactionLog(transaction);
 

@@ -1,10 +1,16 @@
 package com.bisang.backend.account.domain;
 
-import com.bisang.backend.common.domain.BaseTimeEntity;
-import jakarta.persistence.*;
-import lombok.NoArgsConstructor;
-
 import static lombok.AccessLevel.PROTECTED;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+import com.bisang.backend.common.domain.BaseTimeEntity;
+
+import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = PROTECTED)
