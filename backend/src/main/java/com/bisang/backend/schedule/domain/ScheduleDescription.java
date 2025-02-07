@@ -9,9 +9,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
 @NoArgsConstructor
 @Table(
         name = "schedule_description"
@@ -27,6 +29,10 @@ public class ScheduleDescription {
     private String description;
 
     public ScheduleDescription(String description) {
+        this.description = description;
+    }
+
+    public void updateDescription(String description) {
         this.description = description;
     }
 }
