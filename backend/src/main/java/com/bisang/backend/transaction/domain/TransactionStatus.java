@@ -1,4 +1,4 @@
-package com.bisang.backend.Transaction.domain;
+package com.bisang.backend.transaction.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,13 +1,14 @@
-package com.bisang.backend.Transaction.converter;
+package com.bisang.backend.transaction.converter;
 
-import com.bisang.backend.Transaction.controller.request.PaymentResultRequest;
-import com.bisang.backend.Transaction.controller.request.TransferRequest;
-import com.bisang.backend.Transaction.domain.Transaction;
-import com.bisang.backend.Transaction.domain.TransactionCategory;
-import com.bisang.backend.Transaction.domain.TransactionStatus;
-import jakarta.persistence.Converter;
+import org.springframework.stereotype.Component;
 
-@Converter
+import com.bisang.backend.transaction.controller.request.PaymentResultRequest;
+import com.bisang.backend.transaction.controller.request.TransferRequest;
+import com.bisang.backend.transaction.domain.Transaction;
+import com.bisang.backend.transaction.domain.TransactionCategory;
+import com.bisang.backend.transaction.domain.TransactionStatus;
+
+@Component
 public class TransactionConverter {
 
     // 잔액 충전 트랜잭션

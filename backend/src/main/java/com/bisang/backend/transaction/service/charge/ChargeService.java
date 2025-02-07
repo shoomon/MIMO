@@ -1,16 +1,15 @@
-package com.bisang.backend.Transaction.service.charge;
+package com.bisang.backend.transaction.service.charge;
 
 
-import com.bisang.backend.Transaction.domain.AccountDetails;
-import com.bisang.backend.Transaction.domain.Transaction;
-import com.bisang.backend.Transaction.domain.TransactionCategory;
-import com.bisang.backend.Transaction.service.AccountDetailsService;
+import com.bisang.backend.transaction.domain.AccountDetails;
+import com.bisang.backend.transaction.domain.Transaction;
+import com.bisang.backend.transaction.domain.TransactionCategory;
+import com.bisang.backend.transaction.service.AccountDetailsService;
 import com.bisang.backend.account.domain.Account;
 import com.bisang.backend.account.repository.AccountJpaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j

@@ -9,8 +9,6 @@ import org.springframework.data.jpa.repository.Query;
 import com.bisang.backend.account.domain.Account;
 
 public interface AccountJpaRepository extends JpaRepository<Account, String> {
-    Account createAccount(Account account);
-
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT a FROM Account a WHERE a.accountNumber = :accountNumber")
     Account findByAccountNumber(String accountNumber);
