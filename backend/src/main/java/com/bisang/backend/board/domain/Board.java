@@ -15,9 +15,12 @@ import jakarta.persistence.Table;
 
 import com.bisang.backend.common.domain.BaseTimeEntity;
 
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
 @NoArgsConstructor(access = PROTECTED)
 @Table(
         name = "board",
@@ -53,6 +56,7 @@ public class Board extends BaseTimeEntity {
     @Column(name = "board_view_count", nullable = false)
     private Long viewCount;
 
+    @Builder
     private Board(
             Long teamBoardId,
             Long teamUserId,

@@ -1,10 +1,5 @@
 package com.bisang.backend.board.controller.dto;
 
-import java.time.LocalDateTime;
-
-public record CommentDto(
-        String title,
-        String content,
-        LocalDateTime writeDate
-) {
+public class CommentDto {
+    //todo: DTO 내용 작성
 }

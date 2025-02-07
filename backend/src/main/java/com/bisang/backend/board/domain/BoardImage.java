@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -34,6 +35,7 @@ public class BoardImage {
     @Column(length = 100, name = "file_uri", nullable = false)
     private String fileUri;
 
+    @Builder
     private BoardImage(Long boardId, String fileExtension, String fileUri) {
         this.boardId = boardId;
         this.fileExtension = fileExtension;
