@@ -1,8 +1,8 @@
-package com.bisang.backend.Transaction.controller;
+package com.bisang.backend.transaction.controller;
 
-import com.bisang.backend.Transaction.controller.request.PaymentResultRequest;
-import com.bisang.backend.Transaction.controller.request.TransferRequest;
-import com.bisang.backend.Transaction.service.TransactionService;
+import com.bisang.backend.transaction.controller.request.PaymentResultRequest;
+import com.bisang.backend.transaction.controller.request.TransferRequest;
+import com.bisang.backend.transaction.service.TransactionService;
 import com.bisang.backend.auth.annotation.AuthUser;
 import com.bisang.backend.user.domain.User;
 import lombok.RequiredArgsConstructor;

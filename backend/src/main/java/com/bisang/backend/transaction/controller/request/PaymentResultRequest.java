@@ -1,4 +1,4 @@
-package com.bisang.backend.Transaction.controller.request;
+package com.bisang.backend.transaction.controller.request;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

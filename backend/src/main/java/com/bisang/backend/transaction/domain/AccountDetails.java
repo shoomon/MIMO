@@ -1,4 +1,4 @@
-package com.bisang.backend.Transaction.domain;
+package com.bisang.backend.transaction.domain;
 
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import static jakarta.persistence.EnumType.STRING;
 import static lombok.AccessLevel.PROTECTED;
 
+@Entity
 @Getter
 @ToString
 @NoArgsConstructor(access = PROTECTED)

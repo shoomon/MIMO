@@ -31,7 +31,7 @@ public class AccountService {
                 .orElseThrow(()
                         -> new IllegalStateException("세 번의 시도 끝에도 유효한 계좌번호를 생성하지 못했습니다."));
 
-        return accountJpaRepository.createAccount(new Account(accountNumber));
+        return accountJpaRepository.save(new Account(accountNumber));
     }
 
     public Account createUserAccount(
@@ -43,7 +43,7 @@ public class AccountService {
                 .orElseThrow(()
                         -> new IllegalStateException("세 번의 시도 끝에도 유효한 계좌번호를 생성하지 못했습니다."));
 
-        return accountJpaRepository.createAccount(new Account(accountNumber));
+        return accountJpaRepository.save(new Account(accountNumber));
     }
 
     private String createRandomNineNumber() {

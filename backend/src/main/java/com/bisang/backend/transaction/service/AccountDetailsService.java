@@ -1,9 +1,9 @@
-package com.bisang.backend.Transaction.service;
+package com.bisang.backend.transaction.service;
 
-import com.bisang.backend.Transaction.domain.AccountDetails;
-import com.bisang.backend.Transaction.domain.Transaction;
-import com.bisang.backend.Transaction.domain.TransactionCategory;
-import com.bisang.backend.Transaction.repository.AccountDetailsJpaRepository;
+import com.bisang.backend.transaction.domain.AccountDetails;
+import com.bisang.backend.transaction.domain.Transaction;
+import com.bisang.backend.transaction.domain.TransactionCategory;
+import com.bisang.backend.transaction.repository.AccountDetailsJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

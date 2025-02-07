@@ -1,10 +1,10 @@
-package com.bisang.backend.Transaction.service.transfer;
+package com.bisang.backend.transaction.service.transfer;
 
 
-import com.bisang.backend.Transaction.domain.AccountDetails;
-import com.bisang.backend.Transaction.domain.Transaction;
-import com.bisang.backend.Transaction.domain.TransactionCategory;
-import com.bisang.backend.Transaction.service.AccountDetailsService;
+import com.bisang.backend.transaction.domain.AccountDetails;
+import com.bisang.backend.transaction.domain.Transaction;
+import com.bisang.backend.transaction.domain.TransactionCategory;
+import com.bisang.backend.transaction.service.AccountDetailsService;
 import com.bisang.backend.account.domain.Account;
 import com.bisang.backend.account.repository.AccountJpaRepository;
 import com.bisang.backend.common.exception.AccountException;
