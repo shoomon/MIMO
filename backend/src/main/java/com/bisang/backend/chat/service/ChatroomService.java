@@ -22,10 +22,9 @@ public class ChatroomService {
     private final ChatMessageService chatMessageService;
 
 
-    public void createChatroom(Long userId, String nickname, String title, ChatroomStatus status) {
-        Chatroom chatroom = Chatroom.createChatroom(userId, title, status);
+    public void createChatroom(Long userId, String nickname, String title, String profileUri, ChatroomStatus status) {
+        Chatroom chatroom = Chatroom.createChatroom(userId, title, profileUri, status);
 
-        //TODO: 팀사진도 같이 넣으면 좋겠는데 그럼 db 바꿔야하는데 바꿀까말까
         repository.insertChatroom(chatroom);
         //TODO: 팀 관련 정보 캐싱 바로 해버려? 알아서 될 듯? 아닌가
 
