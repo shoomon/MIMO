@@ -1,12 +1,13 @@
 package com.bisang.backend.user.service;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bisang.backend.user.controller.response.UserMyResponse;
 import com.bisang.backend.user.domain.User;
-import com.bisang.backend.user.domain.request.UserUpdateRequest;
 import com.bisang.backend.user.repository.UserJpaRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -16,22 +17,49 @@ import lombok.RequiredArgsConstructor;
 public class UserService {
     private final UserJpaRepository userJpaRepository;
 
-    public Optional<User> findUserByEmail(String email) {
-        return userJpaRepository.findByEmail(email);
-    }
-
     @Transactional
     public void saveUser(User user) {
         userJpaRepository.save(user);
     }
 
     @Transactional
-    public void modifyUser(User user, UserUpdateRequest updateRequest) {
-        user.update(
-                updateRequest.name(),
-                updateRequest.nickname(),
-                updateRequest.profileUri()
-        );
+    public void updateNickname(User user, String nickname) {
+        user.updateNickname(nickname);
         userJpaRepository.save(user);
+    }
+
+    @Transactional
+    public void updateName(User user, String name) {
+        user.updateName(name);
+        userJpaRepository.save(user);
+    }
+
+    @Transactional
+    public void updateProfileUri(User user, String profileUri) {
+        user.updateProfileUri(profileUri);
+        userJpaRepository.save(user);
+    }
+
+    /**
+     * 뒤에 기능들이 추가되면 추후 변경 필요
+     */
+    @Transactional(readOnly = true)
+    public UserMyResponse getMyInfo(User user) {
+        return UserMyResponse.builder()
+                .name(user.getName())
+                .nickname(user.getNickname())
+                .email(user.getEmail())
+                .profileUri(user.getProfileUri())
+                .mileage(0L)
+                .mileageIncome(0L)
+                .mileageOutcome(0L)
+                .reviewScore(0D)
+                .boards(new ArrayList<>())
+                .comments(new ArrayList<>())
+                .build();
+    }
+
+    public Optional<User> findUserByEmail(String email) {
+        return userJpaRepository.findByEmail(email);
     }
 }

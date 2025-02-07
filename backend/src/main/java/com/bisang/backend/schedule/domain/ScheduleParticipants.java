@@ -1,5 +1,7 @@
 package com.bisang.backend.schedule.domain;
 
+import static com.bisang.backend.schedule.domain.ParticipantsRole.CREATOR;
+import static com.bisang.backend.schedule.domain.ParticipantsRole.PARTICIPANTS;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
@@ -31,4 +33,21 @@ public class ScheduleParticipants {
 
     @Column(name = "team_user_id", nullable = false)
     private Long teamUserId;
+
+    @Column(name = "user_role", nullable = false)
+    private ParticipantsRole userRole;
+
+    private ScheduleParticipants(Long teamScheduleId, Long teamUserId, ParticipantsRole userRole) {
+        this.teamScheduleId = teamScheduleId;
+        this.teamUserId = teamUserId;
+        this.userRole = userRole;
+    }
+
+    public static ScheduleParticipants creator(Long teamScheduleId, Long teamUserId) {
+        return new ScheduleParticipants(teamScheduleId, teamUserId, CREATOR);
+    }
+
+    public static ScheduleParticipants participants(Long teamScheduleId, Long teamUserId) {
+        return new ScheduleParticipants(teamScheduleId, teamUserId, PARTICIPANTS);
+    }
 }

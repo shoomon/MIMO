@@ -14,7 +14,6 @@ import static lombok.AccessLevel.PROTECTED;
         }
 )
 public class Account extends BaseTimeEntity {
-
     @Id
     @Column(name = "account_number", length = 13)
     private String accountNumber;

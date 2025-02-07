@@ -1,5 +1,6 @@
 package com.bisang.backend.team.domain;
 
+import static com.bisang.backend.team.domain.TeamUserRole.*;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
@@ -18,10 +19,13 @@ import jakarta.persistence.UniqueConstraint;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
+@Getter
 @NoArgsConstructor(access = PROTECTED)
 @Table(
         name = "team_user",
@@ -56,6 +60,7 @@ public class TeamUser {
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
+    @Builder
     private TeamUser(
             Long userId,
             Long teamId,
@@ -68,5 +73,71 @@ public class TeamUser {
         this.nickname = nickname;
         this.role = role;
         this.status = status;
+    }
+
+    public static TeamUser createTeamLeader(
+            Long userId,
+            Long teamId,
+            String nickname,
+            TeamNotificationStatus status
+    ) {
+        return TeamUser.builder()
+                .userId(userId)
+                .teamId(teamId)
+                .nickname(nickname)
+                .role(LEADER)
+                .status(status).build();
+    }
+
+    public static TeamUser createTeamCoLeader(
+            Long userId,
+            Long teamId,
+            String nickname,
+            TeamNotificationStatus status
+    ) {
+        return TeamUser.builder()
+                .userId(userId)
+                .teamId(teamId)
+                .nickname(nickname)
+                .role(CO_LEADER)
+                .status(status).build();
+    }
+
+    public static TeamUser createTeamMember(
+            Long userId,
+            Long teamId,
+            String nickname,
+            TeamNotificationStatus status
+    ) {
+        return TeamUser.builder()
+                .userId(userId)
+                .teamId(teamId)
+                .nickname(nickname)
+                .role(MEMBER)
+                .status(status).build();
+    }
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void upgradeRole() {
+        this.role = CO_LEADER;
+    }
+
+    public void downgradeRole() {
+        this.role = MEMBER;
+    }
+
+    public Boolean isCoLeader() {
+        return role == CO_LEADER;
+    }
+
+    public Boolean isLeader() {
+        return role == LEADER;
+    }
+
+    public Boolean isMember() {
+        return role == MEMBER;
     }
 }
