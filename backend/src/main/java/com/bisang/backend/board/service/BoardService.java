@@ -1,16 +1,23 @@
 package com.bisang.backend.board.service;
 
-import com.bisang.backend.board.controller.dto.CommentDto;
-import com.bisang.backend.board.controller.dto.SimpleCommentDto;
-import com.bisang.backend.board.controller.response.BoardDetailResponse;
-import com.bisang.backend.board.domain.*;
-import com.bisang.backend.board.repository.*;
 import jakarta.persistence.EntityNotFoundException;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import com.bisang.backend.board.controller.response.BoardDetailResponse;
+import com.bisang.backend.board.domain.Board;
+import com.bisang.backend.board.domain.BoardDescription;
+import com.bisang.backend.board.domain.BoardImage;
+import com.bisang.backend.board.domain.BoardLike;
+import com.bisang.backend.board.domain.TeamBoard;
+import com.bisang.backend.board.repository.BoardDescriptionJpaRepository;
+import com.bisang.backend.board.repository.BoardImageJpaRepository;
+import com.bisang.backend.board.repository.BoardJpaRepository;
+import com.bisang.backend.board.repository.BoardLikeRepository;
+import com.bisang.backend.board.repository.CommentJpaReporitory;
+import com.bisang.backend.board.repository.TeamBoardJpaRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +37,7 @@ public class BoardService {
             String description,
             String fileUri,
             String fileExtension
-    ){
+    ) {
         BoardDescription boardDescription = boardDescriptionJpaRepository.save(new BoardDescription(description));
 
         Board newPost = Board.builder()
@@ -47,7 +54,7 @@ public class BoardService {
                                 .teamUserId(teamUserId)
                                 .build());
 
-        if(fileUri != null || !fileUri.isEmpty()) {
+        if (fileUri != null || !fileUri.isEmpty()) {
             boardImageJpaRepository.save(BoardImage.builder()
                     .boardId(post.getId())
                     .fileExtension(fileExtension)
@@ -57,7 +64,7 @@ public class BoardService {
 
     }
 
-    public BoardDetailResponse getPost(Long postId){
+    public BoardDetailResponse getPost(Long postId) {
 
         Board post =  boardJpaRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
@@ -72,9 +79,10 @@ public class BoardService {
 //                .stream()
 //                .map(comment -> new CommentDto(comment.getUserId(), ))
 //                .collect(Collectors.toList());
-
-        BoardDetailResponse boardDetailResponseDto = new BoardDetailResponse(
-                boardType.getBoardName(), post.getTitle(), description.getDescription(), comments
-        );
+//
+//        BoardDetailResponse boardDetailResponseDto = new BoardDetailResponse(
+//                boardType.getBoardName(), post.getTitle(), description.getDescription(), comments
+//        );
+        return null;
     }
 }

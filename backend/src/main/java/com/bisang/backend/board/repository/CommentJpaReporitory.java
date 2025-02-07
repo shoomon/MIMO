@@ -1,9 +1,10 @@
 package com.bisang.backend.board.repository;
 
-import com.bisang.backend.board.domain.Comment;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
+import com.bisang.backend.board.domain.Comment;
 
 public interface CommentJpaReporitory extends JpaRepository<Comment, Long> {
     List<Comment> findAllByBoardId(Long boardId);
