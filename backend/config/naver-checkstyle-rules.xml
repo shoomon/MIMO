@@ -24,7 +24,6 @@ The following rules in the Naver coding convention cannot be checked by this con
     <!-- [encoding-utf8] -->
     <property name="charset" value="UTF-8"/>
 
-
     <!-- [no-trailing-spaces] -->
     <module name="RegexpSingleline">
         <property name="format" value="^(?!\s+\* $).*?\s+$"/>
