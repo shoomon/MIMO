@@ -14,8 +14,7 @@ public class ChatroomUserService {
     private final ChatRepository repository;
 
     public boolean isMember(Long teamId, Long userId, Long teamUserId) {
-        RedisTeamMember teamMember = new RedisTeamMember(teamUserId, userId);
-        return repository.isMember(teamId, teamMember);
+        return repository.isMember(teamId, userId, teamUserId);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.bisang.backend.chat.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -15,7 +16,6 @@ import com.bisang.backend.chat.domain.redis.RedisTeamMember;
 import com.bisang.backend.chat.repository.ChatRepository;
 
 import lombok.RequiredArgsConstructor;
-
 
 @Service
 @RequiredArgsConstructor
@@ -38,17 +38,11 @@ public class ChatroomService {
         ChatroomUser chatroomUser = ChatroomUser.createChatroomUser(teamId, userId, nickname, LocalDateTime.now());
         //TODO: 이미 userId, teamId에 해당하는 멤버가 존재하면?
         repository.insertJpaMemberUser(chatroomUser);
+        Long teamUserId = chatroomUser.getId();
 
-        RedisChatMessage message = new RedisChatMessage(
-                chatroomUser.getId(),
-                userId,
-                "",
-                LocalDateTime.now(),
-                ChatType.ENTER
-        );
-        RedisTeamMember teamMember = new RedisTeamMember(chatroomUser.getId(), userId);
+        RedisChatMessage message = new RedisChatMessage(userId, teamUserId, "", LocalDateTime.now(), ChatType.ENTER);
 
-        repository.insertRedisMemberUser(teamId, teamMember);
+        repository.insertRedisMemberUser(teamId, userId, teamUserId);
         chatMessageService.broadcastMessage(teamId, message);
     }
 
@@ -58,10 +52,9 @@ public class ChatroomService {
             return false;
         }
 
-        RedisChatMessage message = new RedisChatMessage(teamUserId, userId, "", LocalDateTime.now(), ChatType.LEAVE);
-        RedisTeamMember teamMember = new RedisTeamMember(teamUserId, userId);
+        RedisChatMessage message = new RedisChatMessage(userId, teamUserId, "", LocalDateTime.now(), ChatType.LEAVE);
 
-        repository.removeMember(teamId, teamMember);
+        repository.removeMember(teamId, userId, teamUserId);
         repository.redisDeleteUserChatroom(userId, teamId);
         chatMessageService.broadcastMessage(teamId, message);
 
@@ -75,6 +68,14 @@ public class ChatroomService {
             //TODO: DB 조회. 레디스에서 소실됐다는 의미임. 조회 후 레디스에도 넣어줘야함
         }
         //TODO: 가져온 목록을 기반으로 채팅방 이름, 프로필 이미지, 마지막 채팅 등 가져오기
+
+        List<ChatroomResponse> chatroomResponse  = new ArrayList<>();
+        for (Long c : chatroom) {
+            //TODO: 캐싱처리된 chatroom name, profile uri 가져오기. 없으면 캐싱 처리
+            //TODO: c 를 가지고 마지막 채팅과 채팅 시간 가져오기. 레디스에서 가져오고 없으면 db
+            //TODO: chatroomId + userId로 해당 사람 teamUserId 얻어오고, 얻어온걸로 nickname 가져오기
+            //TODO: 이걸 하려면 Hash 사용하는거 생각해봐야할듯
+        }
 
         return null;
     }

@@ -2,7 +2,6 @@ package com.bisang.backend.chat.repository;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -12,58 +11,50 @@ import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Repository;
 
 import com.bisang.backend.chat.domain.redis.RedisChatMessage;
-import com.bisang.backend.chat.domain.redis.RedisTeamMember;
 
 import lombok.RequiredArgsConstructor;
 
 @Repository
 @RequiredArgsConstructor
 public class ChatRedisRepository {
-    private final RedisTemplate<String, Object> template;
-    private final RedisTemplate<String, RedisTeamMember> redisTeamMemberTemplate;
     private final RedisTemplate<String, RedisChatMessage> redisChatMessageTemplate;
-    private final RedisTemplate<String, Long> redisUserChatroomTemplate;
+    private final RedisTemplate<String, Long> redisLongTemplate;
 
     private static final String messageIdKey = "chat:message:id"; // 채팅 메시지 ID를 관리할 key
 
-    public void insertMember(long teamId, RedisTeamMember teamMember) {
-        redisTeamMemberTemplate.opsForSet().add("teamMember" + teamId, teamMember);
+    public void insertMember(Long teamId, Long userId, Long teamUserId) {
+        redisLongTemplate.opsForSet().add("teamMemberUserId" + teamId, userId);
+        redisLongTemplate.opsForSet().add("teamMember" + teamId + "userId:" + userId, teamUserId);
+        redisLongTemplate.opsForSet().add("teamMember" + teamId + "teamUserId:" + teamUserId, userId);
     }
 
-    public void deleteMember(long teamId, RedisTeamMember teamMember) {
-        redisTeamMemberTemplate.opsForSet().remove("teamMember" + teamId, teamMember);
+    public void deleteMember(Long teamId, Long userId, Long teamUserId) {
+        redisLongTemplate.opsForSet().remove("teamMemberUserId" + teamId, userId);
+        redisLongTemplate.opsForSet().remove("teamMember" + teamId + "userId:" + userId, teamUserId);
+        redisLongTemplate.opsForSet().remove("teamMember" + teamId + "teamUserId:" + teamUserId, userId);
     }
 
-    public boolean isMember(Long teamId, RedisTeamMember teamMember) {
-        return Boolean.TRUE.equals(redisTeamMemberTemplate.opsForSet().isMember("teamMember" + teamId, teamMember));
+    public boolean isMember(Long teamId, Long userId, Long teamUserId) {
+        return Boolean.TRUE.equals(
+                redisLongTemplate.opsForSet().isMember("teamMember" + teamId + "userId:" + userId, teamUserId)
+        );
     }
 
     public Set<Long> getTeamMembers(long teamId) {
-        Set<RedisTeamMember> members = redisTeamMemberTemplate.opsForSet().members("teamMember" + teamId);
-
-        if (members == null) {
-            return Collections.emptySet();
-        }
-
-        Set<Long> memberId = new HashSet<>();
-        for (RedisTeamMember m : members) {
-            memberId.add(m.getUserId());
-        }
-
-        return memberId;
+        return redisLongTemplate.opsForSet().members("teamMemberUserId" + teamId);
     }
 
     public void updateUserChatroom(long userId, long teamId, Double timestamp) {
-        redisUserChatroomTemplate.opsForZSet().add("userChatroom" + userId, teamId, timestamp);
+        redisLongTemplate.opsForZSet().add("userChatroom" + userId, teamId, timestamp);
     }
 
     public void deleteUserChatroom(long userId, long teamId) {
-        redisUserChatroomTemplate.opsForZSet().remove("userChatroom" + userId, teamId);
+        redisLongTemplate.opsForZSet().remove("userChatroom" + userId, teamId);
     }
 
     public List<Long> getUserChatroom(long userId) {
         Set<ZSetOperations.TypedTuple<Long>> result
-                = redisUserChatroomTemplate.opsForZSet()
+                = redisLongTemplate.opsForZSet()
                 .reverseRangeWithScores("userChatroom" + userId, 0, 19);
 
         return (result == null) ? new ArrayList<>() :

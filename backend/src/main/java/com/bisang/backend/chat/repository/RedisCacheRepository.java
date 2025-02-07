@@ -27,9 +27,10 @@ public class RedisCacheRepository {
         return redisTemplate.opsForHash().entries(key);
     }
 
-    public void cacheChatroomInfo(Long chatroomId, String roomName, ChatroomStatus chatroomStatus) {
+    public void cacheChatroomInfo(Long chatroomId, String roomName, String profileUri, ChatroomStatus chatroomStatus) {
         String key = CHATROOM_KEY + chatroomId;
         redisTemplate.opsForHash().put(key, "roomName", roomName);
+        redisTemplate.opsForHash().put(key, "profileUri", profileUri);
         redisTemplate.opsForHash().put(key, "chatroomStatus", chatroomStatus);
     }
 

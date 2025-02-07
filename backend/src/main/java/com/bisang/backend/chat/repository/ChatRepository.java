@@ -31,17 +31,17 @@ public class ChatRepository {
     private final ChatroomJpaRepository chatroomJpaRepository;
     private final RedisCacheRepository redisCacheRepository;
 
-    public void insertRedisMemberUser(long teamId, RedisTeamMember teamMember) {
-        chatRedisRepository.insertMember(teamId, teamMember);
+    public void insertRedisMemberUser(Long teamId, Long userId, Long teamUserId) {
+        chatRedisRepository.insertMember(teamId, userId, teamUserId);
     }
 
     public void insertJpaMemberUser(ChatroomUser chatroomUser) {
         chatroomUserJpaRepository.save(chatroomUser);
     }
 
-    public void removeMember(long teamId, RedisTeamMember teamMember) {
-        chatRedisRepository.deleteMember(teamId, teamMember);
-        chatroomUserJpaRepository.deleteById(teamMember.getTeamUserId());
+    public void removeMember(Long teamId, Long userId, Long teamUserId) {
+        chatRedisRepository.deleteMember(teamId, userId, teamUserId);
+        chatroomUserJpaRepository.deleteById(teamUserId);
     }
 
     public Set<Long> getTeamMembers(long teamId) {
@@ -68,17 +68,17 @@ public class ChatRepository {
         chatRedisRepository.saveMessage(teamId, message);
     }
 
-    public boolean isMember(Long teamId, RedisTeamMember teamMember) {
-        if (chatRedisRepository.isMember(teamId, teamMember)) {
+    public boolean isMember(Long teamId, Long userId, Long teamUserId) {
+        if (chatRedisRepository.isMember(teamId, userId, teamUserId)) {
             return true;
         }
 
         if (chatroomUserJpaRepository.existsByIdAndUserIdAndChatroomId(
-                teamMember.getTeamUserId(),
-                teamMember.getUserId(),
+                teamUserId,
+                userId,
                 teamId
         )) {
-            chatRedisRepository.insertMember(teamId, teamMember);
+            chatRedisRepository.insertMember(teamId, userId, teamUserId);
             return true;
         }
 
@@ -134,8 +134,8 @@ public class ChatRepository {
 
             RedisChatMessage redisChatMessage = new RedisChatMessage(
                     chatMessage.getId(),
-                    chatMessage.getTeamUserId(),
                     chatMessage.getUserId(),
+                    chatMessage.getTeamUserId(),
                     chatMessage.getMessage(),
                     chatMessage.getCreatedAt(),
                     chatMessage.getChatType()
