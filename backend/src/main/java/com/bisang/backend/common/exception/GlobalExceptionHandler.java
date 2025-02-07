@@ -37,8 +37,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .body(new ExceptionResponse(exception.getCode(), exception.getMessage()));
     }
 
-    @ExceptionHandler(ChargeException.class)
-    public ResponseEntity<ExceptionResponse> handlePointException(ChargeException exception) {
+    @ExceptionHandler(TransactionException.class)
+    public ResponseEntity<ExceptionResponse> handlePointException(TransactionException exception) {
         log.warn(exception.getMessage(), exception);
         return ResponseEntity.badRequest()
                 .body(new ExceptionResponse(exception.getCode(), exception.getMessage()));

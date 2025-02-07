@@ -17,14 +17,15 @@ public class Balance {
         this.balance = 0L;
     }
 
-    public void increaseBalance(Long money) {
-        this.balance += money;
+    public void increaseBalance(Long balance) {
+        this.balance += balance;
     }
 
-    public void decreaseBalance(Long money) {
-        if (this.balance < money) {
-            throw new AccountException(NOT_ENOUGH_MONEY);
-        }
-        this.balance -= money;
+    public void decreaseBalance(Long balance) {
+        this.balance -= balance;
+    }
+
+    public boolean validateBalance(Long balance) {
+        return this.balance - balance >= 0;
     }
 }

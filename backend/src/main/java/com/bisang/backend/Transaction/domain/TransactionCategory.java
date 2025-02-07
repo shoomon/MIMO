@@ -1,4 +1,4 @@
-package com.bisang.backend.account.balance.domain;
+package com.bisang.backend.Transaction.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,10 +8,8 @@ import lombok.Getter;
  * DEPOSIT: 잔액 입금
  * PAYMENT: 잔액 결제
  */
-
-
 @Getter
 @AllArgsConstructor
 public enum TransactionCategory {
-    CHARGE(), TRANSFER(), PAYMENT(), WITHDRAWAL;
+    CHARGE(), TRANSFER(), DEPOSIT(), PAYMENT;
 }

@@ -1,4 +1,4 @@
-package com.bisang.backend.account.balance.domain;
+package com.bisang.backend.Transaction.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,7 +8,6 @@ import lombok.Getter;
  * SUCCESS: 트랜잭션 성공
  * FAIL: 트랜잭션 실패
  */
-
 @Getter
 @AllArgsConstructor
 public enum TransactionStatus {
