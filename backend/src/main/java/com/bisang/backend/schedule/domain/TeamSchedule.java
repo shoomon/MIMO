@@ -17,9 +17,12 @@ import jakarta.persistence.Table;
 
 import com.bisang.backend.common.domain.BaseTimeEntity;
 
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
 @NoArgsConstructor(access = PROTECTED)
 @Table(
         name = "team_schedule",
@@ -60,7 +63,8 @@ public class TeamSchedule extends BaseTimeEntity {
     @Column(name = "current_participants", nullable = false)
     private Long currentParticipants;
 
-    private TeamSchedule(
+    @Builder
+    public TeamSchedule(
         Long teamId,
         Long teamUserId,
         String title,
@@ -77,7 +81,7 @@ public class TeamSchedule extends BaseTimeEntity {
         this.location = location;
         this.date = date;
         this.maxParticipants = maxParticipants;
-        this.currentParticipants = 0L;
+        this.currentParticipants = 1L;
     }
 
     public void updateDescription(String description) {
