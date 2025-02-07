@@ -1,5 +1,14 @@
 package com.bisang.backend.chat.repository;
 
+import static com.bisang.backend.common.exception.ExceptionCode.NOT_FOUND;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.springframework.stereotype.Repository;
+
 import com.bisang.backend.chat.controller.response.ChatroomResponse;
 import com.bisang.backend.chat.domain.ChatMessage;
 import com.bisang.backend.chat.domain.ChatType;
@@ -10,7 +19,9 @@ import com.bisang.backend.chat.domain.redis.RedisTeamMember;
 import com.bisang.backend.common.exception.AccountException;
 import com.bisang.backend.user.domain.User;
 import com.bisang.backend.user.repository.UserJpaRepository;
+
 import lombok.RequiredArgsConstructor;
+<<<<<<< HEAD
 import org.springframework.stereotype.Repository;
 
 <<<<<<< HEAD
@@ -29,6 +40,8 @@ import java.util.Map;
 import java.util.Set;
 
 import static com.bisang.backend.common.exception.ExceptionCode.NOT_FOUND;
+=======
+>>>>>>> 4358564 (style: checkstyle fixed)
 
 @Repository
 @RequiredArgsConstructor
@@ -78,7 +91,11 @@ public class ChatRepository {
             return true;
         }
 
-        if (chatroomUserJpaRepository.existsByIdAndUserIdAndChatroomId(teamMember.getTeamUserId(), teamMember.getUserId(), teamId)) {
+        if (chatroomUserJpaRepository.existsByIdAndUserIdAndChatroomId(
+                teamMember.getTeamUserId(),
+                teamMember.getUserId(),
+                teamId
+        )) {
             chatRedisRepository.insertMember(teamId, teamMember);
             return true;
         }
@@ -117,15 +134,20 @@ public class ChatRepository {
         int size = messageList.size();
         System.out.println(size);
         if (size < 30) {
-            List<RedisChatMessage> newMessageList = getMessagesFromDB(30-size, roomId, messageId);
+            List<RedisChatMessage> newMessageList = getMessagesFromDB(30 - size, roomId, messageId);
             newMessageList.addAll(messageList);
             return newMessageList;
         }
         return messageList;
     }
 
-    private List<RedisChatMessage> getMessagesFromDB(int size, Long roomId, Long messageId) {
-        List<ChatMessage> messages = chatMessageJpaRepository.findByChatroomIdAndIdLessThanOrderByIdDesc(roomId, messageId);
+    private List<RedisChatMessage> getMessagesFromDB(
+            int size,
+            Long roomId,
+            Long messageId
+    ) {
+        List<ChatMessage> messages = chatMessageJpaRepository
+                .findByChatroomIdAndIdLessThanOrderByIdDesc(roomId, messageId);
         List<RedisChatMessage> result = new LinkedList<>();
 
         int limit = Math.min(size, messages.size());

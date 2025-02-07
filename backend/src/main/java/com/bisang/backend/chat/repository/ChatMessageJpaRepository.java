@@ -1,9 +1,10 @@
 package com.bisang.backend.chat.repository;
 
-import com.bisang.backend.chat.domain.ChatMessage;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
+import com.bisang.backend.chat.domain.ChatMessage;
 
 public interface ChatMessageJpaRepository extends JpaRepository<ChatMessage, Long> {
 

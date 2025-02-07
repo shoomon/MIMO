@@ -1,9 +1,11 @@
 package com.bisang.backend.chat.service;
 
+import org.springframework.stereotype.Service;
+
 import com.bisang.backend.chat.domain.redis.RedisTeamMember;
 import com.bisang.backend.chat.repository.ChatRepository;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor

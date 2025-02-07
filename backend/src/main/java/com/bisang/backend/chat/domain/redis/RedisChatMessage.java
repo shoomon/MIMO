@@ -1,12 +1,12 @@
 package com.bisang.backend.chat.domain.redis;
 
-import com.bisang.backend.chat.domain.ChatType;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 import java.io.Serializable;
 import java.time.LocalDateTime;
+
+import com.bisang.backend.chat.domain.ChatType;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 public class RedisChatMessage implements Serializable {

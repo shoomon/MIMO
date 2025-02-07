@@ -1,20 +1,20 @@
 package com.bisang.backend.chat.controller;
 
-import com.bisang.backend.auth.annotation.AuthUser;
-import com.bisang.backend.chat.controller.response.ChatroomResponse;
-import com.bisang.backend.chat.domain.Chatroom;
-import com.bisang.backend.chat.domain.ChatroomStatus;
-import com.bisang.backend.chat.service.ChatroomService;
-import com.bisang.backend.user.domain.User;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
+import com.bisang.backend.auth.annotation.AuthUser;
+import com.bisang.backend.chat.controller.response.ChatroomResponse;
+import com.bisang.backend.chat.domain.ChatroomStatus;
+import com.bisang.backend.chat.service.ChatroomService;
+import com.bisang.backend.user.domain.User;
+
+import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequestMapping("/chatroom")
@@ -42,13 +42,20 @@ public class ChatroomController {
     }
 
     @GetMapping("/test/enter-chatroom")
-    public ResponseEntity<String> enterChatroom(@RequestParam("userId") Long userId, @RequestParam("nickname") String nickname, @RequestParam("teamId") Long teamId) {
+    public ResponseEntity<String> enterChatroom(
+            @RequestParam("userId") Long userId,
+            @RequestParam("nickname") String nickname,
+            @RequestParam("teamId") Long teamId
+    ) {
         chatroomService.enterChatroom(teamId, userId, nickname);
         return ResponseEntity.ok().body(nickname + "님 입장");
     }
 
     @GetMapping("/test/leave-chatroom")
-    public ResponseEntity<String> leaveChatroom(@RequestParam("userId") Long userId, @RequestParam("teamId") Long teamId) {
+    public ResponseEntity<String> leaveChatroom(
+            @RequestParam("userId") Long userId,
+            @RequestParam("teamId") Long teamId
+    ) {
         if (chatroomService.leaveChatroom(userId, teamId)) {
             return ResponseEntity.ok().body(userId + "번 유저 퇴장");
         }
