@@ -22,8 +22,7 @@ public class AccountService {
 
     private final AccountJpaRepository accountJpaRepository;
 
-    public Account createTeamAccount(
-    ) {
+    public Account createTeamAccount() {
         String accountNumber = IntStream.range(0, MAX_RETRY)
                 .mapToObj(i -> TEAM_ACCOUNT_PREFIX + createRandomNineNumber())
                 .filter(this::validateAccountNumber)
@@ -34,8 +33,7 @@ public class AccountService {
         return accountJpaRepository.save(new Account(accountNumber));
     }
 
-    public Account createUserAccount(
-    ) {
+    public Account createUserAccount() {
         String accountNumber = IntStream.range(0, MAX_RETRY)
                 .mapToObj(i -> USER_ACCOUNT_PREFIX + createRandomNineNumber())
                 .filter(this::validateAccountNumber)

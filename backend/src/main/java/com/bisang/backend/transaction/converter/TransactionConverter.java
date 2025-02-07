@@ -12,7 +12,7 @@ import com.bisang.backend.transaction.domain.TransactionStatus;
 public class TransactionConverter {
 
     // 잔액 충전 트랜잭션
-    public static Transaction PaymentResultRequestToTransaction(PaymentResultRequest paymentResultRequest) {
+    public static Transaction paymentResultRequestToTransaction(PaymentResultRequest paymentResultRequest) {
         return Transaction.builder()
                 .balance(paymentResultRequest.getPaidAmount())
                 .senderAccountNumber(null)
@@ -28,7 +28,7 @@ public class TransactionConverter {
     }
 
     // 잔액 송금 트랜잭션
-    public static Transaction TransferRequestToTransaction(TransferRequest transferRequest) {
+    public static Transaction transferRequestToTransaction(TransferRequest transferRequest) {
         return Transaction.builder()
                 .balance(transferRequest.getBalance())
                 .senderAccountNumber(transferRequest.getSenderAccountNumber())
@@ -43,4 +43,3 @@ public class TransactionConverter {
                 .build();
     }
 }
-

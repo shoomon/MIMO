@@ -1,9 +1,9 @@
 package com.bisang.backend.transaction.controller.request;
 
+import static lombok.AccessLevel.PROTECTED;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import static lombok.AccessLevel.PROTECTED;
 
 @Getter
 @NoArgsConstructor(access = PROTECTED)

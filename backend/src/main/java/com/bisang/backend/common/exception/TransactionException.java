@@ -3,7 +3,7 @@ package com.bisang.backend.common.exception;
 import lombok.Getter;
 
 @Getter
-public class TransactionException extends RuntimeException{
+public class TransactionException extends RuntimeException {
     private final int code;
     private final String message;
 

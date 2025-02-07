@@ -1,16 +1,25 @@
 package com.bisang.backend.transaction.domain;
 
-import jakarta.persistence.*;
+import static jakarta.persistence.EnumType.STRING;
+import static jakarta.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.PROTECTED;
+
+import java.time.LocalDateTime;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.Table;
+
+import org.springframework.data.annotation.CreatedDate;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.springframework.data.annotation.CreatedDate;
-
-import java.time.LocalDateTime;
-
-import static jakarta.persistence.EnumType.STRING;
-import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Getter
@@ -28,14 +37,13 @@ import static lombok.AccessLevel.PROTECTED;
         @Index(name = "idx_receiver_tx_status",
             columnList = "receiver_account_number, transaction_status, transaction_id"),
         @Index(name = "idx_tx_status",
-            columnList = "transaction_status, transaction_id"
-        )
+            columnList = "transaction_status, transaction_id")
     }
 )
 public class Transaction {
     @Id
     @Column(name = "transaction_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     private Long transactionId;
 
     @Column(name = "balance", nullable = false)

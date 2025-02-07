@@ -70,12 +70,6 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-    // PortOne(결제 연동) 관련 의존성
-    implementation 'com.squareup.okhttp3:okhttp:4.9.3'
-
-    // JAVA 환경변수 관련 의존성
-    implementation 'io.github.cdimascio:java-dotenv:5.2.2'
-
     // Redisson 관련 의존성
     implementation 'org.redisson:redisson:3.23.4'
 }
