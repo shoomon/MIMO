@@ -20,6 +20,9 @@ public enum ExceptionCode {
     INVALID_ACCESS_TOKEN(3003, "유효하지 않은 Access Token입니다."),
 
     NOT_ENOUGH_MONEY(4000, "잔고 잔액이 부족합니다."),
+    BALANCE_CHARGE_FAIL(4001, "충전에 실패했습니다."),
+    BALANCE_TRANSFER_FAIL(4002, "송금에 실패했습니다."),
+
     ALREADY_JOINED_MEMBER(5001, "이미 가입된 회원입니다."),
     ALREADY_REQUEST_MEMBER(5002, "이미 회원 가입을 요청한 회원입니다.");
 

@@ -37,6 +37,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .body(new ExceptionResponse(exception.getCode(), exception.getMessage()));
     }
 
+    @ExceptionHandler(TransactionException.class)
+    public ResponseEntity<ExceptionResponse> handlePointException(TransactionException exception) {
+        log.warn(exception.getMessage(), exception);
+        return ResponseEntity.badRequest()
+                .body(new ExceptionResponse(exception.getCode(), exception.getMessage()));
+    }
+
     @ExceptionHandler(ChatAccessInvalidException.class)
     public ResponseEntity<ExceptionResponse> handleChatException(ChatAccessInvalidException exception) {
         log.warn(exception.getMessage(), exception);
