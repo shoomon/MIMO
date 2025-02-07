@@ -22,7 +22,9 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class BoardController {
 
-    private final S3Service s3UploadService;
+    private final S3Service s3Service;
+    
+    //todo: 게시글 생성 시 사진 uri 리스트 저장
 
     @PostMapping("/{id}")
     public ResponseEntity<String> uploadImage(
@@ -30,7 +32,7 @@ public class BoardController {
             @PathVariable("id")Integer id,
             @RequestPart("file") MultipartFile multipartFile
     ) {
-        String returnUrl = s3UploadService.saveFile(user.userId(), multipartFile);
+        String returnUrl = s3Service.saveFile(user.userId(), multipartFile);
 
         return ResponseEntity.ok(returnUrl);
     }
