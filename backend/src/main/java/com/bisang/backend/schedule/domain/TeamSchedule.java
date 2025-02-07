@@ -41,6 +41,9 @@ public class TeamSchedule extends BaseTimeEntity {
     @Column(length = 100, name = "title", nullable = false)
     private String title;
 
+    @Column(length = 100, name = "short_description", nullable = false)
+    private String shortDescription;
+
     @OneToOne(cascade = ALL, orphanRemoval = true)
     @JoinColumn(name = "schedule_description_id", referencedColumnName = "schedule_description_id")
     private ScheduleDescription description;
@@ -69,10 +72,16 @@ public class TeamSchedule extends BaseTimeEntity {
         this.teamId = teamId;
         this.teamUserId = teamUserId;
         this.title = title;
+        this.shortDescription = description.getDescription().substring(100 - 3) + "...";
         this.description = description;
         this.location = location;
         this.date = date;
         this.maxParticipants = maxParticipants;
         this.currentParticipants = 0L;
+    }
+
+    public void updateDescription(String description) {
+        this.shortDescription = description.substring(100 - 3) + "...";
+        this.description.updateDescription(description);
     }
 }
