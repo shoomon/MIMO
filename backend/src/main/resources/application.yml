@@ -43,9 +43,7 @@ cloud:
       bucket: ${S3_BUCKET_NAME}
     stack.auto: false
     region.static: ap-northeast-2
-    credentials:openvidu:
-  url: "https://i12a504.p.ssafy.io"
-  secret: "MY_SECRET"
+    credentials:
       accessKey: ${S3_ACCESS_KEY}
       secretKey: ${S3_SECRET_KEY}
 oauth2:
@@ -60,4 +58,6 @@ oauth2:
       - profile
       - openid
 
-
+openvidu:
+  url: "https://i12a504.p.ssafy.io"
+  secret: "MY_SECRET"
