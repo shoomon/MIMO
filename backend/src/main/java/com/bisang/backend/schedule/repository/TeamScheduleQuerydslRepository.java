@@ -1,9 +1,13 @@
 package com.bisang.backend.schedule.repository;
 
 import static com.bisang.backend.common.utils.PageUtils.SHORT_PAGE_SIZE;
+import static com.bisang.backend.schedule.domain.QScheduleParticipants.scheduleParticipants;
 import static com.bisang.backend.schedule.domain.QTeamSchedule.teamSchedule;
+import static com.bisang.backend.user.domain.QUser.user;
+import static com.querydsl.core.group.GroupBy.*;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -31,7 +35,7 @@ public class TeamScheduleQuerydslRepository {
                         teamSchedule.title,
                         teamSchedule.description,
                         teamSchedule.location,
-                        Expressions.constant(0L),
+                        teamSchedule.price,
                         teamSchedule.date,
                         teamSchedule.maxParticipants,
                         teamSchedule.currentParticipants))
@@ -40,7 +44,11 @@ public class TeamScheduleQuerydslRepository {
                 .fetchOne();
     }
 
-    public TeamSimpleScheduleDto getTeamSimpleSchedules(Long teamId, ScheduleStatus status, Long teamScheduleId) {
+    public List<TeamSimpleScheduleDto> getTeamSimpleSchedules(
+            Long teamId,
+            ScheduleStatus status,
+            Long teamScheduleId
+    ) {
         BooleanBuilder dynamicTeamScheduleIdLt = new BooleanBuilder();
         if (teamScheduleId != null) {
             dynamicTeamScheduleIdLt.and(teamSchedule.id.lt(teamScheduleId));
@@ -51,19 +59,32 @@ public class TeamScheduleQuerydslRepository {
                         teamSchedule.id,
                         teamSchedule.date,
                         teamSchedule.title,
-                        Expressions.constant(0D),
+                        Expressions.constant(0L),
                         Expressions.constant(null)))
                 .from(teamSchedule)
                 .where(teamSchedule.teamId.eq(teamId), teamSchedule.scheduleStatus.eq(status), dynamicTeamScheduleIdLt)
                 .orderBy(teamSchedule.id.desc())
-                .limit(SHORT_PAGE_SIZE).fetch();
+                .limit(SHORT_PAGE_SIZE + 1).fetch();
 
         List<Long> simpleScheduleIds = tmpSimpleScheduleDto
                 .stream()
                 .map(TeamSimpleScheduleDto::teamScheduleId)
                 .toList();
 
-        // 되게 복잡해지네...
-        return null;
+        Map<Long, List<String>> scheduleProfileMap = queryFactory
+                .from(scheduleParticipants)
+                .join(user)
+                .on(scheduleParticipants.userId.eq(user.id))
+                .where(scheduleParticipants.teamScheduleId.in(simpleScheduleIds))
+                .transform(groupBy(scheduleParticipants.teamScheduleId).as(list(user.profileUri)));
+
+        return tmpSimpleScheduleDto.stream()
+                .map(simpleSchedule -> new TeamSimpleScheduleDto(
+                        simpleSchedule.teamScheduleId(),
+                        simpleSchedule.date(),
+                        simpleSchedule.title(),
+                        0L,
+                        scheduleProfileMap.get(simpleSchedule.teamScheduleId())
+                )).toList();
     }
 }

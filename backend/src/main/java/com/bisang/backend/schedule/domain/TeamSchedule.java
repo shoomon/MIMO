@@ -49,7 +49,7 @@ public class TeamSchedule extends BaseTimeEntity {
     private String shortDescription;
 
     @Lob
-    @Column(nullable = false)
+    @Column(name = "description", nullable = false)
     private String description;
 
     @Column(name = "location", nullable = false)
