@@ -13,6 +13,7 @@ import com.bisang.backend.schedule.controller.request.TeamScheduleUpdateDateRequ
 import com.bisang.backend.schedule.controller.request.TeamScheduleUpdateDescriptionRequest;
 import com.bisang.backend.schedule.controller.request.TeamScheduleUpdateLocationRequest;
 import com.bisang.backend.schedule.controller.request.TeamScheduleUpdateParticipantsRequest;
+import com.bisang.backend.schedule.controller.request.TeamScheduleUpdatePriceRequest;
 import com.bisang.backend.schedule.controller.request.TeamScheduleUpdateTitleRequest;
 import com.bisang.backend.schedule.controller.response.TeamScheduleCreateResponse;
 import com.bisang.backend.schedule.domain.TeamSchedule;
@@ -115,6 +116,21 @@ public class ScheduleController {
             request.teamId(),
             request.teamScheduleId(),
             request.maxParticipants()
+        );
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/price")
+    public ResponseEntity<Void> updatePrice(
+            @AuthUser User user,
+            @RequestBody TeamScheduleUpdatePriceRequest request
+    ) {
+        teamScheduleService.updatePrice(
+                user.getId(),
+                request.teamId(),
+                request.teamScheduleId(),
+                request.price()
         );
 
         return ResponseEntity.ok().build();
