@@ -1,6 +1,7 @@
 package com.bisang.backend.schedule.service;
 
 import static com.bisang.backend.common.exception.ExceptionCode.NOT_FOUND;
+import static com.bisang.backend.common.utils.PageUtils.SHORT_PAGE_SIZE;
 
 import java.time.LocalDateTime;
 
@@ -8,21 +9,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bisang.backend.common.exception.ScheduleException;
-import com.bisang.backend.schedule.domain.ScheduleDescription;
+import com.bisang.backend.schedule.controller.response.TeamSchedulesResponse;
 import com.bisang.backend.schedule.domain.ScheduleParticipants;
+import com.bisang.backend.schedule.domain.ScheduleStatus;
 import com.bisang.backend.schedule.domain.TeamSchedule;
-import com.bisang.backend.schedule.repository.ScheduleDescriptionJpaRepository;
 import com.bisang.backend.schedule.repository.ScheduleParticipantsJpaRepository;
 import com.bisang.backend.schedule.repository.TeamScheduleJpaRepository;
+import com.bisang.backend.schedule.repository.TeamScheduleQuerydslRepository;
+import com.bisang.backend.team.annotation.EveryOne;
 import com.bisang.backend.team.annotation.TeamLeader;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class TeamScheduleService {
+public class TeamScheduleLeaderService {
     private final TeamScheduleJpaRepository teamScheduleJpaRepository;
-    private final ScheduleDescriptionJpaRepository scheduleDescriptionJpaRepository;
+    private final TeamScheduleQuerydslRepository teamScheduleQuerydslRepository;
     private final ScheduleParticipantsJpaRepository scheduleParticipantsJpaRepository;
 
     @TeamLeader
@@ -37,21 +40,18 @@ public class TeamScheduleService {
         LocalDateTime date,
         Long maxParticipants
     ) {
-        ScheduleDescription scheduleDescription = new ScheduleDescription(description);
-        scheduleDescriptionJpaRepository.save(scheduleDescription);
-
         TeamSchedule teamSchedule = TeamSchedule.builder()
             .teamId(teamId)
             .teamUserId(teamUserId)
             .title(title)
-            .description(scheduleDescription)
+            .description(description)
             .location(location)
             .date(date)
             .maxParticipants(maxParticipants).build();
         teamScheduleJpaRepository.save(teamSchedule);
 
 
-        ScheduleParticipants creator = ScheduleParticipants.creator(teamSchedule.getId(), teamUserId);
+        ScheduleParticipants creator = ScheduleParticipants.creator(teamSchedule.getId(), userId, teamUserId);
         scheduleParticipantsJpaRepository.save(creator);
 
         return teamSchedule;
@@ -94,6 +94,14 @@ public class TeamScheduleService {
     public void updateParticipants(Long userId, Long teamId, Long teamScheduleId, Long maxParticipants) {
         TeamSchedule teamSchedule = findTeamScheduleById(teamScheduleId);
         teamSchedule.updateMaxParticipants(maxParticipants);
+        teamScheduleJpaRepository.save(teamSchedule);
+    }
+
+    @TeamLeader
+    @Transactional
+    public void updatePrice(Long userId, Long teamId, Long teamScheduleId, Long price) {
+        TeamSchedule teamSchedule = findTeamScheduleById(teamScheduleId);
+        teamSchedule.updatePrice(price);
         teamScheduleJpaRepository.save(teamSchedule);
     }
 
