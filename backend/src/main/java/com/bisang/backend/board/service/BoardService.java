@@ -1,5 +1,13 @@
 package com.bisang.backend.board.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.bisang.backend.board.controller.dto.CommentDto;
+import jakarta.persistence.EntityNotFoundException;
+
+import org.springframework.stereotype.Service;
+
 import com.bisang.backend.board.controller.dto.BoardDto;
 import com.bisang.backend.board.domain.*;
 import com.bisang.backend.board.repository.*;
@@ -7,16 +15,10 @@ import com.bisang.backend.team.domain.TeamUser;
 import com.bisang.backend.team.repository.TeamUserJpaRepository;
 import com.bisang.backend.user.domain.User;
 import com.bisang.backend.user.repository.UserJpaRepository;
-import jakarta.persistence.EntityNotFoundException;
-
-import org.springframework.stereotype.Service;
-
 import com.bisang.backend.board.controller.response.BoardDetailResponse;
 
 import lombok.RequiredArgsConstructor;
 
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +32,7 @@ public class BoardService {
     private final TeamBoardJpaRepository teamBoardJpaRepository;
     private final CommentJpaReporitory commentJpaReporitory;
     private final BoardQuerydslRepository boardQuerydslRepository;
+    private final CommentQuerydslRepository commentQuerydslRepository;
 
     public void createPost(
             long teamBoardId,
@@ -45,7 +48,7 @@ public class BoardService {
         TeamUser teamUser = teamUserJpaRepository.findByTeamIdAndUserId(teamId, userId)
                 .orElseThrow(() -> new EntityNotFoundException("팀유저를 찾을 수 없습니다."));
         Long teamUserId = teamUser.getUserId();
-//        Long teamUserId = Long.parseLong(1+"");
+//        Long teamUserId = Long.parseLong(1+""); //테스트용
         //게시글 저장
         Board post = boardJpaRepository.save(Board.builder()
                 .teamBoardId(teamBoardId)
@@ -76,28 +79,18 @@ public class BoardService {
 
     }
 
-    public BoardDetailResponse getPost(Long postId) {
+    //todo: 팀 게시판 게시글 미리보기 리스트 반환
+    public List<Board> getPostList(Long teamBoardId){
+        return boardJpaRepository.findAll();
+    }
 
+    public BoardDetailResponse getPostDetail(Long postId) {
+        BoardDetailResponse postDetail = null;
+        //게시글 본문 정보, 댓글 정보 가져오기
         BoardDto post = boardQuerydslRepository.getBoardDetail(postId);
+        List<CommentDto> comments = commentQuerydslRepository.getCommentList(postId);
 
-        //todo: 댓글 엔티티 리스트 가져와서 댓글 DTO 리스트로 변환
-        List<Comment> comments = commentJpaReporitory.findAllByBoardId(post.postId());
-        for(Comment comment : comments){
-            User user = userJpaRepository.findById(comment.getUserId())
-                    .orElseThrow(()-> new EntityNotFoundException("사용자를 찾을 수 없습니다."));
-            String userProfileImage = user.getProfileUri();
-
-            TeamUser teamUser = teamUserJpaRepository.findById(comment.getTeamUserId())
-                    .orElseThrow(()-> new EntityNotFoundException("사용자를 찾을 수 없습니다."));
-            String nickname = user.getNickname();
-        }
-//                .stream()
-//                .map(comment -> new CommentDto(comment.getUserId(), ))
-//                .collect(Collectors.toList());
-//
-//        BoardDetailResponse boardDetailResponseDto = new BoardDetailResponse(
-//                boardType.getBoardName(), post.getTitle(), description.getDescription(), comments, updatedAt
-//        );
-        return null;
+        postDetail = new BoardDetailResponse(post, comments);
+        return postDetail;
     }
 }

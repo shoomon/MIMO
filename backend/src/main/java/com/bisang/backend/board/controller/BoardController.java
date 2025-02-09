@@ -2,6 +2,8 @@ package com.bisang.backend.board.controller;
 
 import com.bisang.backend.auth.annotation.AuthUser;
 import com.bisang.backend.board.controller.request.CreatePostRequest;
+import com.bisang.backend.board.controller.response.BoardDetailResponse;
+import com.bisang.backend.board.domain.Board;
 import com.bisang.backend.board.service.BoardService;
 import com.bisang.backend.user.domain.User;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,8 @@ import com.bisang.backend.s3.service.S3Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
 
 
 @RestController
@@ -40,6 +44,16 @@ public class BoardController {
                 request.fileUris()
                 );
         return ResponseEntity.ok().build();
+    }
+    //todo: 게시글 미리보기 리스트 반환
+    @GetMapping("/list")
+    public ResponseEntity<List<Board>> getPostList(@AuthUser User user, @RequestParam(value = "type", required = true) Long boardType){
+        return null;
+    }
+
+    @GetMapping("/detail")
+    public ResponseEntity<BoardDetailResponse> getPostDetail(@AuthUser User user, @RequestParam(value = "post", required = true) Long postId){
+        return ResponseEntity.ok(boardService.getPostDetail(postId));
     }
 
     @PostMapping("/{id}")
