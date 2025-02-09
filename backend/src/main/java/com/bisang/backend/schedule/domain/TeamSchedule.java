@@ -1,7 +1,6 @@
 package com.bisang.backend.schedule.domain;
 
 import static com.bisang.backend.schedule.domain.ScheduleStatus.*;
-import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
@@ -14,8 +13,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 
 import com.bisang.backend.common.domain.BaseTimeEntity;
@@ -50,12 +48,15 @@ public class TeamSchedule extends BaseTimeEntity {
     @Column(length = 100, name = "short_description", nullable = false)
     private String shortDescription;
 
-    @OneToOne(cascade = ALL, orphanRemoval = true)
-    @JoinColumn(name = "schedule_description_id", referencedColumnName = "schedule_description_id")
-    private ScheduleDescription description;
+    @Lob
+    @Column(name = "description", nullable = false)
+    private String description;
 
     @Column(name = "location", nullable = false)
     private String location;
+
+    @Column(name = "price", nullable = false)
+    private Long price;
 
     @Column(name = "date", nullable = false)
     private LocalDateTime date;
@@ -75,8 +76,9 @@ public class TeamSchedule extends BaseTimeEntity {
         Long teamId,
         Long teamUserId,
         String title,
-        ScheduleDescription description,
+        String description,
         String location,
+        Long price,
         LocalDateTime date,
         Long maxParticipants,
         String status
@@ -84,9 +86,10 @@ public class TeamSchedule extends BaseTimeEntity {
         this.teamId = teamId;
         this.teamUserId = teamUserId;
         this.title = title;
-        this.shortDescription = description.getDescription().substring(100 - 3) + "...";
+        this.shortDescription = description.substring(100 - 3) + "...";
         this.description = description;
         this.location = location;
+        this.price = price;
         this.date = date;
         this.maxParticipants = maxParticipants;
         this.currentParticipants = 1L;
@@ -123,7 +126,11 @@ public class TeamSchedule extends BaseTimeEntity {
 
     public void updateDescription(String newDescription) {
         this.shortDescription = newDescription.substring(100 - 3) + "...";
-        this.description.updateDescription(newDescription);
+        this.description = newDescription;
+    }
+
+    public void updatePrice(Long price) {
+        this.price = price;
     }
 
     public void closeSchedule() {
