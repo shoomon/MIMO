@@ -22,7 +22,8 @@ import lombok.NoArgsConstructor;
 @Table(
         name = "team_schedule_comment",
         indexes = {
-                @Index(name = "idx_team_schedule_comment_schedule_id", columnList = "team_schedule_id, team_schedule_comment_id"),
+            @Index(name = "idx_team_schedule_comment_schedule_id",
+                    columnList = "team_schedule_id, team_schedule_comment_id"),
         }
 )
 public class TeamScheduleComment extends BaseTimeEntity {

@@ -30,7 +30,7 @@ public class TeamScheduleEveryOneService {
         var schedules = teamScheduleQuerydslRepository.getTeamSimpleSchedules(teamId, status, teamScheduleId);
         Boolean hasNext = schedules.size() > SHORT_PAGE_SIZE;
         Integer size = hasNext ? SHORT_PAGE_SIZE : schedules.size();
-        Long lastTeamScheduleId = size > 0 ? schedules.get(size-1).teamScheduleId() : null;
+        Long lastTeamScheduleId = size > 0 ? schedules.get(size - 1).teamScheduleId() : null;
 
         if (hasNext) {
             schedules.remove(size);
