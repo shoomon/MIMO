@@ -1,5 +1,7 @@
 package com.bisang.backend.transaction.controller;
 
+import static com.bisang.backend.transaction.service.TransactionService.ADMIN_ACCOUNT_NUMBER;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +26,7 @@ public class TransactionController {
             @AuthUser User user,
             @RequestBody PaymentResultRequest paymentResultRequest
     ) {
-        transactionService.chargeBalance(paymentResultRequest);
+        transactionService.chargeBalance(ADMIN_ACCOUNT_NUMBER, paymentResultRequest);
     }
 
     @PostMapping("/transfer")

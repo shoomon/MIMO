@@ -26,7 +26,9 @@ public enum ExceptionCode {
     NOT_FOUND_TEAM(5000, "팀을 찾을 수가 없습니다."),
     ALREADY_JOINED_MEMBER(5001, "이미 가입된 회원입니다."),
     ALREADY_REQUEST_MEMBER(5002, "이미 회원 가입을 요청한 회원입니다."),
-    NOT_FOUND_TEAM_USER(5003, "팀 내에 존재하지 않는 회원입니다.");
+    NOT_FOUND_TEAM_USER(5003, "팀 내에 존재하지 않는 회원입니다."),
+
+    FULL_SCHEDULE(6000, "해당 일정은 정원을 초과했습니다.");
 
     private final int code;
     private final String message;
