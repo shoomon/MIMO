@@ -23,7 +23,6 @@ public class TeamRoleValidationAspect {
     private final TeamJpaRepository teamJpaRepository;
     private final TeamUserJpaRepository teamUserJpaRepository;
 
-
     /**
      * @TeamLeader 메서드 검증 로직, team의 LeaderId와 요청자의 userId가 동일한 지 확인
      */
