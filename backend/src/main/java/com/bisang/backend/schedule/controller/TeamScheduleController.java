@@ -1,5 +1,7 @@
 package com.bisang.backend.schedule.controller;
 
+import static com.bisang.backend.schedule.domain.ScheduleStatus.*;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -20,25 +22,25 @@ import com.bisang.backend.schedule.controller.request.TeamScheduleUpdateTitleReq
 import com.bisang.backend.schedule.controller.response.TeamScheduleCreateResponse;
 import com.bisang.backend.schedule.controller.response.TeamSchedulesResponse;
 import com.bisang.backend.schedule.domain.TeamSchedule;
-import com.bisang.backend.schedule.service.TeamScheduleService;
+import com.bisang.backend.schedule.service.TeamScheduleEveryOneService;
+import com.bisang.backend.schedule.service.TeamScheduleLeaderService;
 import com.bisang.backend.user.domain.User;
 
 import lombok.RequiredArgsConstructor;
 
-import static com.bisang.backend.schedule.domain.ScheduleStatus.*;
-
 @RestController
 @RequestMapping("/schedule")
 @RequiredArgsConstructor
-public class ScheduleController {
-    private final TeamScheduleService teamScheduleService;
+public class TeamScheduleController {
+    private final TeamScheduleLeaderService teamScheduleService;
+    private final TeamScheduleEveryOneService teamScheduleEveryOneService;
 
     @GetMapping("/ad-hoc")
     public ResponseEntity<TeamSchedulesResponse> getAdhocSchedules(
             @RequestParam Long teamId,
             @RequestParam(required = false) Long lastTeamScheduleId
     ) {
-        var adhocSchedule = teamScheduleService.getAdhocSchedule(teamId, AD_HOC, lastTeamScheduleId);
+        var adhocSchedule = teamScheduleEveryOneService.getSchedules(teamId, AD_HOC, lastTeamScheduleId);
         return ResponseEntity.ok(adhocSchedule);
     }
 
@@ -47,7 +49,7 @@ public class ScheduleController {
             @RequestParam Long teamId,
             @RequestParam(required = false) Long lastTeamScheduleId
     ) {
-        var adhocSchedule = teamScheduleService.getAdhocSchedule(teamId, REGURAL, lastTeamScheduleId);
+        var adhocSchedule = teamScheduleEveryOneService.getSchedules(teamId, REGURAL, lastTeamScheduleId);
         return ResponseEntity.ok(adhocSchedule);
     }
 
@@ -56,7 +58,7 @@ public class ScheduleController {
             @RequestParam Long teamId,
             @RequestParam(required = false) Long lastTeamScheduleId
     ) {
-        var adhocSchedule = teamScheduleService.getAdhocSchedule(teamId, CLOSED, lastTeamScheduleId);
+        var adhocSchedule = teamScheduleEveryOneService.getSchedules(teamId, CLOSED, lastTeamScheduleId);
         return ResponseEntity.ok(adhocSchedule);
     }
 

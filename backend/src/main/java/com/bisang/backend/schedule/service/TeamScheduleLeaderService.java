@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class TeamScheduleService {
+public class TeamScheduleLeaderService {
     private final TeamScheduleJpaRepository teamScheduleJpaRepository;
     private final TeamScheduleQuerydslRepository teamScheduleQuerydslRepository;
     private final ScheduleParticipantsJpaRepository scheduleParticipantsJpaRepository;
@@ -103,21 +103,6 @@ public class TeamScheduleService {
         TeamSchedule teamSchedule = findTeamScheduleById(teamScheduleId);
         teamSchedule.updatePrice(price);
         teamScheduleJpaRepository.save(teamSchedule);
-    }
-
-    @EveryOne
-    @Transactional(readOnly = true)
-    public TeamSchedulesResponse getAdhocSchedule(Long teamId, ScheduleStatus status, Long teamScheduleId) {
-        var schedules = teamScheduleQuerydslRepository.getTeamSimpleSchedules(teamId, status, teamScheduleId);
-        Boolean hasNext = schedules.size() > SHORT_PAGE_SIZE;
-        Integer size = hasNext ? SHORT_PAGE_SIZE : schedules.size();
-        Long lastTeamScheduleId = size > 0 ? schedules.get(size-1).teamScheduleId() : null;
-
-        if (hasNext) {
-            schedules.remove(size);
-        }
-
-        return new TeamSchedulesResponse(size, hasNext, lastTeamScheduleId, schedules);
     }
 
     private TeamSchedule findTeamScheduleById(Long teamScheduleId) {
