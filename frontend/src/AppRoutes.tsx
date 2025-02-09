@@ -17,6 +17,7 @@ import {
     TeamCurrentMember,
     TeamDetail,
     TeamEdit,
+    TeamLayout,
     TeamList,
     TeamMember,
     TeamMileage,
@@ -45,7 +46,7 @@ const AppRoutes = () => {
                 {/* 마이 페이지 */}
                 <Route path="/mypage" element={<MyPage />} />
                 {/* 팀  */}
-                <Route path="/team">
+                <Route path="/team" element={<TeamLayout />}>
                     {/* 팀 생성 */}
                     <Route path="create" element={<TeamCreate />} />
                     <Route path=":teamId">

@@ -8,6 +8,7 @@ export {default as ErrorPage} from "./ErrorPage";
 export {default as Chat} from "./Chat";
 export {default as Category} from "./Category";
 export {default as TeamCreate} from "./Team/TeamCreate";
+export {default as TeamLayout} from "./Team/TeamLayout";
 export {default as TeamDetail} from "./Team/TeamDetail";
 export {default as TeamEdit} from "./Team/TeamEdit";
 export {default as TeamSchedule} from "./Team/TeamSchedule";
