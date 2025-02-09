@@ -2,9 +2,11 @@ package com.bisang.backend.schedule.controller;
 
 import com.bisang.backend.auth.annotation.AuthUser;
 import com.bisang.backend.schedule.controller.request.TeamScheduleCommentCreateRequest;
+import com.bisang.backend.schedule.controller.request.TeamScheduleCommentUpdateRequest;
 import com.bisang.backend.schedule.service.TeamScheduleCommentService;
 import com.bisang.backend.user.domain.User;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,5 +36,19 @@ public class TeamScheduleCommentController {
                 request.content()
         );
         return ResponseEntity.status(CREATED).build();
+    }
+
+    @PatchMapping
+    public ResponseEntity<Void> updateTeamScheduleComment(
+            @AuthUser User user,
+            @RequestBody TeamScheduleCommentUpdateRequest request
+    ) {
+        teamScheduleCommentService.updateComment(
+                user.getId(),
+                request.teamId(),
+                request.teamScheduleCommentId(),
+                request.content()
+        );
+        return ResponseEntity.ok().build();
     }
 }

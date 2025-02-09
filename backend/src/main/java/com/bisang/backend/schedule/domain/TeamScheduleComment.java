@@ -59,4 +59,8 @@ public class TeamScheduleComment extends BaseTimeEntity {
         this.parentCommentId = parentCommentId;
         this.content = content;
     }
+
+    public void updateScheduleCommentContent(String content) {
+        this.content = content;
+    }
 }
