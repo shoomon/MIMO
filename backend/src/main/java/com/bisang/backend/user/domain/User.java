@@ -18,6 +18,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.Validate;
 
 @Entity
 @Getter
@@ -25,7 +26,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = PROTECTED)
 @Table(name = "USERS")
 public class User extends BaseTimeEntity {
-
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "user_id")
@@ -34,10 +34,10 @@ public class User extends BaseTimeEntity {
     @Column(name = "user_email", length = 40, unique = true)
     private String email;
 
-    @Column(name = "user_name", nullable = false, length = 10)
+    @Column(name = "user_name", nullable = false, length = 30)
     private String name;
 
-    @Column(name = "user_nickname", nullable = false, length = 20, unique = true)
+    @Column(name = "user_nickname", nullable = false, length = 30, unique = true)
     private String nickname;
 
     @Column(name = "user_profile_uri", nullable = false)
@@ -71,10 +71,16 @@ public class User extends BaseTimeEntity {
     }
 
     public void updateName(String name) {
+        String pattern = "^[a-zA-Z0-9가-힣]{1,30}$";
+        Validate.matchesPattern(name, pattern,
+                "이름은 영문, 숫자, 한글로만 구성되어 있으며, 길이는 1자리 이상 30자리 이하이어야 합니다.");
         this.name = name;
     }
 
     public void updateNickname(String nickname) {
+        String pattern = "^[a-zA-Z0-9가-힣]{1,30}$";
+        Validate.matchesPattern(nickname, pattern,
+                "닉네임은 영문, 숫자, 한글로만 구성되어 있으며, 길이는 1자리 이상 30자리 이하이어야 합니다.");
         this.nickname = nickname;
     }
 

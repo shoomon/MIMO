@@ -5,6 +5,9 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import java.util.Arrays;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -18,8 +21,6 @@ import com.bisang.backend.common.exception.ExceptionCode;
 import com.bisang.backend.common.exception.InvalidJwtException;
 import com.bisang.backend.user.domain.User;
 import com.bisang.backend.user.repository.UserJpaRepository;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

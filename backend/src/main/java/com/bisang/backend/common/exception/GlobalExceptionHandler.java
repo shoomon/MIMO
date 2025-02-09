@@ -1,13 +1,17 @@
 package com.bisang.backend.common.exception;
 
+import static com.bisang.backend.common.exception.ExceptionCode.*;
+
 import java.util.Objects;
 
+import com.fasterxml.jackson.databind.exc.InvalidDefinitionException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -27,7 +31,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         log.warn(ex.getMessage(), ex);
         String message = Objects.requireNonNull(ex.getBindingResult().getFieldError()).getDefaultMessage();
         return ResponseEntity.badRequest()
-                .body(new ExceptionResponse(ExceptionCode.INVALID_REQUEST.getCode(), message));
+                .body(new ExceptionResponse(INVALID_REQUEST.getCode(), message));
     }
 
     @ExceptionHandler(SocialLoginException.class)
@@ -35,6 +39,29 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         log.warn(exception.getMessage(), exception);
         return ResponseEntity.badRequest()
                 .body(new ExceptionResponse(exception.getCode(), exception.getMessage()));
+    }
+
+    @ExceptionHandler(HttpClientErrorException.class)
+    public ResponseEntity<ExceptionResponse> handleHttpClientErrorException(HttpClientErrorException exception) {
+        log.warn(exception.getMessage(), exception);
+        int code = UNABLE_TO_GET_USER_INFO.getCode();
+        String message = UNABLE_TO_GET_USER_INFO.getMessage();
+        return ResponseEntity.badRequest()
+                .body(new ExceptionResponse(code, message));
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ExceptionResponse> handleIllegalArgumentException(IllegalArgumentException exception) {
+        log.warn(exception.getMessage(), exception);
+        return ResponseEntity.badRequest()
+                .body(new ExceptionResponse(INVALID_REQUEST.getCode(), exception.getMessage()));
+    }
+
+    @ExceptionHandler(InvalidDefinitionException.class)
+    public ResponseEntity<ExceptionResponse> handleInvalidDefinitionException(InvalidDefinitionException exception) {
+        log.warn(exception.getMessage(), exception);
+        return ResponseEntity.badRequest()
+                .body(new ExceptionResponse(INVALID_REQUEST.getCode(), "요구되는 양식과 맞지 않는 타입의 요청입니다."));
     }
 
     @ExceptionHandler(ScheduleException.class)

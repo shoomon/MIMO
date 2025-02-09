@@ -13,6 +13,7 @@ public enum ExceptionCode {
 
     UNABLE_TO_GET_USER_INFO(2001, "소셜 로그인 공급자로부터 유저 정보를 받아올 수 없습니다."),
     UNABLE_TO_GET_ACCESS_TOKEN(2002, "소셜 로그인 공급자로부터 인증 토큰을 받아올 수 없습니다."),
+    NICKNAME_BLANK_NOT_ALLOW(2003, "닉네임 및 이름에는 빈칸을 허용하지 않습니다."),
 
     UNAUTHORIZED_ACCESS(3000, "접근할 수 없는 리소스입니다."),
     INVALID_REFRESH_TOKEN(3001, "유효하지 않은 Refresh Token입니다."),
