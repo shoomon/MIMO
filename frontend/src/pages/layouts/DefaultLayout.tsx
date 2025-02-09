@@ -10,7 +10,7 @@ const DefaultLayout = () => {
     };
 
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col px-4">
             <Header
                 isLogin={true}
                 alarmActive={false}

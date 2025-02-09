@@ -6,7 +6,7 @@ interface SvgIconViewProps extends React.SVGProps<SVGSVGElement> {
 const SvgIconView = ({ id, size = 20, ...props }: SvgIconViewProps) => {
     return (
         <svg width={`${size}px`} height={`${size}px`} {...props}>
-            <use href={`/_sprite.svg#${id}`} />
+            <use href={`${import.meta.env.BASE_URL}_sprite.svg#${id}`} />
         </svg>
     );
 };

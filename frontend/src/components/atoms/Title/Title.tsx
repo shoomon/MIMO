@@ -15,7 +15,7 @@ const Title = ({ label, to }: TitleProps) => {
             to={`${to}`}
             className="text-display-xs flex h-fit w-fit gap-1 font-bold text-black"
         >
-            <span>{label}</span>
+            <span className="flex items-center">{label}</span>
             {to && <span className="font-normal">{'>'}</span>}
         </Component>
     );

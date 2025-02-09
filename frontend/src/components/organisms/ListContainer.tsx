@@ -24,7 +24,7 @@ function ListContainer({ gap, items, label, to }: ListContainerProps) {
         <>
             <Title label={label} to={to} />
             <section className="embla" ref={emblaRef}>
-                <ul className={`embla__container ${gap}`}>
+                <ul className={`embla__container gap-${gap}`}>
                     {items.map((itemProps, index) => (
                         <li key={index} className="embla__slide">
                             {itemProps}
