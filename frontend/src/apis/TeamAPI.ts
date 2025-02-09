@@ -28,6 +28,33 @@ const TeamApi = {
             throw error;
         }
     },
+
+    getTeamInfosByArea: async (
+        area: Area,
+        teamId?: number,
+    ): Promise<TeamInfosResponse> => {
+        try {
+            const params = {
+                area,
+                ...(teamId && { teamId: teamId.toString() }),
+            };
+
+            const response = await customFetch('/team/area', {
+                method: 'GET',
+                params,
+                credentials: 'include',
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch area teams');
+            }
+
+            return response.json();
+        } catch (error) {
+            console.error('Error fetching area teams:', error);
+            throw error;
+        }
+    },
 };
 
 export default TeamApi;

@@ -1,4 +1,4 @@
-export interface SimpleTeamResponse {
+export interface SimpleTeamResponseMok {
     teamId: number;
     name: string;
     description: string;
@@ -11,34 +11,34 @@ export interface SimpleTeamResponse {
     tags: string[];
 }
 
-export const mockTeamData: SimpleTeamResponse = {
+export const CardMeetingmockData = {
     size: 3,
     hasNext: false,
     lastTeamId: 3,
     teams: [
         {
             teamId: 1,
-            name: '주말 자전거 모임',
-            description: '매주 주말 한강에서 자전거 타는 모임입니다.',
+            name: '서울 독서 모임',
+            description: '매주 토요일 강남에서 모여 책을 읽습니다.',
             teamProfileUri: 'https://picsum.photos/200',
             rating: 4.5,
             reviewCount: 12,
             memberCount: 8,
             memberLimit: 10,
             thumbnail: 'https://picsum.photos/200',
-            tags: ['자전거', '운동', '주말'],
+            tags: ['독서', '서울', '주말'],
         },
         {
             teamId: 2,
-            name: '독서토론 모임',
-            description: '월 1회 독서토론을 진행합니다.',
+            name: '강남 러닝 크루',
+            description: '매일 아침 러닝하는 모임입니다.',
             teamProfileUri: 'https://picsum.photos/201',
             rating: 4.8,
             reviewCount: 15,
             memberCount: 12,
             memberLimit: 15,
             thumbnail: 'https://picsum.photos/201',
-            tags: ['독서', '토론', '취미'],
+            tags: ['운동', '러닝', '아침'],
         },
         {
             teamId: 3,
