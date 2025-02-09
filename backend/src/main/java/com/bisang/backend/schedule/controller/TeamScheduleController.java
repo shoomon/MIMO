@@ -20,6 +20,7 @@ import com.bisang.backend.schedule.controller.request.TeamScheduleUpdateParticip
 import com.bisang.backend.schedule.controller.request.TeamScheduleUpdatePriceRequest;
 import com.bisang.backend.schedule.controller.request.TeamScheduleUpdateTitleRequest;
 import com.bisang.backend.schedule.controller.response.TeamScheduleCreateResponse;
+import com.bisang.backend.schedule.controller.response.TeamScheduleSpecificResponse;
 import com.bisang.backend.schedule.controller.response.TeamSchedulesResponse;
 import com.bisang.backend.schedule.domain.TeamSchedule;
 import com.bisang.backend.schedule.service.TeamScheduleEveryOneService;
@@ -34,6 +35,14 @@ import lombok.RequiredArgsConstructor;
 public class TeamScheduleController {
     private final TeamScheduleLeaderService teamScheduleService;
     private final TeamScheduleEveryOneService teamScheduleEveryOneService;
+
+    @GetMapping
+    public ResponseEntity<TeamScheduleSpecificResponse> getSpecificSchedule(
+            @RequestParam Long teamScheduleId
+    ) {
+        var specificSchedule = teamScheduleEveryOneService.getSpecificSchedule(teamScheduleId);
+        return ResponseEntity.ok(specificSchedule);
+    }
 
     @GetMapping("/ad-hoc")
     public ResponseEntity<TeamSchedulesResponse> getAdhocSchedules(

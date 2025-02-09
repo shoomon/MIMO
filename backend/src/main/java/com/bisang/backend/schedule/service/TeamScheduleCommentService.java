@@ -96,7 +96,7 @@ public class TeamScheduleCommentService {
         Long teamScheduleId,
         Long parentCommentId
     ) {
-        teamScheduleCommentJpaRepository.findByScheduleIdAndId(teamScheduleId, parentCommentId)
+        teamScheduleCommentJpaRepository.findByTeamScheduleIdAndId(teamScheduleId, parentCommentId)
                 .orElseThrow(() -> new ScheduleException(NOT_FOUND));
     }
 }
