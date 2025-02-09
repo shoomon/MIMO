@@ -1,17 +1,18 @@
 package com.bisang.backend.schedule.service;
 
+import static com.bisang.backend.common.exception.ExceptionCode.INVALID_REQUEST;
+import static com.bisang.backend.common.exception.ExceptionCode.NOT_FOUND;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.bisang.backend.common.exception.ScheduleException;
-import com.bisang.backend.common.exception.TeamException;
 import com.bisang.backend.schedule.domain.TeamScheduleComment;
 import com.bisang.backend.schedule.repository.TeamScheduleCommentJpaRepository;
 import com.bisang.backend.team.annotation.TeamMember;
 import com.bisang.backend.team.repository.TeamUserJpaRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import static com.bisang.backend.common.exception.ExceptionCode.INVALID_REQUEST;
-import static com.bisang.backend.common.exception.ExceptionCode.NOT_FOUND;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -68,6 +69,18 @@ public class TeamScheduleCommentService {
     private TeamScheduleComment findCommentById(Long teamScheduleCommentId) {
         return teamScheduleCommentJpaRepository.findById(teamScheduleCommentId)
                 .orElseThrow(() -> new ScheduleException(NOT_FOUND));
+    }
+
+    @TeamMember
+    @Transactional
+    public void deleteComment(
+        Long userId,
+        Long teamId,
+        Long teamScheduleCommentId
+    ) {
+        TeamScheduleComment comment = findCommentById(teamScheduleCommentId);
+        hasComment(comment, userId);
+        teamScheduleCommentJpaRepository.delete(comment);
     }
 
     private void hasComment(

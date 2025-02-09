@@ -1,20 +1,23 @@
 package com.bisang.backend.schedule.controller;
 
-import com.bisang.backend.auth.annotation.AuthUser;
-import com.bisang.backend.schedule.controller.request.TeamScheduleCommentCreateRequest;
-import com.bisang.backend.schedule.controller.request.TeamScheduleCommentUpdateRequest;
-import com.bisang.backend.schedule.service.TeamScheduleCommentService;
-import com.bisang.backend.user.domain.User;
+import static org.springframework.http.HttpStatus.CREATED;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import lombok.RequiredArgsConstructor;
+import com.bisang.backend.auth.annotation.AuthUser;
+import com.bisang.backend.schedule.controller.request.TeamScheduleCommentCreateRequest;
+import com.bisang.backend.schedule.controller.request.TeamScheduleCommentDeleteRequest;
+import com.bisang.backend.schedule.controller.request.TeamScheduleCommentUpdateRequest;
+import com.bisang.backend.schedule.service.TeamScheduleCommentService;
+import com.bisang.backend.user.domain.User;
 
-import static org.springframework.http.HttpStatus.CREATED;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/schedule-comment")
@@ -48,6 +51,19 @@ public class TeamScheduleCommentController {
                 request.teamId(),
                 request.teamScheduleCommentId(),
                 request.content()
+        );
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteTeamScheduleComment(
+            @AuthUser User user,
+            @RequestBody TeamScheduleCommentDeleteRequest request
+    ) {
+        teamScheduleCommentService.deleteComment(
+                user.getId(),
+                request.teamId(),
+                request.teamScheduleCommentId()
         );
         return ResponseEntity.ok().build();
     }
