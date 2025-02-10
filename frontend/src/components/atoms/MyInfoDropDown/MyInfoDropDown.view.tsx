@@ -16,7 +16,7 @@ const MyInfoDropDownView = ({
 }: MyInfoDropDownViewProps) => {
     return (
         <section
-            className={`text-text flex w-[15.5rem] origin-top transform flex-col rounded-sm p-1 text-sm leading-normal font-semibold transition-all duration-200 ease-out ${
+            className={`text-text flex w-[15.5rem] origin-top transform flex-col rounded-sm border border-gray-300 bg-white p-1 text-sm leading-normal font-semibold shadow-xl transition-all duration-200 ease-out ${
                 active
                     ? 'scale-y-100 opacity-100'
                     : 'pointer-events-none scale-y-0 opacity-0'

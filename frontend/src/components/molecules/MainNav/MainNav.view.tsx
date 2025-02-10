@@ -8,15 +8,17 @@ interface MainNavViewProps {
 
 const MainNavView = ({ navItems }: MainNavViewProps) => {
     return (
-        <ul className="flex gap-6 px-1">
-            {navItems.map((item) => {
-                return (
-                    <li key={item.value}>
-                        <MainNavItem {...item} />
-                    </li>
-                );
-            })}
-        </ul>
+        <div>
+            <ul className="flex gap-6 px-1">
+                {navItems.map((item) => {
+                    return (
+                        <li key={item.value}>
+                            <MainNavItem {...item} />
+                        </li>
+                    );
+                })}
+            </ul>
+        </div>
     );
 };
 

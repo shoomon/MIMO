@@ -15,7 +15,6 @@ const meta = {
     argTypes: {
         label: { control: 'text' },
         to: { control: 'text' },
-        onClick: { action: 'clicked' },
     },
 } satisfies Meta<typeof Title>;
 
@@ -38,6 +37,5 @@ export const WithLink: Story = {
 export const Clickable: Story = {
     args: {
         label: 'Click Me',
-        onClick: () => alert('Title clicked!'),
     },
 };
