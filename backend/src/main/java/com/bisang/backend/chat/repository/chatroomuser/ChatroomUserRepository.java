@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import jakarta.transaction.Transactional;
+
 import org.springframework.stereotype.Repository;
 
 import com.bisang.backend.chat.domain.ChatroomUser;
@@ -96,7 +97,9 @@ public class ChatroomUserRepository {
         Long teamUserId = getTeamUserId(userId, teamId);
         redisCacheRepository.updateUserNickName(teamUserId, nickname);
 
-        ChatroomUser user = chatroomUserJpaRepository.findById(teamUserId).orElseThrow(() -> new AccountException(NOT_FOUND));
+        ChatroomUser user = chatroomUserJpaRepository
+                .findById(teamUserId)
+                .orElseThrow(() -> new AccountException(NOT_FOUND));
         user.setNickname(nickname);
     }
 

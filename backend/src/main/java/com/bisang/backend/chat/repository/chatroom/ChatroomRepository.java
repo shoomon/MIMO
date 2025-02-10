@@ -5,14 +5,15 @@ import static com.bisang.backend.common.exception.ExceptionCode.*;
 import java.util.List;
 import java.util.Map;
 
-import com.bisang.backend.common.exception.ChatroomException;
 import jakarta.transaction.Transactional;
+
 import org.springframework.stereotype.Repository;
 
 import com.bisang.backend.chat.domain.Chatroom;
 import com.bisang.backend.chat.domain.ChatroomStatus;
 import com.bisang.backend.chat.repository.RedisCacheRepository;
 import com.bisang.backend.chat.repository.chatroom.dto.ChatroomTitleProfileDto;
+import com.bisang.backend.common.exception.ChatroomException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -70,7 +71,9 @@ public class ChatroomRepository {
     public void updateChatroomProfileUri(Long teamId, String profileUri) {
         redisCacheRepository.updateChatroomProfileUri(teamId, profileUri);
 
-        Chatroom chatroom = chatroomJpaRepository.findById(teamId).orElseThrow(() -> new ChatroomException(NOT_FOUND_TEAM));
+        Chatroom chatroom = chatroomJpaRepository
+                .findById(teamId)
+                .orElseThrow(() -> new ChatroomException(NOT_FOUND_TEAM));
         chatroom.setProfileUri(profileUri);
     }
 }
