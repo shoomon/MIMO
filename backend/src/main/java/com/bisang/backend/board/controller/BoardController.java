@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
-//todo: 권한 체크
+//todo: 권한 체크, 500 에러 말고 커스텀 exception 구현 필요
 @RestController
 @RequestMapping("/board")
 @Slf4j
