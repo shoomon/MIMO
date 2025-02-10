@@ -74,9 +74,7 @@ public class ChatroomService {
         List<ChatroomResponse> chatroomResponse  = new ArrayList<>();
         for (Long chatroomId : chatroom) {
             Map<Object, Object> chatroomInfo = chatroomRepository.getChatroomInfo(chatroomId);
-
-            //TODO: 마지막 메시지 가져와서 아래 ChatroomResponse에 lastChat, lastDateTime 집어넣기
-            chatMessageRepository.getLastChat(chatroomId);
+            Map<String, Object> lastChat = chatMessageRepository.getLastChat(chatroomId);
 
             Long teamUserId = chatroomUserRepository.getTeamUserId(userId, chatroomId);
             Map<Object, Object> userInfo = chatroomUserRepository.getUserInfo(teamUserId, userId);
@@ -84,12 +82,14 @@ public class ChatroomService {
             ChatroomResponse cr = new ChatroomResponse(chatroomId,
                     (String)chatroomInfo.get("title"),
                     (String)chatroomInfo.get("profileUri"),
-                    "",
-                    LocalDateTime.now(),
+                    (String)lastChat.get("lastChat"),
+                    (LocalDateTime)lastChat.get("lastDatetime"),
                     (String)userInfo.get("nickname")
             );
+
+            chatroomResponse.add(cr);
         }
 
-        return null;
+        return chatroomResponse;
     }
 }

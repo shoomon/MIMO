@@ -5,8 +5,10 @@ import com.bisang.backend.chat.domain.redis.RedisChatMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 @RequiredArgsConstructor
@@ -60,13 +62,29 @@ public class ChatMessageRepository {
         return result;
     }
 
-    public void getLastChat(Long chatroomId) {
+    public Map<String, Object> getLastChat(Long chatroomId) {
+        Map<String, Object> result = new HashMap<>();
         RedisChatMessage message = chatMessageRedisRepository.getLastMessage(chatroomId);
-
+        
         if (message == null) {
-            //TODO: db에서 가져오기
             ChatMessage chatMessage = chatMessageJpaRepository.findTopByChatroomIdOrderByIdDesc(chatroomId);
 
+            getResult(result, chatMessage);
+            return result;
         }
+
+        result.put("lastChat", message.getChat());
+        result.put("lastDatetime", message.getTimestamp());
+
+        return result;
+    }
+
+    private static void getResult(Map<String, Object> result, ChatMessage chatMessage) {
+        if (chatMessage == null) {
+            //TODO: 이거 없으면 문제 있는거임. 무조건 입장 메시지라도 있어야하는데 exception 날려야함
+            return;
+        }
+        result.put("lastChat", chatMessage.getMessage());
+        result.put("lastDatetime", chatMessage.getCreatedAt());
     }
 }
