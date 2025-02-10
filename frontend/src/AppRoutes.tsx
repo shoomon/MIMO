@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import {
     Board,
     BoardCreate,
@@ -17,6 +17,7 @@ import {
     TeamCurrentMember,
     TeamDetail,
     TeamEdit,
+    TeamLayout,
     TeamList,
     TeamMember,
     TeamMileage,
@@ -46,9 +47,10 @@ const AppRoutes = () => {
                 <Route path="/mypage" element={<MyPage />} />
                 {/* 팀  */}
                 <Route path="/team">
+                    <Route index element={<Navigate to="/" replace />} />
                     {/* 팀 생성 */}
                     <Route path="create" element={<TeamCreate />} />
-                    <Route path=":teamId">
+                    <Route path=":teamId" element={<TeamLayout />}>
                         {/* 팀 메인 */}
                         <Route index element={<TeamDetail />} />
                         {/* 팀 수정 */}
