@@ -127,7 +127,11 @@ const AppRoutes = () => {
 
             {/* 화상 채팅 */}
             <Route path="/video" element={<VideoChat />} />
+            {/* 화상 채팅 */}
+            <Route path="/video" element={<VideoChat />} />
 
+            {/* 채팅 */}
+            <Route path="/chat" element={<Chat />} />
             {/* 채팅 */}
             <Route path="/chat" element={<Chat />} />
 
