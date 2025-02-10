@@ -1,6 +1,7 @@
 package com.bisang.backend.board.controller;
 
 import com.bisang.backend.auth.annotation.AuthUser;
+import com.bisang.backend.board.controller.dto.SimpleBoardListDto;
 import com.bisang.backend.board.controller.request.CreatePostRequest;
 import com.bisang.backend.board.controller.request.LikePostRequest;
 import com.bisang.backend.board.controller.request.UpdatePostRequest;
@@ -51,8 +52,8 @@ public class BoardController {
     }
     //todo: 게시글 미리보기 리스트 반환
     @GetMapping("/list")
-    public ResponseEntity<List<Board>> getPostList(@AuthUser User user, @RequestParam(value = "type", required = true) Long boardType){
-        return null;
+    public ResponseEntity<List<SimpleBoardListDto>> getPostList(@AuthUser User user, @RequestParam(value = "type", required = true) Long boardid){
+//        return boardService.getPostList(boardid);
     }
 
     @GetMapping("/detail")
