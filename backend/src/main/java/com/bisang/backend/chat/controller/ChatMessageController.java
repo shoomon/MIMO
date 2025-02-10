@@ -46,6 +46,7 @@ public class ChatMessageController {
         Long userId = user.getId();
         if (chatroomUserService.isMember(roomId, userId, chat.teamUserId())) {
             RedisChatMessage redisMessage = new RedisChatMessage(
+                    roomId,
                     userId,
                     chat.teamUserId(),
                     chat.chat(),
@@ -62,10 +63,11 @@ public class ChatMessageController {
             @AuthUser User user,
             @PathVariable("roomId") Long roomId,
             @RequestParam("teamUserId") Long teamUserId,
-            @RequestParam("messageId") Long messageId
+            @RequestParam("messageId") Long messageId,
+            @RequestParam("timestamp") LocalDateTime timestamp
     ) {
         if (chatroomUserService.isMember(roomId, user.getId(), teamUserId)) {
-            List<ChatMessageResponse> list = chatMessageService.getMessages(roomId, messageId);
+            List<ChatMessageResponse> list = chatMessageService.getMessages(roomId, messageId, timestamp);
             return ResponseEntity.ok().body(list);
         }
 
@@ -82,6 +84,7 @@ public class ChatMessageController {
             @RequestBody ChatMessageRequest chat) {
         if (chatroomUserService.isMember(roomId, user.userId(), chat.teamUserId())) {
             RedisChatMessage redisMessage = new RedisChatMessage(
+                    roomId,
                     user.userId(),
                     chat.teamUserId(),
                     chat.chat(),

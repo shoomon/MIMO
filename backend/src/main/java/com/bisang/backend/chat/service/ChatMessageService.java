@@ -1,5 +1,6 @@
 package com.bisang.backend.chat.service;
 
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.LinkedList;
 import java.util.List;
@@ -54,8 +55,8 @@ public class ChatMessageService {
         //template.convertAndSend(messageResponse);
     }
 
-    public List<ChatMessageResponse> getMessages(Long roomId, Long messageId) {
-        List<RedisChatMessage> messageList = chatMessageRepository.getMessages(roomId, messageId);
+    public List<ChatMessageResponse> getMessages(Long roomId, Long messageId, LocalDateTime timestamp) {
+        List<RedisChatMessage> messageList = chatMessageRepository.getMessages(roomId, messageId, timestamp);
         List<ChatMessageResponse> responseList = new LinkedList<>();
 
         for (RedisChatMessage message : messageList) {

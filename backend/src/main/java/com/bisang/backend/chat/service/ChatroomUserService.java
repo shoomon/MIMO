@@ -2,7 +2,6 @@ package com.bisang.backend.chat.service;
 
 import org.springframework.stereotype.Service;
 
-import com.bisang.backend.chat.repository.RedisCacheRepository;
 import com.bisang.backend.chat.repository.chatroomuser.ChatroomUserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -12,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 public class ChatroomUserService {
 
     private final ChatroomUserRepository chatroomUserRepository;
-    private final RedisCacheRepository redisCacheRepository;
 
     public boolean isMember(Long teamId, Long userId, Long teamUserId) {
         return chatroomUserRepository.isMember(teamId, userId, teamUserId);

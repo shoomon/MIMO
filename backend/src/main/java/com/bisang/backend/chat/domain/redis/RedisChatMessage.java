@@ -14,6 +14,8 @@ public class RedisChatMessage implements Serializable {
     @Setter
     private Long id;
 
+    private Long chatroomId;
+
     private Long userId;
 
     private Long teamUserId;
@@ -25,12 +27,14 @@ public class RedisChatMessage implements Serializable {
     private ChatType type;
 
     public RedisChatMessage(
+            Long chatroomId,
             Long userId,
             Long teamUserId,
             String chat,
             LocalDateTime timestamp,
             ChatType type
     ) {
+        this.chatroomId = chatroomId;
         this.teamUserId = teamUserId;
         this.userId = userId;
         this.chat = chat;
@@ -40,6 +44,7 @@ public class RedisChatMessage implements Serializable {
 
     public RedisChatMessage(
             Long id,
+            Long chatroomId,
             Long userId,
             Long teamUserId,
             String chat,
@@ -47,11 +52,11 @@ public class RedisChatMessage implements Serializable {
             ChatType type
     ) {
         this.id = id;
+        this.chatroomId = chatroomId;
         this.teamUserId = teamUserId;
         this.userId = userId;
         this.chat = chat;
         this.timestamp = timestamp;
         this.type = type;
     }
-
 }

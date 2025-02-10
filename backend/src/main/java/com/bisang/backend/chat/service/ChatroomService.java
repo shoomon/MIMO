@@ -43,7 +43,14 @@ public class ChatroomService {
         chatroomUserRepository.insertJpaMemberUser(chatroomUser);
         Long teamUserId = chatroomUser.getId();
 
-        RedisChatMessage message = new RedisChatMessage(userId, teamUserId, "", LocalDateTime.now(), ChatType.ENTER);
+        RedisChatMessage message = new RedisChatMessage(
+                teamId,
+                userId,
+                teamUserId,
+                "",
+                LocalDateTime.now(),
+                ChatType.ENTER
+        );
 
         chatroomUserRepository.insertRedisMemberUser(teamId, userId, teamUserId);
         chatMessageService.broadcastMessage(teamId, message);
@@ -55,7 +62,13 @@ public class ChatroomService {
             return false;
         }
 
-        RedisChatMessage message = new RedisChatMessage(userId, teamUserId, "", LocalDateTime.now(), ChatType.LEAVE);
+        RedisChatMessage message = new RedisChatMessage(
+                teamId,
+                userId,
+                teamUserId,
+                "",
+                LocalDateTime.now(),
+                ChatType.LEAVE);
 
         chatroomUserRepository.removeMember(teamId, userId, teamUserId);
         chatroomRepository.redisDeleteUserChatroom(userId, teamId);
@@ -93,6 +106,7 @@ public class ChatroomService {
         return chatroomResponse;
     }
 
+    //TODO: 팀 프로필 업데이트 되면 호출해줘야함
     public void updateChatroomProfileUri(Long teamId, String profileUri) {
         chatroomRepository.updateChatroomProfileUri(teamId, profileUri);
     }

@@ -1,5 +1,6 @@
 package com.bisang.backend.chat.repository.message;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,8 +24,8 @@ public class ChatMessageRepository {
         chatMessageRedisRepository.saveMessage(teamId, message);
     }
 
-    public List<RedisChatMessage> getMessages(Long roomId, Long messageId) {
-        List<RedisChatMessage> messageList = chatMessageRedisRepository.getMessages(roomId, messageId);
+    public List<RedisChatMessage> getMessages(Long roomId, Long messageId, LocalDateTime timestamp) {
+        List<RedisChatMessage> messageList = chatMessageRedisRepository.getMessages(roomId, messageId, timestamp);
         int size = messageList.size();
         System.out.println(size);
         if (size < 30) {
