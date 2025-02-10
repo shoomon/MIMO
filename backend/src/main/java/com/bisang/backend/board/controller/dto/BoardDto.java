@@ -1,6 +1,7 @@
 package com.bisang.backend.board.controller.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public record BoardDto (
         Long postId,
@@ -10,6 +11,8 @@ public record BoardDto (
         String boardName,
         String postTitle,
         String description,
+        Long likeCount,
+        Long viewCount,
         LocalDateTime updatedAt
 ){
 }

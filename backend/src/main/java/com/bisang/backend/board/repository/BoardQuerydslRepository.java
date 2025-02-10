@@ -34,6 +34,8 @@ public class BoardQuerydslRepository {
                         teamBoard.boardName,
                         board.title.as("postTitle"),
                         boardDescription.description,
+                        board.likes.as("likeCount"),
+                        board.viewCount,
                         board.lastModifiedAt.as("updatedAt")
                 ))
                 .from(board)

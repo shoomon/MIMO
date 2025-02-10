@@ -31,5 +31,9 @@ public class BoardDescription {
     public BoardDescription(String description) {
         this.description = description;
     }
+
+    public void updateDescription(String description) {
+        this.description = description;
+    }
 }
 

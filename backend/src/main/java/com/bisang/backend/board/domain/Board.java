@@ -72,4 +72,8 @@ public class Board extends BaseTimeEntity {
         likes = 0L;
         viewCount = 0L;
     }
+
+    public void updateTitle(String newTitle) {
+        this.title = newTitle;
+    }
 }

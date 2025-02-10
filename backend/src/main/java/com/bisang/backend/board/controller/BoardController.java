@@ -2,10 +2,13 @@ package com.bisang.backend.board.controller;
 
 import com.bisang.backend.auth.annotation.AuthUser;
 import com.bisang.backend.board.controller.request.CreatePostRequest;
+import com.bisang.backend.board.controller.request.UpdatePostRequest;
 import com.bisang.backend.board.controller.response.BoardDetailResponse;
 import com.bisang.backend.board.domain.Board;
 import com.bisang.backend.board.service.BoardService;
 import com.bisang.backend.user.domain.User;
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
-
+//todo: 권한 체크
 @RestController
 @RequestMapping("/board")
 @Slf4j
@@ -30,10 +33,11 @@ public class BoardController {
     private final BoardService boardService;
 
     //todo: 게시글 생성 시 사진 uri 리스트 저장
+    @Transactional
     @PostMapping
     public ResponseEntity<Void> createPost(
             @AuthUser User user,
-            @RequestBody CreatePostRequest request
+            @Valid @RequestBody CreatePostRequest request
     ){
         boardService.createPost(
                 request.teamBoardId(),
@@ -54,6 +58,20 @@ public class BoardController {
     @GetMapping("/detail")
     public ResponseEntity<BoardDetailResponse> getPostDetail(@AuthUser User user, @RequestParam(value = "post", required = true) Long postId){
         return ResponseEntity.ok(boardService.getPostDetail(postId));
+    }
+
+    @Transactional
+    @PatchMapping
+    public ResponseEntity<Void> updatePost(@AuthUser User user, @Valid @RequestBody UpdatePostRequest request){
+        boardService.updatePost(user.getId(), request.postId(), request.title(), request.description(), request.filesToDelete(), request.filesToAdd());
+        return ResponseEntity.ok().build();
+    }
+
+    @Transactional
+    @DeleteMapping
+    public ResponseEntity<Void> deletePost(@AuthUser User user, @RequestParam(value = "post", required = true) Long postId){
+        boardService.deletePost(user.getId(), postId);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/{id}")

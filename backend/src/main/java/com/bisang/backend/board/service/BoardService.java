@@ -3,7 +3,9 @@ package com.bisang.backend.board.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.bisang.backend.board.controller.dto.BoardFileDto;
 import com.bisang.backend.board.controller.dto.CommentDto;
+import com.bisang.backend.s3.service.S3Service;
 import jakarta.persistence.EntityNotFoundException;
 
 import org.springframework.stereotype.Service;
@@ -33,6 +35,7 @@ public class BoardService {
     private final CommentJpaReporitory commentJpaReporitory;
     private final BoardQuerydslRepository boardQuerydslRepository;
     private final CommentQuerydslRepository commentQuerydslRepository;
+    private final S3Service s3Service;
 
     public void createPost(
             long teamBoardId,
@@ -89,8 +92,65 @@ public class BoardService {
         //게시글 본문 정보, 댓글 정보 가져오기
         BoardDto post = boardQuerydslRepository.getBoardDetail(postId);
         List<CommentDto> comments = commentQuerydslRepository.getCommentList(postId);
+        List<BoardFileDto> files = boardImageJpaRepository.findByBoardId(postId);
 
-        postDetail = new BoardDetailResponse(post, comments);
+        postDetail = new BoardDetailResponse(post, files, comments);
         return postDetail;
+    }
+
+    public void updatePost(Long userId, Long postId, String title, String description, List<BoardFileDto> filesToDelete,  List<BoardFileDto> filesToAdd) {
+        Board post = boardJpaRepository.findById(postId)
+                .orElseThrow(()-> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
+
+        post.updateTitle(title);
+        boardJpaRepository.save(post);
+
+        BoardDescription boardDescription = boardDescriptionJpaRepository.findById(post.getDescription().getId())
+                .orElseThrow(()-> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
+
+        boardDescription.updateDescription(description);
+        boardDescriptionJpaRepository.save(boardDescription);
+        //S3에서 파일 삭제
+        for (BoardFileDto file : filesToDelete) {
+            s3Service.deleteFile(userId, file.fileUri()); // S3에서 이미지 삭제
+        }
+        //파일 삭제
+        for(BoardFileDto file : filesToDelete){
+            BoardImage curfile = boardImageJpaRepository.findById(file.fileId())
+                    .orElseThrow(()-> new EntityNotFoundException("첨부파일을 찾을 수 없습니다."));
+
+            boardImageJpaRepository.delete(curfile);
+        }
+        //파일 추가
+        for(BoardFileDto file : filesToAdd){
+            String uri = file.fileUri();
+            String fileExtension = uri.substring(uri.lastIndexOf(".") + 1).toLowerCase();
+
+            boardImageJpaRepository.save(BoardImage.builder()
+                    .boardId(post.getId())
+                    .fileExtension(fileExtension)
+                    .fileUri(uri)
+                    .build());
+        }
+    }
+
+    public void deletePost(Long userId, Long postId){
+        Board post = boardJpaRepository.findById(postId)
+                .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
+        //좋아요 삭제
+        boardLikeRepository.deleteByBoardId(postId);
+        //S3에서 이미지 삭제
+//        List<BoardFileDto> boardFiles = boardImageJpaRepository.findByBoardId(postId);
+//        for (BoardFileDto file : boardFiles) {
+//            s3Service.deleteFile(userId, file.fileUri()); // S3에서 이미지 삭제
+//        }
+        //DB에서 파일 삭제
+        boardImageJpaRepository.deleteByBoardId(postId);
+        //게시글 설명 삭제
+        boardDescriptionJpaRepository.deleteById(post.getDescription().getId());
+        //게시글 삭제
+        boardJpaRepository.delete(post);
+        //댓글 삭제
+        commentJpaReporitory.deleteByBoardId(postId);
     }
 }
