@@ -67,7 +67,8 @@ public class TeamUserService {
 
         Team team = findTeamById(teamId);
         Long currentUserCount = teamUserJpaRepository.countTeamUserByTeamId(teamId);
-        if (team.getMaxCapacity() > currentUserCount) {
+        Long currentInviteCount = teamInviteJpaRepository.countByTeamId(teamId);
+        if (team.getMaxCapacity() > currentUserCount + currentInviteCount) {
             if (team.getRecruitStatus() == ACTIVE_PRIVATE) {
                 TeamInvite inviteRequest = createInviteRequest(teamId, userId, memo);
                 teamInviteJpaRepository.save(inviteRequest);
@@ -77,7 +78,7 @@ public class TeamUserService {
             }
             throw new TeamException(NOT_RECRUIT_TEAM);
         }
-        throw new TeamException(FULL_TEAM);
+        throw new TeamException(FULL_TEAM_INVITE);
     }
 
     @Transactional

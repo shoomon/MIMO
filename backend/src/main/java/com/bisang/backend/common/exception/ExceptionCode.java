@@ -34,6 +34,7 @@ public enum ExceptionCode {
     NOT_RECRUIT_TEAM(5006,  "해당 모임은 팀원을 모집하지 않습니다."),
     FULL_TEAM(5007, "해당 모임은 인원이 모두 가득찼습니다."),
     EXTRA_USER(5008, "해당 모임 중 본인을 제외한 남은 인원이 있어 모임을 해체할 수 없습니다."),
+    FULL_TEAM_INVITE(5009, "해당 모임은 초대 신청이 모두 가득 찼습니다."),
 
     FULL_SCHEDULE(6000, "해당 일정은 정원을 초과했습니다.");
 
