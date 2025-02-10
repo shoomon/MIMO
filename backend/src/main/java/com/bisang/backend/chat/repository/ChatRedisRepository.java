@@ -54,11 +54,11 @@ public class ChatRedisRepository {
     }
 
     public void updateUserChatroom(long userId, long teamId, Double timestamp) {
-        redisUserChatroomTemplate.opsForZSet().add("userChatroom" + userId, teamId, timestamp);
+        template.opsForZSet().add("userChatroom" + userId, teamId, timestamp);
     }
 
-    public void deleteUserChatroom(long userId, long teamId) {
-        redisUserChatroomTemplate.opsForZSet().remove("userChatroom" + userId, teamId);
+    public void deleteUserChatroom(long teamUserId, long teamId) {
+        template.opsForZSet().remove("userChatroom" + teamUserId, teamId);
     }
 
     public List<Long> getUserChatroom(long userId) {

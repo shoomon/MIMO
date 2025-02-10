@@ -37,8 +37,36 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .body(new ExceptionResponse(exception.getCode(), exception.getMessage()));
     }
 
-    @ExceptionHandler(TransactionException.class)
-    public ResponseEntity<ExceptionResponse> handlePointException(TransactionException exception) {
+    @ExceptionHandler(ScheduleException.class)
+    public ResponseEntity<ExceptionResponse> handleScheduleException(ScheduleException exception) {
+        log.warn(exception.getMessage(), exception);
+        return ResponseEntity.badRequest()
+                .body(new ExceptionResponse(exception.getCode(), exception.getMessage()));
+    }
+
+    @ExceptionHandler(AccountException.class)
+    public ResponseEntity<ExceptionResponse> handleAccountException(AccountException exception) {
+        log.warn(exception.getMessage(), exception);
+        return ResponseEntity.badRequest()
+                .body(new ExceptionResponse(exception.getCode(), exception.getMessage()));
+    }
+
+    @ExceptionHandler(InvalidJwtException.class)
+    public ResponseEntity<ExceptionResponse> handleInvalidJwtException(InvalidJwtException exception) {
+        log.warn(exception.getMessage(), exception);
+        return ResponseEntity.badRequest()
+                .body(new ExceptionResponse(exception.getCode(), exception.getMessage()));
+    }
+
+    @ExceptionHandler(S3Exception.class)
+    public ResponseEntity<ExceptionResponse> handleS3Exception(S3Exception exception) {
+        log.warn(exception.getMessage(), exception);
+        return ResponseEntity.badRequest()
+                .body(new ExceptionResponse(exception.getCode(), exception.getMessage()));
+    }
+
+    @ExceptionHandler(TeamException.class)
+    public ResponseEntity<ExceptionResponse> handleTeamException(TeamException exception) {
         log.warn(exception.getMessage(), exception);
         return ResponseEntity.badRequest()
                 .body(new ExceptionResponse(exception.getCode(), exception.getMessage()));
@@ -46,6 +74,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(ChatAccessInvalidException.class)
     public ResponseEntity<ExceptionResponse> handleChatException(ChatAccessInvalidException exception) {
+        log.warn(exception.getMessage(), exception);
+        return ResponseEntity.badRequest()
+                .body(new ExceptionResponse(exception.getCode(), exception.getMessage()));
+    }
+
+    @ExceptionHandler(TransactionException.class)
+    public ResponseEntity<ExceptionResponse> handlePointException(TransactionException exception) {
         log.warn(exception.getMessage(), exception);
         return ResponseEntity.badRequest()
                 .body(new ExceptionResponse(exception.getCode(), exception.getMessage()));
