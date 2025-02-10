@@ -21,6 +21,7 @@ import com.bisang.backend.team.controller.request.UpdateTeamNameRequest;
 import com.bisang.backend.team.controller.request.UpdateTeamPrivateStatusRequest;
 import com.bisang.backend.team.controller.request.UpdateTeamProfileUriRequest;
 import com.bisang.backend.team.controller.request.UpdateTeamRecruitStatusRequest;
+import com.bisang.backend.team.controller.response.TeamIdResponse;
 import com.bisang.backend.team.controller.response.TeamInfosResponse;
 import com.bisang.backend.team.domain.Area;
 import com.bisang.backend.team.domain.TeamCategory;
@@ -52,11 +53,11 @@ public class TeamController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createTeam(
+    public ResponseEntity<TeamIdResponse> createTeam(
         @AuthUser User user,
         @RequestBody CreateTeamRequest req
     ) {
-        teamService.createTeam(
+        Long teamId = teamService.createTeam(
             user.getId(),
             req.nickname(),
             req.notificationStatus(),
@@ -69,7 +70,7 @@ public class TeamController {
             req.category(),
             req.maxCapacity()
         );
-        return ResponseEntity.status(CREATED).build();
+        return ResponseEntity.status(CREATED).body(new TeamIdResponse(teamId));
     }
 
     @GetMapping

@@ -1,19 +1,24 @@
 package com.bisang.backend.common.exception;
 
 import static com.bisang.backend.common.exception.ExceptionCode.*;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Objects;
 
-import com.fasterxml.jackson.databind.exc.InvalidDefinitionException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import com.fasterxml.jackson.databind.exc.InvalidDefinitionException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,6 +37,24 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         String message = Objects.requireNonNull(ex.getBindingResult().getFieldError()).getDefaultMessage();
         return ResponseEntity.badRequest()
                 .body(new ExceptionResponse(INVALID_REQUEST.getCode(), message));
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleMissingServletRequestParameter(
+            MissingServletRequestParameterException ex,
+            HttpHeaders headers,
+            HttpStatusCode status,
+            WebRequest request) {
+        String paramName = ex.getParameterName();
+        String message = String.format("필수 파라미터 '%s'가 누락되었습니다.", paramName);
+        ExceptionResponse errorResponse = new ExceptionResponse(1000, message);
+        return ResponseEntity.status(BAD_REQUEST).body(errorResponse);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ExceptionResponse> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        ExceptionResponse error = new ExceptionResponse(1000, "입력 양식이 올바르지 않습니다. 다시 확인해주세요.");
+        return ResponseEntity.status(BAD_REQUEST).body(error);
     }
 
     @ExceptionHandler(SocialLoginException.class)
@@ -76,6 +99,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         log.warn(exception.getMessage(), exception);
         return ResponseEntity.badRequest()
                 .body(new ExceptionResponse(exception.getCode(), exception.getMessage()));
+    }
+
+    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
+    public ResponseEntity<ExceptionResponse> handleSqlIntegrityConstraintViolationException(
+            SQLIntegrityConstraintViolationException exception
+    ) {
+        log.warn(exception.getMessage(), exception);
+        return ResponseEntity.badRequest()
+                .body(new ExceptionResponse(DUPLICATED_SOURCE.getCode(), DUPLICATED_SOURCE.getMessage()));
     }
 
     @ExceptionHandler(InvalidJwtException.class)

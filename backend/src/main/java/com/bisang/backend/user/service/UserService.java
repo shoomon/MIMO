@@ -3,16 +3,16 @@ package com.bisang.backend.user.service;
 import java.util.ArrayList;
 import java.util.Optional;
 
-import com.bisang.backend.s3.service.S3Service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.bisang.backend.s3.service.S3Service;
 import com.bisang.backend.user.controller.response.UserMyResponse;
 import com.bisang.backend.user.domain.User;
 import com.bisang.backend.user.repository.UserJpaRepository;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
 @Service

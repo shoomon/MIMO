@@ -45,7 +45,7 @@ public class TeamUser {
     @Column(nullable = false)
     private Long teamId;
 
-    @Column(length = 30, nullable = false, unique = true)
+    @Column(length = 30, nullable = false)
     private String nickname;
 
     @Column(name = "team_user_role", nullable = false)

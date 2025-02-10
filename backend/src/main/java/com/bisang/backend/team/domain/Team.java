@@ -3,6 +3,8 @@ package com.bisang.backend.team.domain;
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
 import static lombok.AccessLevel.PROTECTED;
 
 import java.time.LocalDateTime;
@@ -104,7 +106,8 @@ public class Team {
         this.teamLeaderId = teamLeaderId;
         this.teamChatroomId = teamChatroomId;
         this.name = name;
-        this.shortDescription = description.getDescription().substring(100);
+        int shortDescriptionLength = min(description.getDescription().length(), 97);
+        this.shortDescription = description.getDescription().substring(0, shortDescriptionLength) + "...";
         this.description = description;
         this.accountNumber = accountNumber;
         this.recruitStatus = recruitStatus;
@@ -127,6 +130,9 @@ public class Team {
     }
 
     public void updateTeamProfileUri(String teamProfileUri) {
+        if (!teamProfileUri.startsWith("https://bisang-mimo-bucket.s3.ap-northeast-2.amazonaws.com/")) {
+            throw new IllegalArgumentException("이미지가 서버 내에 존재하지 않습니다. 이미지 업로드 후 다시 요청해주세요.");
+        }
         this.teamProfileUri = teamProfileUri;
     }
 

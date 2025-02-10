@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.bisang.backend.auth.annotation.AuthUser;
 import com.bisang.backend.user.controller.request.UpdateNameRequest;
@@ -20,7 +21,6 @@ import com.bisang.backend.user.domain.User;
 import com.bisang.backend.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/user")
