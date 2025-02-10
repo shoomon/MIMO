@@ -21,15 +21,15 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 public class TransactionService {
-    private static final String ADMIN_ACCOUNT_NUMBER = "1000123456789";
+    public static final String ADMIN_ACCOUNT_NUMBER = "1000123456789";
 
     private final ChargeService chargeService;
     private final TransferService transferService;
 
     private final TransactionLogJpaRepository transactionLogJpaRepository;
 
-    @DistributedLock(name = "관리자 계좌번호", key = ADMIN_ACCOUNT_NUMBER, waitTime = 3, leaseTime = 3)
-    public void chargeBalance(PaymentResultRequest paymentResultRequest) {
+    @DistributedLock(name = "관리자 계좌번호", waitTime = 3, leaseTime = 3)
+    public void chargeBalance(String key, PaymentResultRequest paymentResultRequest) {
         Transaction transaction
                 = TransactionConverter.paymentResultRequestToTransaction(paymentResultRequest);
 
