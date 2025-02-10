@@ -2,17 +2,16 @@ package com.bisang.backend.board.controller.dto;
 
 import java.time.LocalDateTime;
 
-public record BoardDto (
-        Long postId,
-        Long userId, //이거 팀유저 줘야되나
-        String userProfileUri,
-        String userNickname,
-        String boardName,
-        String postTitle,
+public record SimpleBoardListDto(
+        Long userId, //이것도 팀유저 줘야되나
+        Long userNickname,
+        Long userProfileUri,
+        String title,
         String description,
+        Long commentCount,
         Long likeCount,
         Long viewCount,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
-){
+) {
 }

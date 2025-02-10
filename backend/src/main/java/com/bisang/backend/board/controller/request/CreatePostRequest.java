@@ -8,8 +8,8 @@ import java.util.List;
 public record CreatePostRequest(
         @NotNull(message = "게시판 번호가 없습니다.")
         Long teamBoardId,
-        @NotNull(message = "팀 번호가 없습니다.")
-        Long teamId,
+//        @NotNull(message = "팀 번호가 없습니다.")
+//        Long teamId, //팀 번호 필요 없을 거 같은디
         @NotBlank(message = "제목을 입력해야 합니다.")
         String title,
         @NotBlank(message = "내용을 입력해야 합니다.")

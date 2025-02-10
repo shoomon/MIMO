@@ -2,6 +2,7 @@ package com.bisang.backend.board.controller;
 
 import com.bisang.backend.auth.annotation.AuthUser;
 import com.bisang.backend.board.controller.request.CreatePostRequest;
+import com.bisang.backend.board.controller.request.LikePostRequest;
 import com.bisang.backend.board.controller.request.UpdatePostRequest;
 import com.bisang.backend.board.controller.response.BoardDetailResponse;
 import com.bisang.backend.board.domain.Board;
@@ -41,7 +42,6 @@ public class BoardController {
     ){
         boardService.createPost(
                 request.teamBoardId(),
-                request.teamId(),
                 user.getId(),
                 request.title(),
                 request.description(),
@@ -73,15 +73,21 @@ public class BoardController {
         boardService.deletePost(user.getId(), postId);
         return ResponseEntity.ok().build();
     }
-
-    @PostMapping("/{id}")
-    public ResponseEntity<String> uploadImage(
-            @AuthSimpleUser SimpleUser user,
-            @PathVariable("id")Integer id,
-            @RequestPart("file") MultipartFile multipartFile
-    ) {
-        String returnUrl = s3Service.saveFile(user.userId(), multipartFile);
-
-        return ResponseEntity.ok(returnUrl);
+    //todo: 좋아요 구현
+    @Transactional
+    @PostMapping("/like")
+    public ResponseEntity<Void> likePost(@AuthUser User user, @RequestBody LikePostRequest request){
+        return null;
     }
+
+//    @PostMapping("/{id}")
+//    public ResponseEntity<String> uploadImage(
+//            @AuthSimpleUser SimpleUser user,
+//            @PathVariable("id")Integer id,
+//            @RequestPart("file") MultipartFile multipartFile
+//    ) {
+//        String returnUrl = s3Service.saveFile(user.userId(), multipartFile);
+//
+//        return ResponseEntity.ok(returnUrl);
+//    }
 }

@@ -27,6 +27,7 @@ public class CommentQuerydslRepository {
                         teamUser.nickname.as("userNickname"),
                         user.profileUri.as("userProfileImage"),
                         comment.content,
+                        comment.createdAt,
                         comment.lastModifiedAt.as("updatedAt")
                 ))
                 .from(comment)
@@ -44,6 +45,7 @@ public class CommentQuerydslRepository {
                         teamUser.nickname.as("userNickname"),
                         user.profileUri.as("userProfileImage"),
                         comment.content,
+                        comment.createdAt,
                         comment.lastModifiedAt.as("updatedAt")
                 ))
                 .from(comment)

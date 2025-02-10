@@ -6,8 +6,10 @@ import java.util.List;
 import com.bisang.backend.board.controller.dto.BoardFileDto;
 import com.bisang.backend.board.controller.dto.CommentDto;
 import com.bisang.backend.s3.service.S3Service;
+import com.bisang.backend.team.annotation.TeamMember;
 import jakarta.persistence.EntityNotFoundException;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import com.bisang.backend.board.controller.dto.BoardDto;
@@ -37,9 +39,9 @@ public class BoardService {
     private final CommentQuerydslRepository commentQuerydslRepository;
     private final S3Service s3Service;
 
+//    @TeamMember
     public void createPost(
             long teamBoardId,
-            long teamId,
             long userId,
             String title,
             String description,
@@ -83,12 +85,16 @@ public class BoardService {
     }
 
     //todo: 팀 게시판 게시글 미리보기 리스트 반환
+//    @TeamMember
     public List<Board> getPostList(Long teamBoardId){
         return boardJpaRepository.findAll();
     }
 
+//    @TeamMember
     public BoardDetailResponse getPostDetail(Long postId) {
         BoardDetailResponse postDetail = null;
+        //조회수 증가
+        boardJpaRepository.increaseViewCount(postId);
         //게시글 본문 정보, 댓글 정보 가져오기
         BoardDto post = boardQuerydslRepository.getBoardDetail(postId);
         List<CommentDto> comments = commentQuerydslRepository.getCommentList(postId);
@@ -98,6 +104,7 @@ public class BoardService {
         return postDetail;
     }
 
+//    @TeamMember
     public void updatePost(Long userId, Long postId, String title, String description, List<BoardFileDto> filesToDelete,  List<BoardFileDto> filesToAdd) {
         Board post = boardJpaRepository.findById(postId)
                 .orElseThrow(()-> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
@@ -134,6 +141,7 @@ public class BoardService {
         }
     }
 
+//    @TeamMember
     public void deletePost(Long userId, Long postId){
         Board post = boardJpaRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
@@ -152,5 +160,9 @@ public class BoardService {
         boardJpaRepository.delete(post);
         //댓글 삭제
         commentJpaReporitory.deleteByBoardId(postId);
+    }
+//todo: 좋아요 로직 작성
+    public void likePost(Long userId, Long postId){
+
     }
 }
