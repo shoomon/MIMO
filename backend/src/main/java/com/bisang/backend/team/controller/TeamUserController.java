@@ -71,7 +71,7 @@ public class TeamUserController {
     @PatchMapping
     public ResponseEntity<Void> updateNickname(
         @AuthUser User user,
-        @RequestBody UpdateTeamUserNicknameRequest req
+        @Valid @RequestBody UpdateTeamUserNicknameRequest req
     ) {
         teamUserService.updateNickname(user.getId(), req.teamId(), req.nickname());
         return ResponseEntity.ok().build();

@@ -4,8 +4,6 @@ import static org.springframework.http.HttpStatus.CREATED;
 
 import jakarta.validation.Valid;
 
-import com.bisang.backend.team.controller.request.UpdateTeamRequest;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bisang.backend.auth.annotation.AuthUser;
 import com.bisang.backend.team.controller.dto.TeamDto;
 import com.bisang.backend.team.controller.request.CreateTeamRequest;
+import com.bisang.backend.team.controller.request.UpdateTeamRequest;
 import com.bisang.backend.team.controller.response.TeamIdResponse;
 import com.bisang.backend.team.controller.response.TeamInfosResponse;
 import com.bisang.backend.team.domain.Area;
