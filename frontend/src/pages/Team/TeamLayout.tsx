@@ -1,4 +1,4 @@
-import { Album, MeetingInfo } from '@/components/molecules';
+import { Album, DetailNav, MeetingInfo } from '@/components/molecules';
 import { TeamDataMockup } from '@/mock/TeamLayoutMock';
 import { Outlet, useParams } from 'react-router-dom';
 
@@ -26,7 +26,8 @@ const TeamLayout = () => {
                     />
                     <Album id={teamId ?? ''} items={data.items} />
                 </section>
-                <section>
+                <section className="flex w-full flex-col gap-2 px-4">
+                    <DetailNav />
                     <Outlet />
                 </section>
             </section>
