@@ -1,17 +1,20 @@
-package com.bisang.backend.chat.repository.chatroomUserRepository;
+package com.bisang.backend.chat.repository.chatroomuser;
+
+import static com.bisang.backend.common.exception.ExceptionCode.NOT_FOUND;
+
+import java.util.Map;
+import java.util.Set;
+
+import org.springframework.stereotype.Repository;
 
 import com.bisang.backend.chat.domain.ChatroomUser;
 import com.bisang.backend.chat.repository.RedisCacheRepository;
 import com.bisang.backend.common.exception.AccountException;
 import com.bisang.backend.user.domain.User;
 import com.bisang.backend.user.repository.UserJpaRepository;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
 
-import java.util.Map;
-import java.util.Set;
-
-import static com.bisang.backend.common.exception.ExceptionCode.NOT_FOUND;
 
 @Repository
 @RequiredArgsConstructor
@@ -62,6 +65,7 @@ public class ChatroomUserRepository {
 
     public Map<Object, Object> getUserInfo(Long teamUserId, Long userId) {
         Map<Object, Object> userInfo = redisCacheRepository.getUserProfile(teamUserId);
+
         if (userInfo.isEmpty()) {
             String nickname = chatroomUserJpaRepository.findNicknameById(teamUserId);
 

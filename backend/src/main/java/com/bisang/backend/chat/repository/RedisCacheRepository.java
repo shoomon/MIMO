@@ -18,7 +18,7 @@ public class RedisCacheRepository {
 
     public void cacheUserProfile(Long teamUserId, String name, String imageUrl) {
         String key = USER_KEY + teamUserId;
-        redisTemplate.opsForHash().put(key, "name", name);
+        redisTemplate.opsForHash().put(key, "nickname", name);
         redisTemplate.opsForHash().put(key, "profileImage", imageUrl);
     }
 
@@ -29,7 +29,7 @@ public class RedisCacheRepository {
 
     public void cacheChatroomInfo(Long chatroomId, String roomName, String profileUri, ChatroomStatus chatroomStatus) {
         String key = CHATROOM_KEY + chatroomId;
-        redisTemplate.opsForHash().put(key, "roomName", roomName);
+        redisTemplate.opsForHash().put(key, "title", roomName);
         redisTemplate.opsForHash().put(key, "profileUri", profileUri);
         redisTemplate.opsForHash().put(key, "chatroomStatus", chatroomStatus);
     }

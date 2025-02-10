@@ -1,15 +1,17 @@
-package com.bisang.backend.chat.repository.chatMessageRepository;
-
-import com.bisang.backend.chat.domain.redis.RedisChatMessage;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ZSetOperations;
-import org.springframework.stereotype.Repository;
+package com.bisang.backend.chat.repository.message;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
+import org.springframework.stereotype.Repository;
+
+import com.bisang.backend.chat.domain.redis.RedisChatMessage;
+
+import lombok.RequiredArgsConstructor;
 
 @Repository
 @RequiredArgsConstructor
@@ -61,7 +63,9 @@ public class ChatMessageRedisRepository {
     }
 
     public RedisChatMessage getLastMessage(Long chatroomId) {
-        Set<RedisChatMessage> result = redisChatMessageTemplate.opsForZSet().reverseRange(teamMessageKey + chatroomId, 0, 0);
+        Set<RedisChatMessage> result = redisChatMessageTemplate
+                .opsForZSet()
+                .reverseRange(teamMessageKey + chatroomId, 0, 0);
 
         if (result == null || result.isEmpty()) {
             return null;

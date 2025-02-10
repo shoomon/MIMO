@@ -6,14 +6,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.bisang.backend.chat.repository.chatMessageRepository.ChatMessageRepository;
-import com.bisang.backend.chat.repository.chatroomRepository.ChatroomRepository;
-import com.bisang.backend.chat.repository.chatroomUserRepository.ChatroomUserRepository;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import com.bisang.backend.chat.controller.response.ChatMessageResponse;
 import com.bisang.backend.chat.domain.redis.RedisChatMessage;
+import com.bisang.backend.chat.repository.chatroom.ChatroomRepository;
+import com.bisang.backend.chat.repository.chatroomuser.ChatroomUserRepository;
+import com.bisang.backend.chat.repository.message.ChatMessageRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -59,7 +59,10 @@ public class ChatMessageService {
         List<ChatMessageResponse> responseList = new LinkedList<>();
 
         for (RedisChatMessage message : messageList) {
-            Map<Object, Object> userInfo = chatroomUserRepository.getUserInfo(message.getTeamUserId(), message.getUserId());
+            Map<Object, Object> userInfo = chatroomUserRepository.getUserInfo(
+                    message.getTeamUserId(),
+                    message.getUserId()
+            );
             ChatMessageResponse messageResponse = new ChatMessageResponse(
                     message.getId(),
                     message.getTeamUserId(),

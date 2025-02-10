@@ -1,4 +1,4 @@
-package com.bisang.backend.chat.repository.chatMessageRepository;
+package com.bisang.backend.chat.repository.message;
 
 import java.util.List;
 

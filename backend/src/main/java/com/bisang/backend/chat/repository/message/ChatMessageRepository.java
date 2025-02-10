@@ -1,14 +1,16 @@
-package com.bisang.backend.chat.repository.chatMessageRepository;
-
-import com.bisang.backend.chat.domain.ChatMessage;
-import com.bisang.backend.chat.domain.redis.RedisChatMessage;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
+package com.bisang.backend.chat.repository.message;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.stereotype.Repository;
+
+import com.bisang.backend.chat.domain.ChatMessage;
+import com.bisang.backend.chat.domain.redis.RedisChatMessage;
+
+import lombok.RequiredArgsConstructor;
 
 @Repository
 @RequiredArgsConstructor
@@ -65,7 +67,7 @@ public class ChatMessageRepository {
     public Map<String, Object> getLastChat(Long chatroomId) {
         Map<String, Object> result = new HashMap<>();
         RedisChatMessage message = chatMessageRedisRepository.getLastMessage(chatroomId);
-        
+
         if (message == null) {
             ChatMessage chatMessage = chatMessageJpaRepository.findTopByChatroomIdOrderByIdDesc(chatroomId);
 

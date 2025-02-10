@@ -5,9 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.bisang.backend.chat.repository.chatMessageRepository.ChatMessageRepository;
-import com.bisang.backend.chat.repository.chatroomRepository.ChatroomRepository;
-import com.bisang.backend.chat.repository.chatroomUserRepository.ChatroomUserRepository;
 import org.springframework.stereotype.Service;
 
 import com.bisang.backend.chat.controller.response.ChatroomResponse;
@@ -16,6 +13,9 @@ import com.bisang.backend.chat.domain.Chatroom;
 import com.bisang.backend.chat.domain.ChatroomStatus;
 import com.bisang.backend.chat.domain.ChatroomUser;
 import com.bisang.backend.chat.domain.redis.RedisChatMessage;
+import com.bisang.backend.chat.repository.chatroom.ChatroomRepository;
+import com.bisang.backend.chat.repository.chatroomuser.ChatroomUserRepository;
+import com.bisang.backend.chat.repository.message.ChatMessageRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -39,7 +39,7 @@ public class ChatroomService {
 
     public void enterChatroom(Long teamId, Long userId, String nickname) {
         ChatroomUser chatroomUser = ChatroomUser.createChatroomUser(teamId, userId, nickname, LocalDateTime.now());
-        //TODO: 이미 userId, teamId에 해당하는 멤버가 존재하면?
+
         chatroomUserRepository.insertJpaMemberUser(chatroomUser);
         Long teamUserId = chatroomUser.getId();
 

@@ -1,10 +1,11 @@
-package com.bisang.backend.chat.repository.chatroomUserRepository;
+package com.bisang.backend.chat.repository.chatroomuser;
 
-import lombok.RequiredArgsConstructor;
+import java.util.Set;
+
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.util.Set;
+import lombok.RequiredArgsConstructor;
 
 @Repository
 @RequiredArgsConstructor

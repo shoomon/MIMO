@@ -1,9 +1,8 @@
 package com.bisang.backend.chat.service;
 
-import com.bisang.backend.chat.repository.chatMessageRepository.ChatMessageRepository;
-import com.bisang.backend.chat.repository.chatroomRepository.ChatroomRepository;
-import com.bisang.backend.chat.repository.chatroomUserRepository.ChatroomUserRepository;
 import org.springframework.stereotype.Service;
+
+import com.bisang.backend.chat.repository.chatroomuser.ChatroomUserRepository;
 
 import lombok.RequiredArgsConstructor;
 
