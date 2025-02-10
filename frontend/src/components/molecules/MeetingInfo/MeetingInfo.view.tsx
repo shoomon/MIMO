@@ -25,7 +25,7 @@ const MeetingInfoView = ({
     onJoinRequest,
 }: MeetingInfoViewProps) => {
     return (
-        <div className="flex w-full flex-col gap-1 px-16">
+        <div className="flex w-full flex-col gap-1">
             <span className="text-md font-normal">{subTitle}</span>
             <RatingStar
                 rating={rating.rating}

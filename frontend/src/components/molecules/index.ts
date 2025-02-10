@@ -14,4 +14,5 @@ export { default as NavLevel } from "./NavLevel/NavLevel";
 export { default as Pagenation } from "./Pagenation/Pagenation";
 export { default as SearchBar } from "./SearchBar/SearchBar";
 export { default as Thumbnail } from "./Thumbnail/Thumbnail";
+export { default as MeetingInfo} from "./MeetingInfo/MeetingInfo";
 
