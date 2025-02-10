@@ -53,7 +53,6 @@ export const customFetch = async (
     try {
         response = await fetch(url, {
             ...fetchOptions,
-            credentials: 'include', // HttpOnly 쿠키 전송
             headers,
         });
     } catch (error) {

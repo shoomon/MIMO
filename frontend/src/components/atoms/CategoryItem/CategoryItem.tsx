@@ -43,7 +43,7 @@ const CategoryItem = ({
                 <Icon type="png" id={iconId} />
             </div>
             <div
-                className={`w-fit justify-center text-lg font-medium ${isSelected ? 'text-blue-600' : 'text-black'}`}
+                className={`w-fit justify-center text-lg font-medium ${isSelected ? 'text-black' : 'text-black'}`}
             >
                 {content}
             </div>
