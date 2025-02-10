@@ -10,9 +10,9 @@ const MainNavItemView = ({ value, path }: MainNavItemViewProps) => {
         <NavLink
             to={path}
             className={({ isActive }) =>
-                `text-dark border-b-2 py-3 font-semibold ${
+                `text-dark inline-block border-b-2 pb-2 font-semibold ${
                     isActive ? 'border-brand-primary-400' : 'border-transparent'
-                } hover:border-brand-primary-200 hover:opacity-60`
+                } hover:border-brand-primary-200 inline-block hover:opacity-60`
             }
         >
             {value}

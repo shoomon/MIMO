@@ -7,7 +7,7 @@ export interface NavLevelProps {
 
 const NavLevelView = ({ navItems }: NavLevelProps) => {
     return (
-        <nav className="flex gap-2">
+        <nav className="flex items-center gap-2">
             <Icon type="svg" id="Arrow-Back" />
             {navItems.map((item) => {
                 return <Title label={item.label} to={item.to} />;
