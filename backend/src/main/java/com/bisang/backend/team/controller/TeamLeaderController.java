@@ -1,6 +1,7 @@
 package com.bisang.backend.team.controller;
 
 import jakarta.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,7 +44,7 @@ public class TeamLeaderController {
     @PatchMapping("/invite-approve")
     public ResponseEntity<Void> inviteApprove(
         @AuthUser User user,
-        @RequestBody InviteApproveRequest req
+        @Valid @RequestBody InviteApproveRequest req
     ) {
         teamLeaderService.approveInviteRequest(user.getId(), req.teamId(), req.inviteId());
         return ResponseEntity.ok().build();
@@ -52,7 +53,7 @@ public class TeamLeaderController {
     @PatchMapping("/invite-reject")
     public ResponseEntity<Void> inviteReject(
         @AuthUser User user,
-        @RequestBody InviteRejectRequest req
+        @Valid @RequestBody InviteRejectRequest req
     ) {
         teamLeaderService.rejectInviteRequest(user.getId(), req.teamId(), req.inviteId());
         return ResponseEntity.ok().build();
@@ -79,11 +80,9 @@ public class TeamLeaderController {
     @DeleteMapping
     public ResponseEntity<Void> delete(
         @AuthUser User user,
-        @RequestBody LeaderDeleteUserRequest req
+        @Valid @RequestBody LeaderDeleteUserRequest req
     ) {
         teamLeaderService.deleteUser(user.getId(), req.teamId(), req.teamUserId());
         return ResponseEntity.ok().build();
     }
-
-
 }

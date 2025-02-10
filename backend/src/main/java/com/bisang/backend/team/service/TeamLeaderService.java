@@ -2,11 +2,13 @@ package com.bisang.backend.team.service;
 
 import static com.bisang.backend.common.exception.ExceptionCode.*;
 import static com.bisang.backend.common.utils.PageUtils.PAGE_SIZE;
+import static com.bisang.backend.team.domain.TeamNotificationStatus.ACTIVE;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
 import java.util.List;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,8 +20,10 @@ import com.bisang.backend.team.annotation.TeamLeader;
 import com.bisang.backend.team.controller.dto.TeamInviteDto;
 import com.bisang.backend.team.controller.dto.TeamUserDto;
 import com.bisang.backend.team.controller.response.TeamUserResponse;
+import com.bisang.backend.team.domain.Team;
 import com.bisang.backend.team.domain.TeamUser;
 import com.bisang.backend.team.domain.TeamUserRole;
+import com.bisang.backend.team.repository.TeamJpaRepository;
 import com.bisang.backend.team.repository.TeamUserJpaRepository;
 import com.bisang.backend.team.repository.TeamUserQuerydslRepository;
 
@@ -28,6 +32,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class TeamLeaderService {
+    private final TeamJpaRepository teamJpaRepository;
     private final TeamUserJpaRepository teamUserJpaRepository;
     private final TeamUserQuerydslRepository teamUserQuerydslRepository;
     private final TeamInviteJpaRepository teamInviteJpaRepository;
@@ -38,6 +43,10 @@ public class TeamLeaderService {
         TeamInvite teamInvite = findTeamInviteById(inviteId);
         teamInvite.approveInvitation();
         teamInviteJpaRepository.save(teamInvite);
+
+        String tmpNickname = RandomStringUtils.randomAlphabetic(10);
+        TeamUser teamUser = TeamUser.createTeamMember(teamInvite.getUserId(), teamId, tmpNickname, ACTIVE);
+        teamUserJpaRepository.save(teamUser);
     }
 
     @TeamCoLeader
@@ -71,8 +80,16 @@ public class TeamLeaderService {
     @TeamLeader
     @Transactional
     public void deleteUser(Long userId, Long teamId, Long teamUserId) {
+        Team team = findTeamById(teamId);
         TeamUser teamUser = findTeamUserById(teamUserId);
+        leaderCannotDeleteValidation(team, teamUser);
         teamUserJpaRepository.delete(teamUser);
+    }
+
+    private void leaderCannotDeleteValidation(Team team, TeamUser teamUser) {
+        if (team.getTeamLeaderId().equals(teamUser.getUserId())) {
+            throw new TeamException(NOT_DELETE_LEADER);
+        }
     }
 
     @TeamCoLeader
@@ -105,6 +122,11 @@ public class TeamLeaderService {
     @Transactional(readOnly = true)
     public List<TeamInviteDto> findTeamInviteRequest(Long userId, Long teamId) {
         return teamUserQuerydslRepository.getTeamInviteInfo(teamId);
+    }
+
+    private Team findTeamById(Long teamId) {
+        return teamJpaRepository.findById(teamId)
+                .orElseThrow(() -> new TeamException(NOT_FOUND));
     }
 
     private TeamInvite findTeamInviteById(Long teamInviteId) {
