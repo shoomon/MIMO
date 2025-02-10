@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bisang.backend.auth.annotation.AuthUser;
+import com.bisang.backend.auth.annotation.Guest;
 import com.bisang.backend.schedule.controller.request.TeamScheduleCreateRequest;
 import com.bisang.backend.schedule.controller.request.TeamScheduleUpdateDateRequest;
 import com.bisang.backend.schedule.controller.request.TeamScheduleUpdateDescriptionRequest;
@@ -38,9 +39,12 @@ public class TeamScheduleController {
 
     @GetMapping
     public ResponseEntity<TeamScheduleSpecificResponse> getSpecificSchedule(
+            @Guest User user,
+            @RequestParam Long teamId,
             @RequestParam Long teamScheduleId
     ) {
-        var specificSchedule = teamScheduleEveryOneService.getSpecificSchedule(teamScheduleId);
+        Long userId = user == null ? null : user.getId();
+        var specificSchedule = teamScheduleEveryOneService.getSpecificSchedule(userId, teamId, teamScheduleId);
         return ResponseEntity.ok(specificSchedule);
     }
 

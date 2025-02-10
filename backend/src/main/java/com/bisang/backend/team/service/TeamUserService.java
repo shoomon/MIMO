@@ -3,8 +3,8 @@ package com.bisang.backend.team.service;
 import static com.bisang.backend.common.exception.ExceptionCode.*;
 import static com.bisang.backend.common.utils.PageUtils.PAGE_SIZE;
 import static com.bisang.backend.invite.domain.TeamInvite.createInviteRequest;
-import static com.bisang.backend.team.domain.TeamPrivateStatus.PRIVATE;
-import static com.bisang.backend.team.domain.TeamPrivateStatus.PUBLIC;
+import static com.bisang.backend.team.domain.TeamRecruitStatus.ACTIVE_PRIVATE;
+import static com.bisang.backend.team.domain.TeamRecruitStatus.ACTIVE_PUBLIC;
 import static com.bisang.backend.team.domain.TeamUser.createTeamMember;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
@@ -46,10 +46,17 @@ public class TeamUserService {
 
         Team team = findTeamById(teamId);
         Long currentUserCount = teamUserJpaRepository.countTeamUserByTeamId(teamId);
-        if (team.getMaxCapacity() < currentUserCount && team.getPrivateStatus() == PUBLIC) {
-            TeamUser newTeamMember = createTeamMember(userId, teamId, nickname, status);
-            teamUserJpaRepository.save(newTeamMember);
+        if (team.getMaxCapacity() > currentUserCount) {
+            if (team.getRecruitStatus() == ACTIVE_PUBLIC) {
+                TeamUser newTeamMember = createTeamMember(userId, teamId, nickname, status);
+                teamUserJpaRepository.save(newTeamMember);
+                return;
+            } else if (team.getRecruitStatus() == ACTIVE_PRIVATE) {
+                throw new TeamException(NOT_PUBLIC_TEAM);
+            }
+            throw new TeamException(NOT_RECRUIT_TEAM);
         }
+        throw new TeamException(FULL_TEAM);
     }
 
     @EveryOne
@@ -60,10 +67,18 @@ public class TeamUserService {
 
         Team team = findTeamById(teamId);
         Long currentUserCount = teamUserJpaRepository.countTeamUserByTeamId(teamId);
-        if (team.getMaxCapacity() < currentUserCount && team.getPrivateStatus() == PRIVATE) {
-            TeamInvite inviteRequest = createInviteRequest(teamId, userId, memo);
-            teamInviteJpaRepository.save(inviteRequest);
+        Long currentInviteCount = teamInviteJpaRepository.countByTeamId(teamId);
+        if (team.getMaxCapacity() > currentUserCount + currentInviteCount) {
+            if (team.getRecruitStatus() == ACTIVE_PRIVATE) {
+                TeamInvite inviteRequest = createInviteRequest(teamId, userId, memo);
+                teamInviteJpaRepository.save(inviteRequest);
+                return;
+            } else if (team.getRecruitStatus() == ACTIVE_PUBLIC) {
+                throw new TeamException(NOT_PRIVATE_TEAM);
+            }
+            throw new TeamException(NOT_RECRUIT_TEAM);
         }
+        throw new TeamException(FULL_TEAM_INVITE);
     }
 
     @Transactional

@@ -95,7 +95,7 @@ public class TeamUserQuerydslRepository {
         BooleanBuilder dynamicTeamUserIdGt
     ) {
         return queryFactory
-            .select(Projections.fields(TeamUserDto.class,
+            .select(Projections.constructor(TeamUserDto.class,
                 teamUser.id,
                 teamUser.nickname,
                 teamUser.role
@@ -105,7 +105,7 @@ public class TeamUserQuerydslRepository {
 
     private List<TeamUserDto> getLeaders(Long teamId) {
         return queryFactory
-            .select(Projections.fields(TeamUserDto.class,
+            .select(Projections.constructor(TeamUserDto.class,
                 teamUser.id,
                 teamUser.nickname,
                 teamUser.role
@@ -115,7 +115,7 @@ public class TeamUserQuerydslRepository {
 
     private List<TeamUserDto> getCoLeaders(Long teamId) {
         return queryFactory
-            .select(Projections.fields(TeamUserDto.class,
+            .select(Projections.constructor(TeamUserDto.class,
                 teamUser.id,
                 teamUser.nickname,
                 teamUser.role
@@ -126,7 +126,7 @@ public class TeamUserQuerydslRepository {
 
     private List<TeamUserDto> getMembers(Long teamId) {
         return queryFactory
-            .select(Projections.fields(TeamUserDto.class,
+            .select(Projections.constructor(TeamUserDto.class,
                 teamUser.id,
                 teamUser.nickname,
                 teamUser.role

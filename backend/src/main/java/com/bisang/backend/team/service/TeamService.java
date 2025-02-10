@@ -45,7 +45,7 @@ public class TeamService {
 
     @EveryOne
     @Transactional
-    public void createTeam(
+    public Long createTeam(
             Long leaderId,
             String nickname,
             TeamNotificationStatus notificationStatus,
@@ -66,6 +66,7 @@ public class TeamService {
         // TODO: 계좌 관련 생성 기능 추가
 
         // 팀 생성
+        teamProfileUri = profileUriValidation(teamProfileUri);
         Team newTeam = Team.builder()
                             .teamLeaderId(leaderId)
                             .teamChatroomId(0L) // 추후 추가 필요, 챗룸 구현 이후
@@ -80,6 +81,7 @@ public class TeamService {
                             .maxCapacity(maxCapacity).build();
         teamJpaRepository.save(newTeam);
 
+
         // 기본 태그 저장
         Tag areaTag = findTagByName(area.getName());
         TeamTag areaTeamTag = new TeamTag(newTeam.getId(), areaTag.getId());
@@ -92,6 +94,20 @@ public class TeamService {
         // 팀 유저 저장
         var teamUser = TeamUser.createTeamLeader(leaderId, newTeam.getId(), nickname, notificationStatus);
         teamUserJpaRepository.save(teamUser);
+        return newTeam.getId();
+    }
+
+    private String profileUriValidation(String teamProfileUri) {
+        if (teamProfileUri == null) {
+            return "eyJhbGciOiJIUzM4NCJ9."
+                    + "eyJzdWIiOiIzIiwiaWF0IjoxNzM5MTQ4MjM0LCJleHAiOjE3MzkxNTE4MzQsInR5cGUiOiJhY2Nlc3NUb2tlbiJ9"
+                    + ".fdVC6zw6EVJT84-jzTO-D3yvjW_oR_7-qoX8-qpNOe2aNsUdROeP0N3sYaKVa90J";
+        }
+
+        if (!teamProfileUri.startsWith("https://bisang-mimo-bucket.s3.ap-northeast-2.amazonaws.com/")) {
+            throw new IllegalArgumentException("이미지가 서버 내에 존재하지 않습니다. 이미지 업로드 후 다시 요청해주세요.");
+        }
+        return teamProfileUri;
     }
 
     @EveryOne
@@ -100,7 +116,7 @@ public class TeamService {
         List<SimpleTeamDto> teams = teamQuerydslRepository.getTeamsByAreaCode(area, teamId);
         Boolean hasNext = teams.size() > SHORT_PAGE_SIZE;
         Integer size = hasNext ? SHORT_PAGE_SIZE : teams.size();
-        Long lastTeamId = teams.get(size - 1).teamId();
+        Long lastTeamId = size == 0 ? null : teams.get(size - 1).teamId();
         if (hasNext) {
             teams.remove(size - 1);
         }
@@ -128,54 +144,29 @@ public class TeamService {
 
     @TeamLeader
     @Transactional
-    public void updateTeamName(Long userId, Long teamId, String name) {
+    public void updateTeam(
+            Long userId,
+            Long teamId,
+            String name,
+            String description,
+            TeamRecruitStatus recruitStatus,
+            TeamPrivateStatus privateStatus,
+            String profileUri,
+            Area areaCode
+    ) {
         Team team = findTeamById(teamId);
         team.updateTeamName(name);
-        teamJpaRepository.save(team);
-    }
-
-    @TeamLeader
-    @Transactional
-    public void updateTeamDescription(Long userId, Long teamId, String description) {
-        Team team = findTeamById(teamId);
 
         var teamDescription = team.getDescription();
         teamDescription.updateDescription(description);
         teamDescriptionJpaRepository.save(teamDescription);
-
         team.updateShortDescription(description);
-        teamJpaRepository.save(team);
-    }
 
-    @TeamLeader
-    @Transactional
-    public void updateTeamRecruitStatus(Long userId, Long teamId, TeamRecruitStatus recruitStatus) {
-        Team team = findTeamById(teamId);
         team.updateRecruitStatus(recruitStatus);
-        teamJpaRepository.save(team);
-    }
-
-    @TeamLeader
-    @Transactional
-    public void updateTeamPrivateStatus(Long userId, Long teamId, TeamPrivateStatus privateStatus) {
-        Team team = findTeamById(teamId);
         team.updatePrivateStatus(privateStatus);
-        teamJpaRepository.save(team);
-    }
-
-    @TeamLeader
-    @Transactional
-    public void updateTeamProfileUri(Long userId, Long teamId, String profileUri) {
-        Team team = findTeamById(teamId);
         team.updateTeamProfileUri(profileUri);
-        teamJpaRepository.save(team);
-    }
-
-    @TeamLeader
-    @Transactional
-    public void updateTeamArea(Long userId, Long teamId, Area areaCode) {
-        Team team = findTeamById(teamId);
         team.updateAreaCode(areaCode);
+
         teamJpaRepository.save(team);
     }
 
@@ -185,11 +176,11 @@ public class TeamService {
         Team team = findTeamById(teamId);
         List<TeamUser> teamUsers = teamUserJpaRepository.findByTeamId(teamId);
         if (teamUsers.size() == 1) {
-            // TODO 계좌 삭제
-            // TODO 채팅방 삭제
             teamUserJpaRepository.delete(teamUsers.get(0));
             teamJpaRepository.delete(team);
+            return;
         }
+        throw new TeamException(EXTRA_USER);
     }
 
     private Team findTeamById(Long teamId) {

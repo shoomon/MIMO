@@ -11,6 +11,7 @@ import lombok.Builder;
 @Builder
 public record TeamScheduleSpecificResponse(
         Long teamScheduleId,
+        Boolean isTeamMember,
         ScheduleStatus status,
         String location,
         LocalDateTime date,
