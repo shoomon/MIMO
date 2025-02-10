@@ -41,7 +41,7 @@ public class JwtUtil {
     public UserTokens createLoginToken(String subject) {
         String refreshToken = createToken("", refreshTokenExpiry, "refreshToken");
         String accessToken = createToken(subject, accessTokenExpiry, "accessToken");
-        return new UserTokens(refreshToken, accessToken);
+        return new UserTokens(accessToken, refreshToken);
     }
 
     private String createToken(String subject, Long expiredMs, String type) {
