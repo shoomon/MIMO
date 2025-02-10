@@ -1,5 +1,6 @@
 package com.bisang.backend.team.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -60,7 +61,7 @@ public class TeamLeaderController {
     @PatchMapping("/role-upgrade")
     public ResponseEntity<Void> upgradeRole(
         @AuthUser User user,
-        @RequestBody UpgradeRoleRequest req
+        @Valid @RequestBody UpgradeRoleRequest req
     ) {
         teamLeaderService.upgradeRole(user.getId(), req.teamId(), req.teamUserId());
         return ResponseEntity.ok().build();
@@ -69,7 +70,7 @@ public class TeamLeaderController {
     @PatchMapping("/role-downgrade")
     public ResponseEntity<Void> downgradeRole(
         @AuthUser User user,
-        @RequestBody DowngradeRoleRequest req
+        @Valid @RequestBody DowngradeRoleRequest req
     ) {
         teamLeaderService.downgradeRole(user.getId(), req.teamId(), req.teamUserId());
         return ResponseEntity.ok().build();

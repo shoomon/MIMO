@@ -78,6 +78,8 @@ public class TeamLeaderService {
     @TeamCoLeader
     @Transactional(readOnly = true)
     public TeamUserResponse findTeamUsers(Long userId, Long teamId, TeamUserRole role, Long teamUserId) {
+        teamParameterValidation(role, teamUserId);
+
         List<TeamUserDto> teamUserInfos = teamUserQuerydslRepository.getTeamUserInfos(teamId, role, teamUserId);
 
         if (teamUserInfos.size() > PAGE_SIZE) {
@@ -120,4 +122,11 @@ public class TeamLeaderService {
             throw new TeamException(INVALID_REQUEST);
         }
     }
+
+    private void teamParameterValidation(TeamUserRole role, Long teamUserId) {
+        if ((role != null && teamUserId == null) || (role == null && teamUserId != null)) {
+            throw new TeamException(INVALID_REQUEST);
+        }
+    }
+
 }
