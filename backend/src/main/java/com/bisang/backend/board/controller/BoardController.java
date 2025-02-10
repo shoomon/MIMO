@@ -1,12 +1,15 @@
 package com.bisang.backend.board.controller;
 
 import com.bisang.backend.auth.annotation.AuthUser;
+import com.bisang.backend.board.controller.dto.BoardDto;
 import com.bisang.backend.board.controller.dto.SimpleBoardListDto;
 import com.bisang.backend.board.controller.request.CreatePostRequest;
 import com.bisang.backend.board.controller.request.LikePostRequest;
 import com.bisang.backend.board.controller.request.UpdatePostRequest;
 import com.bisang.backend.board.controller.response.BoardDetailResponse;
+import com.bisang.backend.board.controller.response.BoardListResponse;
 import com.bisang.backend.board.domain.Board;
+import com.bisang.backend.board.repository.BoardJpaRepository;
 import com.bisang.backend.board.service.BoardService;
 import com.bisang.backend.user.domain.User;
 import jakarta.transaction.Transactional;
@@ -33,8 +36,9 @@ public class BoardController {
 
     private final S3Service s3Service;
     private final BoardService boardService;
+    private final BoardJpaRepository boardJpaRepository;
 
-    //todo: 게시글 생성 시 사진 uri 리스트 저장
+    //todo: 게시글 생성 시 S3 업로드 및 사진 uri 리스트 저장
     @Transactional
     @PostMapping
     public ResponseEntity<Void> createPost(
@@ -44,6 +48,7 @@ public class BoardController {
         boardService.createPost(
                 request.teamBoardId(),
                 user.getId(),
+                request.teamBoardId(),
                 request.title(),
                 request.description(),
                 request.fileUris()
@@ -52,8 +57,8 @@ public class BoardController {
     }
     //todo: 게시글 미리보기 리스트 반환
     @GetMapping("/list")
-    public ResponseEntity<List<SimpleBoardListDto>> getPostList(@AuthUser User user, @RequestParam(value = "type", required = true) Long boardid){
-//        return boardService.getPostList(boardid);
+    public ResponseEntity<BoardListResponse> getPostList(@AuthUser User user, @RequestParam(value = "type", required = true) Long teamBoardId){
+        return ResponseEntity.ok(boardService.getPostList(teamBoardId));
     }
 
     @GetMapping("/detail")

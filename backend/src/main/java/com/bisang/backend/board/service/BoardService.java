@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.bisang.backend.board.controller.dto.BoardFileDto;
 import com.bisang.backend.board.controller.dto.CommentDto;
+import com.bisang.backend.board.controller.dto.SimpleBoardListDto;
+import com.bisang.backend.board.controller.response.BoardListResponse;
 import com.bisang.backend.s3.service.S3Service;
 import com.bisang.backend.team.annotation.TeamMember;
 import jakarta.persistence.EntityNotFoundException;
@@ -23,7 +25,7 @@ import com.bisang.backend.board.controller.response.BoardDetailResponse;
 
 import lombok.RequiredArgsConstructor;
 
-
+//todo: 게시글 리스트, 댓글 리스트 가져올 때 offset 설정
 @Service
 @RequiredArgsConstructor
 public class BoardService {
@@ -42,6 +44,7 @@ public class BoardService {
 //    @TeamMember
     public void createPost(
             long teamBoardId,
+            long teamId,
             long userId,
             String title,
             String description,
@@ -50,10 +53,10 @@ public class BoardService {
         //게시글 본문 저장
         BoardDescription boardDescription = boardDescriptionJpaRepository.save(new BoardDescription(description));
         //팀유저 찾기
-//        TeamUser teamUser = teamUserJpaRepository.findByTeamIdAndUserId(teamId, userId)
-//                .orElseThrow(() -> new EntityNotFoundException("팀유저를 찾을 수 없습니다."));
-//        Long teamUserId = teamUser.getUserId();
-        Long teamUserId = Long.parseLong(1+""); //테스트용
+        TeamUser teamUser = teamUserJpaRepository.findByTeamIdAndUserId(teamId, userId)
+                .orElseThrow(() -> new EntityNotFoundException("팀유저를 찾을 수 없습니다."));
+        Long teamUserId = teamUser.getUserId();
+//        Long teamUserId = Long.parseLong(1+""); //테스트용
         //게시글 저장
         Board post = boardJpaRepository.save(Board.builder()
                 .teamBoardId(teamBoardId)
@@ -83,11 +86,11 @@ public class BoardService {
         }
 
     }
-
-    //todo: 팀 게시판 게시글 미리보기 리스트 반환
+    
 //    @TeamMember
-    public List<Board> getPostList(Long teamBoardId){
-        return boardJpaRepository.findAll();
+    public BoardListResponse getPostList(Long teamBoardId){
+        List<SimpleBoardListDto> list = boardQuerydslRepository.getBoardList(teamBoardId);
+        return new BoardListResponse(list);
     }
 
 //    @TeamMember
