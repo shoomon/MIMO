@@ -5,7 +5,9 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.bisang.backend.s3.service.S3Service;
 import com.bisang.backend.user.controller.response.UserMyResponse;
 import com.bisang.backend.user.domain.User;
 import com.bisang.backend.user.repository.UserJpaRepository;
@@ -15,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Service
 public class UserService {
+    private final S3Service s3Service;
     private final UserJpaRepository userJpaRepository;
 
     @Transactional
@@ -35,7 +38,8 @@ public class UserService {
     }
 
     @Transactional
-    public void updateProfileUri(User user, String profileUri) {
+    public void updateProfileUri(User user, MultipartFile file) {
+        String profileUri = s3Service.saveFile(user.getId(), file);
         user.updateProfileUri(profileUri);
         userJpaRepository.save(user);
     }

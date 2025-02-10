@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import com.bisang.backend.chat.controller.response.ChatroomResponse;
 import com.bisang.backend.chat.domain.ChatMessage;
+import com.bisang.backend.chat.domain.ChatType;
 import com.bisang.backend.chat.domain.Chatroom;
 import com.bisang.backend.chat.domain.ChatroomUser;
 import com.bisang.backend.chat.domain.redis.RedisChatMessage;

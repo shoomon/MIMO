@@ -9,7 +9,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DistributedLock {
     String name();
-    String key();
     long waitTime() default 3;  // 락 획득 대기 시간 (초)
     long leaseTime() default 3;  // 락 자동 해제 시간 (초)
 }
