@@ -92,4 +92,8 @@ public class ChatroomService {
 
         return chatroomResponse;
     }
+
+    public void updateChatroomProfileUri(Long teamId, String profileUri) {
+        chatroomRepository.updateChatroomProfileUri(teamId, profileUri);
+    }
 }

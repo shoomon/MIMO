@@ -47,4 +47,9 @@ public class RedisCacheRepository {
         String key = CHATROOM_KEY + chatroomId;
         return redisTemplate.opsForHash().entries(key);
     }
+
+    public void updateChatroomProfileUri(Long teamId, String profileUri) {
+        String key = CHATROOM_KEY + teamId;
+        redisTemplate.opsForHash().put(key, "profileUri", profileUri);
+    }
 }

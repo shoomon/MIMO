@@ -1,8 +1,12 @@
 package com.bisang.backend.chat.repository.chatroom;
 
+import static com.bisang.backend.common.exception.ExceptionCode.*;
+
 import java.util.List;
 import java.util.Map;
 
+import com.bisang.backend.common.exception.ChatroomException;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
 import com.bisang.backend.chat.domain.Chatroom;
@@ -62,4 +66,11 @@ public class ChatroomRepository {
         return chatroomInfo;
     }
 
+    @Transactional
+    public void updateChatroomProfileUri(Long teamId, String profileUri) {
+        redisCacheRepository.updateChatroomProfileUri(teamId, profileUri);
+
+        Chatroom chatroom = chatroomJpaRepository.findById(teamId).orElseThrow(() -> new ChatroomException(NOT_FOUND_TEAM));
+        chatroom.setProfileUri(profileUri);
+    }
 }
