@@ -23,8 +23,10 @@ public enum ExceptionCode {
     BALANCE_CHARGE_FAIL(4001, "충전에 실패했습니다."),
     BALANCE_TRANSFER_FAIL(4002, "송금에 실패했습니다."),
 
+    NOT_FOUND_TEAM(5000, "팀을 찾을 수가 없습니다."),
     ALREADY_JOINED_MEMBER(5001, "이미 가입된 회원입니다."),
-    ALREADY_REQUEST_MEMBER(5002, "이미 회원 가입을 요청한 회원입니다.");
+    ALREADY_REQUEST_MEMBER(5002, "이미 회원 가입을 요청한 회원입니다."),
+    NOT_FOUND_TEAM_USER(5003, "팀 내에 존재하지 않는 회원입니다.");
 
     private final int code;
     private final String message;

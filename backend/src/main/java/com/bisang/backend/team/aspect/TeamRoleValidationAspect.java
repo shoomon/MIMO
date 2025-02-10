@@ -53,4 +53,15 @@ public class TeamRoleValidationAspect {
 
         return joinPoint.proceed();
     }
+
+    /**
+     * @TeamMember 메서드 검증 로직, 해당 UserId가 해당 Team에 존재하면 통과
+     */
+    @Around("@annotation(com.bisang.backend.team.annotation.TeamMember) && args(userId, teamId, ..)")
+    public Object validateTeamMember(ProceedingJoinPoint joinPoint, Long userId, Long teamId) throws Throwable {
+        teamUserJpaRepository.findByTeamIdAndUserId(teamId, userId)
+                .orElseThrow(() -> new TeamException(NOT_FOUND));
+
+        return joinPoint.proceed();
+    }
 }

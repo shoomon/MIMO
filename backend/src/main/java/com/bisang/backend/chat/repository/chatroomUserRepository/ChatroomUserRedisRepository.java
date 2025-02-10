@@ -21,24 +21,22 @@ public class ChatroomUserRedisRepository {
 
 
     public void insertMember(Long teamId, Long userId, Long teamUserId) {
-        String byUserKey = chatroomByUserKey + teamId;
-        String byTeamUserKey = chatroomByTeamUserKey + teamId;
 
         redisLongTemplate.opsForSet().add(teamMemberKey + teamId, userId);
 
-        redisLongTemplate.opsForHash().put(byUserKey, userId, teamUserId);
-        redisLongTemplate.opsForHash().put(byTeamUserKey, teamUserId, userId);
+        redisLongTemplate.opsForHash().put(chatroomByUserKey + teamId, "userId:" + userId, teamUserId);
+        redisLongTemplate.opsForHash().put(chatroomByTeamUserKey + teamId, "teamUserId:" + teamUserId, userId);
     }
 
     public void deleteMember(Long teamId, Long userId, Long teamUserId) {
         redisLongTemplate.opsForSet().remove(teamMemberKey + teamId, userId);
-        redisLongTemplate.opsForHash().delete(chatroomByUserKey + teamId + userId, teamUserId);
-        redisLongTemplate.opsForHash().delete(chatroomByTeamUserKey + teamId + teamUserId, userId);
+        redisLongTemplate.opsForHash().delete(chatroomByUserKey + teamId, "userId:" + userId);
+        redisLongTemplate.opsForHash().delete(chatroomByTeamUserKey + teamId, "teamUserId:" + teamUserId);
     }
 
     public boolean isMember(Long teamId, Long userId, Long teamUserId) {
         String key = chatroomByUserKey + teamId;
-        return redisLongTemplate.opsForHash().get(key, userId) == teamUserId;
+        return redisLongTemplate.opsForHash().get(key, "userId:" + userId) == teamUserId;
     }
 
     public Set<Long> getTeamMembers(long teamId) {
@@ -47,6 +45,6 @@ public class ChatroomUserRedisRepository {
 
     public Long getTeamUserId(Long userId, Long teamId) {
         String key = chatroomByUserKey + teamId;
-        return (Long)redisLongTemplate.opsForHash().get(key, userId);
+        return (Long)redisLongTemplate.opsForHash().get(key, "userId:" + userId);
     }
 }
