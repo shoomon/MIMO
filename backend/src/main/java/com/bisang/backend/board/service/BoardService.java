@@ -45,10 +45,10 @@ public class BoardService {
         //게시글 본문 저장
         BoardDescription boardDescription = boardDescriptionJpaRepository.save(new BoardDescription(description));
         //팀유저 찾기
-        TeamUser teamUser = teamUserJpaRepository.findByTeamIdAndUserId(teamId, userId)
-                .orElseThrow(() -> new EntityNotFoundException("팀유저를 찾을 수 없습니다."));
-        Long teamUserId = teamUser.getUserId();
-//        Long teamUserId = Long.parseLong(1+""); //테스트용
+//        TeamUser teamUser = teamUserJpaRepository.findByTeamIdAndUserId(teamId, userId)
+//                .orElseThrow(() -> new EntityNotFoundException("팀유저를 찾을 수 없습니다."));
+//        Long teamUserId = teamUser.getUserId();
+        Long teamUserId = Long.parseLong(1+""); //테스트용
         //게시글 저장
         Board post = boardJpaRepository.save(Board.builder()
                 .teamBoardId(teamBoardId)
