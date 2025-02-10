@@ -1,4 +1,4 @@
-package com.bisang.backend.chat.repository;
+package com.bisang.backend.chat.repository.chatroomUserRepository;
 
 import java.util.Set;
 
