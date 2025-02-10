@@ -44,7 +44,7 @@ public class TeamUserController {
         @AuthUser User user,
         @RequestBody JoinTeamRequest req
     ) {
-        teamUserService.joinTeam(user.getId(), req.teamId(), req.nickname(), req.status());
+        teamUserService.joinTeam(user.getId(), req.teamId(), req.nickname(), req.notificationStatus());
         return ResponseEntity.ok().build();
     }
 

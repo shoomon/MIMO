@@ -28,7 +28,10 @@ public enum ExceptionCode {
     NOT_FOUND_TEAM(5000, "팀을 찾을 수가 없습니다."),
     ALREADY_JOINED_MEMBER(5001, "이미 가입된 회원입니다."),
     ALREADY_REQUEST_MEMBER(5002, "이미 회원 가입을 요청한 회원입니다."),
-    NOT_FOUND_TEAM_USER(5003, "팀 내에 존재하지 않는 회원입니다."),
+    NOT_FOUND_TEAM_USER(5003, "모임 내에 존재하지 않는 회원입니다."),
+    NOT_PUBLIC_TEAM(5004, "해당 모임은 공개 상태가 아닙니다. 가입 요청을 보내주세요."),
+    NOT_PRIVATE_TEAM(5005, "해당 모임은 비공개 상태가 아닙니다. 직접 가입해주세요."),
+    FULL_TEAM(5006, "해당 모임은 인원이 모두 가득찼습니다."),
 
     FULL_SCHEDULE(6000, "해당 일정은 정원을 초과했습니다.");
 

@@ -46,10 +46,15 @@ public class TeamUserService {
 
         Team team = findTeamById(teamId);
         Long currentUserCount = teamUserJpaRepository.countTeamUserByTeamId(teamId);
-        if (team.getMaxCapacity() < currentUserCount && team.getPrivateStatus() == PUBLIC) {
-            TeamUser newTeamMember = createTeamMember(userId, teamId, nickname, status);
-            teamUserJpaRepository.save(newTeamMember);
+        if (team.getMaxCapacity() > currentUserCount) {
+            if (team.getPrivateStatus() == PUBLIC) {
+                TeamUser newTeamMember = createTeamMember(userId, teamId, nickname, status);
+                teamUserJpaRepository.save(newTeamMember);
+                return;
+            }
+            throw new TeamException(NOT_PUBLIC_TEAM);
         }
+        throw new TeamException(FULL_TEAM);
     }
 
     @EveryOne
@@ -60,10 +65,15 @@ public class TeamUserService {
 
         Team team = findTeamById(teamId);
         Long currentUserCount = teamUserJpaRepository.countTeamUserByTeamId(teamId);
-        if (team.getMaxCapacity() < currentUserCount && team.getPrivateStatus() == PRIVATE) {
-            TeamInvite inviteRequest = createInviteRequest(teamId, userId, memo);
-            teamInviteJpaRepository.save(inviteRequest);
+        if (team.getMaxCapacity() > currentUserCount) {
+            if (team.getPrivateStatus() == PRIVATE) {
+                TeamInvite inviteRequest = createInviteRequest(teamId, userId, memo);
+                teamInviteJpaRepository.save(inviteRequest);
+                return;
+            }
+            throw new TeamException(NOT_PRIVATE_TEAM);
         }
+        throw new TeamException(FULL_TEAM);
     }
 
     @Transactional

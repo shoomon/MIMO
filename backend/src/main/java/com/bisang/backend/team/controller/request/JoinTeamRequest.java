@@ -5,6 +5,6 @@ import com.bisang.backend.team.domain.TeamNotificationStatus;
 public record JoinTeamRequest(
     Long teamId,
     String nickname,
-    TeamNotificationStatus status
+    TeamNotificationStatus notificationStatus
 ) {
 }
