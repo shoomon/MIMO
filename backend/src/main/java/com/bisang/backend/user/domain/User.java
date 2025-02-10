@@ -86,6 +86,9 @@ public class User extends BaseTimeEntity {
     }
 
     public void updateProfileUri(String profileUri) {
+        if (!profileUri.startsWith("https://bisang-mimo-bucket.s3.ap-northeast-2.amazonaws.com/")) {
+            throw new IllegalArgumentException("이미지가 서버 내에 존재하지 않습니다. 이미지 업로드 후 다시 요청해주세요.");
+        }
         this.profileUri = profileUri;
     }
 }

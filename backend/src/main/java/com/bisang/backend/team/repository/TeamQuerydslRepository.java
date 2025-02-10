@@ -38,23 +38,20 @@ public class TeamQuerydslRepository {
                                                 .from(teamUser)
                                                 .where(teamUser.id.eq(teamId)).fetchOne();
 
-        String description = queryFactory.select(teamDescription.description)
-                                            .from(teamDescription)
-                                            .where(teamDescription.id.eq(teamId)).fetchOne();
-
         return Optional.ofNullable(
                 queryFactory
-                .select(Projections.fields(TeamDto.class,
+                .select(Projections.constructor(TeamDto.class,
                         team.id,
                         team.teamProfileUri,
                         team.name,
-                        Expressions.constant(description),
+                        teamDescription.description,
                         team.recruitStatus,
                         team.privateStatus,
                         team.areaCode,
                         team.maxCapacity,
-                        Expressions.constant(currentMemberCount)))
-                .from(team)
+                        Expressions.numberTemplate(Long.class, "{0}", currentMemberCount)
+                ))
+                .from(team).join(teamDescription).on(team.description.id.eq(teamDescription.id))
                 .where(team.id.eq(teamId))
                 .fetchOne()).orElseThrow(() -> new TeamException(NOT_FOUND));
     }

@@ -2,6 +2,8 @@ package com.bisang.backend.team.controller;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
+import jakarta.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -84,7 +86,7 @@ public class TeamController {
     @PatchMapping("/name")
     public ResponseEntity<Void> updateTeamName(
         @AuthUser User user,
-        @RequestBody UpdateTeamNameRequest req
+        @Valid @RequestBody UpdateTeamNameRequest req
     ) {
         teamService.updateTeamName(user.getId(), req.teamId(), req.name());
         return ResponseEntity.ok().build();
@@ -93,7 +95,7 @@ public class TeamController {
     @PatchMapping("/description")
     public ResponseEntity<Void> updateTeamDescription(
         @AuthUser User user,
-        @RequestBody UpdateTeamDescriptionRequest req
+        @Valid @RequestBody UpdateTeamDescriptionRequest req
     ) {
         teamService.updateTeamDescription(user.getId(), req.teamId(), req.description());
         return ResponseEntity.ok().build();
@@ -102,25 +104,25 @@ public class TeamController {
     @PatchMapping("/recruit-status")
     public ResponseEntity<Void> updateTeamRecruitStatus(
         @AuthUser User user,
-        @RequestBody UpdateTeamRecruitStatusRequest req
+        @Valid @RequestBody UpdateTeamRecruitStatusRequest req
     ) {
-        teamService.updateTeamRecruitStatus(user.getId(), req.teamId(), req.status());
+        teamService.updateTeamRecruitStatus(user.getId(), req.teamId(), req.recruitStatus());
         return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/private-status")
     public ResponseEntity<Void> updateTeamPrivateStatus(
         @AuthUser User user,
-        @RequestBody UpdateTeamPrivateStatusRequest req
+        @Valid @RequestBody UpdateTeamPrivateStatusRequest req
     ) {
-        teamService.updateTeamPrivateStatus(user.getId(), req.teamId(), req.status());
+        teamService.updateTeamPrivateStatus(user.getId(), req.teamId(), req.privateStatus());
         return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/profile-uri")
     public ResponseEntity<Void> updateTeamProfileUri(
         @AuthUser User user,
-        @RequestBody UpdateTeamProfileUriRequest req
+        @Valid @RequestBody UpdateTeamProfileUriRequest req
     ) {
         teamService.updateTeamProfileUri(user.getId(), req.teamId(), req.profileUri());
         return ResponseEntity.ok().build();
@@ -129,7 +131,7 @@ public class TeamController {
     @PatchMapping("/area")
     public ResponseEntity<Void> updateTeamAreaUri(
         @AuthUser User user,
-        @RequestBody UpdateTeamAreaRequest req
+        @Valid @RequestBody UpdateTeamAreaRequest req
     ) {
         teamService.updateTeamArea(user.getId(), req.teamId(), req.area());
         return ResponseEntity.ok().build();
