@@ -14,6 +14,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bisang.backend.chat.service.ChatroomService;
 import com.bisang.backend.common.exception.TeamException;
 import com.bisang.backend.invite.domain.TeamInvite;
 import com.bisang.backend.invite.repository.TeamInviteJpaRepository;
@@ -38,6 +39,7 @@ public class TeamUserService {
     private final TeamUserJpaRepository teamUserJpaRepository;
     private final TeamInviteJpaRepository teamInviteJpaRepository;
     private final TeamUserQuerydslRepository teamUserQuerydslRepository;
+    private final ChatroomService chatroomService;
 
     @EveryOne
     @Transactional
@@ -49,6 +51,8 @@ public class TeamUserService {
         if (team.getMaxCapacity() < currentUserCount && team.getPrivateStatus() == PUBLIC) {
             TeamUser newTeamMember = createTeamMember(userId, teamId, nickname, status);
             teamUserJpaRepository.save(newTeamMember);
+            // CHATTING 방에 넣기
+            chatroomService.enterChatroom(teamId, userId, nickname);
         }
     }
 
