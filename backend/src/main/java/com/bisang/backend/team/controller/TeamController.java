@@ -2,6 +2,7 @@ package com.bisang.backend.team.controller;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
+import com.bisang.backend.team.controller.request.UpdateTeamRequest;
 import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -75,66 +77,30 @@ public class TeamController {
         return ResponseEntity.status(CREATED).body(new TeamIdResponse(teamId));
     }
 
+    @PutMapping
+    public ResponseEntity<Void> updateTeam(
+            @AuthUser User user,
+            @Valid @RequestBody UpdateTeamRequest req
+    ) {
+        teamService.updateTeam(
+                user.getId(),
+                req.teamId(),
+                req.name(),
+                req.description(),
+                req.recruitStatus(),
+                req.privateStatus(),
+                req.profileUri(),
+                req.area()
+        );
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping
     public ResponseEntity<TeamDto> getTeamInfo(
         @RequestParam Long teamId
     ) {
         TeamDto teamInfo = teamService.getTeamGeneralInfo(teamId);
         return ResponseEntity.ok(teamInfo);
-    }
-
-    @PatchMapping("/name")
-    public ResponseEntity<Void> updateTeamName(
-        @AuthUser User user,
-        @Valid @RequestBody UpdateTeamNameRequest req
-    ) {
-        teamService.updateTeamName(user.getId(), req.teamId(), req.name());
-        return ResponseEntity.ok().build();
-    }
-
-    @PatchMapping("/description")
-    public ResponseEntity<Void> updateTeamDescription(
-        @AuthUser User user,
-        @Valid @RequestBody UpdateTeamDescriptionRequest req
-    ) {
-        teamService.updateTeamDescription(user.getId(), req.teamId(), req.description());
-        return ResponseEntity.ok().build();
-    }
-
-    @PatchMapping("/recruit-status")
-    public ResponseEntity<Void> updateTeamRecruitStatus(
-        @AuthUser User user,
-        @Valid @RequestBody UpdateTeamRecruitStatusRequest req
-    ) {
-        teamService.updateTeamRecruitStatus(user.getId(), req.teamId(), req.recruitStatus());
-        return ResponseEntity.ok().build();
-    }
-
-    @PatchMapping("/private-status")
-    public ResponseEntity<Void> updateTeamPrivateStatus(
-        @AuthUser User user,
-        @Valid @RequestBody UpdateTeamPrivateStatusRequest req
-    ) {
-        teamService.updateTeamPrivateStatus(user.getId(), req.teamId(), req.privateStatus());
-        return ResponseEntity.ok().build();
-    }
-
-    @PatchMapping("/profile-uri")
-    public ResponseEntity<Void> updateTeamProfileUri(
-        @AuthUser User user,
-        @Valid @RequestBody UpdateTeamProfileUriRequest req
-    ) {
-        teamService.updateTeamProfileUri(user.getId(), req.teamId(), req.profileUri());
-        return ResponseEntity.ok().build();
-    }
-
-    @PatchMapping("/area")
-    public ResponseEntity<Void> updateTeamAreaUri(
-        @AuthUser User user,
-        @Valid @RequestBody UpdateTeamAreaRequest req
-    ) {
-        teamService.updateTeamArea(user.getId(), req.teamId(), req.area());
-        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping

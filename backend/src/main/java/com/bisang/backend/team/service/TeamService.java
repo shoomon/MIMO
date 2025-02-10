@@ -145,54 +145,29 @@ public class TeamService {
 
     @TeamLeader
     @Transactional
-    public void updateTeamName(Long userId, Long teamId, String name) {
+    public void updateTeam(
+            Long userId,
+            Long teamId,
+            String name,
+            String description,
+            TeamRecruitStatus recruitStatus,
+            TeamPrivateStatus privateStatus,
+            String profileUri,
+            Area areaCode
+    ) {
         Team team = findTeamById(teamId);
         team.updateTeamName(name);
-        teamJpaRepository.save(team);
-    }
-
-    @TeamLeader
-    @Transactional
-    public void updateTeamDescription(Long userId, Long teamId, String description) {
-        Team team = findTeamById(teamId);
 
         var teamDescription = team.getDescription();
         teamDescription.updateDescription(description);
         teamDescriptionJpaRepository.save(teamDescription);
-
         team.updateShortDescription(description);
-        teamJpaRepository.save(team);
-    }
 
-    @TeamLeader
-    @Transactional
-    public void updateTeamRecruitStatus(Long userId, Long teamId, TeamRecruitStatus recruitStatus) {
-        Team team = findTeamById(teamId);
         team.updateRecruitStatus(recruitStatus);
-        teamJpaRepository.save(team);
-    }
-
-    @TeamLeader
-    @Transactional
-    public void updateTeamPrivateStatus(Long userId, Long teamId, TeamPrivateStatus privateStatus) {
-        Team team = findTeamById(teamId);
         team.updatePrivateStatus(privateStatus);
-        teamJpaRepository.save(team);
-    }
-
-    @TeamLeader
-    @Transactional
-    public void updateTeamProfileUri(Long userId, Long teamId, String profileUri) {
-        Team team = findTeamById(teamId);
         team.updateTeamProfileUri(profileUri);
-        teamJpaRepository.save(team);
-    }
-
-    @TeamLeader
-    @Transactional
-    public void updateTeamArea(Long userId, Long teamId, Area areaCode) {
-        Team team = findTeamById(teamId);
         team.updateAreaCode(areaCode);
+
         teamJpaRepository.save(team);
     }
 
