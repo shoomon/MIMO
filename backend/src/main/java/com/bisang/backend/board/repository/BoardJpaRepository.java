@@ -11,4 +11,14 @@ public interface BoardJpaRepository extends JpaRepository<Board, Long> {
     @Modifying
     @Query("UPDATE Board b SET b.viewCount = b.viewCount+1 WHERE b.id = :postId")
     void increaseViewCount(Long postId);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE Board b SET b.likes = b.likes+1 WHERE b.id = :postId")
+    void increaseLikeCount(Long postId);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE Board b SET b.likes = b.likes-1 WHERE b.id = :postId")
+    void decreaseLikeCount(Long postId);
 }

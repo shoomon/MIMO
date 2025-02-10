@@ -60,7 +60,11 @@ public class BoardController {
     public ResponseEntity<BoardListResponse> getPostList(@AuthUser User user, @RequestParam(value = "type", required = true) Long teamBoardId){
         return ResponseEntity.ok(boardService.getPostList(teamBoardId));
     }
-
+//todo: 아래 테스트용 메소드 지우기
+    @GetMapping("/listAll")
+    public ResponseEntity<List<Board>> getPostListAll(@AuthUser User user){
+        return ResponseEntity.ok(boardJpaRepository.findAll());
+    }
     @GetMapping("/detail")
     public ResponseEntity<BoardDetailResponse> getPostDetail(@AuthUser User user, @RequestParam(value = "post", required = true) Long postId){
         return ResponseEntity.ok(boardService.getPostDetail(postId));
@@ -82,8 +86,8 @@ public class BoardController {
     //todo: 좋아요 구현
     @Transactional
     @PostMapping("/like")
-    public ResponseEntity<Void> likePost(@AuthUser User user, @RequestBody LikePostRequest request){
-        return null;
+    public ResponseEntity<String> likePost(@AuthUser User user, @RequestBody LikePostRequest request){
+        return ResponseEntity.ok(boardService.likePost(request.teamUserId(), request.boardId()));
     }
 
 //    @PostMapping("/{id}")

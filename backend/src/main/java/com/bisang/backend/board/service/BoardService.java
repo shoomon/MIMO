@@ -2,6 +2,7 @@ package com.bisang.backend.board.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.bisang.backend.board.controller.dto.BoardFileDto;
 import com.bisang.backend.board.controller.dto.CommentDto;
@@ -53,10 +54,10 @@ public class BoardService {
         //게시글 본문 저장
         BoardDescription boardDescription = boardDescriptionJpaRepository.save(new BoardDescription(description));
         //팀유저 찾기
-        TeamUser teamUser = teamUserJpaRepository.findByTeamIdAndUserId(teamId, userId)
-                .orElseThrow(() -> new EntityNotFoundException("팀유저를 찾을 수 없습니다."));
-        Long teamUserId = teamUser.getUserId();
-//        Long teamUserId = Long.parseLong(1+""); //테스트용
+//        TeamUser teamUser = teamUserJpaRepository.findByTeamIdAndUserId(teamId, userId)
+//                .orElseThrow(() -> new EntityNotFoundException("팀유저를 찾을 수 없습니다."));
+//        Long teamUserId = teamUser.getUserId();
+        Long teamUserId = Long.parseLong(1+""); //테스트용
         //게시글 저장
         Board post = boardJpaRepository.save(Board.builder()
                 .teamBoardId(teamBoardId)
@@ -151,10 +152,10 @@ public class BoardService {
         //좋아요 삭제
         boardLikeRepository.deleteByBoardId(postId);
         //S3에서 이미지 삭제
-//        List<BoardFileDto> boardFiles = boardImageJpaRepository.findByBoardId(postId);
-//        for (BoardFileDto file : boardFiles) {
-//            s3Service.deleteFile(userId, file.fileUri()); // S3에서 이미지 삭제
-//        }
+        List<BoardFileDto> boardFiles = boardImageJpaRepository.findByBoardId(postId);
+        for (BoardFileDto file : boardFiles) {
+            s3Service.deleteFile(userId, file.fileUri()); // S3에서 이미지 삭제
+        }
         //DB에서 파일 삭제
         boardImageJpaRepository.deleteByBoardId(postId);
         //게시글 설명 삭제
@@ -165,7 +166,22 @@ public class BoardService {
         commentJpaReporitory.deleteByBoardId(postId);
     }
 //todo: 좋아요 로직 작성
-    public void likePost(Long userId, Long postId){
+    public String likePost(Long teamUserId, Long postId){
+        Optional<BoardLike> userLike = boardLikeRepository.findByTeamUserIdAndBoardId(teamUserId, postId);
+        System.out.println("유저 좋아요 결과: " + userLike.isPresent());
 
+        if (userLike.isPresent()) {
+            boardLikeRepository.delete(userLike.get());
+            boardJpaRepository.decreaseLikeCount(postId); // 좋아요 수 감소
+            return "좋아요 감소";
+        }else{
+            boardLikeRepository.save(BoardLike.builder()
+                            .teamUserId(teamUserId)
+                            .boardId(postId)
+                            .build()
+                    );
+            boardJpaRepository.increaseLikeCount(postId);
+            return "좋아요 증가";
+        }
     }
 }

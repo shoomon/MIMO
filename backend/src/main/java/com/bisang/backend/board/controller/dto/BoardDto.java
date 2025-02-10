@@ -6,7 +6,8 @@ import java.time.LocalDateTime;
 
 public record BoardDto (
         Long postId,
-        Long userId, //이거 팀유저 줘야되나
+        Long userId,
+        Long teamUserId,
         String userProfileUri,
         String userNickname,
         String boardName,

@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Optional;
 
 import com.bisang.backend.board.controller.dto.SimpleBoardListDto;
+import com.bisang.backend.board.domain.QComment;
+import com.querydsl.jpa.JPAExpressions;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Repository;
 
@@ -32,6 +34,7 @@ public class BoardQuerydslRepository {
                 .select(Projections.constructor(BoardDto.class,
                         board.id,
                         board.userId,
+                        board.teamUserId,
                         user.profileUri.as("userProfileUri"), // 유저 테이블에서 프로필 URI 가져오기
                         teamUser.nickname.as("userNickname"), // 팀유저 테이블에서 닉네임 가져오기
                         teamBoard.boardName,
@@ -52,11 +55,13 @@ public class BoardQuerydslRepository {
     }
 
     public List<SimpleBoardListDto> getBoardList(Long teamBoardId){
+        QComment commentSub = new QComment("commentSub");
         return queryFactory
                 .select(Projections.constructor(SimpleBoardListDto.class,
                         Projections.constructor(BoardDto.class,
                                 board.id,
                                 board.userId,
+                                board.teamUserId,
                                 user.profileUri.as("userProfileUri"), // 유저 테이블에서 프로필 URI 가져오기
                                 teamUser.nickname.as("userNickname"), // 팀유저 테이블에서 닉네임 가져오기
                                 teamBoard.boardName,
@@ -66,15 +71,20 @@ public class BoardQuerydslRepository {
                                 board.viewCount,
                                 board.createdAt,
                                 board.lastModifiedAt.as("updatedAt")),
-                        comment.id.count()
+                        JPAExpressions
+                                .select(commentSub.id.count())
+                                .from(commentSub)
+                                .where(commentSub.boardId.eq(board.id))
                         ))
                 .from(board)
                 .leftJoin(teamBoard).on(board.teamBoardId.eq(teamBoard.id)) // 게시판 종류 조인
                 .leftJoin(boardDescription).on(board.description.id.eq(boardDescription.id)) // 게시글 설명 조인
                 .leftJoin(teamUser).on(board.teamUserId.eq(teamUser.id)) // 팀유저에서 닉네임 가져오기
                 .leftJoin(user).on(teamUser.userId.eq(user.id)) // 유저 정보 조인하여 프로필 URI 가져오기
-                .leftJoin(comment).on(board.id.eq(comment.boardId))
                 .where(board.teamBoardId.eq(teamBoardId))
+                .groupBy(board.id, user.profileUri, teamUser.nickname, teamBoard.boardName,
+                        board.title, boardDescription.description, board.likes, board.viewCount,
+                        board.createdAt, board.lastModifiedAt)
                 .fetch();
     }
 }
