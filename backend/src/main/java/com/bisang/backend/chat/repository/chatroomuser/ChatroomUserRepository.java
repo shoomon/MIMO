@@ -5,6 +5,7 @@ import static com.bisang.backend.common.exception.ExceptionCode.NOT_FOUND;
 import java.util.Map;
 import java.util.Set;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
 import com.bisang.backend.chat.domain.ChatroomUser;
@@ -90,4 +91,17 @@ public class ChatroomUserRepository {
         return teamUserId;
     }
 
+    @Transactional
+    public void updateNickname(Long userId, Long teamId, String nickname) {
+        Long teamUserId = getTeamUserId(userId, teamId);
+        redisCacheRepository.updateUserNickName(teamUserId, nickname);
+
+        ChatroomUser user = chatroomUserJpaRepository.findById(teamUserId).orElseThrow(() -> new AccountException(NOT_FOUND));
+        user.setNickname(nickname);
+    }
+
+    public void updateProfileUri(Long userId, Long teamId, String profileUri) {
+        Long teamUserId = getTeamUserId(userId, teamId);
+        redisCacheRepository.updateUserProfileUri(teamUserId, profileUri);
+    }
 }
