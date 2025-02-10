@@ -2,13 +2,13 @@ package com.bisang.backend.team.controller;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
-import com.bisang.backend.team.controller.request.UpdateTeamRequest;
 import jakarta.validation.Valid;
+
+import com.bisang.backend.team.controller.request.UpdateTeamRequest;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,12 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bisang.backend.auth.annotation.AuthUser;
 import com.bisang.backend.team.controller.dto.TeamDto;
 import com.bisang.backend.team.controller.request.CreateTeamRequest;
-import com.bisang.backend.team.controller.request.UpdateTeamAreaRequest;
-import com.bisang.backend.team.controller.request.UpdateTeamDescriptionRequest;
-import com.bisang.backend.team.controller.request.UpdateTeamNameRequest;
-import com.bisang.backend.team.controller.request.UpdateTeamPrivateStatusRequest;
-import com.bisang.backend.team.controller.request.UpdateTeamProfileUriRequest;
-import com.bisang.backend.team.controller.request.UpdateTeamRecruitStatusRequest;
 import com.bisang.backend.team.controller.response.TeamIdResponse;
 import com.bisang.backend.team.controller.response.TeamInfosResponse;
 import com.bisang.backend.team.domain.Area;

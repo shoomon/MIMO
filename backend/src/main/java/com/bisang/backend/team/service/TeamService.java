@@ -3,7 +3,6 @@ package com.bisang.backend.team.service;
 import static com.bisang.backend.common.exception.ExceptionCode.*;
 import static com.bisang.backend.common.utils.PageUtils.SHORT_PAGE_SIZE;
 
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -177,11 +176,11 @@ public class TeamService {
         Team team = findTeamById(teamId);
         List<TeamUser> teamUsers = teamUserJpaRepository.findByTeamId(teamId);
         if (teamUsers.size() == 1) {
-            // TODO 계좌 삭제
-            // TODO 채팅방 삭제
             teamUserJpaRepository.delete(teamUsers.get(0));
             teamJpaRepository.delete(team);
+            return;
         }
+        throw new TeamException(EXTRA_USER);
     }
 
     private Team findTeamById(Long teamId) {
