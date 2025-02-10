@@ -25,8 +25,8 @@ public class RedisChatMessage implements Serializable {
     private ChatType type;
 
     public RedisChatMessage(
-            Long teamUserId,
             Long userId,
+            Long teamUserId,
             String chat,
             LocalDateTime timestamp,
             ChatType type
@@ -40,8 +40,8 @@ public class RedisChatMessage implements Serializable {
 
     public RedisChatMessage(
             Long id,
-            Long teamUserId,
             Long userId,
+            Long teamUserId,
             String chat,
             LocalDateTime timestamp,
             ChatType type

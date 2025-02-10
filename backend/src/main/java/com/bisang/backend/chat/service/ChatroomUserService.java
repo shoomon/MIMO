@@ -2,8 +2,7 @@ package com.bisang.backend.chat.service;
 
 import org.springframework.stereotype.Service;
 
-import com.bisang.backend.chat.domain.redis.RedisTeamMember;
-import com.bisang.backend.chat.repository.ChatRepository;
+import com.bisang.backend.chat.repository.chatroomuser.ChatroomUserRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -11,11 +10,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ChatroomUserService {
 
-    private final ChatRepository repository;
+    private final ChatroomUserRepository chatroomUserRepository;
 
     public boolean isMember(Long teamId, Long userId, Long teamUserId) {
-        RedisTeamMember teamMember = new RedisTeamMember(teamUserId, userId);
-        return repository.isMember(teamId, teamMember);
+        return chatroomUserRepository.isMember(teamId, userId, teamUserId);
     }
 
 }

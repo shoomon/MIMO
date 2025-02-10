@@ -46,8 +46,8 @@ public class ChatMessageController {
         Long userId = user.getId();
         if (chatroomUserService.isMember(roomId, userId, chat.teamUserId())) {
             RedisChatMessage redisMessage = new RedisChatMessage(
-                    chat.teamUserId(),
                     userId,
+                    chat.teamUserId(),
                     chat.chat(),
                     LocalDateTime.now(),
                     ChatType.MESSAGE
@@ -82,8 +82,8 @@ public class ChatMessageController {
             @RequestBody ChatMessageRequest chat) {
         if (chatroomUserService.isMember(roomId, user.userId(), chat.teamUserId())) {
             RedisChatMessage redisMessage = new RedisChatMessage(
-                    chat.teamUserId(),
                     user.userId(),
+                    chat.teamUserId(),
                     chat.chat(),
                     LocalDateTime.now(),
                     ChatType.MESSAGE
