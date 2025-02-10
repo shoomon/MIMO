@@ -28,10 +28,11 @@ public class RedisCacheRepository {
     }
 
     public void updateUserNickName(Long teamUserId, String nickname) {
-
+        redisTemplate.opsForHash().put(USER_KEY + teamUserId, "nickname", nickname);
     }
 
     public void updateUserProfileUri(Long teamUserId, String profileUri) {
+        redisTemplate.opsForHash().put(USER_KEY + teamUserId, "profileImage", profileUri);
 
     }
 
