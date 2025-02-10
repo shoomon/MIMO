@@ -3,8 +3,8 @@ import {
     Area,
     TeamInfosResponse,
     TeamScheduleSpecificResponse,
+    TeamSchedulesResponse,
 } from '@/types/Team';
-import { TeamSchedulesResponse } from './../types/Team';
 
 export const getTeamInfosByCategory = async (
     category: string,
@@ -19,12 +19,7 @@ export const getTeamInfosByCategory = async (
         const response = await customFetch('/team/category', {
             method: 'GET',
             params,
-            credentials: 'include', // HttpOnly 쿠키를 위한 설정
         });
-
-        if (!response.ok) {
-            throw new Error('Failed to fetch category teams');
-        }
 
         return response.json();
     } catch (error) {
@@ -46,12 +41,7 @@ export const getTeamInfosByArea = async (
         const response = await customFetch('/team/area', {
             method: 'GET',
             params,
-            credentials: 'include',
         });
-
-        if (!response.ok) {
-            throw new Error('Failed to fetch area teams');
-        }
 
         return response.json();
     } catch (error) {
@@ -75,12 +65,7 @@ export const getAdhocSchedules = async (
         const response = await customFetch('/team-schedule/ad-hoc', {
             method: 'GET',
             params,
-            credentials: 'include',
         });
-
-        if (!response.ok) {
-            throw new Error('Failed to fetch adhoc schedules');
-        }
 
         return response.json();
     } catch (error) {
@@ -104,12 +89,7 @@ export const getRegularSchedules = async (
         const response = await customFetch('/team-schedule/regular', {
             method: 'GET',
             params,
-            credentials: 'include',
         });
-
-        if (!response.ok) {
-            throw new Error('Failed to fetch regular schedules');
-        }
 
         return response.json();
     } catch (error) {
@@ -133,12 +113,7 @@ export const getClosedSchedules = async (
         const response = await customFetch('/team-schedule/closed', {
             method: 'GET',
             params,
-            credentials: 'include',
         });
-
-        if (!response.ok) {
-            throw new Error('Failed to fetch closed schedules');
-        }
 
         return response.json();
     } catch (error) {
@@ -160,12 +135,7 @@ export const getSpecificSchedule = async (
         const response = await customFetch('/team-schedule', {
             method: 'GET',
             params,
-            credentials: 'include',
         });
-
-        if (!response.ok) {
-            throw new Error('Failed to fetch specific schedule');
-        }
 
         return response.json();
     } catch (error) {
@@ -176,19 +146,11 @@ export const getSpecificSchedule = async (
 
 export const joinSchedule = async (teamScheduleId: number): Promise<void> => {
     try {
-        const params = {
-            teamScheduleId: teamScheduleId.toString(),
-        };
-
-        const response = await customFetch('/schedule-participants', {
+        const body = JSON.stringify({ teamScheduleId });
+        await customFetch('/schedule-participants', {
             method: 'POST',
-            params,
-            credentials: 'include',
+            body,
         });
-
-        if (!response.ok) {
-            throw new Error('Failed to join schedule');
-        }
     } catch (error) {
         console.error('Error joining schedule:', error);
         throw error;
@@ -198,25 +160,17 @@ export const joinSchedule = async (teamScheduleId: number): Promise<void> => {
 /**
  * 일정에서 탈퇴하는 API
  */
+
 export const leaveSchedule = async (
     teamScheduleId: number,
     userId: number,
 ): Promise<void> => {
     try {
-        const params = {
-            teamScheduleId: teamScheduleId.toString(),
-            userId: userId.toString(),
-        };
-
-        const response = await customFetch('/schedule-participants', {
+        const body = JSON.stringify({ teamScheduleId, userId });
+        await customFetch('/schedule-participants', {
             method: 'DELETE',
-            params,
-            credentials: 'include',
+            body,
         });
-
-        if (!response.ok) {
-            throw new Error('Failed to leave schedule');
-        }
     } catch (error) {
         console.error('Error leaving schedule:', error);
         throw error;

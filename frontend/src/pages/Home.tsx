@@ -7,7 +7,7 @@ import { useQuery } from '@tanstack/react-query';
 
 const Home = () => {
     const { data, isLoading, error } = useQuery({
-        queryKey: ['teamsByArea', Area.GYEONGGI],
+        queryKey: ['Area', Area.GYEONGGI],
         queryFn: () => getTeamInfosByArea(Area.GYEONGGI),
     });
 
@@ -16,7 +16,7 @@ const Home = () => {
         data?.teams?.map((item: SimpleTeamResponse) => {
             const formattedTags = item.tags.map((tag) => ({
                 label: tag,
-                to: `search/tags`,
+                to: `search/${tag}`,
             }));
 
             return (

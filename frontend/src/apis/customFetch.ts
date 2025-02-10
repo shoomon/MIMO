@@ -1,4 +1,4 @@
-const BASE_URL = import.meta.env.BASE_URL || 'http://localhost:8080/api';
+const BASE_URL = import.meta.env.API_URL || 'http://localhost:8080';
 
 interface CustomRequestInit extends RequestInit {
     params?: Record<string, string>;
