@@ -22,7 +22,7 @@ type Story = StoryObj<typeof meta>;
 const sampleProfile: ProfileImageProps = {
     userId: 'user1',
     userName: 'John Doe',
-    imgSrc: 'https://randomuser.me/api/portraits/women/6.jpg',
+    profileUri: 'https://randomuser.me/api/portraits/women/6.jpg',
 };
 
 export const Owner: Story = {

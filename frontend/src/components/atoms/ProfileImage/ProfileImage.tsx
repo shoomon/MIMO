@@ -2,27 +2,27 @@ import ProfileImageView from './ProfileImage.view';
 
 export interface ProfileImageProps {
     userId: string;
-    userName: string;
-    imgSrc?: string;
+    userName?: string;
+    profileUri?: string;
     size?: number;
     addStyle?: string;
 }
 
 const ProfileImage = ({
     userId,
-    imgSrc,
+    profileUri,
     userName,
     size = 40,
     addStyle,
 }: ProfileImageProps) => {
     const user_url = `/${userId}`;
-    const img_url = imgSrc === undefined ? '/ProfileImage.png' : imgSrc;
+    const img_url = profileUri === undefined ? '/ProfileImage.png' : profileUri;
 
     return (
         <ProfileImageView
             link={user_url}
             userName={userName}
-            imgSrc={img_url}
+            profileUri={img_url}
             size={size}
             addStyle={addStyle}
         />

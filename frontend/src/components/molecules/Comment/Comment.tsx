@@ -68,7 +68,7 @@ const Comment = ({
                     <div className="flex gap-1">
                         <ProfileImage
                             userId={profileImage.userId}
-                            imgSrc={profileImage.imgSrc}
+                            profileUri={profileImage.profileUri}
                             userName={profileImage.userName}
                             size={24}
                             addStyle="rounded-lg"

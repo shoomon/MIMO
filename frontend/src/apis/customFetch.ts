@@ -50,6 +50,7 @@ export const customFetch = async (
     const headers = { ...defaultHeaders, ...fetchOptions.headers };
 
     let response: Response;
+
     try {
         response = await fetch(url, {
             ...fetchOptions,

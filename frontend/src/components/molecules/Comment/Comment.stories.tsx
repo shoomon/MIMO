@@ -31,7 +31,7 @@ type Story = StoryObj<typeof meta>;
 const sampleProfile: ProfileImageProps = {
     userId: 'user123',
     userName: 'Jane Doe',
-    imgSrc: 'https://randomuser.me/api/portraits/men/5.jpg',
+    profileUri: 'https://randomuser.me/api/portraits/men/5.jpg',
 };
 
 export const Default: Story = {

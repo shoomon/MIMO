@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
 
 interface ProfileImageViewProps {
-    userName: string;
+    userName?: string;
     link: string;
-    imgSrc: string;
+    profileUri: string;
     size: number;
     addStyle?: string;
 }
@@ -11,7 +11,7 @@ interface ProfileImageViewProps {
 const ProfileImageView = ({
     userName,
     link,
-    imgSrc,
+    profileUri,
     size,
     addStyle,
 }: ProfileImageViewProps) => {
@@ -22,7 +22,7 @@ const ProfileImageView = ({
             style={{ width: `${size}px`, height: `${size}px` }}
         >
             <img
-                src={imgSrc}
+                src={profileUri}
                 alt={`${userName} 프로필`}
                 className="object-contain"
                 style={{ width: `${size}px`, height: `${size}px` }}
