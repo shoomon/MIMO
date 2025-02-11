@@ -1,15 +1,25 @@
-import CustomTable from '@/utils/CustomTable';
-import { CellValue } from '@/utils/CustomTable';
-
-// receipt 버튼 클릭 핸들러 (영어로 작성)
-const receiptHandler = () => {
-    alert('Receipt handler called');
-};
+/**
+ * 셀 데이터 타입
+ * - string | number: 단순 값
+ * - { content, color? }: 일반 텍스트에 스타일(예, Tailwind 클래스)를 적용
+ * - { label, onClick }: 클릭 가능한 셀
+ */
+export type CellValue =
+    | string
+    | number
+    | {
+          content: string | number;
+          color?: string;
+      }
+    | {
+          label: string;
+          onClick: () => void;
+      };
 
 /**
  * RawDataRow는 외부에서 전달받은 원시 데이터 구조입니다.
  */
-interface RawDataRow {
+export interface RawDataRow {
     id: number;
     transaction: string; // "출금" 또는 "입금"
     name: string;
@@ -33,34 +43,20 @@ interface DataRow {
     receipt: CellValue;
 }
 
-// 외부에서 전달받은 raw 데이터 예시
-const rawData: RawDataRow[] = [
-    {
-        id: 1,
-        transaction: '출금',
-        name: '홍길동',
-        date: '2025-02-06',
-        amount: 10000,
-        hasReceipt: true,
-    },
-    {
-        id: 2,
-        transaction: '입금',
-        name: '김철수',
-        date: '2025-02-07',
-        amount: 20000,
-        hasReceipt: false,
-    },
-];
-
 /**
  * transformData 함수는 RawDataRow 배열을 받아 DataRow 배열로 변환합니다.
  * - transaction 값이 "출금"이면 { content, color } 객체로 변환 (color: 'text-brand-primary-400')
  * - transaction 값이 "입금"이면 { content, color } 객체로 변환 (color: 'text-fail')
  * - hasReceipt가 true면 receipt 값을 클릭 가능한 버튼 객체로, 그렇지 않으면 빈 문자열로 변환
  */
-const transformData = (data: RawDataRow[]): DataRow[] => {
+
+export const transformData = (data: RawDataRow[]): DataRow[] => {
     return data.map((row) => {
+        // receipt 버튼 클릭 핸들러 (영어로 작성)
+        const receiptHandler = () => {
+            alert('Receipt handler called');
+        };
+
         let transactionCell: CellValue = row.transaction;
         if (row.transaction === '출금') {
             transactionCell = {
@@ -85,23 +81,3 @@ const transformData = (data: RawDataRow[]): DataRow[] => {
         };
     });
 };
-
-const columns = [
-    { title: '내역', dataIndex: 'transaction' },
-    { title: '이름', dataIndex: 'name' },
-    { title: '날', dataIndex: 'date' },
-    { title: '금액', dataIndex: 'amount' },
-    { title: '영수증', dataIndex: 'receipt' },
-];
-
-const ExampleTable = () => {
-    const data = transformData(rawData);
-
-    return (
-        <div className="w-full overflow-hidden rounded-lg border border-gray-200">
-            <CustomTable columns={columns} data={data} />
-        </div>
-    );
-};
-
-export default ExampleTable;

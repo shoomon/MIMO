@@ -1,5 +1,5 @@
-import CustomTable from '@/utils/CustomTable';
-import { CellValue } from '@/utils/CustomTable';
+import CustomTable from '@/utils/transformTableData';
+import { CellValue } from '@/utils/transformTableData';
 
 // request 버튼 클릭 핸들러 (영어로 작성)
 const requestHandler = () => {
