@@ -135,6 +135,7 @@ export const getSpecificSchedule = async (
         const response = await customFetch('/schedule', {
             method: 'GET',
             params,
+            credentials: 'include',
         });
 
         return response.json();
@@ -235,6 +236,7 @@ export const createComment = async (
         await customFetch('/schedule-comment', {
             method: 'POST',
             body,
+            credentials: 'include',
         });
     } catch (error) {
         console.error('Error creating comment:', error);
