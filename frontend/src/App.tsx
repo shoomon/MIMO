@@ -1,11 +1,22 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import AppRoutes from './AppRoutes';
-
-const queryClient = new QueryClient();
+import { useModalStore } from './stores/modalStore';
+import BasicModal from './components/molecules/BasicModal/BasicModal';
 
 function App() {
+    const queryClient = new QueryClient();
+    const { isOpen, modalProps } = useModalStore();
+
     return (
         <QueryClientProvider client={queryClient}>
+            <BasicModal
+                isOpen={isOpen}
+                title={modalProps?.title ?? ''}
+                subTitle={modalProps?.subTitle}
+                onConfirmClick={modalProps?.onConfirmClick}
+                onDeleteClick={modalProps?.onDeleteClick}
+                onCancelClick={modalProps?.onCancelClick}
+            />
             <div className="mx-auto w-full max-w-[1440px]">
                 <AppRoutes />
             </div>
