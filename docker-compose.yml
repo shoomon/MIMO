@@ -7,7 +7,7 @@ services:
       - "3000:80"
     container_name: mimo-web
     env_file:
-      - ./frontend/.env  # .env 파일을 명시적으로 로드
+      - ./frontend/.env
     networks:
       - frontend_backend_network
 
@@ -18,23 +18,8 @@ services:
     ports:
       - "8080:8080"
     container_name: mimo-server
-    environment:
-      - GOOGLE_TOKEN_URI=${GOOGLE_TOKEN_URI}
-      - GOOGLE_RESOURCE_URI=${GOOGLE_RESOURCE_URI}
-      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
-      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
-      - GOOGLE_REDIRECT_URI=${GOOGLE_REDIRECT_URI}
-      - SECRET_KEY=${SECRET_KEY}
-      - ACCESS_TOKEN_EXPIRY=${ACCESS_TOKEN_EXPIRY}
-      - REFRESH_TOKEN_EXPIRY=${REFRESH_TOKEN_EXPIRY}
-      - DB_URL=${DB_URL}
-      - DB_ID=${DB_ID}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - REDIS_URI=${REDIS_URI}
-      - REDIS_PORT=${REDIS_PORT}
-      - S3_BUCKET_NAME=${S3_BUCKET_NAME}
-      - S3_ACCESS_KEY=${S3_ACCESS_KEY}
-      - S3_SECRET_KEY=${S3_SECRET_KEY}
+    env_file:
+      - ./backend/.env
     networks:
       - frontend_backend_network
 
