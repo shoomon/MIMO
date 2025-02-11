@@ -130,6 +130,7 @@ public class TeamQuerydslRepository {
             dto.description(),
             dto.teamProfileUri(),
             dto.reviewScore(),
+            0L,
             dto.maxCapacity(),
             dto.currentCapacity(),
             tags
