@@ -8,6 +8,7 @@ import ProfileImage, {
 interface CommentProps {
     commentId: number;
     profileImage: ProfileImageProps;
+    name: string;
     writedate: string;
     content: string;
     isReply: boolean;
@@ -25,6 +26,7 @@ const Comment = ({
     writedate,
     content,
     isReply,
+    name,
     onDelete,
     onUpdate,
 }: CommentProps) => {
@@ -51,7 +53,6 @@ const Comment = ({
     }, [isEditing, setFocus]);
 
     const onSubmit: SubmitHandler<FormData> = (data: FormData) => {
-        // 서버에 업데이트 요청 전에 추가 검증 또는 sanitize 로직을 넣을 수 있음
         onUpdate(commentId, data.commentContent);
         setIsEditing(false);
     };
@@ -69,7 +70,7 @@ const Comment = ({
                         <ProfileImage
                             userId={profileImage.userId}
                             profileUri={profileImage.profileUri}
-                            userName={profileImage.userName}
+                            userName={name}
                             size={24}
                             addStyle="rounded-lg"
                         />

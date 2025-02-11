@@ -176,3 +176,68 @@ export const leaveSchedule = async (
         throw error;
     }
 };
+
+export const deleteComment = async (commentId: number): Promise<void> => {
+    try {
+        const body = JSON.stringify({ commentId });
+        await customFetch('/schedule-comment', {
+            method: 'DELETE',
+            body,
+        });
+    } catch (error) {
+        console.error('Error deleting comment:', error);
+        throw error;
+    }
+};
+
+export const updateComment = async (
+    userId: number,
+    teamScheduleId: number,
+    commentId: number,
+    content: string,
+): Promise<void> => {
+    try {
+        const body = JSON.stringify({
+            userId,
+            teamScheduleId,
+            commentId,
+            content,
+        });
+        await customFetch('/schedule-comment', {
+            method: 'PUT',
+            body,
+        });
+    } catch (error) {
+        console.error('Error updating comment:', error);
+        throw error;
+    }
+};
+
+export const createComment = async (
+    userId: number,
+    teamId: number,
+    teamScheduleId: number,
+    commentId: number,
+    teamUserId: number,
+    parentCommentId: number,
+    content: string,
+): Promise<void> => {
+    try {
+        const body = JSON.stringify({
+            userId,
+            teamId,
+            teamScheduleId,
+            commentId,
+            teamUserId,
+            parentCommentId,
+            content,
+        });
+        await customFetch('/schedule-comment', {
+            method: 'POST',
+            body,
+        });
+    } catch (error) {
+        console.error('Error creating comment:', error);
+        throw error;
+    }
+};

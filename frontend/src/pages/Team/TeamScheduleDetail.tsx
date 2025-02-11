@@ -1,4 +1,4 @@
-import { ButtonDefault, Icon, Title } from '@/components/atoms';
+import { ButtonDefault, Title } from '@/components/atoms';
 import BodyLayout_64 from '../layouts/BodyLayout_64';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -6,10 +6,14 @@ import {
     getSpecificSchedule,
     joinSchedule,
     leaveSchedule,
+    deleteComment,
+    updateComment,
 } from '@/apis/TeamAPI';
 import { useEffect, useState } from 'react';
 import { ScheduleStatus, ScheduleStatusName } from '@/types/Team';
-import { renderMemberProfiles } from './../../components/molecules/MemberProfileImageList';
+import { TeamScheduleCommentDto } from './../../types/Team';
+import { Comment } from '@/components/molecules';
+import { ProfileImageProps } from '@/components/atoms/ProfileImage/ProfileImage';
 
 const TeamScheduleDetail = () => {
     const navigate = useNavigate();
@@ -34,14 +38,20 @@ const TeamScheduleDetail = () => {
         }
     }, [scheduleDetail, userId]);
 
+    // 댓글 상태 관리 (초기값: API에서 받아온 데이터)
+    const [comments, setComments] = useState<TeamScheduleCommentDto[]>([]);
+
+    useEffect(() => {
+        if (scheduleDetail?.comments) {
+            setComments(scheduleDetail.comments);
+        }
+    }, [scheduleDetail]);
+
     // 일정 참여 (joinSchedule)
     const joinMutation = useMutation({
         mutationFn: () => joinSchedule(Number(scheduleDetail?.teamScheduleId)),
         onSuccess: () => {
             setIsJoined(true);
-        },
-        onError: (error) => {
-            console.error('참여 신청 실패:', error);
         },
     });
 
@@ -52,20 +62,62 @@ const TeamScheduleDetail = () => {
         onSuccess: () => {
             setIsJoined(false);
         },
-        onError: (error) => {
-            console.error('참여 취소 실패:', error);
-        },
     });
 
-    // 일정 탈퇴 (leaveSchedule)
+    // 일정 삭제
     const deleteMutation = useMutation({
         mutationFn: () =>
-            deleteSchedule(Number(scheduleDetail?.teamScheduleId), userId),
+            leaveSchedule(Number(scheduleDetail?.teamScheduleId), userId),
         onSuccess: () => {
             navigate(`/team/${teamId}`);
         },
+    });
+
+    // 댓글 삭제 (UI에서 바로 제거)
+    const deleteCommentMutation = useMutation({
+        mutationFn: (commentId: number) => deleteComment(commentId),
+        onMutate: async (commentId) => {
+            // UI에서 바로 삭제 반영
+            setComments((prevComments) =>
+                prevComments.filter(
+                    (comment) => comment.commentSortId !== commentId,
+                ),
+            );
+        },
         onError: (error) => {
-            console.error('삭제 실패:', error);
+            console.error('댓글 삭제 실패:', error);
+            alert('댓글 삭제에 실패했습니다.');
+        },
+    });
+
+    // 댓글 수정 (해당 댓글만 업데이트)
+    const updateCommentMutation = useMutation({
+        mutationFn: ({
+            commentId,
+            content,
+        }: {
+            commentId: number;
+            content: string;
+        }) =>
+            updateComment(
+                userId,
+                Number(scheduleDetail?.teamScheduleId),
+                commentId,
+                content,
+            ),
+        onMutate: async ({ commentId, content }) => {
+            // UI에서 바로 수정 반영
+            setComments((prevComments) =>
+                prevComments.map((comment) =>
+                    comment.commentSortId === commentId
+                        ? { ...comment, content }
+                        : comment,
+                ),
+            );
+        },
+        onError: (error) => {
+            console.error('댓글 수정 실패:', error);
+            alert('댓글 수정에 실패했습니다.');
         },
     });
 
@@ -75,10 +127,15 @@ const TeamScheduleDetail = () => {
         ScheduleStatusName[scheduleDetail?.status as ScheduleStatus] ||
         '알 수 없음';
 
+    const sampleProfile: ProfileImageProps = {
+        userId: 'user123',
+        userName: 'Jane Doe',
+        profileUri: 'https://randomuser.me/api/portraits/men/5.jpg',
+    };
+
     return (
         <section className="flex flex-col gap-2">
             <div className="flex min-h-[43px] items-start justify-end self-stretch py-8">
-                {/* 참가 신청 / 참여 취소 버튼 */}
                 {isJoined ? (
                     <ButtonDefault
                         content="참여 취소"
@@ -94,7 +151,6 @@ const TeamScheduleDetail = () => {
                     />
                 )}
 
-                {/* 일정 수정 / 삭제 버튼 (권한이 있을 때만) */}
                 {scheduleDetail?.isTeamMember && (
                     <>
                         <ButtonDefault
@@ -112,65 +168,75 @@ const TeamScheduleDetail = () => {
                 )}
             </div>
             <BodyLayout_64>
-                <>
-                    <div className="text-dark flex h-fit w-full flex-col gap-2 border-b-1 border-gray-200">
-                        <Title label={statusText} />
-                        <h1 className="text-display-xs text-dark font-bold">
-                            {scheduleDetail?.title}
-                        </h1>
-                    </div>
-                    <div className="text-md flex flex-col gap-2 font-medium">
-                        <span className="flex items-center gap-2">
-                            🗺️ {scheduleDetail?.location}
-                        </span>
-                        <span className="flex items-center gap-2">
-                            🕜 {scheduleDetail?.date}
-                        </span>
-                        <span className="flex items-center gap-2">
-                            🪙 참가비 : {scheduleDetail?.price}
-                        </span>
-                        <span className="flex items-center gap-2">
-                            👑 모임장 : {scheduleDetail?.nameOfLeader}
-                        </span>
-                        <div className="flex flex-col gap-2">
-                            <span className="text-md flex flex-col gap-2 font-medium">
-                                참가 멤버 : {scheduleDetail?.profiles.length}/
-                                {scheduleDetail?.maxParticipants}명
-                            </span>
-                            {scheduleDetail?.profiles == undefined ? (
-                                <span>참가 멤버가 없습니다.</span>
-                            ) : (
-                                <span>
-                                    {renderMemberProfiles(
-                                        scheduleDetail?.profiles,
-                                    )}
-                                </span>
-                            )}
-                        </div>
-                        <hr className="bg-gray-200" />
-                    </div>
-                    <div className="flex h-fit w-full flex-col gap-4">
-                        <span className="text-dark text-xl font-bold">
-                            일정 소개
-                        </span>
-                        <span className="h-fit w-full">
-                            {scheduleDetail?.description}
-                        </span>
-                    </div>
+                <div className="text-dark flex h-fit w-full flex-col gap-2 border-b-1 border-gray-200">
+                    <Title label={statusText} />
+                    <h1 className="text-display-xs text-dark font-bold">
+                        {scheduleDetail?.title}
+                    </h1>
+                </div>
+                <div className="text-md flex flex-col gap-2 font-medium">
+                    <span className="flex items-center gap-2">
+                        🗺️ {scheduleDetail?.location}
+                    </span>
+                    <span className="flex items-center gap-2">
+                        🕜 {scheduleDetail?.date}
+                    </span>
+                    <span className="flex items-center gap-2">
+                        🪙 참가비 : {scheduleDetail?.price}
+                    </span>
+                    <span className="flex items-center gap-2">
+                        👑 모임장 : {scheduleDetail?.nameOfLeader}
+                    </span>
                     <hr className="bg-gray-200" />
-
-                    <div className="flex flex-col gap-2">
-                        <div className="flex gap-2">
-                            <span className="text-dark text-xl font-bold">
-                                댓글
-                            </span>
-                            <span>{scheduleDetail?.comments.length}</span>
-                        </div>
-                        <div className="flex h-fit w-full flex-col gap-4">
-                            {scheduleDetail?.comments}
-                        </div>
+                </div>
+                <div className="flex h-fit w-full flex-col gap-4">
+                    <span className="text-dark text-xl font-bold">
+                        일정 소개
+                    </span>
+                    <span className="h-fit w-full">
+                        {scheduleDetail?.description}
+                    </span>
+                </div>
+                <hr className="bg-gray-200" />
+                <div className="flex flex-col gap-2">
+                    <div className="flex gap-2">
+                        <span className="text-dark text-xl font-bold">
+                            댓글
+                        </span>
+                        <span>{comments.length}</span>
                     </div>
-                </>
+                    <div className="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                        {comments.length > 0 ? (
+                            comments.map((item) => (
+                                <Comment
+                                    key={item.commentSortId}
+                                    commentId={item.commentSortId}
+                                    content={item.content}
+                                    isReply={item.hasParent}
+                                    writedate={item.time}
+                                    profileImage={sampleProfile}
+                                    name={item.name}
+                                    onDelete={() =>
+                                        deleteCommentMutation.mutate(
+                                            item.commentSortId,
+                                        )
+                                    }
+                                    onUpdate={(
+                                        commentId: number,
+                                        newContent: string,
+                                    ) =>
+                                        updateCommentMutation.mutate({
+                                            commentId: commentId,
+                                            content: newContent,
+                                        })
+                                    }
+                                />
+                            ))
+                        ) : (
+                            <span>댓글이 없습니다.</span>
+                        )}
+                    </div>
+                </div>
             </BodyLayout_64>
         </section>
     );
