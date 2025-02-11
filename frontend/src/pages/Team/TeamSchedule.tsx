@@ -71,7 +71,7 @@ const TeamSchedule = () => {
                         iconId="PlusCalendar"
                         iconType="svg"
                         onClick={() => {
-                            navigate('/create');
+                            navigate('create');
                         }}
                     />
                 )}

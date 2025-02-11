@@ -146,12 +146,13 @@ export const getSpecificSchedule = async (
     }
 };
 
-export const joinSchedule = async (teamScheduleId: number): Promise<void> => {
+export const joinSchedule = async (teamScheduleId: string): Promise<void> => {
     try {
-        const body = JSON.stringify({ teamScheduleId });
+        const params = { teamScheduleId: teamScheduleId };
         await customFetch('/schedule-participants', {
             method: 'POST',
-            body,
+            params,
+            credentials: 'include',
         });
     } catch (error) {
         console.error('Error joining schedule:', error);
