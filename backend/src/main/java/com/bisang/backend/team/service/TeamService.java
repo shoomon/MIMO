@@ -160,7 +160,7 @@ public class TeamService {
         var teamDescription = team.getDescription();
         teamDescription.updateDescription(description);
         teamDescriptionJpaRepository.save(teamDescription);
-        team.updateShortDescription(description);
+        team.updateDescription(description);
 
         team.updateRecruitStatus(recruitStatus);
         team.updatePrivateStatus(privateStatus);

@@ -1,8 +1,10 @@
 package com.bisang.backend.schedule.domain;
 
+import static com.bisang.backend.common.exception.ExceptionCode.NOT_MINUS_MONEY;
 import static com.bisang.backend.schedule.domain.ScheduleStatus.*;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
+import static java.lang.Math.min;
 import static lombok.AccessLevel.PROTECTED;
 
 import java.time.LocalDateTime;
@@ -17,6 +19,7 @@ import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 
 import com.bisang.backend.common.domain.BaseTimeEntity;
+import com.bisang.backend.common.exception.ScheduleException;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -81,23 +84,20 @@ public class TeamSchedule extends BaseTimeEntity {
         Long price,
         LocalDateTime date,
         Long maxParticipants,
-        String status
+        ScheduleStatus status
     ) {
         this.teamId = teamId;
         this.teamUserId = teamUserId;
         this.title = title;
-        this.shortDescription = description.substring(100 - 3) + "...";
+        int length = min(description.length(), 97);
+        this.shortDescription = description.substring(length) + "...";
         this.description = description;
         this.location = location;
         this.price = price;
         this.date = date;
         this.maxParticipants = maxParticipants;
         this.currentParticipants = 1L;
-        if (status.equals("A")) {
-            this.scheduleStatus = AD_HOC;
-            return;
-        }
-        this.scheduleStatus = REGURAL;
+        this.scheduleStatus = status;
     }
 
     public void increaseCurrentParticipants() {
@@ -125,12 +125,20 @@ public class TeamSchedule extends BaseTimeEntity {
     }
 
     public void updateDescription(String newDescription) {
-        this.shortDescription = newDescription.substring(100 - 3) + "...";
+        int shortDescriptionLength = min(newDescription.length(), 97);
+        this.shortDescription = newDescription.substring(0, shortDescriptionLength) + "...";
         this.description = newDescription;
     }
 
     public void updatePrice(Long price) {
+        if (price < 0) {
+            throw new ScheduleException(NOT_MINUS_MONEY);
+        }
         this.price = price;
+    }
+
+    public void updateStatus(ScheduleStatus status) {
+        this.scheduleStatus = status;
     }
 
     public void closeSchedule() {
