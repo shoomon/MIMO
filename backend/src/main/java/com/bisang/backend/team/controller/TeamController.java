@@ -31,7 +31,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/team")
+@RequestMapping("/team")
 public class TeamController {
     private final TeamService teamService;
 
