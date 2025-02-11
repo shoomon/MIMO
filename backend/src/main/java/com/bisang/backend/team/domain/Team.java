@@ -144,7 +144,8 @@ public class Team {
         this.areaCode = areaCode;
     }
 
-    public void updateShortDescription(String shortDescription) {
-        this.shortDescription = shortDescription;
+    public void updateDescription(String description) {
+        int shortDescriptionLength = min(this.description.getDescription().length(), 97);
+        this.shortDescription = this.description.getDescription().substring(0, shortDescriptionLength) + "...";
     }
 }
