@@ -1,4 +1,4 @@
-package com.bisang.backend.chat.repository;
+package com.bisang.backend.chat.repository.chatroomuser;
 
 import java.util.Set;
 
@@ -19,5 +19,5 @@ public interface ChatroomUserJpaRepository extends JpaRepository<ChatroomUser, L
     @Query("SELECT u.id FROM ChatroomUser u WHERE u.userId = :userId AND u.chatroomId = :teamId")
     Long findTeamUserIdByUserIdAndChatroomId(@Param("userId") Long userId, @Param("teamId") Long teamId);
 
-    boolean existsByIdAndUserIdAndChatroomId(Long id, Long userId, Long chatroomId);
+    boolean existsByIdAndUserIdAndChatroomId(Long teamUserId, Long userId, Long chatroomId);
 }

@@ -33,17 +33,17 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class TeamScheduleQuerydslRepository {
+public class    TeamScheduleQuerydslRepository {
     private final JPAQueryFactory queryFactory;
     private final TeamScheduleJpaRepository teamScheduleJpaRepository;
     private final TeamUserJpaRepository teamUserJpaRepository;
 
     public TeamSpecificScheduleDto getTeamScheduleSpecific(Long teamScheduleId) {
         TeamSchedule schedule = findScheduleById(teamScheduleId);
-        TeamUser teamUser = findTeamUserById(schedule.getId());
+        TeamUser teamUser = findTeamUserById(schedule.getTeamUserId());
 
         return queryFactory
-                .select(Projections.fields(TeamSpecificScheduleDto.class,
+                .select(Projections.constructor(TeamSpecificScheduleDto.class,
                         teamSchedule.id,
                         teamSchedule.teamUserId,
                         teamSchedule.scheduleStatus,
@@ -62,11 +62,10 @@ public class TeamScheduleQuerydslRepository {
 
     public List<TeamScheduleCommentDto> getTeamScheduleComments(Long teamScheduleId) {
         List<TeamScheduleCommentDto> comments = queryFactory
-                .select(Projections.fields(TeamScheduleCommentDto.class,
+                .select(Projections.constructor(TeamScheduleCommentDto.class,
                         teamScheduleComment.id,
                         user.profileUri,
                         user.nickname,
-                        teamScheduleComment.id,
                         teamScheduleComment.createdAt,
                         teamScheduleComment.parentCommentId.coalesce(teamScheduleComment.id),
                         Expressions.booleanTemplate("CASE WHEN {0} IS NULL THEN FALSE ELSE TRUE END",
