@@ -5,7 +5,9 @@ services:
       dockerfile: ./frontend/Dockerfile
     ports:
       - "3000:80"
-    container_name: mimo-web  
+    container_name: mimo-web
+    enviroment:
+      - VITE_BASE_URL=${VITE_BASE_URL}
     networks:
       - frontend_backend_network
 
