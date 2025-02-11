@@ -14,7 +14,7 @@ RUN npm install
 COPY ./frontend/ /app/
 
 # 빌드
-npm run build
+RUN npm run build
 
 # 2. Serve stage using Nginx
 FROM nginx:latest
