@@ -3,8 +3,8 @@ package com.bisang.backend.team.service;
 import static com.bisang.backend.common.exception.ExceptionCode.*;
 import static com.bisang.backend.common.utils.PageUtils.PAGE_SIZE;
 import static com.bisang.backend.invite.domain.TeamInvite.createInviteRequest;
-import static com.bisang.backend.team.domain.TeamPrivateStatus.PRIVATE;
-import static com.bisang.backend.team.domain.TeamPrivateStatus.PUBLIC;
+import static com.bisang.backend.team.domain.TeamRecruitStatus.ACTIVE_PRIVATE;
+import static com.bisang.backend.team.domain.TeamRecruitStatus.ACTIVE_PUBLIC;
 import static com.bisang.backend.team.domain.TeamUser.createTeamMember;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
@@ -14,7 +14,6 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bisang.backend.chat.service.ChatroomService;
 import com.bisang.backend.common.exception.TeamException;
 import com.bisang.backend.invite.domain.TeamInvite;
 import com.bisang.backend.invite.repository.TeamInviteJpaRepository;
@@ -39,7 +38,6 @@ public class TeamUserService {
     private final TeamUserJpaRepository teamUserJpaRepository;
     private final TeamInviteJpaRepository teamInviteJpaRepository;
     private final TeamUserQuerydslRepository teamUserQuerydslRepository;
-    private final ChatroomService chatroomService;
 
     @EveryOne
     @Transactional
@@ -48,12 +46,17 @@ public class TeamUserService {
 
         Team team = findTeamById(teamId);
         Long currentUserCount = teamUserJpaRepository.countTeamUserByTeamId(teamId);
-        if (team.getMaxCapacity() < currentUserCount && team.getPrivateStatus() == PUBLIC) {
-            TeamUser newTeamMember = createTeamMember(userId, teamId, nickname, status);
-            teamUserJpaRepository.save(newTeamMember);
-            // CHATTING 방에 넣기
-            chatroomService.enterChatroom(teamId, userId, nickname);
+        if (team.getMaxCapacity() > currentUserCount) {
+            if (team.getRecruitStatus() == ACTIVE_PUBLIC) {
+                TeamUser newTeamMember = createTeamMember(userId, teamId, nickname, status);
+                teamUserJpaRepository.save(newTeamMember);
+                return;
+            } else if (team.getRecruitStatus() == ACTIVE_PRIVATE) {
+                throw new TeamException(NOT_PUBLIC_TEAM);
+            }
+            throw new TeamException(NOT_RECRUIT_TEAM);
         }
+        throw new TeamException(FULL_TEAM);
     }
 
     @EveryOne
@@ -64,10 +67,18 @@ public class TeamUserService {
 
         Team team = findTeamById(teamId);
         Long currentUserCount = teamUserJpaRepository.countTeamUserByTeamId(teamId);
-        if (team.getMaxCapacity() < currentUserCount && team.getPrivateStatus() == PRIVATE) {
-            TeamInvite inviteRequest = createInviteRequest(teamId, userId, memo);
-            teamInviteJpaRepository.save(inviteRequest);
+        Long currentInviteCount = teamInviteJpaRepository.countByTeamId(teamId);
+        if (team.getMaxCapacity() > currentUserCount + currentInviteCount) {
+            if (team.getRecruitStatus() == ACTIVE_PRIVATE) {
+                TeamInvite inviteRequest = createInviteRequest(teamId, userId, memo);
+                teamInviteJpaRepository.save(inviteRequest);
+                return;
+            } else if (team.getRecruitStatus() == ACTIVE_PUBLIC) {
+                throw new TeamException(NOT_PRIVATE_TEAM);
+            }
+            throw new TeamException(NOT_RECRUIT_TEAM);
         }
+        throw new TeamException(FULL_TEAM_INVITE);
     }
 
     @Transactional
@@ -114,12 +125,20 @@ public class TeamUserService {
     }
 
     /**
-     * 글은 남아있는데 탈퇴한 회원은 어떻게 하지?
+     * 글은 남아있는데 탈퇴한 회원은 어떻게 하지? -> left join으로 처리
      */
     @Transactional
     public void deleteUser(Long userId, Long teamId) {
+        Team team = findTeamById(teamId);
         TeamUser teamUser = findTeamUserByTeamIdAndUserId(teamId, userId);
+        leaderValidation(team, teamUser);
         teamUserJpaRepository.delete(teamUser);
+    }
+
+    private static void leaderValidation(Team team, TeamUser teamUser) {
+        if (team.getTeamLeaderId().equals(teamUser.getUserId())) {
+            throw new TeamException(NOT_DELETE_LEADER);
+        }
     }
 
     private void isAlreadyJoinChecker(Long teamId, Long userId) {

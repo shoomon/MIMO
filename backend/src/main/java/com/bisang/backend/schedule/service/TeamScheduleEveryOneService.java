@@ -11,17 +11,17 @@ import com.bisang.backend.schedule.controller.response.TeamScheduleSpecificRespo
 import com.bisang.backend.schedule.controller.response.TeamSchedulesResponse;
 import com.bisang.backend.schedule.domain.ScheduleStatus;
 import com.bisang.backend.schedule.domain.TeamSchedule;
-import com.bisang.backend.schedule.repository.ScheduleParticipantsJpaRepository;
-import com.bisang.backend.schedule.repository.TeamScheduleCommentJpaRepository;
 import com.bisang.backend.schedule.repository.TeamScheduleJpaRepository;
 import com.bisang.backend.schedule.repository.TeamScheduleQuerydslRepository;
 import com.bisang.backend.team.annotation.EveryOne;
+import com.bisang.backend.team.repository.TeamUserJpaRepository;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class TeamScheduleEveryOneService {
+    private final TeamUserJpaRepository teamUserJpaRepository;
     private final TeamScheduleJpaRepository teamScheduleJpaRepository;
     private final TeamScheduleQuerydslRepository teamScheduleQuerydslRepository;
 
@@ -42,13 +42,15 @@ public class TeamScheduleEveryOneService {
 
     @EveryOne
     @Transactional(readOnly = true)
-    public TeamScheduleSpecificResponse getSpecificSchedule(Long teamScheduleId) {
+    public TeamScheduleSpecificResponse getSpecificSchedule(Long userId, Long teamId, Long teamScheduleId) {
         var specific = teamScheduleQuerydslRepository.getTeamScheduleSpecific(teamScheduleId);
         var comments = teamScheduleQuerydslRepository.getTeamScheduleComments(teamScheduleId);
         var profiles = teamScheduleQuerydslRepository.getProfilesByScheduleId(teamScheduleId);
+        boolean isTeamMember = userId == null ? false :  isTeamMember(userId, teamId);
 
         return TeamScheduleSpecificResponse.builder()
                 .teamScheduleId(teamScheduleId)
+                .isTeamMember(isTeamMember)
                 .status(specific.status())
                 .location(specific.location())
                 .date(specific.date())
@@ -60,6 +62,10 @@ public class TeamScheduleEveryOneService {
                 .title(specific.title())
                 .description(specific.description())
                 .comments(comments).build();
+    }
+
+    private boolean isTeamMember(Long userId, Long teamId) {
+        return teamUserJpaRepository.findByTeamIdAndUserId(teamId, userId).isPresent();
     }
 
     private TeamSchedule findTeamScheduleById(Long teamScheduleId) {

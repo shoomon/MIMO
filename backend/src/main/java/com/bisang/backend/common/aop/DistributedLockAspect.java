@@ -26,16 +26,15 @@ public class DistributedLockAspect {
 
     private final RedissonClient redissonClient;
 
-    @Around("@annotation(distributedLock)")
-    public void lock(ProceedingJoinPoint joinPoint, DistributedLock distributedLock) throws Throwable {
+    @Around("@annotation(distributedLock) && args(key, ..)")
+    public void lock(ProceedingJoinPoint joinPoint, String key, DistributedLock distributedLock) throws Throwable {
         String name = distributedLock.name();
-        String key = distributedLock.key();
         long waitTime = distributedLock.waitTime();
         long leaseTime = distributedLock.leaseTime();
 
         log.info("{} 락에 대한 획득을 시도합니다.", name);
 
-        RLock lock = redissonClient.getLock(key);
+        RLock lock = redissonClient.getLock(name + ":" + key);
         boolean locked = acquireLockWithRetry(lock, waitTime, leaseTime);
 
         if (!locked) {
