@@ -67,6 +67,3 @@ RUN bash -c "source /root/.sdkman/bin/sdkman-init.sh && gradle build --no-daemon
 
 # 빌드된 JAR 파일이 있는지 확인하고 출력
 RUN echo "Listing JAR files in /app/build/libs:" && ls -l /app/build/libs/
-
-# 애플리케이션 실행
-CMD ["java", "-jar", "/app/build/libs/backend-0.0.1-SNAPSHOT.jar"]
