@@ -1,10 +1,13 @@
+server:
+  servlet:
+    context-path: /api
+
 spring:
   application:
     name: backend
 
   # 파일 업로드 용량 제한, resolve-lazily: 스프링 내부 서버까지 응답을 받기 위함.
   servlet:
-    context-path: /api
     multipart:
       max-file-size: 5MB
       max-request-size: 10MB
