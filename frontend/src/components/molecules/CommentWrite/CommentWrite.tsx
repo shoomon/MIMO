@@ -1,4 +1,3 @@
-import React from 'react';
 import { useComment } from '@/hooks/useComment';
 import CommentWriteView from './CommentWrite.view';
 
@@ -10,10 +9,10 @@ interface CommentWriteProps {
 }
 
 const CommentWrite = ({
-    userId,
-    teamId,
-    teamScheduleId,
-    teamUserId,
+    userId = 0,
+    teamId = 0,
+    teamScheduleId = 0,
+    teamUserId = 0,
 }: CommentWriteProps) => {
     // 필요한 값들을 useComment 훅에 props로 전달
     const { value, handleChange, handleSubmit } = useComment({

@@ -41,6 +41,7 @@ export const getTeamInfosByArea = async (
         const response = await customFetch('/team/area', {
             method: 'GET',
             params,
+            credentials: 'include',
         });
 
         return response.json();
