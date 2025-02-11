@@ -24,4 +24,3 @@ COPY --from=build /app/dist /usr/share/nginx/html
 
 # Nginx 실행
 CMD ["nginx", "-g", "daemon off;"]
-
