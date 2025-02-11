@@ -49,7 +49,6 @@ public class ChatItemWriter implements ItemWriter<ChatMessage> {
                 chatMessage.getId(),
                 chatMessage.getChatroomId(),
                 chatMessage.getUserId(),
-                chatMessage.getTeamUserId(),
                 chatMessage.getMessage(),
                 chatMessage.getCreatedAt(),
                 chatMessage.getChatType()

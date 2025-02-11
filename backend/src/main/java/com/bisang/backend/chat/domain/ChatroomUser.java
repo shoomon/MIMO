@@ -27,7 +27,8 @@ import lombok.Setter;
 @Table(
         name = "chatroom_user",
         indexes = {
-            @Index(name = "idx_user_id_chatroom_id", columnList = "user_id, last_modified_at"),
+            @Index(name = "idx_user_id_last_modified_at", columnList = "user_id, last_modified_at"),
+                @Index(name = "idx_user_id_chatroom_id", columnList = "user_id, chatroom_id")
         }
 )
 public class ChatroomUser {

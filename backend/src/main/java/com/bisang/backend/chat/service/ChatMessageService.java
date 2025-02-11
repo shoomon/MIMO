@@ -41,10 +41,9 @@ public class ChatMessageService {
         }
         chatMessageRepository.redisSaveMessage(teamId, message);
 
-        Map<Object, Object> userInfo = chatroomUserRepository.getUserInfo(message.getTeamUserId(), message.getUserId());
+        Map<Object, Object> userInfo = chatroomUserRepository.getUserInfo(teamId, message.getUserId());
         ChatMessageResponse messageResponse = new ChatMessageResponse(
                 message.getId(),
-                message.getTeamUserId(),
                 (String)userInfo.get("nickname"),
                 (String)userInfo.get("profileImage"),
                 message.getChat(),
@@ -61,12 +60,11 @@ public class ChatMessageService {
 
         for (RedisChatMessage message : messageList) {
             Map<Object, Object> userInfo = chatroomUserRepository.getUserInfo(
-                    message.getTeamUserId(),
+                    roomId,
                     message.getUserId()
             );
             ChatMessageResponse messageResponse = new ChatMessageResponse(
                     message.getId(),
-                    message.getTeamUserId(),
                     (String)userInfo.get("nickname"),
                     (String)userInfo.get("profileImage"),
                     message.getChat(),

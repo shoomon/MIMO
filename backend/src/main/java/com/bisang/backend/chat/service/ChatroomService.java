@@ -41,36 +41,29 @@ public class ChatroomService {
         ChatroomUser chatroomUser = ChatroomUser.createChatroomUser(teamId, userId, nickname, LocalDateTime.now());
 
         chatroomUserRepository.insertJpaMemberUser(chatroomUser);
-        Long teamUserId = chatroomUser.getId();
 
         RedisChatMessage message = new RedisChatMessage(
                 teamId,
                 userId,
-                teamUserId,
                 "",
                 LocalDateTime.now(),
                 ChatType.ENTER
         );
 
-        chatroomUserRepository.insertRedisMemberUser(teamId, userId, teamUserId);
+        chatroomUserRepository.insertRedisMemberUser(teamId, userId);
         chatMessageService.broadcastMessage(teamId, message);
     }
 
     public boolean leaveChatroom(Long userId, Long teamId) {
-        Long teamUserId = chatroomUserRepository.getTeamUserId(userId, teamId);
-        if (teamUserId == null) {
-            return false;
-        }
 
         RedisChatMessage message = new RedisChatMessage(
                 teamId,
                 userId,
-                teamUserId,
                 "",
                 LocalDateTime.now(),
                 ChatType.LEAVE);
 
-        chatroomUserRepository.removeMember(teamId, userId, teamUserId);
+        chatroomUserRepository.removeMember(teamId, userId);
         chatroomRepository.redisDeleteUserChatroom(userId, teamId);
         chatMessageService.broadcastMessage(teamId, message);
 
@@ -89,8 +82,7 @@ public class ChatroomService {
             Map<Object, Object> chatroomInfo = chatroomRepository.getChatroomInfo(chatroomId);
             Map<String, Object> lastChat = chatMessageRepository.getLastChat(chatroomId);
 
-            Long teamUserId = chatroomUserRepository.getTeamUserId(userId, chatroomId);
-            Map<Object, Object> userInfo = chatroomUserRepository.getUserInfo(teamUserId, userId);
+            Map<Object, Object> userInfo = chatroomUserRepository.getUserInfo(chatroomId, userId);
 
             ChatroomResponse cr = new ChatroomResponse(chatroomId,
                     (String)chatroomInfo.get("title"),

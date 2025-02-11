@@ -6,7 +6,6 @@ import com.bisang.backend.chat.domain.ChatType;
 
 public record ChatMessageResponse(
         Long id,
-        Long teamUserId,
         String nickname,
         String profileImageUri,
         String chat,

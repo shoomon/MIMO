@@ -21,7 +21,6 @@ public class ChatItemProcessor implements ItemProcessor<RedisChatMessage, ChatMe
                 redisChatMessage.getId(),
                 redisChatMessage.getChatroomId(),
                 redisChatMessage.getUserId(),
-                redisChatMessage.getTeamUserId(),
                 redisChatMessage.getChat(),
                 redisChatMessage.getTimestamp(),
                 redisChatMessage.getType()
