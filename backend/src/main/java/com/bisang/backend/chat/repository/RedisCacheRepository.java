@@ -16,23 +16,23 @@ public class RedisCacheRepository {
     private static final String USER_KEY = "user:";
     private static final String CHATROOM_KEY = "chatroom:";
 
-    public void cacheUserProfile(Long teamUserId, String name, String imageUrl) {
-        String key = USER_KEY + teamUserId;
+    public void cacheUserProfile(Long chatroomId, Long userId, String name, String imageUrl) {
+        String key = USER_KEY + chatroomId + ":" + userId;
         redisTemplate.opsForHash().put(key, "nickname", name);
         redisTemplate.opsForHash().put(key, "profileImage", imageUrl);
     }
 
-    public Map<Object, Object> getUserProfile(Long teamUserId) {
-        String key = USER_KEY + teamUserId;
+    public Map<Object, Object> getUserProfile(Long chatroomId, Long userId) {
+        String key = USER_KEY + chatroomId + ":" + userId;
         return redisTemplate.opsForHash().entries(key);
     }
 
-    public void updateUserNickName(Long teamUserId, String nickname) {
-        redisTemplate.opsForHash().put(USER_KEY + teamUserId, "nickname", nickname);
+    public void updateUserNickName(Long chatroomId, Long userId, String nickname) {
+        redisTemplate.opsForHash().put(USER_KEY + chatroomId + ":" + userId, "nickname", nickname);
     }
 
-    public void updateUserProfileUri(Long teamUserId, String profileUri) {
-        redisTemplate.opsForHash().put(USER_KEY + teamUserId, "profileImage", profileUri);
+    public void updateUserProfileUri(Long chatroomId, Long userId, String profileUri) {
+        redisTemplate.opsForHash().put(USER_KEY + chatroomId + ":" + userId, "profileImage", profileUri);
 
     }
 

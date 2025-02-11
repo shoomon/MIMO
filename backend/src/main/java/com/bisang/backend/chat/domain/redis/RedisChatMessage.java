@@ -18,8 +18,6 @@ public class RedisChatMessage implements Serializable {
 
     private Long userId;
 
-    private Long teamUserId;
-
     private String chat;
 
     private LocalDateTime timestamp;
@@ -29,13 +27,11 @@ public class RedisChatMessage implements Serializable {
     public RedisChatMessage(
             Long chatroomId,
             Long userId,
-            Long teamUserId,
             String chat,
             LocalDateTime timestamp,
             ChatType type
     ) {
         this.chatroomId = chatroomId;
-        this.teamUserId = teamUserId;
         this.userId = userId;
         this.chat = chat;
         this.timestamp = timestamp;
@@ -46,14 +42,12 @@ public class RedisChatMessage implements Serializable {
             Long id,
             Long chatroomId,
             Long userId,
-            Long teamUserId,
             String chat,
             LocalDateTime timestamp,
             ChatType type
     ) {
         this.id = id;
         this.chatroomId = chatroomId;
-        this.teamUserId = teamUserId;
         this.userId = userId;
         this.chat = chat;
         this.timestamp = timestamp;
