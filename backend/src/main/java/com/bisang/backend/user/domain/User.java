@@ -31,6 +31,9 @@ public class User extends BaseTimeEntity {
     @Column(name = "user_id")
     private Long id;
 
+    @Column(name = "account_number", length = 13, unique = true)
+    private String accountNumber;
+
     @Column(name = "user_email", length = 40, unique = true)
     private String email;
 
@@ -49,25 +52,18 @@ public class User extends BaseTimeEntity {
 
     @Builder
     protected User(
+            String accountNumber,
             String email,
             String name,
             String nickname,
             String profileUri
     ) {
+        this.accountNumber = accountNumber;
         this.email = email;
         this.name = name;
         this.nickname = nickname;
         this.profileUri = profileUri;
         this.status = ACTIVE;
-    }
-
-    public User createNewSocialUser(
-            String email,
-            String name,
-            String nickname,
-            String profileUri
-    ) {
-        return new User(email, name, nickname, profileUri);
     }
 
     public void updateName(String name) {

@@ -22,9 +22,15 @@ public enum ExceptionCode {
     NOT_ENOUGH_MONEY(4000, "잔고 잔액이 부족합니다."),
     BALANCE_CHARGE_FAIL(4001, "충전에 실패했습니다."),
     BALANCE_TRANSFER_FAIL(4002, "송금에 실패했습니다."),
+    BALANCE_PAY_FAIL(4003, "결제에 실패했습니다."),
+    EXPIRE_QR_CODE(4004, "만료된 QRCODE 입니다"),
 
     ALREADY_JOINED_MEMBER(5001, "이미 가입된 회원입니다."),
-    ALREADY_REQUEST_MEMBER(5002, "이미 회원 가입을 요청한 회원입니다.");
+    ALREADY_REQUEST_MEMBER(5002, "이미 회원 가입을 요청한 회원입니다."),
+    UNAUTHORIZED_USER(5003, "해당 작업에 대한 권한이 없는 회원입니다."),
+    NOT_MATCHED_TEAM_AND_ACCOUNT_NUMBER(5004, "해당 팀에게 할당된 계좌가 아닙니다."),
+    NOT_MATCHED_USER_AND_ACCOUNT_NUMBER(5005, "해당 유저에게 할당된 계좌가 아닙니다.");
+
 
     private final int code;
     private final String message;
