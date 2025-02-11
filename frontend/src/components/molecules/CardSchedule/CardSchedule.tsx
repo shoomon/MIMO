@@ -18,9 +18,11 @@ export interface CardScheduleProps {
     /** 일정의 제목 또는 라벨 */
     label: string;
     /** 참가비 (문자열, 원 단위) */
-    entryFee: string;
+    entryFee: number;
     /**종료된 일정 */
     isClosed: boolean;
+    /** 일정 상세 페이지 링크 */
+    detailLink: string;
 }
 
 /**
@@ -40,6 +42,7 @@ const CardSchedule: React.FC<CardScheduleProps> = ({
     entryFee,
     memberList,
     isClosed = false,
+    detailLink,
 }) => {
     /** 일정까지 남은 시간을 계산 */
     const targetDate = new Date(scheduledDateTime);
@@ -70,13 +73,16 @@ const CardSchedule: React.FC<CardScheduleProps> = ({
     const LIMIT_RENDER = 5;
     let memberProfiles: React.ReactNode;
 
-    if (memberList.length <= LIMIT_RENDER) {
+    const safeMemberList = memberList ?? [];
+    const memberCount = safeMemberList.length;
+
+    if (memberCount <= LIMIT_RENDER) {
         // 멤버 수가 5명 이하일 경우 모두 렌더링
-        memberProfiles = memberList.map((member: ProfileImageProps) => (
+        memberProfiles = safeMemberList.map((member: ProfileImageProps) => (
             <ProfileImage
                 key={member.userId}
                 userId={member.userId}
-                imgSrc={member.imgSrc}
+                profileUri={member.profileUri}
                 userName={member.userName}
                 size={48}
                 addStyle="rounded-lg"
@@ -92,7 +98,7 @@ const CardSchedule: React.FC<CardScheduleProps> = ({
                     <ProfileImage
                         key={member.userId}
                         userId={member.userId}
-                        imgSrc={member.imgSrc}
+                        profileUri={member.profileUri}
                         userName={member.userName}
                         size={48}
                         addStyle="rounded-lg"
@@ -107,9 +113,6 @@ const CardSchedule: React.FC<CardScheduleProps> = ({
             </>
         );
     }
-
-    /** 일정 상세 페이지 링크 */
-    const detailLink = '/ScheduleDetail';
 
     return (
         <CardScheduleView

@@ -31,7 +31,7 @@ type Story = StoryObj<typeof meta>;
 const sampleProfile: ProfileImageProps = {
     userId: 'user123',
     userName: 'Jane Doe',
-    imgSrc: 'https://randomuser.me/api/portraits/men/5.jpg',
+    profileUri: 'https://randomuser.me/api/portraits/men/5.jpg',
 };
 
 export const Default: Story = {
@@ -41,6 +41,7 @@ export const Default: Story = {
         writedate: new Date().toISOString(),
         content: 'This is a sample comment.',
         isReply: false,
+        name: 'John Doe',
         onDelete: action('onDelete'),
         onUpdate: action('onUpdate'),
     },
@@ -52,6 +53,7 @@ export const Reply: Story = {
         profileImage: sampleProfile,
         writedate: new Date().toISOString(),
         content: 'This is a sample reply comment.',
+        name: 'John Doe',
         isReply: true,
         onDelete: action('onDelete'),
         onUpdate: action('onUpdate'),
