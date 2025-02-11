@@ -41,19 +41,19 @@ public class BoardController {
     //todo: 게시글 생성 시 S3 업로드 및 사진 uri 리스트 저장
     @Transactional
     @PostMapping
-    public ResponseEntity<Void> createPost(
+    public ResponseEntity<String> createPost(
             @AuthUser User user,
             @Valid @RequestBody CreatePostRequest request
     ){
         boardService.createPost(
                 request.teamBoardId(),
+                request.teamId(),
                 user.getId(),
-                request.teamBoardId(),
                 request.title(),
                 request.description(),
                 request.fileUris()
                 );
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok("게시글이 생성되었습니다.");
     }
     //todo: 게시글 미리보기 리스트 반환
     @GetMapping("/list")
@@ -72,16 +72,16 @@ public class BoardController {
 
     @Transactional
     @PatchMapping
-    public ResponseEntity<Void> updatePost(@AuthUser User user, @Valid @RequestBody UpdatePostRequest request){
-        boardService.updatePost(user.getId(), request.postId(), request.title(), request.description(), request.filesToDelete(), request.filesToAdd());
-        return ResponseEntity.ok().build();
+    public ResponseEntity<String> updatePost(@AuthUser User user, @RequestParam(value = "post", required = true) Long postId, @Valid @RequestBody UpdatePostRequest request){
+        boardService.updatePost(user.getId(), postId, request.title(), request.description(), request.filesToDelete(), request.filesToAdd());
+        return ResponseEntity.ok("게시글이 수정되었습니디.");
     }
 
     @Transactional
     @DeleteMapping
-    public ResponseEntity<Void> deletePost(@AuthUser User user, @RequestParam(value = "post", required = true) Long postId){
+    public ResponseEntity<String> deletePost(@AuthUser User user, @RequestParam(value = "post", required = true) Long postId){
         boardService.deletePost(user.getId(), postId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok("게시글이 삭제되었습니다.");
     }
     //todo: 좋아요 구현
     @Transactional

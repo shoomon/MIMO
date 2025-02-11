@@ -54,10 +54,10 @@ public class BoardService {
         //게시글 본문 저장
         BoardDescription boardDescription = boardDescriptionJpaRepository.save(new BoardDescription(description));
         //팀유저 찾기
-//        TeamUser teamUser = teamUserJpaRepository.findByTeamIdAndUserId(teamId, userId)
-//                .orElseThrow(() -> new EntityNotFoundException("팀유저를 찾을 수 없습니다."));
-//        Long teamUserId = teamUser.getUserId();
-        Long teamUserId = Long.parseLong(1+""); //테스트용
+        TeamUser teamUser = teamUserJpaRepository.findByTeamIdAndUserId(teamId, userId)
+                .orElseThrow(() -> new EntityNotFoundException("팀유저를 찾을 수 없습니다."));
+        Long teamUserId = teamUser.getUserId();
+//        Long teamUserId = Long.parseLong(1+""); //테스트용
         //게시글 저장
         Board post = boardJpaRepository.save(Board.builder()
                 .teamBoardId(teamBoardId)
@@ -66,11 +66,6 @@ public class BoardService {
                 .title(title)
                 .description(boardDescription)
                 .build());
-        //좋아요 저장
-        boardLikeRepository.save(BoardLike.builder()
-                                .boardId(post.getId())
-                                .teamUserId(teamUserId)
-                                .build());
         //파일은 게시글 저장 전 s3에 업로드
         //파일 uri가 있으면 저장
         if (fileUris != null && !fileUris.isEmpty()) {
@@ -113,36 +108,48 @@ public class BoardService {
         Board post = boardJpaRepository.findById(postId)
                 .orElseThrow(()-> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
 
-        post.updateTitle(title);
-        boardJpaRepository.save(post);
-
-        BoardDescription boardDescription = boardDescriptionJpaRepository.findById(post.getDescription().getId())
-                .orElseThrow(()-> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
-
-        boardDescription.updateDescription(description);
-        boardDescriptionJpaRepository.save(boardDescription);
-        //S3에서 파일 삭제
-        for (BoardFileDto file : filesToDelete) {
-            s3Service.deleteFile(userId, file.fileUri()); // S3에서 이미지 삭제
+        if(title != null && !"".equals(title)){
+            post.updateTitle(title);
+            boardJpaRepository.save(post);
         }
-        //파일 삭제
-        for(BoardFileDto file : filesToDelete){
-            BoardImage curfile = boardImageJpaRepository.findById(file.fileId())
-                    .orElseThrow(()-> new EntityNotFoundException("첨부파일을 찾을 수 없습니다."));
 
-            boardImageJpaRepository.delete(curfile);
-        }
-        //파일 추가
-        for(BoardFileDto file : filesToAdd){
-            String uri = file.fileUri();
-            String fileExtension = uri.substring(uri.lastIndexOf(".") + 1).toLowerCase();
+        if(description != null && !"".equals(description)){
+            BoardDescription boardDescription = boardDescriptionJpaRepository.findById(post.getDescription().getId())
+                    .orElseThrow(()-> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
 
-            boardImageJpaRepository.save(BoardImage.builder()
-                    .boardId(post.getId())
-                    .fileExtension(fileExtension)
-                    .fileUri(uri)
-                    .build());
+            boardDescription.updateDescription(description);
+            boardDescriptionJpaRepository.save(boardDescription);
         }
+
+        if(filesToDelete != null){
+            //S3에서 파일 삭제
+            for (BoardFileDto file : filesToDelete) {
+                s3Service.deleteFile(userId, file.fileUri()); // S3에서 이미지 삭제
+            }
+            //파일 삭제
+            for(BoardFileDto file : filesToDelete){
+                BoardImage curfile = boardImageJpaRepository.findById(file.fileId())
+                        .orElseThrow(()-> new EntityNotFoundException("첨부파일을 찾을 수 없습니다."));
+
+                boardImageJpaRepository.delete(curfile);
+            }
+        }
+
+        if(filesToAdd != null){
+            //파일 추가
+            for(BoardFileDto file : filesToAdd){
+                String uri = file.fileUri();
+                String fileExtension = uri.substring(uri.lastIndexOf(".") + 1).toLowerCase();
+                System.out.println(file.fileExtension());
+
+                boardImageJpaRepository.save(BoardImage.builder()
+                        .boardId(post.getId())
+                        .fileExtension(fileExtension)
+                        .fileUri(uri)
+                        .build());
+            }
+        }
+
     }
 
 //    @TeamMember
