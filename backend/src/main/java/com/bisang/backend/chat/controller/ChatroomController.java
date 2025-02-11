@@ -2,6 +2,7 @@ package com.bisang.backend.chat.controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +28,11 @@ public class ChatroomController {
     public ResponseEntity<List<ChatroomResponse>> getChatroom(@AuthUser User user) {
         Long userId = user.getId();
         List<ChatroomResponse> list = chatroomService.getChatroom(userId);
+
+        if (list == null) {
+            //TODO: 여기 뭐 exception 만들어서 보내줘야하나?
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
 
         return ResponseEntity.ok().body(list);
     }

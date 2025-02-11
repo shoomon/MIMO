@@ -68,11 +68,41 @@ public class ChatMessage {
         this.message = message;
     }
 
+    private ChatMessage(
+            Long id,
+            Long chatroomId,
+            Long userId,
+            Long teamUserId,
+            String message,
+            LocalDateTime createdAt,
+            ChatType type
+    ) {
+        this.id = id;
+        this.chatroomId = chatroomId;
+        this.userId = userId;
+        this.teamUserId = teamUserId;
+        this.message = message;
+        this.createdAt = createdAt;
+        this.chatType = type;
+    }
+
     public ChatMessage createUserMessage(Long chatroomId, Long userId, String message) {
         return new ChatMessage(chatroomId, userId, null, message);
     }
 
     public ChatMessage createTeamMessage(Long chatroomId, Long teamUserId, String message) {
         return new ChatMessage(chatroomId, null, teamUserId, message);
+    }
+
+    public static ChatMessage createMessage(
+            Long id,
+            Long chatroomId,
+            Long userId,
+            Long teamUserId,
+            String message,
+            LocalDateTime createdAt,
+            ChatType type
+    ) {
+        return new ChatMessage(id, chatroomId, userId, teamUserId, message, createdAt, type);
     }
 }

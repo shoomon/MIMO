@@ -8,6 +8,8 @@ public record SimpleTeamDto(
     String description,
     String teamProfileUri,
     Double reviewScore,
+    Long maxCapacity,
+    Long currentCapacity,
     List<String> tags
 ) {
 }
