@@ -8,7 +8,7 @@ public record ChatMessageResponse(
         Long id,
         Long teamUserId,
         String nickname,
-        String profileImageUrl,
+        String profileImageUri,
         String chat,
         LocalDateTime timestamp,
         ChatType chatType
