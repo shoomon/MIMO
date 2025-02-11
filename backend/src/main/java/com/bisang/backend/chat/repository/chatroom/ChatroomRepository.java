@@ -45,6 +45,7 @@ public class ChatroomRepository {
     }
 
     public void insertChatroom(Chatroom chatroom) {
+        System.out.println("insertChatroom");
         chatroomJpaRepository.save(chatroom);
     }
 

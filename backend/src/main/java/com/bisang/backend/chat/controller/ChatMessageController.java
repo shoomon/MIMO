@@ -1,8 +1,10 @@
 package com.bisang.backend.chat.controller;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
+import com.bisang.backend.common.utils.DateUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -44,11 +46,10 @@ public class ChatMessageController {
             ChatMessageRequest chat
     ) {
         Long userId = user.getId();
-        if (chatroomUserService.isMember(roomId, userId, chat.teamUserId())) {
+        if (chatroomUserService.isMember(roomId, userId)) {
             RedisChatMessage redisMessage = new RedisChatMessage(
                     roomId,
                     userId,
-                    chat.teamUserId(),
                     chat.chat(),
                     LocalDateTime.now(),
                     ChatType.MESSAGE
@@ -62,12 +63,12 @@ public class ChatMessageController {
     public ResponseEntity<List<ChatMessageResponse>> getMessages(
             @AuthUser User user,
             @PathVariable("roomId") Long roomId,
-            @RequestParam("teamUserId") Long teamUserId,
             @RequestParam("messageId") Long messageId,
-            @RequestParam("timestamp") LocalDateTime timestamp
+            @RequestParam("timestamp") String timestamp
     ) {
-        if (chatroomUserService.isMember(roomId, user.getId(), teamUserId)) {
-            List<ChatMessageResponse> list = chatMessageService.getMessages(roomId, messageId, timestamp);
+        if (chatroomUserService.isMember(roomId, user.getId())) {
+            LocalDateTime datetime = DateUtils.DateToLocalDateTime(timestamp);
+            List<ChatMessageResponse> list = chatMessageService.getMessages(roomId, messageId, datetime);
             return ResponseEntity.ok().body(list);
         }
 
@@ -82,11 +83,10 @@ public class ChatMessageController {
             @AuthSimpleUser SimpleUser user,
             @PathVariable Long roomId,
             @RequestBody ChatMessageRequest chat) {
-        if (chatroomUserService.isMember(roomId, user.userId(), chat.teamUserId())) {
+        if (chatroomUserService.isMember(roomId, user.userId())) {
             RedisChatMessage redisMessage = new RedisChatMessage(
                     roomId,
                     user.userId(),
-                    chat.teamUserId(),
                     chat.chat(),
                     LocalDateTime.now(),
                     ChatType.MESSAGE

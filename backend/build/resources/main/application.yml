@@ -39,6 +39,10 @@ spring:
         use_sql_comments: false
     database-platform: org.hibernate.dialect.MySQLDialect
 
+  batch:
+    jdbc:
+      initialize-schema: always
+
 cloud:
   aws:
     s3:
@@ -59,3 +63,7 @@ oauth2:
       - email
       - profile
       - openid
+
+openvidu:
+  url: "https://i12a504.p.ssafy.io"
+  secret: "MY_SECRET"
