@@ -17,7 +17,6 @@ import com.bisang.backend.user.repository.UserJpaRepository;
 
 import lombok.RequiredArgsConstructor;
 
-
 @Repository
 @RequiredArgsConstructor
 public class ChatroomUserRepository {
