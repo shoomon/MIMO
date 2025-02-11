@@ -26,7 +26,7 @@ const MemberListView = ({
             <div className="flex items-center gap-3">
                 <div className="flex h-[84px] w-[84px] flex-shrink-0 items-center justify-center overflow-hidden rounded-2xl">
                     <img
-                        src={userInfo.imgSrc}
+                        src={userInfo.profileUri}
                         alt="프로필 이미지"
                         className="h-full w-full object-cover"
                     />

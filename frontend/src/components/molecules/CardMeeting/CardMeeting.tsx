@@ -19,7 +19,7 @@ export interface CardMeetingProps {
     /** 미팅 카드의 제목 또는 라벨 */
     label: string;
     /** 리뷰 개수 */
-    reviewCount: number;
+    reviewCount?: number;
     /** 카드 클릭 시 이동할 링크 (기본값: "/") */
     to?: string;
 }
@@ -44,7 +44,7 @@ const CardMeeting: React.FC<CardMeetingProps> = ({
     tagList,
     content,
     label,
-    reviewCount,
+    reviewCount = 0,
     to = '/', // 기본 링크 경로
 }) => {
     const displayedTags = getDisplayedTags(tagList);

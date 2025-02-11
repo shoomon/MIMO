@@ -18,7 +18,7 @@ const SearchView = ({ handleSubmit, value, onChange }: SearchProps) => {
                 id="search"
                 value={value}
                 onChange={onChange}
-                className="w-[37.5rem] focus:outline-0"
+                className="w-full focus:outline-0"
             />
         </form>
     );

@@ -5,6 +5,8 @@ export interface CategoryItemProps {
     iconId: string;
     content: string;
     path: string;
+    isSelected?: boolean;
+    onClick?: (path: string, event: React.MouseEvent) => void;
 }
 
 /**
@@ -17,16 +19,32 @@ export interface CategoryItemProps {
  * @returns {JSX.Element} - 렌더링된 `CategoryItem` 컴포넌트를 반환합니다.
  */
 
-const CategoryItem = ({ iconId, content, path }: CategoryItemProps) => {
+const CategoryItem = ({
+    iconId,
+    content,
+    path,
+    isSelected = false,
+    onClick,
+}: CategoryItemProps) => {
+    const handleClick = (event: React.MouseEvent) => {
+        if (onClick) {
+            event.preventDefault();
+            onClick(path, event);
+        }
+    };
+
     return (
         <Link
             to={path}
-            className="flex h-fit w-[100px] flex-col items-center justify-center gap-3 rounded-lg bg-white py-2 hover:bg-gray-100"
+            onClick={handleClick}
+            className={`flex h-fit w-[100px] flex-col items-center justify-center gap-3 rounded-lg py-2 ${isSelected ? 'bg-blue-100 hover:bg-blue-200' : 'bg-white hover:bg-gray-200'}`}
         >
             <div>
                 <Icon type="png" id={iconId} />
             </div>
-            <div className="w-fit justify-center text-lg font-medium text-black">
+            <div
+                className={`w-fit justify-center text-lg font-medium ${isSelected ? 'text-black' : 'text-black'}`}
+            >
                 {content}
             </div>
         </Link>
