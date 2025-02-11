@@ -1,10 +1,10 @@
 package com.bisang.backend.board.controller.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import java.time.LocalDateTime;
 
-public record BoardDto (
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+public record BoardDto(
         Long postId,
         Long userId,
         Long teamUserId,
@@ -19,5 +19,5 @@ public record BoardDto (
         LocalDateTime createdAt,
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yy.MM.dd HH:mm")
         LocalDateTime updatedAt
-){
+) {
 }

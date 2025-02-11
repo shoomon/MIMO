@@ -1,18 +1,14 @@
 package com.bisang.backend.board.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import com.bisang.backend.board.controller.dto.BoardFileDto;
-import com.bisang.backend.board.controller.dto.CommentDto;
 import com.bisang.backend.board.controller.dto.SimpleBoardListDto;
 import com.bisang.backend.board.controller.response.BoardListResponse;
 import com.bisang.backend.s3.service.S3Service;
-import com.bisang.backend.team.annotation.TeamMember;
 import jakarta.persistence.EntityNotFoundException;
 
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import com.bisang.backend.board.controller.dto.BoardDto;
@@ -20,7 +16,6 @@ import com.bisang.backend.board.domain.*;
 import com.bisang.backend.board.repository.*;
 import com.bisang.backend.team.domain.TeamUser;
 import com.bisang.backend.team.repository.TeamUserJpaRepository;
-import com.bisang.backend.user.domain.User;
 import com.bisang.backend.user.repository.UserJpaRepository;
 import com.bisang.backend.board.controller.response.BoardDetailResponse;
 
@@ -43,7 +38,7 @@ public class BoardService {
     private final S3Service s3Service;
 
 //    @TeamMember
-    public void createPost(
+    public Long createPost(
             long teamBoardId,
             long teamId,
             long userId,
@@ -80,7 +75,7 @@ public class BoardService {
             }
 
         }
-
+        return post.getId();
     }
     
 //    @TeamMember
@@ -96,10 +91,11 @@ public class BoardService {
         boardJpaRepository.increaseViewCount(postId);
         //게시글 본문 정보, 댓글 정보 가져오기
         BoardDto post = boardQuerydslRepository.getBoardDetail(postId);
-        List<CommentDto> comments = commentQuerydslRepository.getCommentList(postId);
+        //todo: 게시글의 모든 댓글을 가져와 계층 구조로 변환
+//        List<CommentListDto> comments = commentQuerydslRepository.getCommentList(postId);
         List<BoardFileDto> files = boardImageJpaRepository.findByBoardId(postId);
 
-        postDetail = new BoardDetailResponse(post, files, comments);
+//        postDetail = new BoardDetailResponse(post, files, comments);
         return postDetail;
     }
 

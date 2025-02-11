@@ -1,10 +1,8 @@
 package com.bisang.backend.board.controller.request;
 
-import com.bisang.backend.board.controller.dto.BoardFileDto;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-
 import java.util.List;
+
+import com.bisang.backend.board.controller.dto.BoardFileDto;
 
 public record UpdatePostRequest(
         String title,

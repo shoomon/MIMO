@@ -1,9 +1,9 @@
 package com.bisang.backend.board.controller.request;
 
+import java.util.List;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-
-import java.util.List;
 
 public record CreatePostRequest(
         @NotNull(message = "게시판 번호가 없습니다.")

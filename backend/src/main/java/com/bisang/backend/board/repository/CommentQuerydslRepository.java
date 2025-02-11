@@ -36,11 +36,12 @@ public class CommentQuerydslRepository {
                 .where(comment.id.eq(commentId))
                 .fetchOne()).orElseThrow(() -> new EntityNotFoundException("댓글 정보를 찾을 수 없습니다."));
     }
-
+//todo: 댓글 리스트 모두 가져와 Service레이어에서 계층구조로 변환
     public List<CommentDto> getCommentList(Long postId){
         List<CommentDto> comments = queryFactory
                 .select(Projections.constructor(CommentDto.class,
                         comment.id.as("commentId"),
+                        comment.parentCommentId,
                         comment.userId,
                         teamUser.nickname.as("userNickname"),
                         user.profileUri.as("userProfileImage"),
@@ -59,5 +60,4 @@ public class CommentQuerydslRepository {
 //        }
         return comments;
     }
-
 }

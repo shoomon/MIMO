@@ -4,11 +4,11 @@ import java.util.List;
 
 import com.bisang.backend.board.controller.dto.BoardDto;
 import com.bisang.backend.board.controller.dto.BoardFileDto;
-import com.bisang.backend.board.controller.dto.CommentDto;
+import com.bisang.backend.board.controller.dto.CommentListDto;
 
 public record BoardDetailResponse(
-    BoardDto board,
-    List<BoardFileDto> files,
-    List<CommentDto> comments
+        BoardDto board,
+        List<BoardFileDto> files,
+        List<CommentListDto> comments
 ) {
 }

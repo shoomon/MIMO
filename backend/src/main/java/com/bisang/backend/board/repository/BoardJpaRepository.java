@@ -1,10 +1,12 @@
 package com.bisang.backend.board.repository;
 
-import com.bisang.backend.board.domain.Board;
 import jakarta.transaction.Transactional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+
+import com.bisang.backend.board.domain.Board;
 
 public interface BoardJpaRepository extends JpaRepository<Board, Long> {
     @Transactional
