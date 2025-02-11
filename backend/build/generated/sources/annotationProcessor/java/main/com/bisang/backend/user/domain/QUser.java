@@ -21,6 +21,8 @@ public class QUser extends EntityPathBase<User> {
 
     public final com.bisang.backend.common.domain.QBaseTimeEntity _super = new com.bisang.backend.common.domain.QBaseTimeEntity(this);
 
+    public final StringPath accountNumber = createString("accountNumber");
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
