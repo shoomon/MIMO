@@ -4,6 +4,8 @@ import com.bisang.backend.team.domain.Area;
 import com.bisang.backend.team.domain.TeamPrivateStatus;
 import com.bisang.backend.team.domain.TeamRecruitStatus;
 
+import java.util.List;
+
 public record TeamDto(
         Long teamId,
         Long teamUserId,
@@ -14,6 +16,8 @@ public record TeamDto(
         TeamPrivateStatus privateStatus,
         Area area,
         Long maxCapacity,
-        Long currentCapacity
+        Long currentCapacity,
+        Double score,
+        List<String> tags
 ) {
 }

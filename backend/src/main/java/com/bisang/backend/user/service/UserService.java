@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.bisang.backend.s3.service.S3Service;
 import com.bisang.backend.user.controller.response.UserMyResponse;
@@ -26,20 +25,9 @@ public class UserService {
     }
 
     @Transactional
-    public void updateNickname(User user, String nickname) {
+    public void updateUserInfo(User user, String nickname, String name, String profileUri) {
         user.updateNickname(nickname);
-        userJpaRepository.save(user);
-    }
-
-    @Transactional
-    public void updateName(User user, String name) {
         user.updateName(name);
-        userJpaRepository.save(user);
-    }
-
-    @Transactional
-    public void updateProfileUri(User user, MultipartFile file) {
-        String profileUri = s3Service.saveFile(user.getId(), file);
         user.updateProfileUri(profileUri);
         userJpaRepository.save(user);
     }

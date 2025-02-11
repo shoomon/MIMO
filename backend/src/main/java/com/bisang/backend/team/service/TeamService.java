@@ -98,9 +98,7 @@ public class TeamService {
 
     private String profileUriValidation(String teamProfileUri) {
         if (teamProfileUri == null) {
-            return "eyJhbGciOiJIUzM4NCJ9."
-                    + "eyJzdWIiOiIzIiwiaWF0IjoxNzM5MTQ4MjM0LCJleHAiOjE3MzkxNTE4MzQsInR5cGUiOiJhY2Nlc3NUb2tlbiJ9"
-                    + ".fdVC6zw6EVJT84-jzTO-D3yvjW_oR_7-qoX8-qpNOe2aNsUdROeP0N3sYaKVa90J";
+            return "https://bisang-mimo-bucket.s3.ap-northeast-2.amazonaws.com/1a05c3f9-2638-4349-8a89-e90c5e584b89.jpg";
         }
 
         if (!teamProfileUri.startsWith("https://bisang-mimo-bucket.s3.ap-northeast-2.amazonaws.com/")) {

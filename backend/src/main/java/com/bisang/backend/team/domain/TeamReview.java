@@ -1,0 +1,74 @@
+package com.bisang.backend.team.domain;
+
+import com.bisang.backend.common.exception.TeamException;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.Table;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.Validate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
+
+import static com.bisang.backend.common.exception.ExceptionCode.INVALID_REQUEST;
+import static jakarta.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.PROTECTED;
+
+@Entity
+@EntityListeners(AuditingEntityListener.class)
+@Getter
+@NoArgsConstructor(access = PROTECTED)
+@Table(
+        name = "team_review",
+        indexes = {
+                @Index(name = "idx_team_teamUserId", columnList = "team_id, team_user_id desc")
+        }
+)
+public class TeamReview {
+    @Id @GeneratedValue(strategy = IDENTITY)
+    @Column(name = "team_review_id")
+    private Long id;
+
+    @Column(name = "team_id", nullable = false)
+    private Long teamId;
+
+    @Column(name = "team_user_id", nullable = false, unique = true)
+    private Long teamUserId;
+
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "review_memo", length = 300, nullable = false)
+    private String memo;
+
+    @Column(name = "review_score", nullable = false)
+    private Long score;
+
+    @Builder
+    private TeamReview(Long teamId, Long teamUserId, String memo, Long score) {
+        this.teamId = teamId;
+        this.teamUserId = teamUserId;
+        this.memo = memo;
+        memoValidation(memo);
+        this.score = score;
+        scoreValidation(score);
+    }
+
+    private void memoValidation(String memo) {
+        String pattern = "^[a-zA-Z0-9가-힣]{30,300}$";
+        Validate.matchesPattern(memo, pattern,
+                "모임 이름은 영문, 숫자, 한글로만 구성되어 있으며, 길이는 30자리 이상 300자리 이하이어야 합니다.");
+    }
+
+    private void scoreValidation(Long score) {
+        if (!(score == 1 || score == 2 || score == 3 || score == 4 || score == 5)) {
+            throw new TeamException(INVALID_REQUEST);
+        }
+    }
+}
