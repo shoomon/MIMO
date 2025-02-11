@@ -22,10 +22,10 @@ ENV SDKMAN_DIR="/root/.sdkman" \
 WORKDIR /app
 
 # Gradle 관련 파일을 복사
-COPY ./backend/build.gradle ./backend/settings.gradle /app/
+COPY ./build.gradle ./backend/settings.gradle /app/
 
 # 나머지 소스 파일을 복사
-COPY ./backend /app/
+COPY ./ /app/
 
 # Gradle 빌드 실행
 RUN bash -c "source /root/.sdkman/bin/sdkman-init.sh && gradle build --no-daemon --refresh-dependencies --no-watch-fs -x test"
