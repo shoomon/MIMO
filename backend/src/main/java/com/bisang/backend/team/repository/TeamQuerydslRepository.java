@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import com.querydsl.jpa.JPAExpressions;
 import org.springframework.stereotype.Repository;
 
 import com.bisang.backend.common.exception.TeamException;
@@ -30,13 +31,12 @@ import lombok.RequiredArgsConstructor;
 @Repository
 @RequiredArgsConstructor
 public class TeamQuerydslRepository {
+    private final TeamUserJpaRepository teamUserJpaRepository;
     private final JPAQueryFactory queryFactory;
 
     public TeamDto getTeamInfo(Long teamId) {
 
-        Long currentMemberCount = queryFactory.select(teamUser.count())
-                                                .from(teamUser)
-                                                .where(teamUser.id.eq(teamId)).fetchOne();
+        Long currentMemberCount = teamUserJpaRepository.countTeamUserByTeamId(teamId);
 
         return Optional.ofNullable(
                 queryFactory
@@ -69,6 +69,10 @@ public class TeamQuerydslRepository {
                     team.shortDescription,
                     team.teamProfileUri,
                     Expressions.numberTemplate(Double.class, "{0}", 0.0),
+                    team.maxCapacity,
+                    JPAExpressions.select(teamUser.count())
+                            .from(teamUser)
+                            .where(teamUser.teamId.eq(team.id)),
                     Expressions.constant(Collections.emptyList())
             ))
             .from(team)
@@ -126,6 +130,9 @@ public class TeamQuerydslRepository {
             dto.description(),
             dto.teamProfileUri(),
             dto.reviewScore(),
+            0L,
+            dto.maxCapacity(),
+            dto.currentCapacity(),
             tags
         );
     }

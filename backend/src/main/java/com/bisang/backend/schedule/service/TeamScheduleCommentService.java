@@ -10,15 +10,13 @@ import com.bisang.backend.common.exception.ScheduleException;
 import com.bisang.backend.schedule.domain.TeamScheduleComment;
 import com.bisang.backend.schedule.repository.TeamScheduleCommentJpaRepository;
 import com.bisang.backend.team.annotation.TeamMember;
-import com.bisang.backend.team.repository.TeamUserJpaRepository;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class TeamScheduleCommentService {
-    private TeamScheduleCommentJpaRepository teamScheduleCommentJpaRepository;
-    private TeamUserJpaRepository teamUserJpaRepository;
+    private final TeamScheduleCommentJpaRepository teamScheduleCommentJpaRepository;
 
     @TeamMember
     @Transactional

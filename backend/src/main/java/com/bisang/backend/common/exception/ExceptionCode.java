@@ -38,7 +38,9 @@ public enum ExceptionCode {
     NOT_DELETE_LEADER(5010, "모임장은 모임에서 탈퇴할 수 없습니다."),
 
     FULL_SCHEDULE(6000, "해당 일정은 정원을 초과했습니다."),
-    NOT_MINUS_MONEY(6001, "일정의 금액은 음수일 수 없습니다.");
+    NOT_MINUS_MONEY(6001, "일정의 금액은 음수일 수 없습니다."),
+    CLOSED_SCHEDULE(6002, "해당 일정은 닫힌 일정입니다."),
+    ALREADY_JOINED(6003, "이미 들어가 있는 참여자입니다.");
 
     private final int code;
     private final String message;
