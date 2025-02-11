@@ -10,7 +10,9 @@ const NavLevelView = ({ navItems }: NavLevelProps) => {
         <nav className="flex items-center gap-2">
             <Icon type="svg" id="Arrow-Back" />
             {navItems.map((item) => {
-                return <Title label={item.label} to={item.to} />;
+                return (
+                    <Title key={item.label} label={item.label} to={item.to} />
+                );
             })}
         </nav>
     );

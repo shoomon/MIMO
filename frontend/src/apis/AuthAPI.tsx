@@ -51,7 +51,6 @@ export const getUserInfoAPI = async (
         const data = await response.json();
 
         const filteredData = {
-            name: data.name,
             nickname: data.nickname,
             profileUri: data.profileUri,
         };

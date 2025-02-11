@@ -14,15 +14,18 @@ import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
 @NoArgsConstructor(access = PROTECTED)
 @Table(
         name = "team_invite",
         indexes = {
-            @Index(name = "idx_team_id_status", columnList = "team_id, invite_status"),
-        }, uniqueConstraints = {
+            @Index(name = "idx_team_status_id", columnList = "team_id, invite_status, team_invite_id"),
+            @Index(name = "idx_team_id", columnList = "team_id, team_invite_id")},
+        uniqueConstraints = {
             @UniqueConstraint(name = "UK_team_user", columnNames = {"team_id", "user_id"})
         }
 )
