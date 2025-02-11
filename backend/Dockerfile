@@ -22,7 +22,7 @@ ENV SDKMAN_DIR="/root/.sdkman" \
 WORKDIR /app
 
 # Gradle 관련 파일을 복사
-COPY ./build.gradle ./backend/settings.gradle /app/
+COPY ./build.gradle ./settings.gradle /app/
 
 # 나머지 소스 파일을 복사
 COPY ./ /app/
