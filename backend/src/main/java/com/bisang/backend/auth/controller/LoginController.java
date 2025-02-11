@@ -116,8 +116,15 @@ public class LoginController {
 
     @PostMapping(value = "/logout")
     public ResponseEntity<Void> logout(
-            @CookieValue("refresh-token") String refreshToken
+            @CookieValue("refresh-token") String refreshToken,
+            HttpServletResponse response
     ) {
+        Cookie cookie = new Cookie("refresh-token", null);
+        cookie.setPath("/");       // 생성할 때 사용한 path와 동일해야 합니다.
+        cookie.setHttpOnly(true);  // HttpOnly 옵션 설정 (선택 사항)
+        cookie.setMaxAge(0);
+
+        response.addCookie(cookie);
 
         oAuth2Service.logout(refreshToken);
         return ResponseEntity.noContent().build();
