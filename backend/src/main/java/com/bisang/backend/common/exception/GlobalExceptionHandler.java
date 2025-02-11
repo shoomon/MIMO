@@ -2,6 +2,7 @@ package com.bisang.backend.common.exception;
 
 import static com.bisang.backend.common.exception.ExceptionCode.*;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Objects;
@@ -125,7 +126,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(InvalidJwtException.class)
     public ResponseEntity<ExceptionResponse> handleInvalidJwtException(InvalidJwtException exception) {
         log.warn(exception.getMessage(), exception);
-        return ResponseEntity.badRequest()
+        return ResponseEntity.status(UNAUTHORIZED)
                 .body(new ExceptionResponse(exception.getCode(), exception.getMessage()));
     }
 
@@ -151,7 +152,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(TransactionException.class)
-    public ResponseEntity<ExceptionResponse> handlePointException(TransactionException exception) {
+    public ResponseEntity<ExceptionResponse> handleTransactionException(TransactionException exception) {
         log.warn(exception.getMessage(), exception);
         return ResponseEntity.badRequest()
                 .body(new ExceptionResponse(exception.getCode(), exception.getMessage()));

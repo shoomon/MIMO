@@ -1,0 +1,544 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="ce0c64dd-4326-401e-b4f1-7b7313c859a1" name="Changes" comment="merge: backend_dev 병합">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.gradle/8.11.1/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.gradle/8.11.1/checksums/checksums.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.gradle/8.11.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.gradle/8.11.1/executionHistory/executionHistory.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.gradle/8.11.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.gradle/8.11.1/executionHistory/executionHistory.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.gradle/8.11.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.gradle/8.11.1/fileHashes/fileHashes.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.gradle/8.11.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.gradle/8.11.1/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.gradle/8.11.1/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.gradle/8.11.1/fileHashes/resourceHashesCache.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.gradle/file-system.probe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/account/service/AccountService.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/account/service/AccountService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/auth/service/OAuth2Service.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/auth/service/OAuth2Service.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/common/exception/ExceptionCode.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/common/exception/ExceptionCode.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/common/exception/GlobalExceptionHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/common/exception/GlobalExceptionHandler.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/repository/TeamJpaRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/repository/TeamJpaRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/transaction/controller/TransactionController.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/transaction/controller/TransactionController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/transaction/controller/request/PaymentResultRequest.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/transaction/controller/request/TransferRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/transaction/controller/request/TransferRequest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/transaction/converter/TransactionConverter.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/transaction/converter/TransactionConverter.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/transaction/service/TransactionService.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/transaction/service/TransactionService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/transaction/service/charge/ChargeService.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/transaction/service/charge/ChargeService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/user/domain/QUser.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/user/domain/QUser.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/user/domain/User$UserBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/user/domain/User$UserBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/user/domain/User.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/user/domain/User.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/user/repository/UserJpaRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/user/repository/UserJpaRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/generated/sources/annotationProcessor/java/main/com/bisang/backend/user/domain/QUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/generated/sources/annotationProcessor/java/main/com/bisang/backend/user/domain/QUser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/reports/problems/problems-report.html" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/reports/problems/problems-report.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/tmp/compileJava/previous-compilation-data.bin" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/tmp/compileJava/previous-compilation-data.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/common/exception/ExceptionCode.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/common/exception/ExceptionCode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/common/exception/GlobalExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/common/exception/GlobalExceptionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/schedule/repository/TeamScheduleQuerydslRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/schedule/repository/TeamScheduleQuerydslRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/controller/TransactionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/controller/TransactionController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/service/TransactionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/service/TransactionService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/service/charge/ChargeService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/service/charge/ChargeService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/service/payment/PaymentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/service/payment/PaymentService.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$/backend">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <task path="$PROJECT_DIR$/backend">
+          <activation />
+        </task>
+        <projects_view>
+          <tree_state>
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="backend" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="backend" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="backend" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="build" type="c8890929:TasksNode$1" />
+              </path>
+            </expand>
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="HTML File" />
+        <option value="Enum" />
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <excluded-from-favorite>
+      <branch-storage>
+        <map>
+          <entry type="LOCAL">
+            <value>
+              <list>
+                <branch-info repo="$PROJECT_DIR$" source="master" />
+              </list>
+            </value>
+          </entry>
+        </map>
+      </branch-storage>
+    </excluded-from-favorite>
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="S12P11A504-131-결제" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="SOFT" />
+  </component>
+  <component name="GitLabMergeRequestFiltersHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPENED&quot;,
+    &quot;assignee&quot;: {
+      &quot;type&quot;: &quot;org.jetbrains.plugins.gitlab.mergerequest.ui.filters.GitLabMergeRequestsFiltersValue.MergeRequestsMemberFilterValue.MergeRequestsAssigneeFilterValue&quot;,
+      &quot;username&quot;: &quot;kb1998&quot;,
+      &quot;fullname&quot;: &quot;박경범&quot;
+    }
+  }
+}</component>
+  <component name="GitLabMergeRequestsSettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;first&quot;: &quot;https://lab.ssafy.com/s12-webmobile1-sub1/S12P11A504.git&quot;,
+    &quot;second&quot;: &quot;72f6421d-4263-4e0f-9ac5-a6759ab66296&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 2
+}</component>
+  <component name="ProjectId" id="2sVxsg9JEJEpH8vUQ0JivFcZ0d2" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
+    "Gradle.Download Sources.executor": "Run",
+    "Gradle.backend [:com.bisang.backend.BackendApplication.main()].executor": "Run",
+    "Gradle.backend [:com.bisang.backend.point.infrastructure.PortOneProvider.main()].executor": "Run",
+    "Gradle.backend [build].executor": "Run",
+    "Gradle.backend [clean].executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "S12P11A504-131",
+    "kotlin-language-version-configured": "true",
+    "settings.editor.selected.configurable": "preferences.lookFeel"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\SSAFY\IdeaProjects\S12P11A504\backend\src\main\resources\templates" />
+    </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="com.bisang.backend.account.domain" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.bisang.backend.account.balance.domain" />
+      <recent name="com.bisang.backend.point.common.domain" />
+      <recent name="com.bisang.backend.point.domain" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.BackendApplication">
+    <configuration name="BackendApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <envs>
+        <env name="GOOGLE_TOKEN_URI" value="https://oauth2.googleapis.com/token" />
+        <env name="GOOGLE_RESOURCE_URI" value="https://www.googleapis.com/oauth2/v2/userinfo" />
+        <env name="GOOGLE_CLIENT_ID" value="385340399378-kumk6r07je1g3fthqlupuh78roghr7l4.apps.googleusercontent.com" />
+        <env name="GOOGLE_CLIENT_SECRET" value="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" />
+        <env name="GOOGLE_REDIRECT_URI" value="http://localhost:5500" />
+        <env name="SECRET_KEY" value="6I90nKd!pR@w#uL2xMv&amp;TgYzQaXj%Nc5oP^B$Vm*H7LfRxWq" />
+        <env name="ACCESS_TOKEN_EXPIRY" value="3600000" />
+        <env name="REFRESH_TOKEN_EXPIRY" value="604800000 " />
+        <env name="DB_URL" value="stg-yswa-kr-practice-db-master.mariadb.database.azure.com:3306" />
+        <env name="DB_ID" value="S12P12A504@stg-yswa-kr-practice-db-master.mariadb.database.azure.com" />
+        <env name="DB_PASSWORD" value="1234" />
+        <env name="REDIS_URI" value="i12a504.p.ssafy.io" />
+        <env name="REDIS_PORT" value="6379" />
+        <env name="S3_BUCKET_NAME" value="bisang-mimo-bucket" />
+        <env name="S3_ACCESS_KEY" value="AKIAWLF26L5R2K6N3C4N" />
+        <env name="S3_SECRET_KEY" value="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" />
+      </envs>
+      <option name="MAIN_CLASS_NAME" value="com.bisang.backend.BackendApplication" />
+      <module name="backend.main" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.bisang.backend.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <extension name="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+        </ENTRIES>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="backend [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/backend" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="build" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="backend [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/backend" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="clean" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Application.BackendApplication" />
+      <item itemvalue="Gradle.backend [build]" />
+      <item itemvalue="Gradle.backend [clean]" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Gradle.backend [build]" />
+        <item itemvalue="Gradle.backend [clean]" />
+        <item itemvalue="Application.BackendApplication" />
+        <item itemvalue="Gradle.backend [build]" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ce0c64dd-4326-401e-b4f1-7b7313c859a1" name="Changes" comment="" />
+      <created>1738554752629</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1738554752629</updated>
+    </task>
+    <task id="LOCAL-00001" summary="build: build.gradle 의존성 추가">
+      <option name="closed" value="true" />
+      <created>1738567991015</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1738567991015</updated>
+    </task>
+    <task id="LOCAL-00002" summary="chore: gitignore 파일 수정">
+      <option name="closed" value="true" />
+      <created>1738569607195</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1738569607195</updated>
+    </task>
+    <task id="LOCAL-00003" summary="feat: 계좌 생성 로직 구현">
+      <option name="closed" value="true" />
+      <created>1738571093525</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1738571093525</updated>
+    </task>
+    <task id="LOCAL-00004" summary="feat: 계좌 생성 로직 구현">
+      <option name="closed" value="true" />
+      <created>1738571187240</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1738571187240</updated>
+    </task>
+    <task id="LOCAL-00005" summary="feat: 계좌 재시도 로직 추가 / 계좌 유효성 검증 로직 추가 / 계좌 번호 생성 메서드명 수정">
+      <option name="closed" value="true" />
+      <created>1738632520755</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1738632520755</updated>
+    </task>
+    <task id="LOCAL-00006" summary="refactor: import 선언문 순서 변경">
+      <option name="closed" value="true" />
+      <created>1738641157988</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1738641157988</updated>
+    </task>
+    <task id="LOCAL-00007" summary="feat: 포인트 충전 로직 구현 완료">
+      <option name="closed" value="true" />
+      <created>1738661495071</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1738661495071</updated>
+    </task>
+    <task id="LOCAL-00008" summary="refactor: 메서드 매개변수명 변경">
+      <option name="closed" value="true" />
+      <created>1738661522230</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1738661522230</updated>
+    </task>
+    <task id="LOCAL-00009" summary="chore: redisson 관련 의존성 추가">
+      <option name="closed" value="true" />
+      <created>1738744883395</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1738744883395</updated>
+    </task>
+    <task id="LOCAL-00010" summary="refactor: 유저 인증 추가">
+      <option name="closed" value="true" />
+      <created>1738744921963</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1738744921963</updated>
+    </task>
+    <task id="LOCAL-00011" summary="refactor: 불필요 클래스 삭제">
+      <option name="closed" value="true" />
+      <created>1738745048550</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1738745048550</updated>
+    </task>
+    <task id="LOCAL-00012" summary="refactor: 클래스명 변경 및 클래스 위치 이동">
+      <option name="closed" value="true" />
+      <created>1738745188090</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1738745188090</updated>
+    </task>
+    <task id="LOCAL-00013" summary="feat: redisson을 사용한 어노테이션 기반 분산락 구현">
+      <option name="closed" value="true" />
+      <created>1738745243795</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1738745243795</updated>
+    </task>
+    <task id="LOCAL-00014" summary="feat: 충전 관련 에러코드명 변경">
+      <option name="closed" value="true" />
+      <created>1738745350700</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1738745350700</updated>
+    </task>
+    <task id="LOCAL-00015" summary="refactor: 충전 관련 에러코드명 변경">
+      <option name="closed" value="true" />
+      <created>1738745377810</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1738745377810</updated>
+    </task>
+    <task id="LOCAL-00016" summary="refactor: 불필요 클래스 삭제">
+      <option name="closed" value="true" />
+      <created>1738745393816</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1738745393816</updated>
+    </task>
+    <task id="LOCAL-00017" summary="refactor: 예외처리 클래스 추가 및 handler 메서드 추가">
+      <option name="closed" value="true" />
+      <created>1738745434599</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1738745434599</updated>
+    </task>
+    <task id="LOCAL-00018" summary="feat: 예외처리 클래스 추가 및 handler 메서드 추가">
+      <option name="closed" value="true" />
+      <created>1738745448765</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1738745448765</updated>
+    </task>
+    <task id="LOCAL-00019" summary="refactor: 트랜잭션 클래스 관련 멤버 변수 추가 및 메서드 추가">
+      <option name="closed" value="true" />
+      <created>1738745572596</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1738745572596</updated>
+    </task>
+    <task id="LOCAL-00020" summary="refactor: 트랜잭션 클래스 관련 멤버 변수 추가 및 메서드 추가">
+      <option name="closed" value="true" />
+      <created>1738745598772</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1738745598772</updated>
+    </task>
+    <task id="LOCAL-00021" summary="refactor: 전반적 충전 로직 재구현 (관리자 계정에 대한 분산락 처리 추가, 트랜잭션 상태 변수 도입하여 상태값 관리)">
+      <option name="closed" value="true" />
+      <created>1738745673142</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1738745673142</updated>
+    </task>
+    <task id="LOCAL-00022" summary="refactor: Balance 관련 클래스 위치 이동">
+      <option name="closed" value="true" />
+      <created>1738746053425</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1738746053425</updated>
+    </task>
+    <task id="LOCAL-00023" summary="refactor: 불필요 클래스 삭제">
+      <option name="closed" value="true" />
+      <created>1738808296407</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1738808296407</updated>
+    </task>
+    <task id="LOCAL-00024" summary="chore: 설명 주석 변경 및 추가">
+      <option name="closed" value="true" />
+      <created>1738808487501</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1738808487501</updated>
+    </task>
+    <task id="LOCAL-00025" summary="refactor: 잔액 기능 관련 구조 개선 및 잔액 충전 관련 핵심 서비스 로직 클래스별 분리 (트랜잭션 로그를 기록하는 작업의 경우 별도의 트랜잭션으로 작동할 수 있도록 분리 -&gt; 장애발생시 rollback 대상에 포함되지 않음)">
+      <option name="closed" value="true" />
+      <created>1738808690857</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1738808690857</updated>
+    </task>
+    <task id="LOCAL-00026" summary="feat: 송금입금 기능 구현 및 일부 클래스명 변경, 클래스 위치 이동">
+      <option name="closed" value="true" />
+      <created>1738889284614</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1738889284614</updated>
+    </task>
+    <task id="LOCAL-00027" summary="feat: 결제 기능 구현 완료">
+      <option name="closed" value="true" />
+      <created>1739256839939</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1739256839939</updated>
+    </task>
+    <task id="LOCAL-00028" summary="merge: backend_dev 병합">
+      <option name="closed" value="true" />
+      <created>1739257200337</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1739257200337</updated>
+    </task>
+    <option name="localTasksCounter" value="29" />
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="build: build.gradle 의존성 추가" />
+    <MESSAGE value="chore: gitignore 파일 수정" />
+    <MESSAGE value="feat: 계좌 생성 로직 구현" />
+    <MESSAGE value="feat: 계좌 재시도 로직 추가 / 계좌 유효성 검증 로직 추가 / 계좌 번호 생성 메서드명 수정" />
+    <MESSAGE value="refactor: import 선언문 순서 변경" />
+    <MESSAGE value="feat: 포인트 충전 로직 구현 완료" />
+    <MESSAGE value="refactor: 메서드 매개변수명 변경" />
+    <MESSAGE value="chore: redisson 관련 의존성 추가" />
+    <MESSAGE value="refactor: 유저 인증 추가" />
+    <MESSAGE value="refactor: 클래스명 변경 및 클래스 위치 이동" />
+    <MESSAGE value="feat: redisson을 사용한 어노테이션 기반 분산락 구현" />
+    <MESSAGE value="feat: 충전 관련 에러코드명 변경" />
+    <MESSAGE value="refactor: 충전 관련 에러코드명 변경" />
+    <MESSAGE value="refactor: 예외처리 클래스 추가 및 handler 메서드 추가" />
+    <MESSAGE value="feat: 예외처리 클래스 추가 및 handler 메서드 추가" />
+    <MESSAGE value="refactor: 트랜잭션 클래스 관련 멤버 변수 추가 및 메서드 추가" />
+    <MESSAGE value="refactor: 전반적 충전 로직 재구현 (관리자 계정에 대한 분산락 처리 추가, 트랜잭션 상태 변수 도입하여 상태값 관리)" />
+    <MESSAGE value="refactor: Balance 관련 클래스 위치 이동" />
+    <MESSAGE value="refactor: 불필요 클래스 삭제" />
+    <MESSAGE value="chore: 설명 주석 변경 및 추가" />
+    <MESSAGE value="refactor: 잔액 기능 관련 구조 개선 및 잔액 충전 관련 핵심 서비스 로직 클래스별 분리 (트랜잭션 로그를 기록하는 작업의 경우 별도의 트랜잭션으로 작동할 수 있도록 분리 -&gt; 장애발생시 rollback 대상에 포함되지 않음)" />
+    <MESSAGE value="feat: 송금입금 기능 구현 및 일부 클래스명 변경, 클래스 위치 이동" />
+    <MESSAGE value="feat: 결제 기능 구현 완료" />
+    <MESSAGE value="merge: backend_dev 병합" />
+    <option name="LAST_COMMIT_MESSAGE" value="merge: backend_dev 병합" />
+  </component>
+</project>

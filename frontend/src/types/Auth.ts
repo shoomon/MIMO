@@ -3,7 +3,6 @@ export interface OAuthResponse {
 }
 
 export interface UserResponse {
-  name: string;
   nickname: string;
   profileUri: string;
 }

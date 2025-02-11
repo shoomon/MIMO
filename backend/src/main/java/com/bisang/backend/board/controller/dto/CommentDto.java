@@ -1,10 +1,19 @@
 package com.bisang.backend.board.controller.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.time.LocalDateTime;
 
-public record CommentDto(
-        String title,
+
+public record CommentDto (
+        Long commentId,
+        Long userId,
+        String userNickname,
+        String userProfileImage,
         String content,
-        LocalDateTime writeDate
-) {
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yy.MM.dd HH:mm")
+        LocalDateTime createdAt,
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yy.MM.dd HH:mm")
+        LocalDateTime updatedAt
+){
 }
