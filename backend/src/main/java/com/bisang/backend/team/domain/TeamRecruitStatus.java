@@ -8,7 +8,7 @@ package com.bisang.backend.team.domain;
 public enum TeamRecruitStatus {
     ACTIVE_PRIVATE("모집 중(승인 필요)"), ACTIVE_PUBLIC("모집 중(자유 가입)"), INACTIVE("비 모집 중");
 
-    private TeamRecruitStatus(String status) {
+    TeamRecruitStatus(String status) {
         this.status = status;
     }
 
