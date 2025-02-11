@@ -52,6 +52,6 @@ export const Default: Story = {
         content:
             'This is a sample meeting card content which is supposed to be quite long to test the textCutter functionality. It should be trimmed appropriately.',
         label: 'Meeting Title',
-        reviewCount: '10',
+        reviewCount: 10,
     },
 };

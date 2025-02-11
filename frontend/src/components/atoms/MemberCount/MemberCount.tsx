@@ -1,6 +1,6 @@
 import Icon from '../Icon/Icon';
 
-interface MemberCountProps {
+export interface MemberCountProps {
     /**
      * 최대 멤버 수를 나타내는 숫자입니다.
      */

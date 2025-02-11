@@ -6,32 +6,32 @@ import { BrowserRouter } from 'react-router-dom';
 const memberListMock = [
     {
         userId: '1',
-        imgSrc: 'https://randomuser.me/api/portraits/men/1.jpg',
+        profileUri: 'https://randomuser.me/api/portraits/men/1.jpg',
         userName: 'User 1',
     },
     {
         userId: '2',
-        imgSrc: 'https://randomuser.me/api/portraits/women/2.jpg',
+        profileUri: 'https://randomuser.me/api/portraits/women/2.jpg',
         userName: 'User 2',
     },
     {
         userId: '3',
-        imgSrc: 'https://randomuser.me/api/portraits/men/3.jpg',
+        profileUri: 'https://randomuser.me/api/portraits/men/3.jpg',
         userName: 'User 3',
     },
     {
         userId: '4',
-        imgSrc: 'https://randomuser.me/api/portraits/women/4.jpg',
+        profileUri: 'https://randomuser.me/api/portraits/women/4.jpg',
         userName: 'User 4',
     },
     {
         userId: '5',
-        imgSrc: 'https://randomuser.me/api/portraits/men/5.jpg',
+        profileUri: 'https://randomuser.me/api/portraits/men/5.jpg',
         userName: 'User 5',
     },
     {
         userId: '6',
-        imgSrc: 'https://randomuser.me/api/portraits/women/6.jpg',
+        profileUri: 'https://randomuser.me/api/portraits/women/6.jpg',
         userName: 'User 6',
     },
 ];
@@ -63,9 +63,10 @@ export const UpcomingEvent: Story = {
             Date.now() + 3 * 60 * 60 * 1000,
         ).toISOString(),
         label: '안녕하세요? 오늘 오실래요?',
-        entryFee: '10000',
+        entryFee: 10000,
         memberList: memberListMock.slice(0, 4),
         isClosed: false,
+        detailLink: '456',
     },
 };
 
@@ -76,8 +77,9 @@ export const BigEventWithManyMembers: Story = {
             Date.now() + 2 * 24 * 60 * 60 * 1000,
         ).toISOString(),
         label: 'Big Event',
-        entryFee: '5000',
+        entryFee: 5000,
         memberList: memberListMock, // 6명의 멤버가 있어, 4명 렌더링 후 "+2"가 표시됩니다.
         isClosed: false,
+        detailLink: '456',
     },
 };
