@@ -1,7 +1,6 @@
 // MeetingInfo.tsx
 import type { TagProps } from '@/components/atoms/Tag/Tag';
 import type { RatingStarProps } from '@/components/atoms/RatingStar/RatingStar';
-import type { MemberCountProps } from '@/components/atoms/MemberCount/MemberCount';
 import getDisplayedTags from '@/utils/filterTagsByLength';
 import MeetingInfoView from './MeetingInfo.view';
 
@@ -10,7 +9,8 @@ export interface MeetingInfoProps {
     rating: RatingStarProps;
     title: string;
     tag: TagProps[];
-    member: MemberCountProps;
+    maxCapacity: number;
+    currentCapacity: number;
 }
 
 const MeetingInfo = ({
@@ -18,7 +18,8 @@ const MeetingInfo = ({
     rating,
     title,
     tag,
-    member,
+    maxCapacity,
+    currentCapacity,
 }: MeetingInfoProps) => {
     const displayedTags = getDisplayedTags(tag);
 
@@ -38,7 +39,8 @@ const MeetingInfo = ({
             rating={rating}
             title={title}
             displayedTags={displayedTags}
-            member={member}
+            maxCapacity={maxCapacity}
+            currentCapacity={currentCapacity}
             onUpdateInfo={handleUpdateInfo}
             onJoinRequest={handleJoinRequest}
         />

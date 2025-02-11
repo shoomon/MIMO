@@ -3,14 +3,14 @@ import { ButtonDefault } from '@/components/atoms';
 import RatingStar, {
     RatingStarProps,
 } from '@/components/atoms/RatingStar/RatingStar';
-import type { MemberCountProps } from '@/components/atoms/MemberCount/MemberCount';
 
 export interface MeetingInfoViewProps {
     subTitle: string;
     rating: RatingStarProps;
     title: string;
     displayedTags: React.ReactNode;
-    member: MemberCountProps;
+    maxCapacity: number;
+    currentCapacity: number;
     onUpdateInfo: () => void;
     onJoinRequest: () => void;
 }
@@ -20,7 +20,8 @@ const MeetingInfoView = ({
     rating,
     title,
     displayedTags,
-    member,
+    maxCapacity,
+    currentCapacity,
     onUpdateInfo,
     onJoinRequest,
 }: MeetingInfoViewProps) => {
@@ -32,10 +33,12 @@ const MeetingInfoView = ({
                 reviewCount={rating.reviewCount}
             />
             <span className="text-display-xs font-extrabold">{title}</span>
-            <div className="flex gap-2 py-1">{displayedTags}</div>
+            <div className="flex gap-2 py-1">
+                {displayedTags && '태그가 존재하지 않습니다.'}
+            </div>
             <div className="flex items-center justify-between pt-4">
                 <div className="text-xl font-medium text-gray-700">
-                    멤버 {member.memberCount}/{member.memberLimit}
+                    멤버 {currentCapacity}/{maxCapacity}
                 </div>
                 <div className="flex gap-3">
                     <ButtonDefault

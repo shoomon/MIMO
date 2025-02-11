@@ -1,10 +1,29 @@
 import { customFetch } from './customFetch';
 import {
     Area,
+    TeamDto,
     TeamInfosResponse,
     TeamScheduleSpecificResponse,
     TeamSchedulesResponse,
 } from '@/types/Team';
+
+export const getTeamInfo = async (teamId: string): Promise<TeamDto> => {
+    if (!teamId) {
+        throw new Error('팀 아이디가 없습니다.');
+    }
+
+    try {
+        const response = await customFetch('/team', {
+            method: 'GET',
+            params: { teamId }, // params는 객체여야 함
+        });
+
+        return response.json();
+    } catch (error) {
+        console.error('Error fetching category teams:', error);
+        throw error;
+    }
+};
 
 export const getTeamInfosByCategory = async (
     category: string,
@@ -120,6 +139,46 @@ export const getClosedSchedules = async (
     } catch (error) {
         console.error('Error fetching closed schedules:', error);
         throw error;
+    }
+};
+
+export const createSchedule = async (
+    teamId: number,
+    userId: number,
+    title: string,
+    description: string,
+    location: string,
+    date: string,
+    maxParticipants: number,
+    price: number,
+    status: 'REGULAR' | 'AD_HOC',
+): Promise<void> => {
+    try {
+        const body = JSON.stringify({
+            teamId,
+            userId,
+            title,
+            description,
+            location,
+            date,
+            maxParticipants,
+            price,
+            status,
+        });
+
+        await customFetch('/schedule', {
+            method: 'POST',
+            body,
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        alert('일정이 성공적으로 등록되었습니다!');
+    } catch (error) {
+        console.error('Error creating schedule:', error);
+        alert('일정 등록 중 오류가 발생했습니다.');
     }
 };
 

@@ -52,7 +52,7 @@ const TeamScheduleDetail = () => {
 
     // 일정 참여 (joinSchedule)
     const joinMutation = useMutation({
-        mutationFn: () => joinSchedule(Number(scheduleDetail?.teamScheduleId)),
+        mutationFn: () => joinSchedule(scheduleId?.toString() || ''),
         onSuccess: () => {
             setIsJoined(true);
         },

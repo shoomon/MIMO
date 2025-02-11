@@ -38,8 +38,8 @@ const Category = () => {
                     tagList={formattedTags}
                     reviewCount={item.reviewScore}
                     image={{
-                        memberCount: item.reviewScore,
-                        memberLimit: item.reviewScore,
+                        memberCount: item.currentCapacity,
+                        memberLimit: item.maxCapacity,
                         imgSrc: item.teamProfileUri,
                         showMember: true,
                     }}

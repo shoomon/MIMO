@@ -4,6 +4,7 @@ import ListContainer from '@/components/organisms/ListContainer';
 import { Area, SimpleTeamResponse } from './../types/Team';
 import { getTeamInfosByArea } from '@/apis/TeamAPI';
 import { useQuery } from '@tanstack/react-query';
+import tagFormatter from '@/utils/tagFormatter';
 
 const Home = () => {
     const { data, isLoading, error } = useQuery({
@@ -14,11 +15,7 @@ const Home = () => {
     // null 병합 연산자를 사용하여 기본값 빈 배열 제공
     const MeetingListByArea =
         data?.teams?.map((item: SimpleTeamResponse) => {
-            const formattedTags = item.tags.map((tag) => ({
-                label: tag,
-                to: `search/${tag}`,
-            }));
-
+            const formattedTags = tagFormatter(item.tags);
             return (
                 <CardMeeting
                     key={item.teamId}
@@ -28,7 +25,7 @@ const Home = () => {
                     tagList={formattedTags}
                     reviewCount={item.reviewScore}
                     image={{
-                        memberCount: item.memberCount,
+                        memberCount: item.currentCapacity,
                         memberLimit: item.maxCapacity,
                         imgSrc: item.teamProfileUri,
                         showMember: true,

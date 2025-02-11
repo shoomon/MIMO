@@ -6,7 +6,7 @@ export interface InputFormProps {
     label?: string;
     placeholder?: string;
     defaultValue?: string | number;
-    type?: 'text' | 'email' | 'number' | 'password';
+    type?: 'text' | 'email' | 'number' | 'password' | 'date';
     value?: string | number;
     readOnly?: boolean;
     /** 글자수 제한 (숫자) */
@@ -19,6 +19,7 @@ export interface InputFormProps {
     ) => void;
     errorMessage?: string;
     disabled?: boolean;
+    multiline?: boolean;
 }
 
 /**
@@ -73,6 +74,7 @@ const InputForm = forwardRef<HTMLInputElement, InputFormProps>(
             onKeyDown,
             errorMessage,
             disabled,
+            multiline = false,
         },
         ref,
     ) => {
@@ -158,6 +160,7 @@ const InputForm = forwardRef<HTMLInputElement, InputFormProps>(
                     onChange={handleInputChange}
                     onKeyDown={handleKeyDown}
                     disabled={disabled}
+                    multiline={multiline}
                     aria-invalid={!!finalErrorMessage}
                     aria-describedby={
                         finalErrorMessage ? `${id}-error` : undefined

@@ -9,6 +9,20 @@ export interface SimpleTeamResponse {
     tags: string[];
     memberCount: number;
     maxCapacity: number;
+    currentCapacity: number;
+}
+export interface TeamDto {
+    teamId: number;
+    profileUri: string;
+    name: string;
+    description: string;
+    recruitStatus: TeamRecruitStatus;
+    privateStatus: TeamPrivateStatus;
+    area: Area;
+    maxCapacity: number;
+    currentCapacity: number;
+    score: number;
+    tag: string[];
 }
 
 export interface TeamResponse {
