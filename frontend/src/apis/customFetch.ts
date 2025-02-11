@@ -1,4 +1,4 @@
-const BASE_URL = import.meta.env.BASE_URL || 'http://localhost:8080/api';
+const BASE_URL = import.meta.env.VITE_BASE_URL || 'http://localhost:8080';
 
 interface CustomRequestInit extends RequestInit {
     params?: Record<string, string>;
@@ -30,14 +30,13 @@ export const customFetch = async (
     refreshAttempt = 0,
 ): Promise<Response> => {
     const { params, ...fetchOptions } = options;
-
+    
     // URL 및 쿼리 파라미터 처리
     let url = `${BASE_URL}${endpoint}`;
     if (params) {
         const searchParams = new URLSearchParams(params);
         url += `?${searchParams.toString()}`;
     }
-
     // 요청 헤더 설정: body가 FormData나 Blob이 아닌 경우 JSON 기본 헤더 추가
     const defaultHeaders: Record<string, string> = {};
     if (

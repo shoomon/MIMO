@@ -7,6 +7,7 @@ import {
     Category,
     Chat,
     DefaultLayout,
+    GoogleCallback,
     Home,
     MyPage,
     Payment,
@@ -33,6 +34,7 @@ import {
 const AppRoutes = () => {
     return (
         <Routes>
+            <Route path="/auth/google/callback" element={<GoogleCallback />} />
             {/* 메인 */}
             <Route element={<DefaultLayout />}>
                 {/* 메인 홈 */}
