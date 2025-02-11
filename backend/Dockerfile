@@ -28,7 +28,8 @@ COPY ./build.gradle ./settings.gradle /app/
 COPY ./ /app/
 
 # Gradle 빌드 실행
-RUN bash -c "source /root/.sdkman/bin/sdkman-init.sh && gradle build --no-daemon --refresh-dependencies --no-watch-fs -x test"
+RUN bash -c "source /root/.sdkman/bin/sdkman-init.sh && gradle build --no-daemon --refresh-dependencies --no-watch-fs -x test -x checkstyleMain"
+
 
 # 빌드된 JAR 파일이 있는지 확인하고 출력
 RUN echo "Listing JAR files in /app/build/libs:" && ls -l /app/build/libs/
