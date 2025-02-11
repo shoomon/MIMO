@@ -1,5 +1,7 @@
 package com.bisang.backend.transaction.service.payment;
 
+import static com.bisang.backend.transaction.service.TransactionService.ADMIN_ACCOUNT_NUMBER;
+
 import jakarta.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
@@ -19,8 +21,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class PaymentService {
-    private static final String ADMIN_ACCOUNT_NUMBER = "1000123456789";
-
     private final QrCodeService qrCodeService;
     private final AccountDetailsService accountDetailsService;
 

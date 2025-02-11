@@ -4,579 +4,42 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ce0c64dd-4326-401e-b4f1-7b7313c859a1" name="Changes" comment="feat: 결제 기능 구현 완료">
-      <change afterPath="$PROJECT_DIR$/backend/.gradle/8.11.1/checksums/checksums.lock" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/.gradle/8.11.1/executionHistory/executionHistory.bin" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/.gradle/8.11.1/executionHistory/executionHistory.lock" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/.gradle/8.11.1/fileChanges/last-build.bin" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/.gradle/8.11.1/fileHashes/fileHashes.bin" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/.gradle/8.11.1/fileHashes/fileHashes.lock" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/.gradle/8.11.1/fileHashes/resourceHashesCache.bin" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/.gradle/8.11.1/gc.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/.gradle/buildOutputCleanup/cache.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/.gradle/file-system.probe" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/.gradle/vcs-1/gc.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/.idea/gradle.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/.idea/modules/backend.main.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/Dockerfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/BackendApplication.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/account/domain/Account.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/account/domain/Balance.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/account/domain/QAccount.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/account/domain/QBalance.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/account/repository/AccountJpaRepository.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/account/service/AccountService.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/auth/AuthenticationArgumentResolver.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/auth/JwtUtil.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/auth/SimpleAuthenticationArgumentResolver.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/auth/annotation/AuthSimpleUser.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/auth/annotation/AuthUser.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/auth/controller/LoginController.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/auth/controller/request/LoginRequest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/auth/controller/response/AccessTokenResponse.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/auth/domain/RefreshToken.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/auth/domain/SimpleUser.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/auth/domain/UserTokens.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/auth/infrastructure/GoogleOAuthProvider.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/auth/repository/RefreshTokenRepository.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/auth/service/OAuth2Service.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/board/controller/dto/BoardDto.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/board/controller/dto/CommentDto.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/board/domain/Board.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/board/domain/BoardDescription.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/board/domain/BoardImage.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/board/domain/BoardLike.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/board/domain/Comment.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/board/domain/QBoard.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/board/domain/QBoardDescription.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/board/domain/QBoardImage.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/board/domain/QBoardLike.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/board/domain/QComment.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/board/domain/QTeamBoard.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/board/domain/TeamBoard.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/chat/controller/ChatMessageController.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/chat/controller/ChatroomController.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/chat/controller/request/ChatMessageRequest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/chat/controller/response/ChatMessageResponse.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/chat/controller/response/ChatroomResponse.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/chat/domain/ChatMessage.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/chat/domain/ChatType.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/chat/domain/Chatroom.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/chat/domain/ChatroomStatus.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/chat/domain/ChatroomUser.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/chat/domain/QChatMessage.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/chat/domain/QChatroom.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/chat/domain/QChatroomUser.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/chat/domain/redis/RedisChatMessage.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/chat/domain/redis/RedisTeamMember.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/chat/repository/RedisCacheRepository.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/chat/service/ChatMessageService.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/chat/service/ChatroomService.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/chat/service/ChatroomUserService.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/common/annotation/DistributedLock.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/common/aop/DistributedLockAspect.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/common/config/JpaAuditingConfig.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/common/config/QuerydslConfig.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/common/config/RedisConfig.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/common/config/RedissonConfig.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/common/config/WebConfig.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/common/config/WebSocketConfig.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/common/domain/BaseTimeEntity.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/common/domain/QBaseTimeEntity.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/common/exception/AccountException.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/common/exception/ChatAccessInvalidException.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/common/exception/ExceptionCode.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/common/exception/ExceptionResponse.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/common/exception/GlobalExceptionHandler.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/common/exception/InvalidJwtException.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/common/exception/S3Exception.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/common/exception/ScheduleException.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/common/exception/SocialLoginException.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/common/exception/TeamException.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/common/exception/TransactionException.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/common/utils/PageUtils.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/common/utils/StringUtils.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/invite/domain/InviteStatus.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/invite/domain/QTeamInvite.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/invite/domain/TeamInvite.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/invite/repository/TeamInviteJpaRepository.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/s3/annotation/DistributedLock.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/s3/annotation/S3Limiter.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/s3/aspect/S3LimitAspect.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/s3/config/S3Config.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/s3/presentation/S3Controller.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/s3/service/RequestLimitRedisService.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/s3/service/S3Service.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/schedule/controller/request/TeamScheduleCreateRequest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/schedule/controller/response/TeamScheduleCreateResponse.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/schedule/domain/ParticipantsRole.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/schedule/domain/QScheduleParticipants.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/schedule/domain/QTeamSchedule.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/schedule/domain/ScheduleParticipants.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/schedule/domain/ScheduleStatus.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/schedule/domain/TeamSchedule$TeamScheduleBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/schedule/domain/TeamSchedule.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/schedule/repository/ScheduleParticipantsJpaRepository.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/schedule/repository/TeamScheduleJpaRepository.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/annotation/EveryOne.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/annotation/TeamCoLeader.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/annotation/TeamLeader.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/annotation/TeamMember.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/aspect/TeamRoleValidationAspect.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/controller/TeamController.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/controller/TeamLeaderController.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/controller/TeamUserController.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/controller/dto/SimpleTeamDto.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/controller/dto/TeamDto.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/controller/dto/TeamInviteDto.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/controller/dto/TeamUserDto.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/controller/request/CreateTeamRequest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/controller/request/DowngradeRoleRequest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/controller/request/InviteApproveRequest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/controller/request/InviteRejectRequest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/controller/request/InviteTeamRequest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/controller/request/JoinTeamRequest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/controller/request/LeaderDeleteUserRequest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/controller/request/UpdateTeamUserNicknameRequest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/controller/request/UpgradeRoleRequest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/controller/response/SingleTeamUserInfoResponse$SingleTeamUserInfoResponseBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/controller/response/SingleTeamUserInfoResponse.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/controller/response/TeamInfosResponse.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/controller/response/TeamUserResponse.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/domain/Area.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/domain/QTag.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/domain/QTeam.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/domain/QTeamDescription.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/domain/QTeamTag.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/domain/QTeamUser.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/domain/Tag.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/domain/Team$TeamBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/domain/Team.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/domain/TeamCategory.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/domain/TeamDescription.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/domain/TeamNotificationStatus.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/domain/TeamPrivateStatus.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/domain/TeamRecruitStatus.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/domain/TeamTag.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/domain/TeamUser$TeamUserBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/domain/TeamUser.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/domain/TeamUserRole.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/repository/TagJpaRepository.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/repository/TeamDescriptionJpaRepository.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/repository/TeamJpaRepository.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/repository/TeamQuerydslRepository.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/repository/TeamTagJpaRepository.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/repository/TeamUserJpaRepository.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/repository/TeamUserQuerydslRepository.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/service/TeamLeaderService.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/service/TeamService.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/service/TeamUserService.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/transaction/controller/TransactionController.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/transaction/controller/request/PaymentResultRequest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/transaction/controller/request/TransferRequest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/transaction/converter/TransactionConverter.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/transaction/domain/AccountDetails$AccountDetailsBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/transaction/domain/AccountDetails.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/transaction/domain/QAccountDetails.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/transaction/domain/QTransaction.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/transaction/domain/Transaction$TransactionBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/transaction/domain/Transaction.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/transaction/domain/TransactionCategory.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/transaction/domain/TransactionStatus.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/transaction/repository/AccountDetailsJpaRepository.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/transaction/repository/TransactionLogJpaRepository.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/transaction/service/AccountDetailsService.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/transaction/service/TransactionService.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/transaction/service/charge/ChargeService.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/transaction/service/transfer/TransferService.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/user/controller/UserController.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/user/controller/request/UpdateNameRequest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/user/controller/request/UpdateNicknameRequest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/user/controller/request/UserCreateOrLoginRequest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/user/controller/response/UserMyResponse$UserMyResponseBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/user/controller/response/UserMyResponse.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/user/domain/QUser.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/user/domain/User$UserBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/user/domain/User.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/user/domain/UserStatus.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/user/repository/UserJpaRepository.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/user/service/UserService.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/generated/sources/annotationProcessor/java/main/com/bisang/backend/account/domain/QAccount.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/generated/sources/annotationProcessor/java/main/com/bisang/backend/account/domain/QBalance.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/generated/sources/annotationProcessor/java/main/com/bisang/backend/board/domain/QBoard.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/generated/sources/annotationProcessor/java/main/com/bisang/backend/board/domain/QBoardDescription.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/generated/sources/annotationProcessor/java/main/com/bisang/backend/board/domain/QBoardImage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/generated/sources/annotationProcessor/java/main/com/bisang/backend/board/domain/QBoardLike.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/generated/sources/annotationProcessor/java/main/com/bisang/backend/board/domain/QComment.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/generated/sources/annotationProcessor/java/main/com/bisang/backend/board/domain/QTeamBoard.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/generated/sources/annotationProcessor/java/main/com/bisang/backend/chat/domain/QChatMessage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/generated/sources/annotationProcessor/java/main/com/bisang/backend/chat/domain/QChatroom.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/generated/sources/annotationProcessor/java/main/com/bisang/backend/chat/domain/QChatroomUser.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/generated/sources/annotationProcessor/java/main/com/bisang/backend/common/domain/QBaseTimeEntity.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/generated/sources/annotationProcessor/java/main/com/bisang/backend/invite/domain/QTeamInvite.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/generated/sources/annotationProcessor/java/main/com/bisang/backend/schedule/domain/QScheduleParticipants.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/generated/sources/annotationProcessor/java/main/com/bisang/backend/schedule/domain/QTeamSchedule.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/generated/sources/annotationProcessor/java/main/com/bisang/backend/team/domain/QTag.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/generated/sources/annotationProcessor/java/main/com/bisang/backend/team/domain/QTeam.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/generated/sources/annotationProcessor/java/main/com/bisang/backend/team/domain/QTeamDescription.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/generated/sources/annotationProcessor/java/main/com/bisang/backend/team/domain/QTeamTag.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/generated/sources/annotationProcessor/java/main/com/bisang/backend/team/domain/QTeamUser.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/generated/sources/annotationProcessor/java/main/com/bisang/backend/transaction/domain/QAccountDetails.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/generated/sources/annotationProcessor/java/main/com/bisang/backend/transaction/domain/QTransaction.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/generated/sources/annotationProcessor/java/main/com/bisang/backend/user/domain/QUser.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/reports/problems/problems-report.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/resources/main/application.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/build/tmp/compileJava/previous-compilation-data.bin" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/auth/GuestAuthenticationArgumentResolver.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/auth/annotation/Guest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/board/controller/BoardController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/board/controller/CommentController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/board/controller/dto/BoardFileDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/board/controller/dto/SimpleBoardDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/board/controller/dto/SimpleBoardListDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/board/controller/dto/SimpleCommentDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/board/controller/request/CreatePostRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/board/controller/request/LikePostRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/board/controller/request/UpdatePostRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/board/controller/response/BoardDetailResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/board/controller/response/BoardListResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/board/repository/BoardDescriptionJpaRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/board/repository/BoardImageJpaRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/board/repository/BoardJpaRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/board/repository/BoardLikeRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/board/repository/BoardQuerydslRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/board/repository/CommentJpaReporitory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/board/repository/CommentQuerydslRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/board/repository/TeamBoardJpaRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/board/service/BoardService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/chat/batch/ChatItemProcessor.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/chat/batch/ChatItemReader.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/chat/batch/ChatItemWriter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/chat/batch/ChatMessageBatchConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/chat/batch/ChatMessagesScheduler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/chat/repository/chatroom/ChatroomJpaRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/chat/repository/chatroom/ChatroomRedisRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/chat/repository/chatroom/ChatroomRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/chat/repository/chatroom/dto/ChatroomTitleProfileDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/chat/repository/chatroomuser/ChatroomUserRedisRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/chat/repository/chatroomuser/ChatroomUserRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/chat/repository/message/ChatMessageRedisRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/chat/repository/message/ChatMessageRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/common/exception/ChatroomException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/s3/annotation/DistributedLock.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/schedule/controller/ScheduleParticipantsController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/schedule/controller/TeamScheduleCommentController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/schedule/controller/TeamScheduleController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/schedule/controller/dto/ProfileDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/schedule/controller/dto/TeamScheduleCommentDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/schedule/controller/dto/TeamSimpleScheduleDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/schedule/controller/dto/TeamSpecificScheduleDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/schedule/controller/request/TeamScheduleCommentCreateRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/schedule/controller/request/TeamScheduleCommentDeleteRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/schedule/controller/request/TeamScheduleCommentUpdateRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/schedule/controller/request/TeamScheduleUpdateRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/schedule/controller/response/TeamScheduleSpecificResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/schedule/controller/response/TeamSchedulesResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/schedule/domain/TeamScheduleComment.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/schedule/repository/TeamScheduleCommentJpaRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/schedule/repository/TeamScheduleQuerydslRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/schedule/service/ScheduleParticipantsService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/schedule/service/TeamScheduleCommentService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/schedule/service/TeamScheduleEveryOneService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/controller/request/UpdateTeamRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/controller/response/TeamIdResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/videocall/controller/OpenViduController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/.prettierignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/.prettierrc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/.storybook/main.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/.storybook/preview.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/eslint.config.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/ProfileImage.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/_sprite.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/css_sprites.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/pngIcon/Alarm.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/pngIcon/Bike.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/pngIcon/Book.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/pngIcon/Car.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/pngIcon/CarWash.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/pngIcon/Chat.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/pngIcon/Cooking.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/pngIcon/Dog.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/pngIcon/Exercise.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/pngIcon/Game.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/pngIcon/Gym.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/pngIcon/Music.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/pngIcon/Photo.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/pngIcon/Study.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/pngIcon/User.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/pngIcon/Volunteer.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/svgIcon/Arrow-Back.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/svgIcon/Arrow-Down.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/svgIcon/Arrow-Left.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/svgIcon/Arrow-Right.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/svgIcon/Arrow-Up.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/svgIcon/Board.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/svgIcon/Calendar.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/svgIcon/Cam-Off.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/svgIcon/Cam-On.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/svgIcon/Caution.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/svgIcon/Clock.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/svgIcon/ClockCalendar.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/svgIcon/Coin.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/svgIcon/Crown.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/svgIcon/Expense.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/svgIcon/Income.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/svgIcon/Mail.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/svgIcon/Medal.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/svgIcon/Megaphone.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/svgIcon/Mic-Off.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/svgIcon/Mic-On.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/svgIcon/MoneyTag.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/svgIcon/Pen.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/svgIcon/PlusCalendar.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/svgIcon/Search.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/svgIcon/Send.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/svgIcon/SendBlue.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/svgIcon/Settings.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/svgIcon/Star-Half.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/svgIcon/Star.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/svgIcon/ThreePeople.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/svgIcon/Thunder.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/svgIcon/User.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/svgIcon/VideoCall.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/svgIcon/VideoChat.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/svgIcon/VideoUser.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/App.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/apis/index.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/assets/index.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/ButtonDefault/ButtonDefault.stories.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/ButtonDefault/ButtonDefault.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/ButtonDefault/ButtonDefault.view.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/ButtonPrimary/ButtonPrimary.stories.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/ButtonPrimary/ButtonPrimary.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/ButtonPrimary/ButtonPrimary.view.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/ButtonToggle/ButtonToggle.stories.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/ButtonToggle/ButtonToggle.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/ButtonToggle/ButtonToggle.view.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/CategoryItem/CategoryItem.stories.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/CategoryItem/CategoryItem.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/ChatItem/ChatItem.stories.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/ChatItem/ChatItem.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/ChatItem/ChatItem.view.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/DetailNavItem/DetailNavItem.stories.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/DetailNavItem/DetailNavItem.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/DetailNavItem/DetailNavItem.view.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/Icon/Icon.stories.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/Icon/Icon.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/Icon/PngIcon.view.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/Icon/SvgIcon.view.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/Input/Input.stories.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/Input/Input.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/Logo/Logo.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/MainNavItem/MainNavItem.stories.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/MainNavItem/MainNavItem.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/MainNavItem/MainNavItem.view.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/MemberCount/MemberCount.stories.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/MemberCount/MemberCount.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/MenuItem/MenuItem.stories.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/MenuItem/MenuItem.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/MileageStatus/MieageStatus.stories.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/MileageStatus/MileageStatus.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/MileageStatus/MileageStatus.view.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/MyInfoDropDown/MyInfoDropDown.stories.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/MyInfoDropDown/MyInfoDropDown.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/MyInfoDropDown/MyInfoDropDown.view.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/ParticipantName/ParticipantName.stories.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/ParticipantName/ParticipantName.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/ParticipantName/ParticipantName.view.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/ProfileImage/ProfileImage.stories.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/ProfileImage/ProfileImage.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/ProfileImage/ProfileImage.view.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/RatingStar/RatingStar.stories.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/RatingStar/RatingStar.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/RatingStar/RatingStar.utils.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/RatingStar/RatingStarView.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/RelatedSearchItem/RelatedSearchItem.stories.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/RelatedSearchItem/RelatedSearchItem.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/RelatedSearchItem/RelatedSearchItem.view.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/Search/Search.stories.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/Search/Search.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/Search/Search.view.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/Switch/Switch.stories.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/Switch/Switch.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/Tag/Tag.stories.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/Tag/Tag.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/Title/Title.stories.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/Title/Title.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/atoms/index.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/Album/Album.stories.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/Album/Album.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/Album/Album.view.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/ButtonToggleGroup/ButtonToggleGroup.stories.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/ButtonToggleGroup/ButtonToggleGroup.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/ButtonToggleGroup/ButtonToggleGroup.view.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/CardBoard/CardBoard.stories.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/CardBoard/CardBoard.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/CardBoard/CardBoard.view.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/CardMeeting/CardMeeting.stories.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/CardMeeting/CardMeeting.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/CardMeeting/CardMeetingView.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/CardSchedule/CardSchedule.View.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/CardSchedule/CardSchedule.stories.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/CardSchedule/CardSchedule.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/ChatRoom/ChatRoom.stories.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/ChatRoom/ChatRoom.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/ChatRoom/ChatRoom.view.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/Comment/Comment.stories.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/Comment/Comment.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/CommentWrite/CommentWrite.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/CommentWrite/CommentWrite.view.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/CommentWrite/CommentWrtie.stories.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/DetailNav/DetailNav.stories.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/DetailNav/DetailNav.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/DetailNav/DetailNav.view.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/Header/Header.stories.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/Header/Header.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/Header/Header.view.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/InputForm/InputForm.stories.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/InputForm/InputForm.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/MainNav/MainNav.stories.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/MainNav/MainNav.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/MainNav/MainNav.view.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/MemberList/MemberList.stories.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/MemberList/MemberList.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/MemberList/MemberList.view.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/NavLevel/NavLevel.stories.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/NavLevel/NavLevel.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/NavLevel/NavLevel.veiw.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/Pagenation/Pagenation.stories.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/Pagenation/Pagenation.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/Pagenation/Pagenation.view.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/SearchBar/SearchBar.stories.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/SearchBar/SearchBar.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/SearchBar/SearchBar.view.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/Thumbnail/Thumbnail.stories.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/Thumbnail/Thumbnail.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/Thumbnail/Thumbnail.view.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/molecules/index.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/organisms/index.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/constants/index.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/constants/navItems.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/hooks/index.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/hooks/useComment.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/hooks/useDebounce.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/hooks/useNav.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/hooks/usePagenation.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/index.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/main.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/types/index.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/utils/dateParsing.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/utils/filterTagsByLength.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/utils/index.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/utils/textCutter.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/vite-env.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/tsconfig.app.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/tsconfig.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/tsconfig.node.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/vite.config.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/config/naver-checkstyle-rules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/config/naver-checkstyle-rules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/board/controller/dto/BoardDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/board/controller/dto/BoardDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/board/controller/dto/CommentDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/board/controller/dto/CommentDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/board/domain/Board.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/board/domain/Board.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/board/domain/BoardDescription.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/board/domain/BoardDescription.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/board/domain/BoardImage.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/board/domain/BoardImage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/board/domain/BoardLike.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/board/domain/BoardLike.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/board/domain/TeamBoard.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/board/domain/TeamBoard.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/chat/controller/ChatMessageController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/chat/controller/ChatMessageController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/chat/controller/ChatroomController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/chat/controller/ChatroomController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/chat/controller/response/ChatMessageResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/chat/controller/response/ChatMessageResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/chat/domain/ChatMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/chat/domain/ChatMessage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/chat/domain/Chatroom.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/chat/domain/Chatroom.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/chat/domain/ChatroomUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/chat/domain/ChatroomUser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/chat/domain/redis/RedisChatMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/chat/domain/redis/RedisChatMessage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/chat/repository/ChatMessageJpaRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/chat/repository/message/ChatMessageJpaRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/chat/repository/ChatRedisRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/chat/repository/ChatRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/chat/repository/ChatroomJpaRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/chat/repository/ChatroomUserJpaRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/chat/repository/chatroomuser/ChatroomUserJpaRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/chat/repository/RedisCacheRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/chat/repository/RedisCacheRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/chat/service/ChatMessageService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/chat/service/ChatMessageService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/chat/service/ChatroomService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/chat/service/ChatroomService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/chat/service/ChatroomUserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/chat/service/ChatroomUserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/common/annotation/DistributedLock.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/common/annotation/DistributedLock.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/common/aop/DistributedLockAspect.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/common/aop/DistributedLockAspect.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/common/config/WebConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/common/config/WebConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/common/domain/BaseTimeEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/common/domain/BaseTimeEntity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/common/exception/AccountException.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/common/exception/AccountException.java" afterDir="false" />
+    <list default="true" id="ce0c64dd-4326-401e-b4f1-7b7313c859a1" name="Changes" comment="merge: backend_dev 병합">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.gradle/8.11.1/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.gradle/8.11.1/checksums/checksums.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.gradle/8.11.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.gradle/8.11.1/executionHistory/executionHistory.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.gradle/8.11.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.gradle/8.11.1/executionHistory/executionHistory.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.gradle/8.11.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.gradle/8.11.1/fileHashes/fileHashes.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.gradle/8.11.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.gradle/8.11.1/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.gradle/8.11.1/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.gradle/8.11.1/fileHashes/resourceHashesCache.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.gradle/file-system.probe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/account/service/AccountService.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/account/service/AccountService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/auth/service/OAuth2Service.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/auth/service/OAuth2Service.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/common/exception/ExceptionCode.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/common/exception/ExceptionCode.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/common/exception/GlobalExceptionHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/common/exception/GlobalExceptionHandler.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/repository/TeamJpaRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/repository/TeamJpaRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/transaction/controller/TransactionController.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/transaction/controller/TransactionController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/transaction/controller/request/PaymentResultRequest.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/transaction/controller/request/TransferRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/transaction/controller/request/TransferRequest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/transaction/converter/TransactionConverter.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/transaction/converter/TransactionConverter.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/transaction/service/TransactionService.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/transaction/service/TransactionService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/transaction/service/charge/ChargeService.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/transaction/service/charge/ChargeService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/user/domain/QUser.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/user/domain/QUser.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/user/domain/User$UserBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/user/domain/User$UserBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/user/domain/User.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/user/domain/User.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/user/repository/UserJpaRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/user/repository/UserJpaRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/generated/sources/annotationProcessor/java/main/com/bisang/backend/user/domain/QUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/generated/sources/annotationProcessor/java/main/com/bisang/backend/user/domain/QUser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/reports/problems/problems-report.html" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/reports/problems/problems-report.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/tmp/compileJava/previous-compilation-data.bin" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/tmp/compileJava/previous-compilation-data.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/common/exception/ExceptionCode.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/common/exception/ExceptionCode.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/common/exception/GlobalExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/common/exception/GlobalExceptionHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/invite/domain/TeamInvite.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/invite/domain/TeamInvite.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/invite/repository/TeamInviteJpaRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/invite/repository/TeamInviteJpaRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/s3/service/S3Service.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/s3/service/S3Service.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/schedule/controller/ScheduleController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/schedule/controller/request/TeamScheduleCreateRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/schedule/controller/request/TeamScheduleCreateRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/schedule/controller/request/TeamScheduleUpdateDateRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/schedule/controller/request/TeamScheduleUpdateDescriptionRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/schedule/controller/request/TeamScheduleUpdateLocationRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/schedule/controller/request/TeamScheduleUpdateParticipantsRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/schedule/controller/request/TeamScheduleUpdateTitleRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/schedule/domain/ScheduleDescription.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/schedule/domain/ScheduleParticipants.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/schedule/domain/ScheduleParticipants.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/schedule/domain/TeamSchedule.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/schedule/domain/TeamSchedule.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/schedule/repository/ScheduleDescriptionJpaRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/schedule/repository/ScheduleParticipantsJpaRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/schedule/repository/ScheduleParticipantsJpaRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/schedule/service/TeamScheduleService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/schedule/service/TeamScheduleLeaderService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/aspect/TeamRoleValidationAspect.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/aspect/TeamRoleValidationAspect.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/controller/TeamController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/controller/TeamController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/controller/TeamLeaderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/controller/TeamLeaderController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/controller/TeamUserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/controller/TeamUserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/controller/dto/SimpleTeamDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/controller/dto/SimpleTeamDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/controller/request/CreateTeamRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/controller/request/CreateTeamRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/controller/request/DowngradeRoleRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/controller/request/DowngradeRoleRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/controller/request/InviteApproveRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/controller/request/InviteApproveRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/controller/request/InviteRejectRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/controller/request/InviteRejectRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/controller/request/InviteTeamRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/controller/request/InviteTeamRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/controller/request/JoinTeamRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/controller/request/JoinTeamRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/controller/request/LeaderDeleteUserRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/controller/request/LeaderDeleteUserRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/controller/request/UpdateTeamAreaRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/controller/request/UpdateTeamDescriptionRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/controller/request/UpdateTeamNameRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/controller/request/UpdateTeamPrivateStatusRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/controller/request/UpdateTeamProfileUriRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/controller/request/UpdateTeamRecruitStatusRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/controller/request/UpdateTeamUserNicknameRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/controller/request/UpdateTeamUserNicknameRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/controller/request/UpgradeRoleRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/controller/request/UpgradeRoleRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/domain/Area.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/domain/Area.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/domain/Team.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/domain/Team.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/domain/TeamRecruitStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/domain/TeamRecruitStatus.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/domain/TeamUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/domain/TeamUser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/repository/TeamQuerydslRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/repository/TeamQuerydslRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/repository/TeamUserQuerydslRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/repository/TeamUserQuerydslRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/service/TeamLeaderService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/service/TeamLeaderService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/service/TeamService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/service/TeamService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/service/TeamUserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/service/TeamUserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/schedule/repository/TeamScheduleQuerydslRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/schedule/repository/TeamScheduleQuerydslRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/controller/TransactionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/controller/TransactionController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/user/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/user/controller/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/user/controller/request/UpdateNameRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/user/controller/request/UpdateNameRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/user/controller/request/UpdateNicknameRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/user/controller/request/UpdateNicknameRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/user/controller/request/UpdateProfileUriRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/user/controller/response/UserMyResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/user/controller/response/UserMyResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/user/domain/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/user/domain/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/user/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/user/service/UserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/service/TransactionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/service/TransactionService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/service/charge/ChargeService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/service/charge/ChargeService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/service/payment/PaymentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/service/payment/PaymentService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -686,7 +149,7 @@
     "Gradle.backend [clean].executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "Merging S12P11A504-131",
+    "git-widget-placeholder": "S12P11A504-131",
     "kotlin-language-version-configured": "true",
     "settings.editor.selected.configurable": "preferences.lookFeel"
   }
@@ -1029,7 +492,15 @@
       <option name="project" value="LOCAL" />
       <updated>1739256839939</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="merge: backend_dev 병합">
+      <option name="closed" value="true" />
+      <created>1739257200337</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1739257200337</updated>
+    </task>
+    <option name="localTasksCounter" value="29" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -1067,6 +538,7 @@
     <MESSAGE value="refactor: 잔액 기능 관련 구조 개선 및 잔액 충전 관련 핵심 서비스 로직 클래스별 분리 (트랜잭션 로그를 기록하는 작업의 경우 별도의 트랜잭션으로 작동할 수 있도록 분리 -&gt; 장애발생시 rollback 대상에 포함되지 않음)" />
     <MESSAGE value="feat: 송금입금 기능 구현 및 일부 클래스명 변경, 클래스 위치 이동" />
     <MESSAGE value="feat: 결제 기능 구현 완료" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: 결제 기능 구현 완료" />
+    <MESSAGE value="merge: backend_dev 병합" />
+    <option name="LAST_COMMIT_MESSAGE" value="merge: backend_dev 병합" />
   </component>
 </project>

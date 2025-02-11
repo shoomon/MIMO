@@ -1,5 +1,7 @@
 package com.bisang.backend.transaction.service.charge;
 
+import static com.bisang.backend.transaction.service.TransactionService.ADMIN_ACCOUNT_NUMBER;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 public class ChargeService {
-    private static final String ADMIN_ACCOUNT_NUMBER = "1000123456789";
+
 
     private final AccountDetailsService accountDetailsService;
     private final AccountJpaRepository accountJpaRepository;

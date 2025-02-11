@@ -28,7 +28,7 @@ public class TransactionController {
             @AuthUser User user,
             @RequestBody ChargeRequest chargeRequest
     ) {
-        transactionService.chargeBalance(chargeRequest);
+        transactionService.chargeBalance(TransactionService.ADMIN_ACCOUNT_NUMBER, chargeRequest);
     }
 
     @PostMapping("/transfer")
@@ -64,6 +64,6 @@ public class TransactionController {
             @AuthUser User user,
             @RequestBody PaymentRequest paymentRequest
     ) {
-        transactionService.pay(paymentRequest);
+        transactionService.pay(TransactionService.ADMIN_ACCOUNT_NUMBER, paymentRequest);
     }
 }
