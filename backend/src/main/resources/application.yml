@@ -59,3 +59,7 @@ oauth2:
       - email
       - profile
       - openid
+
+openvidu:
+  url: "https://i12a504.p.ssafy.io"
+  secret: "MY_SECRET"
