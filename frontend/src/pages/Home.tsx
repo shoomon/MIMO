@@ -33,7 +33,7 @@ const Home = () => {
                         imgSrc: item.teamProfileUri,
                         showMember: true,
                     }}
-                    to={`/meeting/${item.teamId}`}
+                    to={`/team/${item.teamId}`}
                 />
             );
         }) ?? [];

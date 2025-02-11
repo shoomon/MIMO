@@ -46,7 +46,7 @@ const TeamSchedule = () => {
         isClosed: boolean = false,
     ) => {
         return schedules.map((schedule) => {
-            const detailLink = `/team/${schedule.teamScheduleId}`; // 템플릿 리터럴 문법 수정
+            const detailLink = `/team/${teamId}/schedule/${schedule.teamScheduleId}`; // 템플릿 리터럴 문법 수정
 
             return (
                 <CardSchedule
@@ -64,7 +64,7 @@ const TeamSchedule = () => {
 
     return (
         <section className="flex flex-col gap-2">
-            <div className="flex min-h-[43px] items-start justify-end self-stretch py-8">
+            <div className="flex min-h-[43px] items-start justify-end self-stretch py-2">
                 {hasPermission && (
                     <ButtonDefault
                         content="일정 생성"
@@ -78,22 +78,30 @@ const TeamSchedule = () => {
             </div>
             <BodyLayout_64>
                 <>
-                    <ListContainer
-                        label="정기 모임 🗓️"
-                        items={renderScheduleCards(regularSchedules)}
-                        to="/team/schedule/regular"
-                        gap="4"
-                    />
-                    <ListContainer
-                        label="번개 모임 ⚡"
-                        items={renderScheduleCards(adhocSchedules)}
-                        gap="4"
-                    />
-                    <ListContainer
-                        label="종료된 모임 🕒"
-                        items={renderScheduleCards(closedSchedules, true)}
-                        gap="4"
-                    />
+                    <div className="w-full">
+                        <ListContainer
+                            label="정기 모임 🗓️"
+                            items={renderScheduleCards(regularSchedules)}
+                            to="/team/schedule/regular"
+                            gap="4"
+                        />
+                    </div>
+                    <div className="w-full">
+                        <ListContainer
+                            label="번개 모임 ⚡"
+                            items={renderScheduleCards(adhocSchedules)}
+                            to="/team/schedule"
+                            gap="4"
+                        />
+                    </div>
+                    <div className="w-full">
+                        <ListContainer
+                            label="종료된 모임 🕒"
+                            items={renderScheduleCards(closedSchedules, true)}
+                            to="/team/schedule"
+                            gap="4"
+                        />
+                    </div>
                 </>
             </BodyLayout_64>
         </section>

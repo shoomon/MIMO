@@ -86,7 +86,7 @@ export interface TeamScheduleSpecificResponse {
     isTeamMember: boolean;
     status: ScheduleStatus;
     location: string;
-    date: string;
+    date: Date;
     price: number;
     nameOfLeader: string;
     profiles: ProfileImageProps[];

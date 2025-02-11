@@ -105,7 +105,7 @@ export const customFetch = async (
                 }
             }
             // refresh 시도 실패 또는 최대 재시도 횟수 초과 시 로그인 페이지로 이동
-            window.location.href = '/';
+            // window.location.href = '/';
             throw new Error('Authentication failed. Redirecting to login.');
         }
 

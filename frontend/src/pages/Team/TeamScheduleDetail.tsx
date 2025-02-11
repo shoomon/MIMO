@@ -1,5 +1,4 @@
 import { ButtonDefault, Title } from '@/components/atoms';
-import BodyLayout_64 from '../layouts/BodyLayout_64';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
@@ -12,11 +11,15 @@ import {
 import { useEffect, useState } from 'react';
 import { ScheduleStatus, ScheduleStatusName } from '@/types/Team';
 import { TeamScheduleCommentDto } from './../../types/Team';
-import { Comment } from '@/components/molecules';
+import { Comment, CommentWrite } from '@/components/molecules';
 import { ProfileImageProps } from '@/components/atoms/ProfileImage/ProfileImage';
+import BodyLayout_24 from '../layouts/BodyLayout_24';
+import { dateParsing } from '@/utils';
+import CommentWriteView from '@/components/molecules/CommentWrite/CommentWrite.view';
 
 const TeamScheduleDetail = () => {
     const navigate = useNavigate();
+
     const userId = 1; // 현재 로그인된 사용자 ID (예제)
     const { teamId, scheduleId } = useParams();
     const [isJoined, setIsJoined] = useState(false);
@@ -135,7 +138,7 @@ const TeamScheduleDetail = () => {
 
     return (
         <section className="flex flex-col gap-2">
-            <div className="flex min-h-[43px] items-start justify-end self-stretch py-8">
+            <div className="py- flex min-h-[43px] items-end justify-end self-stretch">
                 {isJoined ? (
                     <ButtonDefault
                         content="참여 취소"
@@ -167,19 +170,22 @@ const TeamScheduleDetail = () => {
                     </>
                 )}
             </div>
-            <BodyLayout_64>
+            <BodyLayout_24>
                 <div className="text-dark flex h-fit w-full flex-col gap-2 border-b-1 border-gray-200">
                     <Title label={statusText} />
                     <h1 className="text-display-xs text-dark font-bold">
                         {scheduleDetail?.title}
                     </h1>
                 </div>
-                <div className="text-md flex flex-col gap-2 font-medium">
+                <div className="text-md flex w-full flex-col gap-2 font-medium">
                     <span className="flex items-center gap-2">
                         🗺️ {scheduleDetail?.location}
                     </span>
                     <span className="flex items-center gap-2">
-                        🕜 {scheduleDetail?.date}
+                        🕜
+                        {scheduleDetail?.date
+                            ? dateParsing(new Date(scheduleDetail.date), true)
+                            : '날짜 정보 없음'}
                     </span>
                     <span className="flex items-center gap-2">
                         🪙 참가비 : {scheduleDetail?.price}
@@ -187,7 +193,7 @@ const TeamScheduleDetail = () => {
                     <span className="flex items-center gap-2">
                         👑 모임장 : {scheduleDetail?.nameOfLeader}
                     </span>
-                    <hr className="bg-gray-200" />
+                    <hr className="text-gray-200" />
                 </div>
                 <div className="flex h-fit w-full flex-col gap-4">
                     <span className="text-dark text-xl font-bold">
@@ -198,9 +204,9 @@ const TeamScheduleDetail = () => {
                     </span>
                 </div>
                 <hr className="bg-gray-200" />
-                <div className="flex flex-col gap-2">
+                <div className="flex w-full flex-col gap-2">
                     <div className="flex gap-2">
-                        <span className="text-dark text-xl font-bold">
+                        <span className="text-dark flex text-xl font-bold">
                             댓글
                         </span>
                         <span>{comments.length}</span>
@@ -237,7 +243,13 @@ const TeamScheduleDetail = () => {
                         )}
                     </div>
                 </div>
-            </BodyLayout_64>
+                <CommentWrite
+                    userId={userId}
+                    teamId={teamId}
+                    teamScheduleId={scheduleId}
+                    teamUserId={2}
+                />{' '}
+            </BodyLayout_24>
         </section>
     );
 };

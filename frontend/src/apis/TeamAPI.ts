@@ -62,7 +62,7 @@ export const getAdhocSchedules = async (
             }),
         };
 
-        const response = await customFetch('/team-schedule/ad-hoc', {
+        const response = await customFetch('/schedule/ad-hoc', {
             method: 'GET',
             params,
         });
@@ -86,7 +86,7 @@ export const getRegularSchedules = async (
             }),
         };
 
-        const response = await customFetch('/team-schedule/regular', {
+        const response = await customFetch('/schedule/regular', {
             method: 'GET',
             params,
         });
@@ -110,7 +110,7 @@ export const getClosedSchedules = async (
             }),
         };
 
-        const response = await customFetch('/team-schedule/closed', {
+        const response = await customFetch('/schedule/closed', {
             method: 'GET',
             params,
         });
@@ -132,7 +132,7 @@ export const getSpecificSchedule = async (
             teamScheduleId: teamScheduleId.toString(),
         };
 
-        const response = await customFetch('/team-schedule', {
+        const response = await customFetch('/schedule', {
             method: 'GET',
             params,
         });
@@ -219,7 +219,7 @@ export const createComment = async (
     teamScheduleId: number,
     commentId: number,
     teamUserId: number,
-    parentCommentId: number,
+    parentCommentId: number | null,
     content: string,
 ): Promise<void> => {
     try {

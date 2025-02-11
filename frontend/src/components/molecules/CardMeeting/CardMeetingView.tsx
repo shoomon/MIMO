@@ -40,7 +40,7 @@ const CardMeetingView: React.FC<CardMeetingViewProps> = ({
                     memberLimit={image.memberLimit}
                     imgSrc={image.imgSrc}
                 />
-                <div className="flex flex-col gap-1 px-4">
+                <div className="flex flex-col gap-1">
                     <div className="flex gap-1">
                         <RatingStar rating={rating} reviewCount={reviewCount} />
                     </div>
@@ -59,7 +59,7 @@ const CardMeetingView: React.FC<CardMeetingViewProps> = ({
             </Link>
 
             {/* 태그 영역: 각 태그는 개별 Link로 이동 */}
-            <div className="flex gap-2 px-4 pb-4">{displayedTags}</div>
+            <div className="flex gap-2 pb-4">{displayedTags}</div>
         </div>
     );
 };

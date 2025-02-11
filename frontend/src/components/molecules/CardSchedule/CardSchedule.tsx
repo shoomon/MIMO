@@ -73,9 +73,12 @@ const CardSchedule: React.FC<CardScheduleProps> = ({
     const LIMIT_RENDER = 5;
     let memberProfiles: React.ReactNode;
 
-    if (memberList.length <= LIMIT_RENDER) {
+    const safeMemberList = memberList ?? [];
+    const memberCount = safeMemberList.length;
+
+    if (memberCount <= LIMIT_RENDER) {
         // 멤버 수가 5명 이하일 경우 모두 렌더링
-        memberProfiles = memberList.map((member: ProfileImageProps) => (
+        memberProfiles = safeMemberList.map((member: ProfileImageProps) => (
             <ProfileImage
                 key={member.userId}
                 userId={member.userId}
