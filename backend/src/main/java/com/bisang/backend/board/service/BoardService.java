@@ -1,17 +1,14 @@
 package com.bisang.backend.board.service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
-import com.bisang.backend.board.controller.dto.BoardFileDto;
-import com.bisang.backend.board.controller.dto.SimpleBoardListDto;
+import com.bisang.backend.board.controller.dto.*;
 import com.bisang.backend.board.controller.response.BoardListResponse;
 import com.bisang.backend.s3.service.S3Service;
 import jakarta.persistence.EntityNotFoundException;
 
 import org.springframework.stereotype.Service;
 
-import com.bisang.backend.board.controller.dto.BoardDto;
 import com.bisang.backend.board.domain.*;
 import com.bisang.backend.board.repository.*;
 import com.bisang.backend.team.domain.TeamUser;
@@ -36,8 +33,9 @@ public class BoardService {
     private final BoardQuerydslRepository boardQuerydslRepository;
     private final CommentQuerydslRepository commentQuerydslRepository;
     private final S3Service s3Service;
+    private final CommentService commentService;
 
-//    @TeamMember
+    //    @TeamMember
     public Long createPost(
             long teamBoardId,
             long teamId,
@@ -46,14 +44,11 @@ public class BoardService {
             String description,
             List<String> fileUris
     ) {
-        //게시글 본문 저장
         BoardDescription boardDescription = boardDescriptionJpaRepository.save(new BoardDescription(description));
-        //팀유저 찾기
         TeamUser teamUser = teamUserJpaRepository.findByTeamIdAndUserId(teamId, userId)
                 .orElseThrow(() -> new EntityNotFoundException("팀유저를 찾을 수 없습니다."));
         Long teamUserId = teamUser.getUserId();
 //        Long teamUserId = Long.parseLong(1+""); //테스트용
-        //게시글 저장
         Board post = boardJpaRepository.save(Board.builder()
                 .teamBoardId(teamBoardId)
                 .teamUserId(teamUserId)
@@ -61,8 +56,6 @@ public class BoardService {
                 .title(title)
                 .description(boardDescription)
                 .build());
-        //파일은 게시글 저장 전 s3에 업로드
-        //파일 uri가 있으면 저장
         if (fileUris != null && !fileUris.isEmpty()) {
             for(String uri : fileUris){
                 String fileExtension = uri.substring(uri.lastIndexOf(".") + 1).toLowerCase();
@@ -73,7 +66,6 @@ public class BoardService {
                         .fileUri(uri)
                         .build());
             }
-
         }
         return post.getId();
     }
@@ -87,15 +79,12 @@ public class BoardService {
 //    @TeamMember
     public BoardDetailResponse getPostDetail(Long postId) {
         BoardDetailResponse postDetail = null;
-        //조회수 증가
         boardJpaRepository.increaseViewCount(postId);
-        //게시글 본문 정보, 댓글 정보 가져오기
         BoardDto post = boardQuerydslRepository.getBoardDetail(postId);
-        //todo: 게시글의 모든 댓글을 가져와 계층 구조로 변환
-//        List<CommentListDto> comments = commentQuerydslRepository.getCommentList(postId);
+        List<CommentListDto> comments = getCommentList(postId); //CommentService에 의존하지 않기 위해 BoardService에 메소드 추가
         List<BoardFileDto> files = boardImageJpaRepository.findByBoardId(postId);
 
-//        postDetail = new BoardDetailResponse(post, files, comments);
+        postDetail = new BoardDetailResponse(post, files, comments);
         return postDetail;
     }
 
@@ -118,11 +107,9 @@ public class BoardService {
         }
 
         if(filesToDelete != null){
-            //S3에서 파일 삭제
             for (BoardFileDto file : filesToDelete) {
                 s3Service.deleteFile(userId, file.fileUri()); // S3에서 이미지 삭제
             }
-            //파일 삭제
             for(BoardFileDto file : filesToDelete){
                 BoardImage curfile = boardImageJpaRepository.findById(file.fileId())
                         .orElseThrow(()-> new EntityNotFoundException("첨부파일을 찾을 수 없습니다."));
@@ -132,7 +119,6 @@ public class BoardService {
         }
 
         if(filesToAdd != null){
-            //파일 추가
             for(BoardFileDto file : filesToAdd){
                 String uri = file.fileUri();
                 String fileExtension = uri.substring(uri.lastIndexOf(".") + 1).toLowerCase();
@@ -186,5 +172,30 @@ public class BoardService {
             boardJpaRepository.increaseLikeCount(postId);
             return "좋아요 증가";
         }
+    }
+
+    private List<CommentListDto> getCommentList(Long postId){
+        List<CommentListDto> result = new ArrayList<>();
+        Map<Long, List<CommentDto>> commentList = new HashMap<>();
+        List<CommentDto> comments = commentQuerydslRepository.getCommentList(postId);
+
+        for(CommentDto comment : comments) {
+            if(comment.parentId() == null){
+                if(!commentList.containsKey(comment.commentId())){
+                    commentList.put(comment.commentId(), new ArrayList<>());
+                }
+            }else{
+                if(!commentList.containsKey(comment.parentId())){
+                    commentList.put(comment.parentId(), new ArrayList<>());
+                }
+                commentList.get(comment.parentId()).add(comment);
+            }
+        }
+        for (CommentDto comment : comments) {
+            if (comment.parentId() == null) { // 최상위 댓글
+                result.add(new CommentListDto(comment, commentList.get(comment.commentId())));
+            }
+        }
+        return result;
     }
 }

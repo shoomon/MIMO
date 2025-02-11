@@ -16,8 +16,8 @@ import java.util.Map;
 public class CommentService {
     CommentQuerydslRepository commentQuerydslRepository;
 
-    public Map<CommentDto, List<CommentDto>> getCommentList(Long postId){
-        Map<CommentDto, List<CommentDto>> result = new HashMap<>();
+    public List<CommentListDto> getCommentList(Long postId){
+        List<CommentListDto> result = new ArrayList<>();
         Map<Long, List<CommentDto>> commentList = new HashMap<>();
         List<CommentDto> comments = commentQuerydslRepository.getCommentList(postId);
 
@@ -35,7 +35,7 @@ public class CommentService {
         }
         for (CommentDto comment : comments) {
             if (comment.parentId() == null) { // 최상위 댓글
-                result.put(comment, commentList.get(comment.commentId()));
+                result.add(new CommentListDto(comment, commentList.get(comment.commentId())));
             }
         }
         return result;
