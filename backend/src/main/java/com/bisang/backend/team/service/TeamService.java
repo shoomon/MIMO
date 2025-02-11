@@ -81,7 +81,6 @@ public class TeamService {
                             .maxCapacity(maxCapacity).build();
         teamJpaRepository.save(newTeam);
 
-
         // 기본 태그 저장
         Tag areaTag = findTagByName(area.getName());
         TeamTag areaTeamTag = new TeamTag(newTeam.getId(), areaTag.getId());
@@ -160,7 +159,7 @@ public class TeamService {
         var teamDescription = team.getDescription();
         teamDescription.updateDescription(description);
         teamDescriptionJpaRepository.save(teamDescription);
-        team.updateShortDescription(description);
+        team.updateDescription(description);
 
         team.updateRecruitStatus(recruitStatus);
         team.updatePrivateStatus(privateStatus);

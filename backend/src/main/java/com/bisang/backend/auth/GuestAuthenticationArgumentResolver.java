@@ -45,7 +45,7 @@ public class GuestAuthenticationArgumentResolver implements HandlerMethodArgumen
     ) throws Exception {
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
 
-        if (request == null) {
+        if (request.getHeader(AUTHORIZATION) == null) {
             return null;
         }
 

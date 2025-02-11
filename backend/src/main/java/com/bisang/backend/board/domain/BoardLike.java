@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -33,6 +34,7 @@ public class BoardLike {
     @Column(name = "team_user_id", nullable = false)
     private Long teamUserId;
 
+    @Builder
     private BoardLike(Long boardId, Long teamUserId) {
         this.boardId = boardId;
         this.teamUserId = teamUserId;
