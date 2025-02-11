@@ -22,7 +22,7 @@ export const renderMemberProfiles = (
                 key={member.userId}
                 userId={member.userId}
                 profileUri={member.profileUri}
-                userName={member.userName}
+                nickname={member.nickname}
                 size={48}
                 addStyle="rounded-lg"
             />
@@ -40,7 +40,7 @@ export const renderMemberProfiles = (
                     key={member.userId}
                     userId={member.userId}
                     profileUri={member.profileUri}
-                    userName={member.userName}
+                    nickname={member.nickname}
                     size={48}
                     addStyle="rounded-lg"
                 />

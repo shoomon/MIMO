@@ -21,7 +21,7 @@ type Story = StoryObj<typeof meta>;
 // 더미 데이터: ProfileImageProps (실제 사용하시는 데이터에 맞게 수정하세요)
 const sampleProfile: ProfileImageProps = {
     userId: 'user1',
-    userName: 'John Doe',
+    nickname: 'John Doe',
     profileUri: 'https://randomuser.me/api/portraits/women/6.jpg',
 };
 

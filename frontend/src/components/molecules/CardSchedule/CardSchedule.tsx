@@ -83,7 +83,7 @@ const CardSchedule: React.FC<CardScheduleProps> = ({
                 key={member.userId}
                 userId={member.userId}
                 profileUri={member.profileUri}
-                userName={member.userName}
+                nickname={member.nickname}
                 size={48}
                 addStyle="rounded-lg"
             />
@@ -99,7 +99,7 @@ const CardSchedule: React.FC<CardScheduleProps> = ({
                         key={member.userId}
                         userId={member.userId}
                         profileUri={member.profileUri}
-                        userName={member.userName}
+                        nickname={member.nickname}
                         size={48}
                         addStyle="rounded-lg"
                     />

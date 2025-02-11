@@ -30,7 +30,7 @@ type Story = StoryObj<typeof meta>;
 // 더미 프로필 이미지 데이터 (실제 ProfileImage 컴포넌트에 맞게 수정)
 const sampleProfile: ProfileImageProps = {
     userId: 'user123',
-    userName: 'Jane Doe',
+    nickname: 'Jane Doe',
     profileUri: 'https://randomuser.me/api/portraits/men/5.jpg',
 };
 
