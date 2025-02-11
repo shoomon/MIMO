@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bisang.backend.auth.annotation.AuthUser;
+import com.bisang.backend.auth.annotation.Guest;
+import com.bisang.backend.team.controller.dto.SimpleTeamDto;
 import com.bisang.backend.team.controller.dto.TeamDto;
 import com.bisang.backend.team.controller.request.CreateTeamRequest;
 import com.bisang.backend.team.controller.request.UpdateTeamRequest;
@@ -33,21 +35,21 @@ import lombok.RequiredArgsConstructor;
 public class TeamController {
     private final TeamService teamService;
 
-    @GetMapping("/area")
-    public ResponseEntity<TeamInfosResponse> getTeamsByArea(
-        @RequestParam("area") Area area,
-        @RequestParam(required = false) Long teamId
-    ) {
-        return ResponseEntity.ok(teamService.getTeamInfosByArea(area, teamId));
-    }
-
-    @GetMapping("/category")
-    public ResponseEntity<TeamInfosResponse> getTeamsByCategory(
-        @RequestParam("category") TeamCategory category,
-        @RequestParam(required = false) Long teamId
-    ) {
-        return ResponseEntity.ok(teamService.getTeamInfosByCategory(category, teamId));
-    }
+//    @GetMapping("/area")
+//    public ResponseEntity<TeamInfosResponse> getTeamsByArea(
+//        @RequestParam("area") Area area,
+//        @RequestParam(required = false) Long teamId
+//    ) {
+//        return ResponseEntity.ok(teamService.getTeamInfosByArea(area, teamId));
+//    }
+//
+//    @GetMapping("/category")
+//    public ResponseEntity<TeamInfosResponse> getTeamsByCategory(
+//        @RequestParam("category") TeamCategory category,
+//        @RequestParam(required = false) Long teamId
+//    ) {
+//        return ResponseEntity.ok(teamService.getTeamInfosByCategory(category, teamId));
+//    }
 
     @PostMapping
     public ResponseEntity<TeamIdResponse> createTeam(
@@ -90,11 +92,32 @@ public class TeamController {
 
     @GetMapping
     public ResponseEntity<TeamDto> getTeamInfo(
-        @RequestParam Long teamId
+            @Guest User user,
+            @RequestParam Long teamId
     ) {
-        TeamDto teamInfo = teamService.getTeamGeneralInfo(teamId);
+        Long userId = null;
+        if (user != null) {
+            userId = user.getId();
+        }
+
+        TeamDto teamInfo = teamService.getTeamGeneralInfo(userId, teamId);
         return ResponseEntity.ok(teamInfo);
     }
+
+    @GetMapping("/simple")
+    public ResponseEntity<SimpleTeamDto> getSimpleTeamInfo(
+            @Guest User user,
+            @RequestParam Long teamId
+    ) {
+        Long userId = null;
+        if (user != null) {
+            userId = user.getId();
+        }
+
+        SimpleTeamDto teamInfo = teamService.getSimpleTeamInfo(userId, teamId);
+        return ResponseEntity.ok(teamInfo);
+    }
+
 
     @DeleteMapping
     public ResponseEntity<Void> deleteTeam(
