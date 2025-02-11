@@ -1,8 +1,5 @@
 package com.bisang.backend.schedule.service;
 
-import static com.bisang.backend.common.exception.ExceptionCode.FULL_SCHEDULE;
-import static com.bisang.backend.common.exception.ExceptionCode.NOT_FOUND;
-
 import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
@@ -19,6 +16,8 @@ import com.bisang.backend.team.domain.TeamUser;
 import com.bisang.backend.team.repository.TeamUserJpaRepository;
 
 import lombok.RequiredArgsConstructor;
+
+import static com.bisang.backend.common.exception.ExceptionCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -88,6 +87,20 @@ public class TeamScheduleLeaderService {
         teamSchedule.updatePrice(price);
         teamSchedule.updateStatus(status);
         teamScheduleJpaRepository.save(teamSchedule);
+    }
+
+    @TeamLeader
+    @Transactional
+    public void deleteTeamSchedule(Long userId, Long teamId, Long teamScheduleId) {
+        TeamSchedule teamSchedule = findTeamScheduleById(teamScheduleId);
+        teamScheduleValidation(teamId, teamSchedule);
+        teamScheduleJpaRepository.delete(teamSchedule);
+    }
+
+    private void teamScheduleValidation(Long teamId, TeamSchedule teamSchedule) {
+        if (!teamSchedule.getTeamId().equals(teamId)) {
+            throw new ScheduleException(INVALID_REQUEST);
+        }
     }
 
     private void teamScheduleParticipantsValidation(Long teamScheduleId, Long maxParticipants) {
