@@ -13,6 +13,24 @@ RUN echo "source /root/.sdkman/bin/sdkman-init.sh" >> /root/.bashrc
 # SDKMAN 초기화 후 Gradle 설치
 RUN bash -c "source /root/.sdkman/bin/sdkman-init.sh && sdk install gradle 8.12.1"
 
+# ARG로 GitLab에서 전달될 환경변수 설정
+ARG GOOGLE_TOKEN_URI
+ARG GOOGLE_RESOURCE_URI
+ARG GOOGLE_CLIENT_ID
+ARG GOOGLE_CLIENT_SECRET
+ARG GOOGLE_REDIRECT_URI
+ARG SECRET_KEY
+ARG ACCESS_TOKEN_EXPIRY
+ARG REFRESH_TOKEN_EXPIRY
+ARG DB_URL
+ARG DB_ID
+ARG DB_PASSWORD
+ARG REDIS_URI
+ARG REDIS_PORT
+ARG S3_BUCKET_NAME
+ARG S3_ACCESS_KEY
+ARG S3_SECRET_KEY
+
 # 환경변수 설정
 ENV SDKMAN_DIR="/root/.sdkman" \
     GRADLE_HOME="/root/.sdkman/candidates/gradle/8.12.1" \
