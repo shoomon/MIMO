@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bisang.backend.auth.controller.response.AccessTokenResponse;
 import com.bisang.backend.auth.domain.UserTokens;
-import com.bisang.backend.auth.domain.response.AccessTokenResponse;
 import com.bisang.backend.auth.service.OAuth2Service;
 import com.bisang.backend.common.utils.StringUtils;
 import com.bisang.backend.user.service.UserService;
@@ -61,6 +61,7 @@ public class LoginController {
                 "https://accounts.google.com/o/oauth2/v2/auth?client_id={}&redirect_uri={}&response_type=code&scope={}",
                 clientId, redirectUri, scope
         );
+        log.info(googleAuthUrl);
 
         response.sendRedirect(googleAuthUrl);
     }
@@ -70,7 +71,7 @@ public class LoginController {
             @RequestParam("code") String code,
             HttpServletResponse response
     ) {
-        System.out.println("안녕하세요");
+        log.info("code");
         // 로그인 처리 및 UserTokens 생성
         UserTokens userTokens = oAuth2Service.login(code);
 

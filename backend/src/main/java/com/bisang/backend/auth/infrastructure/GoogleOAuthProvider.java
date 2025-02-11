@@ -16,7 +16,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import com.bisang.backend.user.domain.request.UserCreateOrLoginRequest;
+import com.bisang.backend.user.controller.request.UserCreateOrLoginRequest;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -58,7 +58,6 @@ public class GoogleOAuthProvider {
         Map<String, Object> responseBody = response.getBody();
 
         String accessToken = (String) responseBody.get("access_token");
-        String idToken = (String) responseBody.get("id_token");
 
         HttpHeaders userInfoHeaders = new HttpHeaders();
         userInfoHeaders.setBearerAuth(accessToken);
@@ -74,7 +73,7 @@ public class GoogleOAuthProvider {
         String nickname = RandomStringUtils.randomAlphanumeric(20);
         String picture = (String) userInfo.get("picture");
 
-        return new UserCreateOrLoginRequest(idToken, email, name, nickname, picture);
+        return new UserCreateOrLoginRequest(email, name, nickname, picture);
     }
 
 }
