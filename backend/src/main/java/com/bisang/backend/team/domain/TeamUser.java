@@ -16,6 +16,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
+import org.apache.commons.lang3.Validate;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -45,7 +46,7 @@ public class TeamUser {
     @Column(nullable = false)
     private Long teamId;
 
-    @Column(length = 30, nullable = false, unique = true)
+    @Column(length = 30, nullable = false)
     private String nickname;
 
     @Column(name = "team_user_role", nullable = false)
@@ -118,6 +119,9 @@ public class TeamUser {
     }
 
     public void updateNickname(String nickname) {
+        String pattern = "^[a-zA-Z0-9가-힣]{1,30}$";
+        Validate.matchesPattern(nickname, pattern,
+                "모임 이름은 영문, 숫자, 한글로만 구성되어 있으며, 길이는 1자리 이상 30자리 이하이어야 합니다.");
         this.nickname = nickname;
     }
 

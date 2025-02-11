@@ -3,6 +3,8 @@ package com.bisang.backend.team.domain;
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
 import static lombok.AccessLevel.PROTECTED;
 
 import java.time.LocalDateTime;
@@ -18,6 +20,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
+import org.apache.commons.lang3.Validate;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -104,7 +107,8 @@ public class Team {
         this.teamLeaderId = teamLeaderId;
         this.teamChatroomId = teamChatroomId;
         this.name = name;
-        this.shortDescription = description.getDescription().substring(100);
+        int shortDescriptionLength = min(description.getDescription().length(), 97);
+        this.shortDescription = description.getDescription().substring(0, shortDescriptionLength) + "...";
         this.description = description;
         this.accountNumber = accountNumber;
         this.recruitStatus = recruitStatus;
@@ -115,6 +119,9 @@ public class Team {
     }
 
     public void updateTeamName(String name) {
+        String pattern = "^[a-zA-Z0-9가-힣]{1,30}$";
+        Validate.matchesPattern(name, pattern,
+                "모임 이름은 영문, 숫자, 한글로만 구성되어 있으며, 길이는 1자리 이상 30자리 이하이어야 합니다.");
         this.name = name;
     }
 
@@ -127,6 +134,9 @@ public class Team {
     }
 
     public void updateTeamProfileUri(String teamProfileUri) {
+        if (!teamProfileUri.startsWith("https://bisang-mimo-bucket.s3.ap-northeast-2.amazonaws.com/")) {
+            throw new IllegalArgumentException("이미지가 서버 내에 존재하지 않습니다. 이미지 업로드 후 다시 요청해주세요.");
+        }
         this.teamProfileUri = teamProfileUri;
     }
 
@@ -134,7 +144,8 @@ public class Team {
         this.areaCode = areaCode;
     }
 
-    public void updateShortDescription(String shortDescription) {
-        this.shortDescription = shortDescription;
+    public void updateDescription(String description) {
+        int shortDescriptionLength = min(this.description.getDescription().length(), 97);
+        this.shortDescription = this.description.getDescription().substring(0, shortDescriptionLength) + "...";
     }
 }
