@@ -9,6 +9,7 @@ import static com.bisang.backend.team.domain.QTeamUser.teamUser;
 import static com.bisang.backend.user.domain.QUser.user;
 import static com.querydsl.core.group.GroupBy.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -125,37 +126,35 @@ public class TeamScheduleQuerydslRepository {
         }
 
         List<TeamSimpleScheduleDto> tmpSimpleScheduleDto = queryFactory
-                .select(Projections.fields(TeamSimpleScheduleDto.class,
+                .select(Projections.constructor(TeamSimpleScheduleDto.class,
                         teamSchedule.id,
                         teamSchedule.date,
                         teamSchedule.title,
-                        Expressions.constant(0L),
-                        Expressions.constant(null)))
+                        teamSchedule.price,
+                        Expressions.constant(Collections.emptyList())))
                 .from(teamSchedule)
                 .where(teamSchedule.teamId.eq(teamId), teamSchedule.scheduleStatus.eq(status), dynamicTeamScheduleIdLt)
                 .orderBy(teamSchedule.id.desc())
                 .limit(SHORT_PAGE_SIZE + 1).fetch();
-
-        List<Long> simpleScheduleIds = tmpSimpleScheduleDto
-                .stream()
-                .map(TeamSimpleScheduleDto::teamScheduleId)
-                .toList();
-
-        Map<Long, List<String>> scheduleProfileMap = queryFactory
-                .from(scheduleParticipants)
-                .join(user)
-                .on(scheduleParticipants.userId.eq(user.id))
-                .where(scheduleParticipants.teamScheduleId.in(simpleScheduleIds))
-                .transform(groupBy(scheduleParticipants.teamScheduleId).as(list(user.profileUri)));
 
         return tmpSimpleScheduleDto.stream()
                 .map(simpleSchedule -> new TeamSimpleScheduleDto(
                         simpleSchedule.teamScheduleId(),
                         simpleSchedule.date(),
                         simpleSchedule.title(),
-                        0L,
-                        scheduleProfileMap.get(simpleSchedule.teamScheduleId())
+                        simpleSchedule.price(),
+                        getTeamScheduleParticipants(simpleSchedule)
                 )).toList();
+    }
+
+    private List<String> getTeamScheduleParticipants(TeamSimpleScheduleDto simpleSchedule) {
+        return queryFactory
+                .select(user.profileUri)
+                .from(scheduleParticipants)
+                .join(user)
+                .on(scheduleParticipants.userId.eq(user.id))
+                .where(scheduleParticipants.teamScheduleId.eq(simpleSchedule.teamScheduleId()))
+                .fetch();
     }
 
     private TeamUser findTeamUserById(Long teamUserId) {

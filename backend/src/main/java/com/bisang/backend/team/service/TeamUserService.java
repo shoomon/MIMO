@@ -125,12 +125,20 @@ public class TeamUserService {
     }
 
     /**
-     * 글은 남아있는데 탈퇴한 회원은 어떻게 하지?
+     * 글은 남아있는데 탈퇴한 회원은 어떻게 하지? -> left join으로 처리
      */
     @Transactional
     public void deleteUser(Long userId, Long teamId) {
+        Team team = findTeamById(teamId);
         TeamUser teamUser = findTeamUserByTeamIdAndUserId(teamId, userId);
+        leaderValidation(team, teamUser);
         teamUserJpaRepository.delete(teamUser);
+    }
+
+    private static void leaderValidation(Team team, TeamUser teamUser) {
+        if (team.getTeamLeaderId().equals(teamUser.getUserId())) {
+            throw new TeamException(NOT_DELETE_LEADER);
+        }
     }
 
     private void isAlreadyJoinChecker(Long teamId, Long userId) {
