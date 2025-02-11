@@ -1,42 +1,22 @@
-import { getToken, oauthAPI } from '@/apis/authAPI';
 import { Header, MainNav, NavLevel } from '@/components/molecules';
-import { useEffect, useState } from 'react';
+import { useAuth, useOauth } from '@/hooks/useAuth';
+import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 
 const DefaultLayout = () => {
     const [infoActive, setinfoActive] = useState<boolean>(false);
-    const [oauthToken, setOauthToken] = useState<string>('');
 
     const handleToggleInfo = () => {
         setinfoActive((prev) => !prev);
     };
 
-    const handleLogin = () => {
-        oauthAPI();
-    };
-
-    // useEffect(() => {
-    //     getToken(oauthToken);
-    // }, [oauthToken]);
-
-    useEffect(() => {
-        const messageHandler = (e: MessageEvent) => {
-            const data = e.data;
-            setOauthToken(data.code);
-            console.log('메시지', data.code);
-        };
-
-        window.addEventListener('message', messageHandler);
-
-        return () => {
-            window.removeEventListener('message', messageHandler);
-        };
-    }, []);
+    const { handleLogin } = useOauth();
+    const { isLogin } = useAuth();
 
     return (
         <div className="flex flex-col px-4">
             <Header
-                isLogin={false}
+                isLogin={isLogin}
                 alarmActive={false}
                 infoActive={infoActive}
                 handleSearch={() => {}}

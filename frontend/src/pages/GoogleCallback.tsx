@@ -15,13 +15,15 @@ const GoogleCallback = () => {
                 import.meta.env.VITE_APP_URL,
             );
 
-            // window.close();
+            window.close();
         }
     }, [searchParams]);
 
     return (
-        <div>
-            <span>토큰을 처리하고 있습니다...</span>
+        <div className="flex h-full w-full items-center justify-center">
+            <span className="text-2xl font-semibold">
+                토큰을 처리하고 있습니다...
+            </span>
         </div>
     );
 };

@@ -1,4 +1,4 @@
-const BASE_URL = import.meta.env.BASE_URL || 'http://localhost:8080/api';
+const BASE_URL = import.meta.env.VITE_BASE_URL || 'http://localhost:8080';
 
 interface CustomRequestInit extends RequestInit {
     params?: Record<string, string>;
@@ -32,7 +32,7 @@ export const customFetch = async (
     const { params, ...fetchOptions } = options;
     
     // URL 및 쿼리 파라미터 처리
-    let url = endpoint;
+    let url = `${BASE_URL}${endpoint}`;
     if (params) {
         const searchParams = new URLSearchParams(params);
         url += `?${searchParams.toString()}`;
