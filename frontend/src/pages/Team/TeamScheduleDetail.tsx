@@ -15,12 +15,12 @@ import { Comment, CommentWrite } from '@/components/molecules';
 import { ProfileImageProps } from '@/components/atoms/ProfileImage/ProfileImage';
 import BodyLayout_24 from '../layouts/BodyLayout_24';
 import { dateParsing } from '@/utils';
-import { useAuth } from '@/hooks/useAuth';
 
 const TeamScheduleDetail = () => {
     const navigate = useNavigate();
 
-    const { userId } = useAuth(); // 현재 로그인된 사용자 ID (예제)
+    const userId = 7; // 현재 로그인된 사용자 ID (예제)
+
     const { teamId, scheduleId } = useParams();
     const [isJoined, setIsJoined] = useState(false);
 
@@ -211,7 +211,7 @@ const TeamScheduleDetail = () => {
                         </span>
                         <span>{comments.length}</span>
                     </div>
-                    <div className="grid grid-rows-1 gap-2 md:grid-rows-2 lg:grid-rows-3 xl:grid-rows-4">
+                    <div className="xl:grid-ros-4 grid grid-rows-1 gap-2 md:grid-rows-2 lg:grid-rows-3">
                         {comments.length > 0 ? (
                             comments.map((item) => (
                                 <Comment
@@ -244,9 +244,9 @@ const TeamScheduleDetail = () => {
                     </div>
                 </div>
                 <CommentWrite
-                    userId={7}
-                    teamId={teamId}
-                    teamScheduleId={scheduleId}
+                    userId={userId}
+                    teamId={Number(teamId)}
+                    teamScheduleId={Number(scheduleId)}
                     teamUserId={22}
                 />{' '}
             </BodyLayout_24>
