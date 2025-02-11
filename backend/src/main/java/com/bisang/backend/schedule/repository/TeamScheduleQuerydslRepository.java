@@ -7,13 +7,13 @@ import static com.bisang.backend.schedule.domain.QTeamSchedule.teamSchedule;
 import static com.bisang.backend.schedule.domain.QTeamScheduleComment.teamScheduleComment;
 import static com.bisang.backend.team.domain.QTeamUser.teamUser;
 import static com.bisang.backend.user.domain.QUser.user;
-import static com.querydsl.core.group.GroupBy.*;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.bisang.backend.schedule.controller.dto.ProfileDto;
 import org.springframework.stereotype.Service;
 
 import com.bisang.backend.common.exception.ScheduleException;
@@ -146,9 +146,11 @@ public class    TeamScheduleQuerydslRepository {
                 )).toList();
     }
 
-    private List<String> getTeamScheduleParticipants(TeamSimpleScheduleDto simpleSchedule) {
+    private List<ProfileDto> getTeamScheduleParticipants(TeamSimpleScheduleDto simpleSchedule) {
         return queryFactory
-                .select(user.profileUri)
+                .select(Projections.constructor(ProfileDto.class,
+                                user.id,
+                                user.profileUri))
                 .from(scheduleParticipants)
                 .join(user)
                 .on(scheduleParticipants.userId.eq(user.id))
