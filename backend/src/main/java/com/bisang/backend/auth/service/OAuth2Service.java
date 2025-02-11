@@ -1,9 +1,9 @@
 package com.bisang.backend.auth.service;
 
-import static com.bisang.backend.common.exception.ExceptionCode.FAILED_TO_VALIDATE_TOKEN;
-import static com.bisang.backend.common.exception.ExceptionCode.INVALID_REFRESH_TOKEN;
-
 import com.bisang.backend.account.service.AccountService;
+import com.bisang.backend.common.exception.UserException;
+import com.bisang.backend.user.repository.UserJpaRepository;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 
 import com.bisang.backend.auth.JwtUtil;
@@ -19,6 +19,10 @@ import com.bisang.backend.user.service.UserService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Optional;
+
+import static com.bisang.backend.common.exception.ExceptionCode.*;
+
 @Getter
 @RequiredArgsConstructor
 @Service
@@ -28,12 +32,36 @@ public class OAuth2Service {
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserService userService;
     private final AccountService accountService;
+    private final UserJpaRepository userJpaRepository;
 
     public UserTokens login(String code) {
         var userCreateOrLoginRequest = googleOAuthProvider.getUserInfoByGoogle(code);
 
         User user = findOrCreateUser(userCreateOrLoginRequest);
 
+        UserTokens userTokens = jwtUtil.createLoginToken(user.getId().toString());
+        RefreshToken refreshToken = new RefreshToken(user.getId(), userTokens.getRefreshToken());
+        refreshTokenRepository.save(refreshToken);
+        return userTokens;
+    }
+
+    public UserTokens loginYame(String email, String name) {
+        Optional<User> findUser = userJpaRepository.findByEmail(email);
+        String account = RandomStringUtils.randomAlphabetic(13);
+        if (findUser.isPresent()) {
+            UserTokens userTokens = jwtUtil.createLoginToken(findUser.get().getId().toString());
+            RefreshToken refreshToken = new RefreshToken(findUser.get().getId(), userTokens.getRefreshToken());
+            refreshTokenRepository.save(refreshToken);
+            return userTokens;
+        }
+
+        User user = User.builder().accountNumber(account)
+                .email(email)
+                .name(name)
+                .nickname(name)
+                .profileUri("https://bisang-mimo-bucket.s3.ap-northeast-2.amazonaws.com/1a05c3f9-2638-4349-8a89-e90c5e584b89.jpg")
+                .build();
+        userJpaRepository.save(user);
         UserTokens userTokens = jwtUtil.createLoginToken(user.getId().toString());
         RefreshToken refreshToken = new RefreshToken(user.getId(), userTokens.getRefreshToken());
         refreshTokenRepository.save(refreshToken);

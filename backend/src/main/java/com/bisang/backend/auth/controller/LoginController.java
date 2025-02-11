@@ -54,6 +54,25 @@ public class LoginController {
     private final UserService userService;
     private final OAuth2Service oAuth2Service;
 
+    @PostMapping("/yame")
+    public ResponseEntity<AccessTokenResponse> loginYame(
+            @RequestParam("email") String email,
+            @RequestParam("name") String name,
+            HttpServletResponse response
+    ) {
+        UserTokens userTokens = oAuth2Service.loginYame(email, name);
+
+        Cookie cookie = new Cookie("refresh-token", userTokens.getRefreshToken());
+        cookie.setMaxAge(Math.toIntExact(refreshTokenExpiry));
+        cookie.setHttpOnly(true);
+        cookie.setSecure(false);
+        cookie.setPath("/");
+
+        response.addCookie(cookie);
+
+        return ResponseEntity.ok(new AccessTokenResponse(userTokens.getAccessToken()));
+    }
+
     @GetMapping
     public void loginWithGoogle(HttpServletResponse response) throws IOException {
         String redirectUri = encodeString(this.redirectUri);
