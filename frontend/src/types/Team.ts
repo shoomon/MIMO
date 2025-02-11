@@ -1,3 +1,5 @@
+import { ProfileImageProps } from '@/components/atoms/ProfileImage/ProfileImage';
+
 export interface SimpleTeamResponse {
     teamId: number;
     name: string;
@@ -5,6 +7,8 @@ export interface SimpleTeamResponse {
     teamProfileUri: string;
     reviewScore: number;
     tags: string[];
+    memberCount: number;
+    maxCapacity: number;
 }
 
 export interface TeamResponse {
@@ -60,4 +64,57 @@ export const AreaName: Record<Area, string> = {
     [Area.GYEONGSANG_SOUTH]: '경상남도',
     [Area.JEJU]: '제주특별자치도',
     [Area.SEJONG]: '세종특별자치시',
+};
+
+export interface TeamSimpleScheduleDto {
+    teamScheduleId: number;
+    date: string;
+    title: string;
+    price: number;
+    profiles: ProfileImageProps[];
+}
+
+export interface TeamSchedulesResponse {
+    size: number;
+    hasNext: boolean;
+    lastTeamScheduleId: number;
+    schedules: TeamSimpleScheduleDto[];
+}
+
+export interface TeamScheduleSpecificResponse {
+    teamScheduleId: number;
+    isTeamMember: boolean;
+    status: ScheduleStatus;
+    location: string;
+    date: Date;
+    price: number;
+    nameOfLeader: string;
+    profiles: ProfileImageProps[];
+    maxParticipants: number;
+    currentParticipants: number;
+    title: string;
+    description: string;
+    comments: TeamScheduleCommentDto[];
+}
+
+export interface TeamScheduleCommentDto {
+    teamScheduleCommentId: number;
+    profileUri: string;
+    name: string;
+    time: string; // LocalDateTime을 string으로 처리
+    commentSortId: number; // Long을 number로 처리
+    hasParent: boolean;
+    content: string;
+}
+
+export enum ScheduleStatus {
+    AD_HOC = 'AD_HOC', // 번개모임
+    REGULAR = 'REGULAR', // 정기모임
+    CLOSED = 'CLOSED', // 종료된 모임
+}
+
+export const ScheduleStatusName: Record<ScheduleStatus, string> = {
+    [ScheduleStatus.AD_HOC]: '번개모임',
+    [ScheduleStatus.REGULAR]: '정기모임',
+    [ScheduleStatus.CLOSED]: '종료된 모임',
 };

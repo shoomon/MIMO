@@ -21,7 +21,7 @@ function ListContainer({ gap, items, label, to }: ListContainerProps) {
     const [emblaRef] = useEmblaCarousel(options);
 
     return (
-        <>
+        <div className="flex flex-col gap-6">
             <Title label={label} to={to} />
             <section className="embla" ref={emblaRef}>
                 <ul className={`embla__container gap-${gap}`}>
@@ -32,7 +32,7 @@ function ListContainer({ gap, items, label, to }: ListContainerProps) {
                     ))}
                 </ul>
             </section>
-        </>
+        </div>
     );
 }
 

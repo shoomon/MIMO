@@ -1,3 +1,5 @@
+import { useTokenStore } from '@/stores/tokenStore';
+
 const BASE_URL = import.meta.env.VITE_BASE_URL || 'http://localhost:8080';
 
 interface CustomRequestInit extends RequestInit {
@@ -30,14 +32,15 @@ export const customFetch = async (
     refreshAttempt = 0,
 ): Promise<Response> => {
     const { params, ...fetchOptions } = options;
-    
+
     // URL 및 쿼리 파라미터 처리
     let url = `${BASE_URL}${endpoint}`;
     if (params) {
         const searchParams = new URLSearchParams(params);
         url += `?${searchParams.toString()}`;
     }
-    // 요청 헤더 설정: body가 FormData나 Blob이 아닌 경우 JSON 기본 헤더 추가
+
+    // 기본 헤더 설정 (body가 FormData나 Blob이 아닐 때)
     const defaultHeaders: Record<string, string> = {};
     if (
         fetchOptions.body &&
@@ -46,6 +49,13 @@ export const customFetch = async (
     ) {
         defaultHeaders['Content-Type'] = 'application/json';
     }
+
+    // Bearer 토큰 가져오기 (예시: localStorage)
+    const accessToken = useTokenStore.getState().accessToken;
+    if (accessToken) {
+        defaultHeaders['Authorization'] = `Bearer ${accessToken}`;
+    }
+
     const headers = { ...defaultHeaders, ...fetchOptions.headers };
 
     let response: Response;
@@ -68,7 +78,7 @@ export const customFetch = async (
                     // refresh 요청이 이미 진행 중이면 해당 Promise를 재사용
                     if (!refreshTokenPromise) {
                         refreshTokenPromise = fetch(`${BASE_URL}/reissue`, {
-                            credentials: 'include',
+                            credentials: 'include', // 서버에서 refresh token을 쿠키로 관리한다고 가정
                         });
                     }
                     let refreshResponse: Response;
@@ -103,7 +113,7 @@ export const customFetch = async (
                 }
             }
             // refresh 시도 실패 또는 최대 재시도 횟수 초과 시 로그인 페이지로 이동
-            window.location.href = '/';
+            // window.location.href = '/';
             throw new Error('Authentication failed. Redirecting to login.');
         }
 

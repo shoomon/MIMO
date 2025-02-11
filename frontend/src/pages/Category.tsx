@@ -1,34 +1,32 @@
 import CategoryList from '@/components/molecules/CategoryList/CategoryList';
-import ListContainer from '@/components/organisms/ListContainer';
-import { useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { CardMeeting } from '@/components/molecules';
-import { TeamAPI } from '@/apis';
-import { CardMeetingProps } from '@/components/molecules/CardMeeting/CardMeeting';
-import { SimpleTeamResponse, TeamInfosResponse } from './../types/Team';
-import { Title } from '@/components/atoms';
-import { SimpleTeamResponseMok } from './../mock/mock';
-import { CardMeetingmockData } from '@/mock/mock';
+import { SimpleTeamResponse } from './../types/Team';
+import { getTeamInfosByCategory } from '@/apis/TeamAPI';
+import { useQuery } from '@tanstack/react-query';
+import { TeamInfosResponse } from '@/types/Team';
 
 const Category = () => {
-    const location = useLocation();
-    const category = location.pathname.split('/').pop() || '';
-    //   const { data, isLoading, error } = TeamAPI.getTeamInfosByCategory(category);
+    const { categoryId } = useParams<{ categoryId?: string }>();
 
-    // API 호출 대신 목업 데이터 사용
+    const { data, isLoading, error } = useQuery<TeamInfosResponse, Error>({
+        queryKey: ['category', categoryId],
+        queryFn: () => getTeamInfosByCategory(categoryId!),
+        enabled: Boolean(categoryId),
+    });
 
-    const { data, isLoading, error } = {
-        data: CardMeetingmockData,
-        isLoading: false,
-        error: null,
-    };
+    if (!categoryId) {
+        return <div>유효한 카테고리 정보가 없습니다.</div>;
+    }
 
-    const size = CardMeetingmockData.teams.length;
+    const size = data?.teams.length;
 
-    const CategoryMeetingList = data?.teams.map(
-        (item: SimpleTeamResponseMok) => {
+    // API 응답의 teams 배열을 CardMeeting 컴포넌트 목록으로 변환합니다.
+    const meetingList =
+        data?.teams.map((item: SimpleTeamResponse) => {
             const formattedTags = item.tags.map((tag) => ({
                 label: tag,
-                to: `search/tags`,
+                to: `/search/${tag}`, // 실제 링크가 있다면 동적 처리가 필요할 수 있음
             }));
 
             return (
@@ -36,35 +34,32 @@ const Category = () => {
                     key={item.teamId}
                     label={item.name}
                     content={item.description}
-                    rating={item.rating}
+                    rating={item.reviewScore}
                     tagList={formattedTags}
-                    reviewCount={item.reviewCount}
+                    reviewCount={item.reviewScore}
                     image={{
-                        memberCount: item.memberCount,
-                        memberLimit: item.memberLimit,
-                        imgSrc: item.thumbnail,
+                        memberCount: item.reviewScore,
+                        memberLimit: item.reviewScore,
+                        imgSrc: item.teamProfileUri,
                         showMember: true,
                     }}
-                    to={`/meeting/${item.teamId}`}
+                    to={`/team/${item.teamId}`}
                     // 필요한 경우 추가 props 매핑
                 />
             );
-        },
-    );
+        }) ?? [];
 
     return (
         <>
-            <>
-                <CategoryList />
-                <div className="py-8">
-                    <div className="mb-4 text-xl font-bold">
-                        {category} 관련 모임 {size}개가 검색되었습니다.
-                    </div>
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                        {CategoryMeetingList ?? <div>모임이 없습니다.</div>}
-                    </div>
+            <CategoryList />
+            <div className="py-8">
+                <div className="mb-4 text-xl font-bold">
+                    {categoryId} 관련 모임 {size}개가 검색되었습니다.
                 </div>
-            </>
+                <div className="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    {meetingList ?? <div>모임이 없습니다.</div>}
+                </div>
+            </div>
         </>
     );
 };

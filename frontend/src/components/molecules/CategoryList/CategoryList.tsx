@@ -14,10 +14,10 @@ const CategoryList = ({ to }: { to?: string }) => {
     const categoryList = [
         { iconId: 'Bike', content: '바이크', path: 'category/bike' },
         { iconId: 'Book', content: '독서', path: 'category/book' },
-        { iconId: 'Car', content: '자동차', path: 'category/car' },
+        { iconId: 'Car', content: '자동차', path: 'category/CAR' },
         { iconId: 'CarWash', content: '세차', path: 'category/carwash' },
         { iconId: 'Cooking', content: '요리', path: 'category/cooking' },
-        { iconId: 'Dog', content: '반려동물', path: 'category/dog' },
+        { iconId: 'Dog', content: '반려동물', path: 'category/PET' },
         { iconId: 'Exercise', content: '스포츠', path: 'category/exercise' },
         { iconId: 'Game', content: '게임', path: 'category/game' },
         { iconId: 'Gym', content: '헬스', path: 'category/gym' },

@@ -32,6 +32,7 @@ export const Current: Story = {
     args: {
         userId: '25',
         userName: '박성문',
-        imgSrc: 'https://cloudfront-ap-northeast-1.images.arcpublishing.com/chosun/2TKUKXYMQF7ASZEUJLG7L4GM4I.jpg',
+        profileUri:
+            'https://cloudfront-ap-northeast-1.images.arcpublishing.com/chosun/2TKUKXYMQF7ASZEUJLG7L4GM4I.jpg',
     },
 };

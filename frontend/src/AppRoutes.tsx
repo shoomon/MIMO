@@ -30,6 +30,7 @@ import {
     TeamScheduleEdit,
     VideoChat,
 } from '@/pages';
+import TeamScheduleDetail from './pages/Team/TeamScheduleDetail';
 
 const AppRoutes = () => {
     return (
@@ -70,6 +71,10 @@ const AppRoutes = () => {
                             <Route
                                 path="edit/:scheduleId"
                                 element={<TeamScheduleEdit />}
+                            />
+                            <Route
+                                path=":scheduleId"
+                                element={<TeamScheduleDetail />}
                             />
                         </Route>
                         {/* 게시판 */}
