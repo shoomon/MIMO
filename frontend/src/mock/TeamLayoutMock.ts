@@ -5,7 +5,7 @@ export const TeamDataMockup = {
   title: '강남구 역삼동 동네모임',
   tag: [
     { to: '/', label: '최고' },
-    { to: '/', label: '최고' },
+    { to: '/', label: '등산' },
   ],
   member: { memberLimit: 60, memberCount: 20 },
   items: [

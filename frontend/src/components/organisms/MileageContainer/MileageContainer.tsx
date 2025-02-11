@@ -1,11 +1,9 @@
 import { TeamMileageMain } from '@/mock/TeamMileageMock';
 import MileageContainerView from './MileageContainer.view';
+import { useParams } from 'react-router-dom';
 
-interface MileageContainerProps {
-    teamId: string;
-}
-
-const MileageContainer = ({ teamId }: MileageContainerProps) => {
+const MileageContainer = () => {
+    const { teamId } = useParams();
     console.log(teamId);
     const data = TeamMileageMain;
 

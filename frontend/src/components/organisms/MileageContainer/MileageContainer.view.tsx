@@ -14,7 +14,11 @@ const MileageContainerView = ({ items }: MileageContainerViewProps) => {
             <div className="flex gap-6">
                 {items.map((item) => {
                     return (
-                        <MileageStatus type={item.type} amount={item.amount} />
+                        <MileageStatus
+                            key={item.type}
+                            type={item.type}
+                            amount={item.amount}
+                        />
                     );
                 })}
             </div>
