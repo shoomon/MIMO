@@ -20,9 +20,9 @@ spring:
   # MySQL
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: ${DB_ID}
+    username: root
     password: ${DB_PASSWORD}
-    url: jdbc:mysql://${DB_URL}/s12p12a504?socketTimeout=2000
+    url: jdbc:mysql://localhost:3306/mimo?socketTimeout=2000
     hikari:
       connection-timeout: 3000
       maximum-pool-size: 2

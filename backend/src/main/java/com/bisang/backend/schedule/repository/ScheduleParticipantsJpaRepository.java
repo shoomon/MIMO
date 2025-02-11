@@ -6,4 +6,6 @@ import com.bisang.backend.schedule.domain.ScheduleParticipants;
 
 public interface ScheduleParticipantsJpaRepository extends JpaRepository<ScheduleParticipants, Long> {
     Long countByTeamScheduleId(Long scheduleId);
+
+    Boolean existsByTeamScheduleIdAndTeamUserId(Long teamScheduleId, Long teamUserId);
 }
