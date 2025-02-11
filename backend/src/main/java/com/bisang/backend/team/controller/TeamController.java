@@ -35,21 +35,21 @@ import lombok.RequiredArgsConstructor;
 public class TeamController {
     private final TeamService teamService;
 
-//    @GetMapping("/area")
-//    public ResponseEntity<TeamInfosResponse> getTeamsByArea(
-//        @RequestParam("area") Area area,
-//        @RequestParam(required = false) Long teamId
-//    ) {
-//        return ResponseEntity.ok(teamService.getTeamInfosByArea(area, teamId));
-//    }
-//
-//    @GetMapping("/category")
-//    public ResponseEntity<TeamInfosResponse> getTeamsByCategory(
-//        @RequestParam("category") TeamCategory category,
-//        @RequestParam(required = false) Long teamId
-//    ) {
-//        return ResponseEntity.ok(teamService.getTeamInfosByCategory(category, teamId));
-//    }
+    @GetMapping("/area")
+    public ResponseEntity<TeamInfosResponse> getTeamsByArea(
+        @RequestParam("area") Area area,
+        @RequestParam(required = false) Long teamId
+    ) {
+        return ResponseEntity.ok(teamService.getTeamInfosByArea(area, teamId));
+    }
+
+    @GetMapping("/category")
+    public ResponseEntity<TeamInfosResponse> getTeamsByCategory(
+        @RequestParam("category") TeamCategory category,
+        @RequestParam(required = false) Long teamId
+    ) {
+        return ResponseEntity.ok(teamService.getTeamInfosByCategory(category, teamId));
+    }
 
     @PostMapping
     public ResponseEntity<TeamIdResponse> createTeam(

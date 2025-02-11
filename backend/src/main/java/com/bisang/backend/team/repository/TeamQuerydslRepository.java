@@ -79,6 +79,7 @@ public class TeamQuerydslRepository {
                     team.shortDescription,
                     team.teamProfileUri,
                     Expressions.numberTemplate(Double.class, "{0}", 0.0),
+                    Expressions.constant(0L),
                     team.maxCapacity,
                     JPAExpressions.select(teamUser.count())
                             .from(teamUser)
