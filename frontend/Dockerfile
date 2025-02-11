@@ -14,7 +14,7 @@ RUN npm install
 COPY ./frontend/ /app/
 
 # 빌드
-RUN npm run build
+VITE_BASE_URL=$VITE_BASE_URL npm run build
 
 # 2. Serve stage using Nginx
 FROM nginx:latest
