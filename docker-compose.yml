@@ -3,11 +3,13 @@ services:
     build:
       context: .
       dockerfile: ./frontend/Dockerfile
+      args:
+        - VITE_BASE_URL=${VITE_BASE_URL}  # ARG로 전달
     ports:
       - "3000:80"
     container_name: mimo-web
     env_file:
-      - ./frontend/.env
+      - ./frontend/.env  # .env 파일을 명시적으로 로드
     networks:
       - frontend_backend_network
 
