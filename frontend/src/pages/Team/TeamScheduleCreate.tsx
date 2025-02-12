@@ -1,12 +1,13 @@
 import { ButtonDefault, Title } from '@/components/atoms';
 import BodyLayout_24 from '../layouts/BodyLayout_24';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { ButtonToggleGroup, InputForm } from '@/components/molecules';
 import { useState } from 'react';
 import { createSchedule } from '@/apis/TeamAPI';
 
 const TeamScheduleCreate = () => {
     const navigate = useNavigate();
+    const { teamId } = useParams<{ teamId: string }>();
 
     // 📝 입력값을 관리하는 상태
     const [formData, setFormData] = useState({
@@ -32,12 +33,8 @@ const TeamScheduleCreate = () => {
 
     // 📝 일정 등록 함수
     const handleSubmit = async () => {
-        const teamId = 1; // TODO: 실제 팀 ID 적용
-        const userId = 1; // TODO: 실제 사용자 ID 적용
-
         await createSchedule(
-            teamId,
-            userId,
+            Number(teamId),
             formData.title,
             formData.description,
             formData.location,
@@ -96,14 +93,14 @@ const TeamScheduleCreate = () => {
                         label="일정 소개"
                         type="text"
                         placeholder="내용을 입력하세요"
-                        multiline
+                        multiline={true}
                         count={400}
                         onChange={handleChange}
                     />
                     <InputForm
                         id="date"
                         label="일시"
-                        type="date"
+                        type="datetime-local"
                         onChange={handleChange}
                     />
                     <InputForm

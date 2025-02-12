@@ -6,7 +6,7 @@ export interface InputFormProps {
     label?: string;
     placeholder?: string;
     defaultValue?: string | number;
-    type?: 'text' | 'email' | 'number' | 'password' | 'date';
+    type?: 'text' | 'email' | 'number' | 'password' | 'datetime-local';
     value?: string | number;
     readOnly?: boolean;
     /** 글자수 제한 (숫자) */
@@ -155,7 +155,7 @@ const InputForm = forwardRef<HTMLInputElement, InputFormProps>(
                     id={id}
                     placeholder={placeholder}
                     type={type}
-                    value={inputValue}
+                    value={value}
                     readOnly={readOnly}
                     onChange={handleInputChange}
                     onKeyDown={handleKeyDown}

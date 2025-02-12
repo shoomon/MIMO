@@ -39,6 +39,7 @@ const sampleTagList = [
 
 export const Default: Story = {
     args: {
+        teamId: '123',
         subTitle: 'Meeting Subtitle Sample',
         rating: sampleRating,
         title: 'Meeting Title Sample',

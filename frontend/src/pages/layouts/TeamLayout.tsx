@@ -29,6 +29,7 @@ const TeamLayout = () => {
             <section className="flex py-8">
                 <section className="flex w-[29rem] flex-col gap-12 pl-4">
                     <MeetingInfo
+                        teamId={teamId}
                         subTitle={data?.description || 'subtitle이 없습니다.'}
                         rating={{
                             rating: data?.score || 0,

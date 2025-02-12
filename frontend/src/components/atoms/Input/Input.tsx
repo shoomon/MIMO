@@ -3,7 +3,7 @@ import { forwardRef } from 'react';
 interface BaseInputProps {
     id: string;
     /** 단일 행 입력일 경우 사용할 타입 */
-    type?: 'text' | 'email' | 'number' | 'password' | 'date';
+    type?: 'text' | 'email' | 'number' | 'password' | 'datetime-local';
     placeholder?: string;
     value?: string | number;
     defaultValue?: string | number;

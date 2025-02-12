@@ -7,6 +7,7 @@ import {
     leaveSchedule,
     deleteComment,
     updateComment,
+    deleteSchedule,
 } from '@/apis/TeamAPI';
 import { useEffect, useState } from 'react';
 import { ScheduleStatus, ScheduleStatusName } from '@/types/Team';
@@ -15,11 +16,10 @@ import { Comment, CommentWrite } from '@/components/molecules';
 import { ProfileImageProps } from '@/components/atoms/ProfileImage/ProfileImage';
 import BodyLayout_24 from '../layouts/BodyLayout_24';
 import { dateParsing } from '@/utils';
+import { renderMemberProfiles } from '@/utils/memberParsing';
 
 const TeamScheduleDetail = () => {
     const navigate = useNavigate();
-
-    const userId = 7; // 현재 로그인된 사용자 ID (예제)
 
     const { teamId, scheduleId } = useParams();
     const [isJoined, setIsJoined] = useState(false);
@@ -33,13 +33,10 @@ const TeamScheduleDetail = () => {
 
     // 유저가 일정에 참여 중인지 확인
     useEffect(() => {
-        if (scheduleDetail?.profiles) {
-            const userExists = scheduleDetail.profiles.some(
-                (profile) => Number(profile.userId) === userId,
-            );
-            setIsJoined(userExists);
+        if (scheduleDetail?.isTeamScheduleMember) {
+            setIsJoined(scheduleDetail?.isTeamScheduleMember);
         }
-    }, [scheduleDetail, userId]);
+    }, [scheduleDetail, scheduleDetail?.isTeamScheduleMember]);
 
     // 댓글 상태 관리 (초기값: API에서 받아온 데이터)
     const [comments, setComments] = useState<TeamScheduleCommentDto[]>([]);
@@ -60,8 +57,7 @@ const TeamScheduleDetail = () => {
 
     // 일정 탈퇴 (leaveSchedule)
     const leaveMutation = useMutation({
-        mutationFn: () =>
-            leaveSchedule(Number(scheduleDetail?.teamScheduleId), userId),
+        mutationFn: () => leaveSchedule(scheduleId!),
         onSuccess: () => {
             setIsJoined(false);
         },
@@ -69,8 +65,7 @@ const TeamScheduleDetail = () => {
 
     // 일정 삭제
     const deleteMutation = useMutation({
-        mutationFn: () =>
-            leaveSchedule(Number(scheduleDetail?.teamScheduleId), userId),
+        mutationFn: () => deleteSchedule(teamId!, scheduleId!),
         onSuccess: () => {
             navigate(`/team/${teamId}`);
         },
@@ -96,23 +91,19 @@ const TeamScheduleDetail = () => {
     // 댓글 수정 (해당 댓글만 업데이트)
     const updateCommentMutation = useMutation({
         mutationFn: ({
-            commentId,
+            teamId,
+            teamScheduleCommentId,
             content,
         }: {
-            commentId: number;
+            teamId: string;
+            teamScheduleCommentId: number;
             content: string;
-        }) =>
-            updateComment(
-                userId,
-                Number(scheduleDetail?.teamScheduleId),
-                commentId,
-                content,
-            ),
-        onMutate: async ({ commentId, content }) => {
+        }) => updateComment(teamId!, teamScheduleCommentId, content),
+        onMutate: async ({ teamScheduleCommentId, content }) => {
             // UI에서 바로 수정 반영
             setComments((prevComments) =>
                 prevComments.map((comment) =>
-                    comment.commentSortId === commentId
+                    comment.teamScheduleCommentId === teamScheduleCommentId
                         ? { ...comment, content }
                         : comment,
                 ),
@@ -136,31 +127,42 @@ const TeamScheduleDetail = () => {
         profileUri: 'https://randomuser.me/api/portraits/men/5.jpg',
     };
 
+    const safeMemberList = scheduleDetail?.profileUris ?? [];
+
+    const memberProfiles = renderMemberProfiles(safeMemberList);
+
     return (
         <section className="flex flex-col gap-2">
-            <div className="py- flex min-h-[43px] items-end justify-end self-stretch">
-                {isJoined ? (
-                    <ButtonDefault
-                        content="참여 취소"
-                        type="fail"
-                        onClick={() => leaveMutation.mutate()}
-                    />
-                ) : (
-                    <ButtonDefault
-                        content="참가 신청"
-                        iconId="PlusCalendar"
-                        iconType="svg"
-                        onClick={() => joinMutation.mutate()}
-                    />
-                )}
+            <div className="py- flex min-h-[43px] items-end justify-end gap-2 self-stretch">
+                {/* 팀 일정 작성자라면 (내 일정) 참가 신청/참여 취소 버튼은 보이지 않음 */}
+                {!scheduleDetail?.isMyTeamSchedule &&
+                    (isJoined ? (
+                        <ButtonDefault
+                            content="참여 취소"
+                            type="fail"
+                            onClick={() => leaveMutation.mutate()}
+                        />
+                    ) : (
+                        <ButtonDefault
+                            content="참가 신청"
+                            iconId="PlusCalendar"
+                            iconType="svg"
+                            onClick={() => joinMutation.mutate()}
+                        />
+                    ))}
 
-                {scheduleDetail?.isTeamMember && (
+                {/* 내 일정인 경우에만 수정/삭제 버튼 렌더링 */}
+                {scheduleDetail?.isMyTeamSchedule && (
                     <>
                         <ButtonDefault
                             content="일정 수정"
                             iconId="PlusCalendar"
                             iconType="svg"
-                            onClick={() => navigate('/edit')}
+                            onClick={() =>
+                                navigate(
+                                    `/team/${teamId}/schedule/edit/${scheduleId}`,
+                                )
+                            }
                         />
                         <ButtonDefault
                             content="글 삭제"
@@ -171,8 +173,15 @@ const TeamScheduleDetail = () => {
                 )}
             </div>
             <BodyLayout_24>
-                <div className="text-dark flex h-fit w-full flex-col gap-2 border-b-1 border-gray-200">
-                    <Title label={statusText} />
+                <div className="text-dark flex h-fit w-full flex-col gap-4 border-b-1 border-gray-200">
+                    <Title
+                        label={
+                            statusText === '정기모임'
+                                ? '정기모임🗓️'
+                                : '번개모임⚡'
+                        }
+                    />
+
                     <h1 className="text-display-xs text-dark font-bold">
                         {scheduleDetail?.title}
                     </h1>
@@ -193,6 +202,11 @@ const TeamScheduleDetail = () => {
                     <span className="flex items-center gap-2">
                         👑 모임장 : {scheduleDetail?.nameOfLeader}
                     </span>
+                    <div className="flex flex-col gap-2">
+                        <span>참가 멤버</span>
+                        <span className="flex gap-2">{memberProfiles}</span>
+                    </div>
+
                     <hr className="text-gray-200" />
                 </div>
                 <div className="flex h-fit w-full flex-col gap-4">
@@ -217,6 +231,9 @@ const TeamScheduleDetail = () => {
                                 <Comment
                                     key={item.commentSortId}
                                     commentId={item.commentSortId}
+                                    teamScheduleCommentId={
+                                        item.teamScheduleCommentId
+                                    }
                                     content={item.content}
                                     isReply={item.hasParent}
                                     writedate={item.time}
@@ -228,12 +245,13 @@ const TeamScheduleDetail = () => {
                                         )
                                     }
                                     onUpdate={(
-                                        commentId: number,
-                                        newContent: string,
+                                        teamScheduleCommentId,
+                                        content,
                                     ) =>
                                         updateCommentMutation.mutate({
-                                            commentId: commentId,
-                                            content: newContent,
+                                            teamId: teamId!, // 부모에서 관리하는 팀 ID 사용
+                                            teamScheduleCommentId, // Comment 컴포넌트에서 전달받은 ID
+                                            content, // 수정된 댓글 내용
                                         })
                                     }
                                 />
@@ -244,11 +262,10 @@ const TeamScheduleDetail = () => {
                     </div>
                 </div>
                 <CommentWrite
-                    userId={userId}
-                    teamId={Number(teamId)}
-                    teamScheduleId={Number(scheduleId)}
+                    teamId={teamId}
+                    teamScheduleId={scheduleId}
                     teamUserId={22}
-                />{' '}
+                />
             </BodyLayout_24>
         </section>
     );

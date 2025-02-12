@@ -60,7 +60,6 @@ export const getTeamInfosByArea = async (
         const response = await customFetch('/team/area', {
             method: 'GET',
             params,
-            credentials: 'include',
         });
 
         return response.json();
@@ -144,7 +143,6 @@ export const getClosedSchedules = async (
 
 export const createSchedule = async (
     teamId: number,
-    userId: number,
     title: string,
     description: string,
     location: string,
@@ -156,7 +154,6 @@ export const createSchedule = async (
     try {
         const body = JSON.stringify({
             teamId,
-            userId,
             title,
             description,
             location,
@@ -170,15 +167,48 @@ export const createSchedule = async (
             method: 'POST',
             body,
             credentials: 'include',
-            headers: {
-                'Content-Type': 'application/json',
-            },
         });
 
         alert('일정이 성공적으로 등록되었습니다!');
     } catch (error) {
         console.error('Error creating schedule:', error);
         alert('일정 등록 중 오류가 발생했습니다.');
+    }
+};
+export const updateSchedule = async (
+    teamId: number,
+    teamScheduleId: number,
+    title: string,
+    description: string,
+    location: string,
+    date: string,
+    maxParticipants: number,
+    price: number,
+    status: 'REGULAR' | 'AD_HOC',
+): Promise<void> => {
+    try {
+        const body = JSON.stringify({
+            teamId,
+            teamScheduleId,
+            title,
+            description,
+            location,
+            date,
+            maxParticipants,
+            price,
+            status,
+        });
+
+        await customFetch(`/schedule`, {
+            method: 'PUT',
+            body,
+            credentials: 'include',
+        });
+
+        alert('일정이 성공적으로 업데이트되었습니다!');
+    } catch (error) {
+        console.error('Error updating schedule:', error);
+        alert('일정 업데이트 중 오류가 발생했습니다.');
     }
 };
 
@@ -195,7 +225,6 @@ export const getSpecificSchedule = async (
         const response = await customFetch('/schedule', {
             method: 'GET',
             params,
-            credentials: 'include',
         });
 
         return response.json();
@@ -211,7 +240,6 @@ export const joinSchedule = async (teamScheduleId: string): Promise<void> => {
         await customFetch('/schedule-participants', {
             method: 'POST',
             params,
-            credentials: 'include',
         });
     } catch (error) {
         console.error('Error joining schedule:', error);
@@ -223,15 +251,33 @@ export const joinSchedule = async (teamScheduleId: string): Promise<void> => {
  * 일정에서 탈퇴하는 API
  */
 
-export const leaveSchedule = async (
-    teamScheduleId: number,
-    userId: number,
-): Promise<void> => {
+export const leaveSchedule = async (teamScheduleId: string): Promise<void> => {
     try {
-        const body = JSON.stringify({ teamScheduleId, userId });
+        const params = {
+            teamScheduleId: teamScheduleId,
+        };
         await customFetch('/schedule-participants', {
             method: 'DELETE',
-            body,
+            params,
+        });
+    } catch (error) {
+        console.error('Error leaving schedule:', error);
+        throw error;
+    }
+};
+
+export const deleteSchedule = async (
+    teamId: string,
+    teamScheduleId: string,
+): Promise<void> => {
+    try {
+        const params = {
+            teamId: teamId,
+            teamScheduleId: teamScheduleId,
+        };
+        await customFetch('/schedule', {
+            method: 'DELETE',
+            params,
         });
     } catch (error) {
         console.error('Error leaving schedule:', error);
@@ -253,20 +299,18 @@ export const deleteComment = async (commentId: number): Promise<void> => {
 };
 
 export const updateComment = async (
-    userId: number,
-    teamScheduleId: number,
-    commentId: number,
+    teamId: string,
+    teamScheduleCommentId: number,
     content: string,
 ): Promise<void> => {
     try {
         const body = JSON.stringify({
-            userId,
-            teamScheduleId,
-            commentId,
+            teamId,
+            teamScheduleCommentId,
             content,
         });
         await customFetch('/schedule-comment', {
-            method: 'PUT',
+            method: 'PATCH',
             body,
         });
     } catch (error) {
@@ -276,28 +320,21 @@ export const updateComment = async (
 };
 
 export const createComment = async (
-    userId: number,
-    teamId: number,
-    teamScheduleId: number,
-    commentId: number,
+    teamId: string,
+    teamScheduleId: string,
     teamUserId: number,
-    parentCommentId: number | null,
     content: string,
 ): Promise<void> => {
     try {
         const body = JSON.stringify({
-            userId,
             teamId,
             teamScheduleId,
-            commentId,
             teamUserId,
-            parentCommentId,
             content,
         });
         await customFetch('/schedule-comment', {
             method: 'POST',
             body,
-            credentials: 'include',
         });
     } catch (error) {
         console.error('Error creating comment:', error);

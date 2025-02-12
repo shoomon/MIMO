@@ -85,7 +85,7 @@ export interface TeamSimpleScheduleDto {
     date: string;
     title: string;
     price: number;
-    profiles: ProfileImageProps[];
+    profileUris: ProfileImageProps[];
 }
 
 export interface TeamSchedulesResponse {
@@ -96,14 +96,16 @@ export interface TeamSchedulesResponse {
 }
 
 export interface TeamScheduleSpecificResponse {
-    teamScheduleId: number;
     isTeamMember: boolean;
+    isTeamScheduleMember: boolean;
+    isMyTeamSchedule: boolean;
+    teamScheduleId: number;
     status: ScheduleStatus;
     location: string;
     date: Date;
     price: number;
     nameOfLeader: string;
-    profiles: ProfileImageProps[];
+    profileUris: ProfileImageProps[];
     maxParticipants: number;
     currentParticipants: number;
     title: string;
@@ -113,6 +115,7 @@ export interface TeamScheduleSpecificResponse {
 
 export interface TeamScheduleCommentDto {
     teamScheduleCommentId: number;
+    isMyComment: boolean;
     profileUri: string;
     name: string;
     time: string; // LocalDateTime을 string으로 처리
