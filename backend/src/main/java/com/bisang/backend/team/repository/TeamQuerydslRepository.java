@@ -150,7 +150,7 @@ public class TeamQuerydslRepository {
         return queryFactory
                 .select(Projections.constructor(SimpleTeamDto.class,
                         team.id,
-                        Expressions.constant(teamUserId),
+                        Expressions.numberTemplate(Long.class, "{0}", teamUserId),
                         team.name,
                         team.shortDescription,
                         team.teamProfileUri,
