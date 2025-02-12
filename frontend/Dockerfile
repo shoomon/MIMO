@@ -7,11 +7,11 @@ WORKDIR /app
 # package.json과 package-lock.json을 복사
 COPY ./frontend/package*.json /app/
 
+# 나머지 소스 파일을 복사 (이 부분을 npm install 전에 실행)
+COPY ./frontend/ /app/
+
 # 의존성 설치
 RUN npm install
-
-# 나머지 소스 파일을 복사
-COPY ./frontend/ /app/
 
 # 빌드
 RUN npm run build
@@ -20,7 +20,7 @@ RUN npm run build
 FROM nginx:latest
 
 # Vite로 빌드된 파일을 Nginx 서버로 복사
-COPY --from=build /app/build /usr/share/nginx/html
+COPY --from=build /app/dist /usr/share/nginx/html
 
 # Nginx 실행
 CMD ["nginx", "-g", "daemon off;"]
