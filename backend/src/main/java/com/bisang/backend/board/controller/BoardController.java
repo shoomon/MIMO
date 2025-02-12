@@ -1,7 +1,8 @@
 package com.bisang.backend.board.controller;
 
-import com.bisang.backend.common.exception.BoardException;
-import com.bisang.backend.common.utils.PageUtils;
+import static com.bisang.backend.common.exception.ExceptionCode.PAGE_LIMIT;
+import static com.bisang.backend.common.utils.PageUtils.SHORT_PAGE_SIZE;
+
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
@@ -23,14 +24,12 @@ import com.bisang.backend.board.controller.response.BoardDetailResponse;
 import com.bisang.backend.board.controller.response.BoardListResponse;
 import com.bisang.backend.board.repository.BoardJpaRepository;
 import com.bisang.backend.board.service.BoardService;
+import com.bisang.backend.common.exception.BoardException;
 import com.bisang.backend.s3.service.S3Service;
 import com.bisang.backend.user.domain.User;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import static com.bisang.backend.common.exception.ExceptionCode.PAGE_LIMIT;
-import static com.bisang.backend.common.utils.PageUtils.SHORT_PAGE_SIZE;
 
 //todo: 권한 체크, 500 에러 말고 커스텀 exception 구현 필요
 @RestController
@@ -66,11 +65,14 @@ public class BoardController {
     public ResponseEntity<BoardListResponse> getPostList(
             @AuthUser User user,
             @RequestParam(value = "type", required = true) Long teamBoardId,
-            @RequestParam(value = "page", required = true) Long page
+            @RequestParam(value = "page", required = true, defaultValue = "1") Long page
     ) {
-        if(page > 1000) throw new BoardException(PAGE_LIMIT);
 
-        Long offset = (page-1) * SHORT_PAGE_SIZE;
+        if(page > 1000) {
+            throw new BoardException(PAGE_LIMIT);
+        }
+
+        Long offset = (page - 1) * SHORT_PAGE_SIZE;
         return ResponseEntity.ok(boardService.getPostList(teamBoardId, offset, SHORT_PAGE_SIZE));
     }
 

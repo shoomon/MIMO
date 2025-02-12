@@ -2,6 +2,8 @@ package com.bisang.backend.board.service;
 
 import java.util.*;
 
+import com.bisang.backend.auth.annotation.AuthSimpleUser;
+import com.bisang.backend.auth.domain.SimpleUser;
 import com.bisang.backend.board.controller.dto.*;
 import com.bisang.backend.board.controller.response.BoardListResponse;
 import com.bisang.backend.common.exception.BoardException;
@@ -10,6 +12,7 @@ import com.bisang.backend.s3.service.S3Service;
 import com.bisang.backend.user.repository.UserJpaRepository;
 import jakarta.persistence.EntityNotFoundException;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.bisang.backend.board.domain.*;
@@ -19,6 +22,10 @@ import com.bisang.backend.team.repository.TeamUserJpaRepository;
 import com.bisang.backend.board.controller.response.BoardDetailResponse;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
 
 //todo: 게시글 리스트, 댓글 리스트 가져올 때 offset 설정
 @Service
@@ -43,11 +50,10 @@ public class BoardService {
             long userId,
             String title,
             String description,
-            List<String> fileUris
+            List<MultipartFile> fileUris
     ) {
         BoardDescription boardDescription = boardDescriptionJpaRepository.save(new BoardDescription(description));
-        teamUserJpaRepository.findById(teamUserId)
-                .orElseThrow(() -> new EntityNotFoundException("팀유저를 찾을 수 없습니다."));
+        validationTeamUser(teamUserId);
 
         Board post = boardJpaRepository.save(Board.builder()
                 .teamBoardId(teamBoardId)
@@ -57,7 +63,9 @@ public class BoardService {
                 .description(boardDescription)
                 .build());
         if (fileUris != null && !fileUris.isEmpty()) {
-            for(String uri : fileUris){
+            for(MultipartFile file : fileUris){
+                String uri = s3Service.saveFile(userId, file); //서비스가 서비스에 의존해도 되나 컨트롤러에서 업로드하고 file uri 리스트로 보내줘야하나
+                
                 String fileExtension = uri.substring(uri.lastIndexOf(".") + 1).toLowerCase();
 
                 boardImageJpaRepository.save(BoardImage.builder()
@@ -69,8 +77,8 @@ public class BoardService {
         }
         return post.getId();
     }
-    
-//    @TeamMember
+
+    //    @TeamMember
     public BoardListResponse getPostList(Long teamBoardId, Long offset, Integer pageSize){
         String boardName = teamBoardJpaRepository.getTeamBoardNameById(teamBoardId);
         List<SimpleBoardListDto> list = boardQuerydslRepository.getBoardList(teamBoardId, offset, pageSize);
@@ -221,4 +229,10 @@ public class BoardService {
         }
         return result;
     }
+
+    private void validationTeamUser(long teamUserId) {
+        teamUserJpaRepository.findById(teamUserId)
+                .orElseThrow(() -> new EntityNotFoundException("팀유저를 찾을 수 없습니다."));
+    }
+
 }

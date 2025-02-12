@@ -69,8 +69,8 @@ public class BoardQuerydslRepository {
                 .leftJoin(teamUser).on(board.teamUserId.eq(teamUser.id)) // 팀유저에서 닉네임 가져오기
                 .leftJoin(user).on(teamUser.userId.eq(user.id)) // 유저 정보 조인하여 프로필 URI 가져오기
                 .where(board.teamBoardId.eq(teamBoardId))
-                .groupBy(board.id, user.profileUri, teamUser.nickname, teamBoard.boardName,
-                        board.title, boardDescription.description, board.likes, board.viewCount,
+                .groupBy(board.id, user.profileUri, teamUser.nickname,
+                        board.title, board.likes, board.viewCount,
                         board.createdAt, board.lastModifiedAt)
                 .orderBy(board.createdAt.desc())
                 .offset(offset)

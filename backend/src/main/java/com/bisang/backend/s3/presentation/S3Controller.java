@@ -28,7 +28,7 @@ public class S3Controller {
         @RequestPart("file") MultipartFile multipartFile
     ) {
         String returnUrl = s3UploadService.saveFile(user.userId(), multipartFile);
-
+ 
         return ResponseEntity.ok(returnUrl);
     }
 }

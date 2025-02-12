@@ -4,6 +4,7 @@ import java.util.List;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.web.multipart.MultipartFile;
 
 public record CreatePostRequest(
         @NotNull(message = "게시판 아이디가 없습니다.")
@@ -14,6 +15,6 @@ public record CreatePostRequest(
         String title,
         @NotBlank(message = "내용을 입력해야 합니다.")
         String description,
-        List<String> fileUris
+        List<MultipartFile> fileUris
 ) {
 }
