@@ -31,7 +31,7 @@ public class ChatroomRedisRepository {
     public List<Long> getUserChatroom(long userId) {
         Set<ZSetOperations.TypedTuple<Long>> result
                 = redisLongTemplate.opsForZSet()
-                .reverseRangeWithScores(chatroomKey + userId, 0, 19);
+                .reverseRangeWithScores(chatroomKey + userId, 0, -1);
 
         return (result == null) ? new ArrayList<>() :
                 result.stream()
