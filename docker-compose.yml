@@ -49,11 +49,12 @@ services:
       - /home/ubuntu/A504/certbot/www:/var/www/certbot
     entrypoint: >
       /bin/sh -c '
-      if [ ! -f /etc/letsencrypt/live/i12a504.p.ssafy.io/fullchain.pem ]; then
-        certbot certonly --webroot -w /var/www/certbot -d i12a504.p.ssafy.io --email pkb1998@naver.com --agree-tos --no-eff-email --force-renewal --redirect
+        if [ ! -f /etc/letsencrypt/live/i12a504.p.ssafy.io/fullchain.pem ]; then
+          certbot certonly --webroot -w /var/www/certbot -d i12a504.p.ssafy.io --email pkb1998@naver.com --agree-tos --no-eff-email --force-renewal --redirect
+        else
+          certbot renew --quiet --webroot -w /var/www/certbot;
       fi;
       exit 0;
-      '
 
 networks:
   frontend_backend_network:
