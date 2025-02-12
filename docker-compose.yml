@@ -33,8 +33,6 @@ services:
     container_name: mimo-nginx
     networks:
       - frontend_backend_network
-    depends_on:
-      - certbot  # depends_on을 올바르게 수정
     volumes:
       - /home/ubuntu/A504/nginx.conf:/etc/nginx/nginx.conf:ro
       - /home/ubuntu/A504/certbot/conf:/etc/letsencrypt
