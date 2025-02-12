@@ -3,7 +3,6 @@ package com.bisang.backend.chat.controller;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.bisang.backend.common.utils.DateUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -25,6 +24,7 @@ import com.bisang.backend.chat.service.ChatMessageService;
 import com.bisang.backend.chat.service.ChatroomUserService;
 import com.bisang.backend.common.exception.ChatAccessInvalidException;
 import com.bisang.backend.common.exception.ExceptionCode;
+import com.bisang.backend.common.utils.DateUtils;
 import com.bisang.backend.user.domain.User;
 
 import lombok.RequiredArgsConstructor;
