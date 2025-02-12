@@ -46,7 +46,7 @@ public class TeamScheduleEveryOneService {
     @Transactional(readOnly = true)
     public TeamScheduleSpecificResponse getSpecificSchedule(Long userId, Long teamId, Long teamScheduleId) {
         var specific = teamScheduleQuerydslRepository.getTeamScheduleSpecific(teamScheduleId);
-        var comments = teamScheduleQuerydslRepository.getTeamScheduleComments(teamScheduleId);
+        var comments = teamScheduleQuerydslRepository.getTeamScheduleComments(userId, teamScheduleId);
         var profiles = teamScheduleQuerydslRepository.getProfilesByScheduleId(teamScheduleId);
         boolean isTeamMember = userId == null ? false :  isTeamMember(userId, teamId);
         boolean isTeamScheduleMember = participantsJpaRepository.existsByTeamScheduleIdAndUserId(teamScheduleId, userId);
