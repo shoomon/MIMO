@@ -63,7 +63,8 @@ public class BoardController {
     @GetMapping("/list")
     public ResponseEntity<BoardListResponse> getPostList(
             @AuthUser User user,
-            @RequestParam(value = "type", required = true) Long teamBoardId
+            @RequestParam(value = "type", required = true) Long teamBoardId,
+            @RequestParam(value = "page", required = true) Long page
     ) {
         return ResponseEntity.ok(boardService.getPostList(teamBoardId));
     }

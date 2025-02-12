@@ -34,6 +34,7 @@ public class BoardService {
     private final CommentQuerydslRepository commentQuerydslRepository;
     private final S3Service s3Service;
     private final UserJpaRepository userJpaRepository;
+    private final TeamBoardJpaRepository teamBoardJpaRepository;
 
     //    @TeamMember
     public Long createPost(
@@ -71,8 +72,9 @@ public class BoardService {
     
 //    @TeamMember
     public BoardListResponse getPostList(Long teamBoardId){
+        String boardName = teamBoardJpaRepository.getTeamBoardNameById(teamBoardId);
         List<SimpleBoardListDto> list = boardQuerydslRepository.getBoardList(teamBoardId);
-        return new BoardListResponse(list);
+        return new BoardListResponse(boardName, list);
     }
 
 //    @TeamMember

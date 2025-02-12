@@ -52,27 +52,20 @@ public class BoardQuerydslRepository {
         QComment commentSub = new QComment("commentSub");
         return queryFactory
                 .select(Projections.constructor(SimpleBoardListDto.class,
-                        Projections.constructor(BoardDto.class,
                                 board.id,
-                                board.userId,
-                                board.teamUserId,
                                 user.profileUri.as("userProfileUri"), // 유저 테이블에서 프로필 URI 가져오기
                                 teamUser.nickname.as("userNickname"), // 팀유저 테이블에서 닉네임 가져오기
-                                teamBoard.boardName,
                                 board.title.as("postTitle"),
-                                boardDescription.description,
                                 board.likes.as("likeCount"),
                                 board.viewCount,
                                 board.createdAt,
-                                board.lastModifiedAt.as("updatedAt")),
+                                board.lastModifiedAt.as("updatedAt"),
                         JPAExpressions
                                 .select(commentSub.id.count())
                                 .from(commentSub)
                                 .where(commentSub.boardId.eq(board.id))
                         ))
                 .from(board)
-                .leftJoin(teamBoard).on(board.teamBoardId.eq(teamBoard.id)) // 게시판 종류 조인
-                .leftJoin(boardDescription).on(board.description.id.eq(boardDescription.id)) // 게시글 설명 조인
                 .leftJoin(teamUser).on(board.teamUserId.eq(teamUser.id)) // 팀유저에서 닉네임 가져오기
                 .leftJoin(user).on(teamUser.userId.eq(user.id)) // 유저 정보 조인하여 프로필 URI 가져오기
                 .where(board.teamBoardId.eq(teamBoardId))
