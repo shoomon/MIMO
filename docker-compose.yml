@@ -10,6 +10,8 @@ services:
       - ./frontend/.env
     networks:
       - frontend_backend_network
+    volumes:
+      - /usr/share/nginx/html:/usr/share/nginx/html
 
   server:
     build:
