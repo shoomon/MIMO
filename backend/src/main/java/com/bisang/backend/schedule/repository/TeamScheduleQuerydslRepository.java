@@ -2,21 +2,23 @@ package com.bisang.backend.schedule.repository;
 
 import static com.bisang.backend.common.exception.ExceptionCode.NOT_FOUND;
 import static com.bisang.backend.common.utils.PageUtils.SHORT_PAGE_SIZE;
+import static com.bisang.backend.common.utils.PageUtils.SMALL_SCHEDULE_PAGE_SIZE;
 import static com.bisang.backend.schedule.domain.QScheduleParticipants.scheduleParticipants;
 import static com.bisang.backend.schedule.domain.QTeamSchedule.teamSchedule;
 import static com.bisang.backend.schedule.domain.QTeamScheduleComment.teamScheduleComment;
 import static com.bisang.backend.team.domain.QTeamUser.teamUser;
 import static com.bisang.backend.user.domain.QUser.user;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.bisang.backend.schedule.controller.dto.ProfileDto;
 import org.springframework.stereotype.Service;
 
 import com.bisang.backend.common.exception.ScheduleException;
+import com.bisang.backend.schedule.controller.dto.ProfileDto;
 import com.bisang.backend.schedule.controller.dto.TeamScheduleCommentDto;
 import com.bisang.backend.schedule.controller.dto.TeamSimpleScheduleDto;
 import com.bisang.backend.schedule.controller.dto.TeamSpecificScheduleDto;
@@ -37,6 +39,20 @@ public class    TeamScheduleQuerydslRepository {
     private final JPAQueryFactory queryFactory;
     private final TeamScheduleJpaRepository teamScheduleJpaRepository;
     private final TeamUserJpaRepository teamUserJpaRepository;
+
+    public List<TeamSchedule> getTeamScheduleByStatusAndDateTime(ScheduleStatus status, LocalDateTime lastDateTime) {
+        BooleanBuilder lastDateTimeLt = new BooleanBuilder();
+        if (lastDateTime != null) {
+            lastDateTimeLt.and(teamSchedule.date.lt(lastDateTime));
+        }
+
+        return queryFactory
+                .selectFrom(teamSchedule)
+                .where(teamSchedule.scheduleStatus.eq(status), lastDateTimeLt)
+                .orderBy(teamSchedule.date.desc())
+                .limit(SMALL_SCHEDULE_PAGE_SIZE + 1)
+                .fetch();
+    }
 
     public TeamSpecificScheduleDto getTeamScheduleSpecific(Long teamScheduleId) {
         TeamSchedule schedule = findScheduleById(teamScheduleId);

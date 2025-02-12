@@ -1,6 +1,11 @@
 package com.bisang.backend.team.domain;
 
-import com.bisang.backend.common.exception.TeamException;
+import static com.bisang.backend.common.exception.ExceptionCode.INVALID_REQUEST;
+import static jakarta.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.PROTECTED;
+
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -8,17 +13,15 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.Table;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+
 import org.apache.commons.lang3.Validate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
+import com.bisang.backend.common.exception.TeamException;
 
-import static com.bisang.backend.common.exception.ExceptionCode.INVALID_REQUEST;
-import static jakarta.persistence.GenerationType.IDENTITY;
-import static lombok.AccessLevel.PROTECTED;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -27,7 +30,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Table(
         name = "team_review",
         indexes = {
-                @Index(name = "idx_team_teamUserId", columnList = "team_id, team_user_id desc")
+            @Index(name = "idx_team_teamUserId", columnList = "team_id, team_user_id desc")
         }
 )
 public class TeamReview {

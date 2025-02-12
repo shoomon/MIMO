@@ -3,6 +3,8 @@ package com.bisang.backend.schedule.service;
 import static com.bisang.backend.common.exception.ExceptionCode.*;
 import static com.bisang.backend.schedule.domain.ScheduleStatus.CLOSED;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,8 +20,6 @@ import com.bisang.backend.team.repository.TeamJpaRepository;
 import com.bisang.backend.team.repository.TeamUserJpaRepository;
 
 import lombok.RequiredArgsConstructor;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
