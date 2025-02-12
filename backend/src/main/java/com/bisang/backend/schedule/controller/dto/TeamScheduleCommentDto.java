@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 public record TeamScheduleCommentDto(
         Long teamScheduleCommentId,
+        Boolean isMyComment,
         String profileUri,
         String name,
         LocalDateTime time,

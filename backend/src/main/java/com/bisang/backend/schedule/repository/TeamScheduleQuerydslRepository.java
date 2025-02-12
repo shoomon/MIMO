@@ -60,10 +60,12 @@ public class    TeamScheduleQuerydslRepository {
                 .fetchOne();
     }
 
-    public List<TeamScheduleCommentDto> getTeamScheduleComments(Long teamScheduleId) {
+    public List<TeamScheduleCommentDto> getTeamScheduleComments(Long userId, Long teamScheduleId) {
+        userId = userId == null ? 0L : userId;
         List<TeamScheduleCommentDto> comments = queryFactory
                 .select(Projections.constructor(TeamScheduleCommentDto.class,
                         teamScheduleComment.id,
+                        teamScheduleComment.userId.eq(userId),
                         user.profileUri,
                         user.nickname,
                         teamScheduleComment.createdAt,
@@ -94,6 +96,7 @@ public class    TeamScheduleQuerydslRepository {
                 .map(comment -> {
                     return new TeamScheduleCommentDto(
                             comment.teamScheduleCommentId(),
+                            comment.isMyComment(),
                             comment.profileUri(),
                             nicknameMap.get(comment.name()),
                             comment.time(),
@@ -104,9 +107,11 @@ public class    TeamScheduleQuerydslRepository {
                 }).toList();
     }
 
-    public List<String> getProfilesByScheduleId(Long teamScheduleId) {
+    public List<ProfileDto> getProfilesByScheduleId(Long teamScheduleId) {
         return queryFactory
-                .select(user.profileUri)
+                .select(Projections.constructor(ProfileDto.class,
+                                user.id,
+                                user.profileUri))
                 .from(scheduleParticipants)
                 .join(user)
                 .on(scheduleParticipants.userId.eq(user.id))

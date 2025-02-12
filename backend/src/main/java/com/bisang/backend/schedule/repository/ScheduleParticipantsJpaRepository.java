@@ -8,4 +8,6 @@ public interface ScheduleParticipantsJpaRepository extends JpaRepository<Schedul
     Long countByTeamScheduleId(Long scheduleId);
 
     Boolean existsByTeamScheduleIdAndTeamUserId(Long teamScheduleId, Long teamUserId);
+
+    Boolean existsByTeamScheduleIdAndUserId(Long teamScheduleId, Long userId);
 }
