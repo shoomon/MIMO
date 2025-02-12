@@ -51,7 +51,7 @@ public class ChatMessageService {
                 message.getType()
         );
 
-        //template.convertAndSend(messageResponse);
+//        template.convertAndSend("/sub/chat" + teamId, messageResponse);
     }
 
     public List<ChatMessageResponse> getMessages(Long roomId, Long messageId, LocalDateTime timestamp) {

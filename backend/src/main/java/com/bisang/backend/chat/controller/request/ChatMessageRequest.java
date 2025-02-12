@@ -1,6 +1,6 @@
 package com.bisang.backend.chat.controller.request;
 
 public record ChatMessageRequest(
-        String chat
+        String message
 ) {
 }

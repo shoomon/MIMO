@@ -1,13 +1,13 @@
 package com.bisang.backend.chat.controller;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 import com.bisang.backend.common.utils.DateUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,9 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.bisang.backend.auth.annotation.AuthSimpleUser;
 import com.bisang.backend.auth.annotation.AuthUser;
-import com.bisang.backend.auth.domain.SimpleUser;
 import com.bisang.backend.chat.controller.request.ChatMessageRequest;
 import com.bisang.backend.chat.controller.response.ChatMessageResponse;
 import com.bisang.backend.chat.domain.ChatType;
@@ -42,15 +40,16 @@ public class ChatMessageController {
     @MessageMapping("/{roomId}")
     public void sendMessage(
             @DestinationVariable Long roomId,
-            @AuthSimpleUser User user,
+            SimpMessageHeaderAccessor headerAccessor,
             ChatMessageRequest chat
     ) {
-        Long userId = user.getId();
+        Long userId = (Long)headerAccessor.getSessionAttributes().get("userId");
+
         if (chatroomUserService.isMember(roomId, userId)) {
             RedisChatMessage redisMessage = new RedisChatMessage(
                     roomId,
                     userId,
-                    chat.chat(),
+                    chat.message(),
                     LocalDateTime.now(),
                     ChatType.MESSAGE
             );
@@ -80,14 +79,14 @@ public class ChatMessageController {
     //테스트용
     @PostMapping("/test/{roomId}")
     public ResponseEntity<String> sendM(
-            @AuthSimpleUser SimpleUser user,
             @PathVariable Long roomId,
-            @RequestBody ChatMessageRequest chat) {
-        if (chatroomUserService.isMember(roomId, user.userId())) {
+            @RequestBody ChatMessageRequest chat
+    ) {
+        if (chatroomUserService.isMember(roomId, 1L)) {
             RedisChatMessage redisMessage = new RedisChatMessage(
                     roomId,
-                    user.userId(),
-                    chat.chat(),
+                    1L,
+                    chat.message(),
                     LocalDateTime.now(),
                     ChatType.MESSAGE
             );
