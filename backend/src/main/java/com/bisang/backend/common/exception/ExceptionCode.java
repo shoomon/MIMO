@@ -40,7 +40,8 @@ public enum ExceptionCode {
     FULL_SCHEDULE(6000, "해당 일정은 정원을 초과했습니다."),
     NOT_MINUS_MONEY(6001, "일정의 금액은 음수일 수 없습니다."),
 
-    NOT_AUTHOR(7001, "작성자만 글을 수정할 수 있습니다.");
+    NOT_AUTHOR(7001, "작성자만 글을 수정할 수 있습니다."),
+    PAGE_LIMIT(7002, "최대 페이지 수를 초과할 수 없습니다.");
 
     private final int code;
     private final String message;

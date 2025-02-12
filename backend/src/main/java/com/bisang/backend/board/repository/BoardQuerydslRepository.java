@@ -48,7 +48,7 @@ public class BoardQuerydslRepository {
                 .fetchOne()).orElseThrow(() -> new EntityNotFoundException("게시글 정보를 찾을 수 없습니다."));
     }
 
-    public List<SimpleBoardListDto> getBoardList(Long teamBoardId){
+    public List<SimpleBoardListDto> getBoardList(Long teamBoardId, Long offset){
         QComment commentSub = new QComment("commentSub");
         return queryFactory
                 .select(Projections.constructor(SimpleBoardListDto.class,

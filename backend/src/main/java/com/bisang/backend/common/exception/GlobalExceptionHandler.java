@@ -157,4 +157,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.badRequest()
                 .body(new ExceptionResponse(exception.getCode(), exception.getMessage()));
     }
+
+    @ExceptionHandler(BoardException.class)
+    public ResponseEntity<ExceptionResponse> handleBoardException(BoardException exception) {
+        log.warn(exception.getMessage(), exception);
+        return ResponseEntity.badRequest()
+                .body(new ExceptionResponse(exception.getCode(), exception.getMessage()));
+    }
 }
