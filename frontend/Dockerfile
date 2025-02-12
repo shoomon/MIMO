@@ -16,10 +16,6 @@ COPY ./frontend/ /app/
 # 빌드
 RUN npm run build
 
-# 디버깅용: 빌드된 파일 확인
-RUN ls -la /app
-RUN ls -la /app/dist
-
 # 2. Serve stage using Nginx
 FROM nginx:latest
 
