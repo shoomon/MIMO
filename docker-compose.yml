@@ -50,7 +50,7 @@ services:
     entrypoint: >
       /bin/sh -c '
       if [ ! -f /etc/letsencrypt/live/i12a504.p.ssafy.io/fullchain.pem ]; then
-        certbot certonly --webroot -w /var/www/certbot --email your-email@example.com -d i12a504.p.ssafy.io --agree-tos --no-eff-email --force-renewal;
+        certbot certonly --webroot -w /var/www/certbot --email pkb1998@naver.com -d i12a504.p.ssafy.io --agree-tos --no-eff-email --force-renewal;
       fi;
       exit 0;
       '
