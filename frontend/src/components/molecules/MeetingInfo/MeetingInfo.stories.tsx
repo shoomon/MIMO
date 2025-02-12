@@ -46,5 +46,6 @@ export const Default: Story = {
         tag: sampleTagList,
         maxCapacity: 12,
         currentCapacity: 6,
+        teamUserId: 2,
     },
 };

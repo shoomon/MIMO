@@ -13,7 +13,7 @@ export interface MeetingInfoProps {
     tag: TagProps[];
     maxCapacity: number;
     currentCapacity: number;
-    teamUserId: string | null;
+    teamUserId: number | null;
 }
 
 const MeetingInfo = ({

@@ -15,7 +15,7 @@ const TeamLayout = () => {
         queryFn: () => getTeamInfo(teamId),
     });
 
-    const formattedTags = tagFormatter(data?.tag || []);
+    const formattedTags = tagFormatter(data?.tags || []);
 
     return (
         <main className="w-full">
@@ -39,7 +39,11 @@ const TeamLayout = () => {
                         tag={formattedTags}
                         maxCapacity={data?.maxCapacity || 0}
                         currentCapacity={data?.currentCapacity || 0}
-                        teamUserId={data?.teamUserId}
+                        teamUserId={
+                            data?.teamUserId !== undefined
+                                ? data.teamUserId
+                                : null
+                        }
                     />
                     <Album id={teamId ?? ''} items={album.items} />
                 </section>

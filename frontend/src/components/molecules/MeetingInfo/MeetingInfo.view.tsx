@@ -13,7 +13,7 @@ export interface MeetingInfoViewProps {
     currentCapacity: number;
     onUpdateInfo: () => void;
     onJoinRequest: () => void;
-    teamUserId: string | null;
+    teamUserId: number | null;
 }
 
 const MeetingInfoView = ({
@@ -36,7 +36,7 @@ const MeetingInfoView = ({
             />
             <span className="text-display-xs font-extrabold">{title}</span>
             <div className="flex gap-2 py-1">
-                {displayedTags && '태그가 존재하지 않습니다.'}
+                {displayedTags ? displayedTags : '태그가 존재하지 않습니다.'}
             </div>
             <div className="flex items-center justify-between pt-4">
                 <div className="text-xl font-medium text-gray-700">
@@ -49,15 +49,13 @@ const MeetingInfoView = ({
                         content="정보 수정"
                         onClick={onUpdateInfo}
                     />
-                    {teamUserId == null ? (
+                    {teamUserId == null && (
                         <ButtonDefault
                             type="primary"
                             iconId="Mail"
                             content="가입신청"
                             onClick={onJoinRequest}
                         />
-                    ) : (
-                        displayedTags
                     )}
                 </div>
             </div>

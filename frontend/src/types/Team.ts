@@ -23,7 +23,7 @@ export interface TeamDto {
     maxCapacity: number;
     currentCapacity: number;
     score: number;
-    tag: string[];
+    tags: string[];
 }
 
 export interface TeamResponse {
@@ -36,6 +36,22 @@ export interface TeamResponse {
     area: Area;
     maxCapacity: number;
     currentCapacity: number;
+}
+
+export type TeamUserRole = 'LEADER' | 'CO_LEADER' | 'MEMBER';
+
+export interface TeamUserDto {
+    teamUserId: number;
+    nickname: string;
+    role: TeamUserRole;
+}
+
+export interface TeamUserResponse {
+    size: number;
+    hasNext: boolean;
+    role: TeamUserRole;
+    lastTeamUserId: number;
+    users: TeamUserDto[];
 }
 
 export interface TeamInfosResponse {

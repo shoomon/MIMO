@@ -5,6 +5,7 @@ import {
     TeamInfosResponse,
     TeamScheduleSpecificResponse,
     TeamSchedulesResponse,
+    TeamUserResponse,
 } from '@/types/Team';
 
 export const getTeamInfo = async (teamId: string): Promise<TeamDto> => {
@@ -14,6 +15,26 @@ export const getTeamInfo = async (teamId: string): Promise<TeamDto> => {
 
     try {
         const response = await customFetch('/team', {
+            method: 'GET',
+            params: { teamId }, // params는 객체여야 함
+        });
+
+        return response.json();
+    } catch (error) {
+        console.error('Error fetching category teams:', error);
+        throw error;
+    }
+};
+
+export const getTeamUsers = async (
+    teamId: string,
+): Promise<TeamUserResponse> => {
+    if (!teamId) {
+        throw new Error('팀 아이디가 없습니다.');
+    }
+
+    try {
+        const response = await customFetch('/team-user/users', {
             method: 'GET',
             params: { teamId }, // params는 객체여야 함
         });
