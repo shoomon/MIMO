@@ -15,14 +15,14 @@ public class CommentService {
 
     private final CommentJpaRepository commentJpaRepository;
 
-    public void createComment(
+    public Long createComment(
             Long userId,
             Long teamUserId,
             Long postId,
             Long parentId,
             String content) {
         if(parentId == null) {
-            commentJpaRepository.save(
+            return commentJpaRepository.save(
                     Comment.builder()
                             .boardId(postId)
                             .teamUserId(teamUserId)
@@ -30,11 +30,10 @@ public class CommentService {
                             .parentCommentId(null)
                             .content(content)
                             .build()
-            );
-            return;
+            ).getId();
         }
 
-        commentJpaRepository.save(
+        return commentJpaRepository.save(
                 Comment.builder()
                         .boardId(postId)
                         .teamUserId(teamUserId)
@@ -42,17 +41,17 @@ public class CommentService {
                         .parentCommentId(parentId)
                         .content(content)
                         .build()
-        );
+        ).getId();
     }
 
-    public void updateComment(Long userId, Long commentId, String content) {
+    public Long updateComment(Long userId, Long commentId, String content) {
         Comment comment = commentJpaRepository.findById(commentId)
                 .orElseThrow(()->new EntityNotFoundException("댓글을 찾을 수 없습니다."));
 
         if(!isAuthor(comment, userId)) throw new BoardException(ExceptionCode.NOT_AUTHOR);
 
         comment.updateContent(content);
-        commentJpaRepository.save(comment);
+        return commentJpaRepository.save(comment).getId();
     }
 
     public void deleteComment(Long userId, Long commentId) {

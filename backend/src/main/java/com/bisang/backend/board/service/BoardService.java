@@ -7,6 +7,7 @@ import com.bisang.backend.board.controller.response.BoardListResponse;
 import com.bisang.backend.common.exception.BoardException;
 import com.bisang.backend.common.exception.ExceptionCode;
 import com.bisang.backend.s3.service.S3Service;
+import com.bisang.backend.user.repository.UserJpaRepository;
 import jakarta.persistence.EntityNotFoundException;
 
 import org.springframework.stereotype.Service;
@@ -32,6 +33,7 @@ public class BoardService {
     private final BoardQuerydslRepository boardQuerydslRepository;
     private final CommentQuerydslRepository commentQuerydslRepository;
     private final S3Service s3Service;
+    private final UserJpaRepository userJpaRepository;
 
     //    @TeamMember
     public Long createPost(
@@ -43,9 +45,9 @@ public class BoardService {
             List<String> fileUris
     ) {
         BoardDescription boardDescription = boardDescriptionJpaRepository.save(new BoardDescription(description));
-        TeamUser teamUser = teamUserJpaRepository.findById(teamUserId)
+        teamUserJpaRepository.findById(teamUserId)
                 .orElseThrow(() -> new EntityNotFoundException("팀유저를 찾을 수 없습니다."));
-//        Long teamUserId = Long.parseLong(1+""); //테스트용
+
         Board post = boardJpaRepository.save(Board.builder()
                 .teamBoardId(teamBoardId)
                 .teamUserId(teamUserId)
@@ -77,8 +79,26 @@ public class BoardService {
     public BoardDetailResponse getPostDetail(Long postId) {
         BoardDetailResponse postDetail = null;
         boardJpaRepository.increaseViewCount(postId);
-        BoardDto post = boardQuerydslRepository.getBoardDetail(postId);
-        List<CommentListDto> comments = getCommentList(postId); //CommentService에 의존하지 않기 위해 BoardService에 메소드 추가
+
+        BoardInfoDto postInfo = boardQuerydslRepository.getBoardInfo(postId);
+        String userProfileUri = userJpaRepository.getUserProfileUri(postInfo.userId());
+        String userNickname = teamUserJpaRepository.getTeamUserNickname(postInfo.teamUserId());
+        BoardDto post = new BoardDto(
+                postId,
+                postInfo.userId(),
+                postInfo.teamUserId(),
+                userProfileUri,
+                userNickname,
+                postInfo.boardName(),
+                postInfo.postTitle(),
+                postInfo.description(),
+                postInfo.likeCount(),
+                postInfo.viewCount(),
+                postInfo.createdAt(),
+                postInfo.updatedAt()
+        );
+
+        List<CommentListDto> comments = getCommentList(postId);
         List<BoardFileDto> files = boardImageJpaRepository.findByBoardId(postId);
 
         postDetail = new BoardDetailResponse(post, files, comments);
