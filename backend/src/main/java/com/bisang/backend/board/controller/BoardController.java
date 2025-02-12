@@ -51,7 +51,7 @@ public class BoardController {
         return ResponseEntity.ok(
                 boardService.createPost(
                         request.teamBoardId(),
-                        request.teamId(),
+                        request.teamUserId(),
                         user.getId(),
                         request.title(),
                         request.description(),

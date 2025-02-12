@@ -8,8 +8,8 @@ import jakarta.validation.constraints.NotNull;
 public record CreatePostRequest(
         @NotNull(message = "게시판 번호가 없습니다.")
         Long teamBoardId,
-        @NotNull(message = "팀 번호가 없습니다.")
-        Long teamId,
+        @NotNull(message = "팀 유저 번호가 없습니다.")
+        Long teamUserId,
         @NotBlank(message = "제목을 입력해야 합니다.")
         String title,
         @NotBlank(message = "내용을 입력해야 합니다.")

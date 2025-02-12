@@ -36,16 +36,15 @@ public class BoardService {
     //    @TeamMember
     public Long createPost(
             long teamBoardId,
-            long teamId,
+            long teamUserId,
             long userId,
             String title,
             String description,
             List<String> fileUris
     ) {
         BoardDescription boardDescription = boardDescriptionJpaRepository.save(new BoardDescription(description));
-        TeamUser teamUser = teamUserJpaRepository.findByTeamIdAndUserId(teamId, userId)
+        TeamUser teamUser = teamUserJpaRepository.findById(teamUserId)
                 .orElseThrow(() -> new EntityNotFoundException("팀유저를 찾을 수 없습니다."));
-        Long teamUserId = teamUser.getUserId();
 //        Long teamUserId = Long.parseLong(1+""); //테스트용
         Board post = boardJpaRepository.save(Board.builder()
                 .teamBoardId(teamBoardId)
