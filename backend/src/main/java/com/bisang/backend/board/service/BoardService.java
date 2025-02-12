@@ -71,9 +71,9 @@ public class BoardService {
     }
     
 //    @TeamMember
-    public BoardListResponse getPostList(Long teamBoardId, Long offset){
+    public BoardListResponse getPostList(Long teamBoardId, Long offset, Integer pageSize){
         String boardName = teamBoardJpaRepository.getTeamBoardNameById(teamBoardId);
-        List<SimpleBoardListDto> list = boardQuerydslRepository.getBoardList(teamBoardId, offset);
+        List<SimpleBoardListDto> list = boardQuerydslRepository.getBoardList(teamBoardId, offset, pageSize);
         return new BoardListResponse(boardName, list);
     }
 

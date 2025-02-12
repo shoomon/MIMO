@@ -48,7 +48,7 @@ public class BoardQuerydslRepository {
                 .fetchOne()).orElseThrow(() -> new EntityNotFoundException("게시글 정보를 찾을 수 없습니다."));
     }
 
-    public List<SimpleBoardListDto> getBoardList(Long teamBoardId, Long offset){
+    public List<SimpleBoardListDto> getBoardList(Long teamBoardId, Long offset, Integer pageSize){
         QComment commentSub = new QComment("commentSub");
         return queryFactory
                 .select(Projections.constructor(SimpleBoardListDto.class,
@@ -72,6 +72,9 @@ public class BoardQuerydslRepository {
                 .groupBy(board.id, user.profileUri, teamUser.nickname, teamBoard.boardName,
                         board.title, boardDescription.description, board.likes, board.viewCount,
                         board.createdAt, board.lastModifiedAt)
+                .orderBy(board.createdAt.desc())
+                .offset(offset)
+                .limit(pageSize)
                 .fetch();
     }
 }
