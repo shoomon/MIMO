@@ -7,8 +7,8 @@ import ChatItemView, { ChatItemProps } from './ChatItem.view';
  * @param {string} message  - 표시될 메세지 입니다.
  * @returns {JSX.Element} - 렌더링된 ChatIem 컴포넌트를 반환합니다.
  */
-const ChatItem = ({ type, message }: ChatItemProps) => {
-    const props = { type, message };
+const ChatItem = ({ type, item, hasReceivedMessage }: ChatItemProps) => {
+    const props = { type, item, hasReceivedMessage };
 
     return <ChatItemView {...props} />;
 };
