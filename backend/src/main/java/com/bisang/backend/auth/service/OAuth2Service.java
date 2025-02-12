@@ -1,7 +1,6 @@
 package com.bisang.backend.auth.service;
 
 import com.bisang.backend.account.service.AccountService;
-import com.bisang.backend.common.exception.UserException;
 import com.bisang.backend.user.repository.UserJpaRepository;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
