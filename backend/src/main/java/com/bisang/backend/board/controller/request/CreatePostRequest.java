@@ -6,9 +6,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record CreatePostRequest(
-        @NotNull(message = "게시판 번호가 없습니다.")
+        @NotNull(message = "게시판 아이디가 없습니다.")
         Long teamBoardId,
-        @NotNull(message = "팀 유저 번호가 없습니다.")
+        @NotNull(message = "팀 유저 아이디가 없습니다.")
         Long teamUserId,
         @NotBlank(message = "제목을 입력해야 합니다.")
         String title,

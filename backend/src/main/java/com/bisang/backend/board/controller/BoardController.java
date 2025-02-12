@@ -114,7 +114,7 @@ public class BoardController {
     @PostMapping("/like")
     public ResponseEntity<String> likePost(
             @AuthUser User user,
-            @RequestBody LikePostRequest request
+            @Valid @RequestBody LikePostRequest request
     ) {
         return ResponseEntity.ok(boardService.likePost(request.teamUserId(), request.boardId()));
     }

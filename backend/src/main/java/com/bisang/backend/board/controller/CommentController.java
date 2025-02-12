@@ -2,7 +2,10 @@ package com.bisang.backend.board.controller;
 
 import com.bisang.backend.auth.annotation.AuthUser;
 import com.bisang.backend.board.controller.request.CreateCommentRequest;
+import com.bisang.backend.board.controller.request.UpdateCommentRequest;
+import com.bisang.backend.board.service.CommentService;
 import com.bisang.backend.user.domain.User;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -20,22 +23,42 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 public class CommentController {
+    private final CommentService commentService;
+
     @PostMapping
     public void createComment(
             @AuthUser User user,
-            @RequestParam(value = "post") Long postId,
-            @RequestBody CreateCommentRequest request
+            @Valid @RequestBody CreateCommentRequest request
     ) {
-
+        commentService.createComment(
+                user.getId(),
+                request.teamUserId(),
+                request.postId(),
+                request.parentId(),
+                request.content()
+        );
     }
 
     @PutMapping
-    public void updateComment() {
-
+    public void updateComment(
+            @AuthUser User user,
+            @Valid @RequestBody UpdateCommentRequest request
+    ) {
+        commentService.updateComment(
+                user.getId(),
+                request.commentId(),
+                request.content()
+        );
     }
 
     @DeleteMapping
-    public void deleteComment() {
-
+    public void deleteComment(
+            @AuthUser User user,
+            @RequestParam(value = "id") Long commentId
+    ) {
+        commentService.deleteComment(
+                user.getId(),
+                commentId
+        );
     }
 }
