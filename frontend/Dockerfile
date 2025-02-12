@@ -20,7 +20,8 @@ RUN npm run build
 FROM nginx:latest
 
 # Vite로 빌드된 파일을 Nginx 서버로 복사
-COPY --from=build /app/dist /usr/share/nginx/html
+# Vite로 빌드된 파일을 Nginx 서버로 복사
+COPY --from=build /app /usr/share/nginx/html
 
 # Nginx 실행
 CMD ["nginx", "-g", "daemon off;"]
