@@ -44,6 +44,7 @@ public class ChatMessageService {
         Map<Object, Object> userInfo = chatroomUserRepository.getUserInfo(chatroomId, message.getUserId());
         ChatMessageResponse messageResponse = new ChatMessageResponse(
                 message.getId(),
+                message.getUserId(),
                 (String)userInfo.get("nickname"),
                 (String)userInfo.get("profileImage"),
                 message.getChat(),
@@ -65,6 +66,7 @@ public class ChatMessageService {
             );
             ChatMessageResponse messageResponse = new ChatMessageResponse(
                     message.getId(),
+                    message.getUserId(),
                     (String)userInfo.get("nickname"),
                     (String)userInfo.get("profileImage"),
                     message.getChat(),
