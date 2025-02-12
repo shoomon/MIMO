@@ -3,6 +3,7 @@ package com.bisang.backend.schedule.controller.response;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.bisang.backend.schedule.controller.dto.ProfileDto;
 import com.bisang.backend.schedule.controller.dto.TeamScheduleCommentDto;
 import com.bisang.backend.schedule.domain.ScheduleStatus;
 
@@ -17,7 +18,7 @@ public record TeamScheduleSpecificResponse(
         LocalDateTime date,
         Long price,
         String nameOfLeader,
-        List<String> profileUris,
+        List<ProfileDto> profileUris,
         Long maxParticipants,
         Long currentParticipants,
         String title,
