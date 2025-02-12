@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.bisang.backend.chat.repository.chatroomuser.ChatroomUserRedisRepository;
 import org.springframework.stereotype.Repository;
 
 import com.bisang.backend.chat.domain.ChatMessage;
@@ -19,6 +20,7 @@ public class ChatMessageRepository {
 
     private final ChatMessageRedisRepository chatMessageRedisRepository;
     private final ChatMessageJpaRepository chatMessageJpaRepository;
+    private final ChatroomUserRedisRepository chatroomUserRedisRepository;
 
     public void redisSaveMessage(long teamId, RedisChatMessage message) {
         chatMessageRedisRepository.saveMessage(teamId, message);
@@ -91,7 +93,15 @@ public class ChatMessageRepository {
         result.put("lastDatetime", chatMessage.getCreatedAt());
     }
 
-    public Long calculateUnreadCount(Long chatroomId, Double lastReadScore) {
-        return chatMessageRedisRepository.unreadCount(chatroomId, lastReadScore);
+    public Long calculateUnreadCount(Long chatroomId, Double lastReadScore, Long lastChatId) {
+        boolean isChatPresent = chatMessageRedisRepository.checkChat(chatroomId, lastReadScore);
+        if (isChatPresent) {
+            return chatMessageRedisRepository.unreadCount(chatroomId, lastReadScore)-1;
+        }
+
+        Long redisChatCount = chatMessageRedisRepository.countAllChat(chatroomId);
+        Long dbChatCount = chatMessageJpaRepository.countByChatroomIdAndIdGreaterThan(chatroomId, lastChatId);
+
+        return redisChatCount + dbChatCount;
     }
 }

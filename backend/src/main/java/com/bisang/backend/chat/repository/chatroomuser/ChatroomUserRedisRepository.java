@@ -18,8 +18,9 @@ public class ChatroomUserRedisRepository {
 
     // chatroomId로 해당 채팅방에 속해있는 모든 유저의 userId를 저장하고 가져오는 키
     private static final String teamMemberKey = "teamMember:";
-    // chatroomId, userId로 유저가 가장 마지막으로 읽은 메시지 score 저장하고 가져오는 키
+    // chatroomId, userId로 유저가 가장 마지막으로 읽은 메시지 score와 id를 저장하고 가져오는 키
     private static final String lastReadScoreKey = "lastReadScore:";
+    private static final String lastReadIdKey = "lastReadId:";
 
     public void insertMember(Long teamId, Long userId) {
         redisLongTemplate.opsForSet().add(teamMemberKey + teamId, userId);
@@ -39,10 +40,16 @@ public class ChatroomUserRedisRepository {
 
     public void insertLastReadScore(Long chatroomId, Long userId, LocalDateTime lastDateTime, Long lastChatId) {
         double score = lastDateTime.toInstant(ZoneOffset.ofTotalSeconds(0)).toEpochMilli() + (lastChatId % 1000) / 1000.0;
+        System.out.println("calculate:" + score);
         redisDoubleTemplate.opsForValue().set(lastReadScoreKey + chatroomId + ":" + userId, score);
+        redisLongTemplate.opsForValue().set(lastReadIdKey + chatroomId + ":" + userId, lastChatId);
     }
 
     public Double getLastReadScore(Long chatroomId, Long userId) {
         return redisDoubleTemplate.opsForValue().get(lastReadScoreKey + chatroomId + ":" + userId);
+    }
+
+    public Long getLastReadChatId(Long chatroomId, Long userId) {
+        return redisLongTemplate.opsForValue().get(lastReadIdKey + chatroomId + ":" + userId);
     }
 }

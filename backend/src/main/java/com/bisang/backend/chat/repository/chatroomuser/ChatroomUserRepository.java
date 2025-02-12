@@ -111,4 +111,8 @@ public class ChatroomUserRepository {
     public double getLastReadScore(Long chatroomId, Long userId) {
         return chatroomUserRedisRepository.getLastReadScore(chatroomId, userId);
     }
+
+    public Long getLastReadChatId(Long chatroomId, Long userId) {
+        return chatroomUserRedisRepository.getLastReadChatId(chatroomId, userId);
+    }
 }

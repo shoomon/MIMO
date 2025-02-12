@@ -85,7 +85,8 @@ public class ChatroomService {
             Map<Object, Object> userInfo = chatroomUserRepository.getUserInfo(chatroomId, userId);
 
             double lastReadScore = chatroomUserRepository.getLastReadScore(chatroomId, userId);
-            Long unreadCount = chatMessageRepository.calculateUnreadCount(chatroomId, lastReadScore);
+            Long lastReadChatId = chatroomUserRepository.getLastReadChatId(chatroomId, userId);
+            Long unreadCount = chatMessageRepository.calculateUnreadCount(chatroomId, lastReadScore, lastReadChatId);
 
             ChatroomResponse cr = new ChatroomResponse(chatroomId,
                     (String)chatroomInfo.get("title"),

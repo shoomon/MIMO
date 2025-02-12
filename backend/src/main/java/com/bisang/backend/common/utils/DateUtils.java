@@ -3,6 +3,7 @@ package com.bisang.backend.common.utils;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 public class DateUtils {
@@ -23,9 +24,7 @@ public class DateUtils {
      */
     public static LocalDateTime DateToLocalDateTime(String date) {
 
-        Instant instant = Instant.parse(date);
-        LocalDateTime localDateTime = instant.atZone(ZoneId.systemDefault()).toLocalDateTime();
-
-        return localDateTime;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSS");
+        return LocalDateTime.parse(date, formatter);
     }
 }

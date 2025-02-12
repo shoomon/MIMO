@@ -83,6 +83,16 @@ public class ChatMessageRedisRepository {
     }
 
     public Long unreadCount(Long chatroomId, Double lastReadScore) {
-        return redisChatMessageTemplate.opsForZSet().count(teamMessageKey + chatroomId, lastReadScore + 0.0001, Double.MAX_VALUE);
+        return redisChatMessageTemplate.opsForZSet().count(teamMessageKey + chatroomId, lastReadScore, Double.MAX_VALUE);
+    }
+
+    public boolean checkChat(Long chatroomId, Double lastReadScore) {
+        Long count = redisChatMessageTemplate.opsForZSet()
+                .count(teamMessageKey + chatroomId, lastReadScore, lastReadScore); // 특정 score 값만 조회
+        return count != null && count > 0;
+    }
+
+    public Long countAllChat(Long chatroomId) {
+        return redisChatMessageTemplate.opsForZSet().size(teamMessageKey + chatroomId);
     }
 }
