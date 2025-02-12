@@ -6,5 +6,5 @@ public enum ChatType {
      * MESSAGE : 일반 채팅
      * LEAVE : 누군가의 탈퇴(강퇴)를 알리는 메시지
      */
-    ENTER, MESSAGE, LEAVE
+    ENTER, MESSAGE, LEAVE, FORCE
 }

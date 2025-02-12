@@ -77,4 +77,8 @@ public class ChatroomRepository {
                 .orElseThrow(() -> new ChatroomException(NOT_FOUND_TEAM));
         chatroom.setProfileUri(profileUri);
     }
+
+    public Long getChatroomIdByteamId(Long teamId) {
+        return chatroomJpaRepository.findIdByTeamId(teamId);
+    }
 }

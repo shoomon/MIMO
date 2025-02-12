@@ -28,20 +28,20 @@ public class ChatMessageService {
 
     private final SimpMessagingTemplate template;
 
-    public void broadcastMessage(Long teamId, RedisChatMessage message) {
-        Set<Long> teamMembers = chatroomUserRepository.getTeamMembers(teamId);
+    public void broadcastMessage(Long chatroomId, RedisChatMessage message) {
+        Set<Long> teamMembers = chatroomUserRepository.getTeamMembers(chatroomId);
 
         //여기에 teamMember 없으면 log 찍어야하나? 없을 수 없는 곳인데 없는 경우임
 
         for (Long userId : teamMembers) {
             chatroomRepository.redisUpdateUserChatroom(
                     userId,
-                    teamId,
+                    chatroomId,
                     (double)message.getTimestamp().toInstant(ZoneOffset.ofTotalSeconds(0)).toEpochMilli());
         }
-        chatMessageRepository.redisSaveMessage(teamId, message);
+        chatMessageRepository.redisSaveMessage(chatroomId, message);
 
-        Map<Object, Object> userInfo = chatroomUserRepository.getUserInfo(teamId, message.getUserId());
+        Map<Object, Object> userInfo = chatroomUserRepository.getUserInfo(chatroomId, message.getUserId());
         ChatMessageResponse messageResponse = new ChatMessageResponse(
                 message.getId(),
                 (String)userInfo.get("nickname"),

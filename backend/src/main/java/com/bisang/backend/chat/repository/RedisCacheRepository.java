@@ -31,11 +31,6 @@ public class RedisCacheRepository {
         redisTemplate.opsForHash().put(USER_KEY + chatroomId + ":" + userId, "nickname", nickname);
     }
 
-    public void updateUserProfileUri(Long chatroomId, Long userId, String profileUri) {
-        redisTemplate.opsForHash().put(USER_KEY + chatroomId + ":" + userId, "profileImage", profileUri);
-
-    }
-
     public void cacheChatroomInfo(Long chatroomId, String roomName, String profileUri, ChatroomStatus chatroomStatus) {
         String key = CHATROOM_KEY + chatroomId;
         redisTemplate.opsForHash().put(key, "title", roomName);

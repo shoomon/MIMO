@@ -57,8 +57,8 @@ public class ChatroomController {
     //테스트용
 
     @GetMapping("/test/create-chatroom")
-    public ResponseEntity<String> createChatroom(@AuthUser User user, @RequestParam("title") String title) {
-        chatroomService.createChatroom(user.getId(), user.getNickname(), title, "", ChatroomStatus.GROUP);
+    public ResponseEntity<String> createChatroom(@AuthUser User user, @RequestParam("title") String title, @RequestParam("teamId") Long teamId) {
+        chatroomService.createChatroom(user.getId(), teamId, user.getNickname(), title, "", ChatroomStatus.GROUP);
         return ResponseEntity.ok().body(title + " 생성 성공");
     }
 
@@ -68,7 +68,7 @@ public class ChatroomController {
             @RequestParam("nickname") String nickname,
             @RequestParam("teamId") Long teamId
     ) {
-        chatroomService.enterChatroom(teamId, userId, nickname);
+        chatroomUserService.enterChatroom(teamId, userId, nickname);
         return ResponseEntity.ok().body(nickname + "님 입장");
     }
 
@@ -77,9 +77,18 @@ public class ChatroomController {
             @RequestParam("userId") Long userId,
             @RequestParam("teamId") Long teamId
     ) {
-        if (chatroomService.leaveChatroom(userId, teamId)) {
+        if (chatroomUserService.leaveChatroom(userId, teamId)) {
             return ResponseEntity.ok().body(userId + "번 유저 퇴장");
         }
         return ResponseEntity.badRequest().body("퇴장 실패");
+    }
+
+    @GetMapping("/test/force-leave")
+    public ResponseEntity<String> forceLeave(
+            @RequestParam("userId") Long userId,
+            @RequestParam("teamId") Long teamId
+    ) {
+        chatroomUserService.forceLeave(teamId, userId);
+        return ResponseEntity.ok().body(userId + "번 유저 강퇴");
     }
 }

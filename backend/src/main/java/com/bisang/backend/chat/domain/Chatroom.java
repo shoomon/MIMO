@@ -27,6 +27,9 @@ public class Chatroom {
     @Column(name = "chatroom_id")
     private Long id;
 
+    @Column(name = "team_id")
+    private Long teamId;
+
     @Column(name = "chatroom_user_id", nullable = false)
     private Long userId;
 
@@ -48,7 +51,20 @@ public class Chatroom {
         this.status = status;
     }
 
+    private Chatroom(Long userId, Long teamId, String title, String profileUri, ChatroomStatus status) {
+        this.userId = userId;
+        this.teamId = teamId;
+        this.title = title;
+        this.profileUri = profileUri;
+        this.status = status;
+    }
+
     public static Chatroom createChatroom(Long userId, String title, String profileUri, ChatroomStatus status) {
         return new Chatroom(userId, title, profileUri, status);
     }
+
+    public static Chatroom createTeamChatroom(Long userId, Long teamId, String title, String profileUri, ChatroomStatus status) {
+        return new Chatroom(userId, teamId, title, profileUri, status);
+    }
+
 }

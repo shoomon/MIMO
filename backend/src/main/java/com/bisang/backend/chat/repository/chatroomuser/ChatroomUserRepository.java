@@ -96,10 +96,6 @@ public class ChatroomUserRepository {
         user.setNickname(nickname);
     }
 
-    public void updateProfileUri(Long userId, Long teamId, String profileUri) {
-        redisCacheRepository.updateUserProfileUri(teamId, userId, profileUri);
-    }
-
     @Transactional
     public void updateLastRead(Long userId, LocalDateTime lastDateTime, Long roomId, Long lastChatId) {
         //TODO: db에 어떻게 저장할지 생각해봐야함
