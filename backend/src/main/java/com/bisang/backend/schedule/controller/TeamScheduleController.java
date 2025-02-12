@@ -71,7 +71,7 @@ public class TeamScheduleController {
             @RequestParam Long teamId,
             @RequestParam(required = false) Long lastTeamScheduleId
     ) {
-        var adhocSchedule = teamScheduleEveryOneService.getSchedules(teamId, REGURAL, lastTeamScheduleId);
+        var adhocSchedule = teamScheduleEveryOneService.getSchedules(teamId, REGULAR, lastTeamScheduleId);
         return ResponseEntity.ok(adhocSchedule);
     }
 

@@ -67,7 +67,7 @@ public class AuthenticationArgumentResolver implements HandlerMethodArgumentReso
     }
 
     private String extractRefreshToken(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
+        Cookie[] cookies = request.getCookies ();
 
         if (cookies == null) {
             throw new InvalidJwtException(ExceptionCode.INVALID_REFRESH_TOKEN);
