@@ -50,8 +50,20 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisTemplate<String, Long> redisUserChatroomTemplate(RedisConnectionFactory redisConnectionFactory) {
+    public RedisTemplate<String, Long> redisLongTemplate(RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, Long> template = new RedisTemplate<>();
+        template.setConnectionFactory(redisConnectionFactory);
+
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setHashKeySerializer(new StringRedisSerializer());
+
+        template.afterPropertiesSet();
+        return template;
+    }
+
+    @Bean
+    public RedisTemplate<String, Double> redisDoubleTemplate(RedisConnectionFactory redisConnectionFactory) {
+        RedisTemplate<String, Double> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory);
 
         template.setKeySerializer(new StringRedisSerializer());

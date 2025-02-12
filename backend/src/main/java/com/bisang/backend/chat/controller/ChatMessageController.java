@@ -68,6 +68,7 @@ public class ChatMessageController {
         if (chatroomUserService.isMember(roomId, user.getId())) {
             LocalDateTime datetime = DateUtils.DateToLocalDateTime(timestamp);
             List<ChatMessageResponse> list = chatMessageService.getMessages(roomId, messageId, datetime);
+
             return ResponseEntity.ok().body(list);
         }
 

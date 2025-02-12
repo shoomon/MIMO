@@ -81,4 +81,8 @@ public class ChatMessageRedisRepository {
 
         return result.iterator().next();
     }
+
+    public Long unreadCount(Long chatroomId, Double lastReadScore) {
+        return redisChatMessageTemplate.opsForZSet().count(teamMessageKey + chatroomId, lastReadScore + 0.0001, Double.MAX_VALUE);
+    }
 }

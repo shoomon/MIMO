@@ -1,13 +1,15 @@
 package com.bisang.backend.chat.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+import com.bisang.backend.chat.controller.request.LastReadRequest;
+import com.bisang.backend.chat.service.ChatroomUserService;
+import com.bisang.backend.common.utils.DateUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import com.bisang.backend.auth.annotation.AuthUser;
 import com.bisang.backend.chat.controller.response.ChatroomResponse;
@@ -23,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 public class ChatroomController {
 
     private final ChatroomService chatroomService;
+    private final ChatroomUserService chatroomUserService;
 
     @GetMapping()
     public ResponseEntity<List<ChatroomResponse>> getChatroom(@AuthUser User user) {
@@ -37,6 +40,18 @@ public class ChatroomController {
         return ResponseEntity.ok().body(list);
     }
 
+    @PostMapping("/last-read")
+    public ResponseEntity<String> updateLastRead(@AuthUser User user, @RequestBody LastReadRequest lastReadRequest) {
+        LocalDateTime lastReadDateTime = DateUtils.DateToLocalDateTime(lastReadRequest.lastReadDateTime());
+
+        chatroomUserService.updateLastRead(
+                user.getId(),
+                lastReadDateTime,
+                lastReadRequest.lastReadChatId(),
+                lastReadRequest.chatroomId());
+
+        return ResponseEntity.ok().body("업데이트 성공");
+    }
 
 
     //테스트용

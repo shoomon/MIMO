@@ -6,6 +6,8 @@ import com.bisang.backend.chat.repository.chatroomuser.ChatroomUserRepository;
 
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 public class ChatroomUserService {
@@ -26,4 +28,7 @@ public class ChatroomUserService {
         chatroomUserRepository.updateProfileUri(userId, teamId, profileUri);
     }
 
+    public void updateLastRead(Long id, LocalDateTime lastDateTime, Long lastChatId, Long roomId) {
+        chatroomUserRepository.updateLastRead(id, lastDateTime, roomId, lastChatId);
+    }
 }

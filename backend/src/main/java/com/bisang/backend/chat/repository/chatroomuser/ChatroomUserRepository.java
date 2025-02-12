@@ -2,6 +2,7 @@ package com.bisang.backend.chat.repository.chatroomuser;
 
 import static com.bisang.backend.common.exception.ExceptionCode.NOT_FOUND;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Set;
 
@@ -97,5 +98,17 @@ public class ChatroomUserRepository {
 
     public void updateProfileUri(Long userId, Long teamId, String profileUri) {
         redisCacheRepository.updateUserProfileUri(teamId, userId, profileUri);
+    }
+
+    @Transactional
+    public void updateLastRead(Long userId, LocalDateTime lastDateTime, Long roomId, Long lastChatId) {
+        //TODO: db에 어떻게 저장할지 생각해봐야함
+//        ChatroomUser chatroomUser = chatroomUserJpaRepository.findByChatroomIdAndUserId(roomId, userId).orElseThrow(() -> new AccountException(NOT_FOUND));
+//        chatroomUser.setLastRead(lastChatId);
+        chatroomUserRedisRepository.insertLastReadScore(roomId, userId, lastDateTime, lastChatId);
+    }
+
+    public double getLastReadScore(Long chatroomId, Long userId) {
+        return chatroomUserRedisRepository.getLastReadScore(chatroomId, userId);
     }
 }

@@ -90,4 +90,8 @@ public class ChatMessageRepository {
         result.put("lastChat", chatMessage.getMessage());
         result.put("lastDatetime", chatMessage.getCreatedAt());
     }
+
+    public Long calculateUnreadCount(Long chatroomId, Double lastReadScore) {
+        return chatMessageRedisRepository.unreadCount(chatroomId, lastReadScore);
+    }
 }

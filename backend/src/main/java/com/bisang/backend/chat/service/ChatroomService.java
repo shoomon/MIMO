@@ -51,6 +51,7 @@ public class ChatroomService {
         );
 
         chatroomUserRepository.insertRedisMemberUser(teamId, userId);
+        chatroomUserRepository.updateLastRead(userId, message.getTimestamp(), teamId, userId);
         chatMessageService.broadcastMessage(teamId, message);
     }
 
@@ -83,12 +84,16 @@ public class ChatroomService {
 
             Map<Object, Object> userInfo = chatroomUserRepository.getUserInfo(chatroomId, userId);
 
+            double lastReadScore = chatroomUserRepository.getLastReadScore(chatroomId, userId);
+            Long unreadCount = chatMessageRepository.calculateUnreadCount(chatroomId, lastReadScore);
+
             ChatroomResponse cr = new ChatroomResponse(chatroomId,
                     (String)chatroomInfo.get("title"),
                     (String)chatroomInfo.get("profileUri"),
                     (String)lastChat.get("lastChat"),
                     (LocalDateTime)lastChat.get("lastDatetime"),
-                    (String)userInfo.get("nickname")
+                    (String)userInfo.get("nickname"),
+                    unreadCount
             );
 
             chatroomResponse.add(cr);
