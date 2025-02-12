@@ -13,6 +13,7 @@ export interface SimpleTeamResponse {
 }
 export interface TeamDto {
     teamId: number;
+    teamUserId: number;
     profileUri: string;
     name: string;
     description: string;

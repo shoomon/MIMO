@@ -13,6 +13,7 @@ export interface MeetingInfoViewProps {
     currentCapacity: number;
     onUpdateInfo: () => void;
     onJoinRequest: () => void;
+    teamUserId: string | null;
 }
 
 const MeetingInfoView = ({
@@ -24,6 +25,7 @@ const MeetingInfoView = ({
     currentCapacity,
     onUpdateInfo,
     onJoinRequest,
+    teamUserId,
 }: MeetingInfoViewProps) => {
     return (
         <div className="flex w-full flex-col gap-1">
@@ -47,12 +49,16 @@ const MeetingInfoView = ({
                         content="정보 수정"
                         onClick={onUpdateInfo}
                     />
-                    <ButtonDefault
-                        type="primary"
-                        iconId="Mail"
-                        content="가입신청"
-                        onClick={onJoinRequest}
-                    />
+                    {teamUserId == null ? (
+                        <ButtonDefault
+                            type="primary"
+                            iconId="Mail"
+                            content="가입신청"
+                            onClick={onJoinRequest}
+                        />
+                    ) : (
+                        displayedTags
+                    )}
                 </div>
             </div>
         </div>

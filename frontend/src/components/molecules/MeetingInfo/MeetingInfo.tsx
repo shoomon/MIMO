@@ -13,6 +13,7 @@ export interface MeetingInfoProps {
     tag: TagProps[];
     maxCapacity: number;
     currentCapacity: number;
+    teamUserId: string | null;
 }
 
 const MeetingInfo = ({
@@ -23,6 +24,7 @@ const MeetingInfo = ({
     maxCapacity,
     currentCapacity,
     teamId,
+    teamUserId,
 }: MeetingInfoProps) => {
     const displayedTags = getDisplayedTags(tag);
 
@@ -38,7 +40,6 @@ const MeetingInfo = ({
                 credentials: 'include',
                 body: JSON.stringify(body),
             });
-            alert('가입신청');
         } catch (error) {
             console.error('Error fetching area teams:', error);
             throw error;
@@ -65,6 +66,7 @@ const MeetingInfo = ({
             currentCapacity={currentCapacity}
             onUpdateInfo={handleUpdateInfo}
             onJoinRequest={handleJoinRequest}
+            teamUserId={teamUserId}
         />
     );
 };

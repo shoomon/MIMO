@@ -9,7 +9,7 @@ const TeamScheduleCreate = () => {
     const navigate = useNavigate();
     const { teamId } = useParams<{ teamId: string }>();
 
-    // 📝 입력값을 관리하는 상태
+    //  입력값을 관리하는 상태
     const [formData, setFormData] = useState({
         title: '',
         description: '',
@@ -20,7 +20,7 @@ const TeamScheduleCreate = () => {
         status: 'REGULAR',
     });
 
-    // 📝 입력값 변경 핸들러
+    //  입력값 변경 핸들러
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     ) => {

@@ -39,6 +39,7 @@ const TeamLayout = () => {
                         tag={formattedTags}
                         maxCapacity={data?.maxCapacity || 0}
                         currentCapacity={data?.currentCapacity || 0}
+                        teamUserId={data?.teamUserId}
                     />
                     <Album id={teamId ?? ''} items={album.items} />
                 </section>
