@@ -2,8 +2,10 @@ package com.bisang.backend.schedule.service;
 
 import static com.bisang.backend.common.exception.ExceptionCode.NOT_FOUND;
 import static com.bisang.backend.common.utils.PageUtils.SHORT_PAGE_SIZE;
+import static com.bisang.backend.team.domain.TeamUserRole.LEADER;
 
 import com.bisang.backend.schedule.repository.ScheduleParticipantsJpaRepository;
+import com.bisang.backend.team.domain.TeamUser;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +20,8 @@ import com.bisang.backend.team.annotation.EveryOne;
 import com.bisang.backend.team.repository.TeamUserJpaRepository;
 
 import lombok.RequiredArgsConstructor;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -50,10 +54,19 @@ public class TeamScheduleEveryOneService {
         var profiles = teamScheduleQuerydslRepository.getProfilesByScheduleId(teamScheduleId);
         boolean isTeamMember = userId == null ? false :  isTeamMember(userId, teamId);
         boolean isTeamScheduleMember = participantsJpaRepository.existsByTeamScheduleIdAndUserId(teamScheduleId, userId);
+
+        Boolean isMyTeamSchedule = false;
+        Optional<TeamUser> teamUser = teamUserJpaRepository.findByTeamIdAndUserId(teamId, userId);
+        if (teamUser.isPresent()) {
+            if (teamUser.get().getRole().equals(LEADER)) {
+                isMyTeamSchedule = true;
+            }
+        }
         return TeamScheduleSpecificResponse.builder()
                 .teamScheduleId(teamScheduleId)
                 .isTeamMember(isTeamMember)
                 .isTeamScheduleMember(isTeamScheduleMember)
+                .isMyTeamSchedule(isMyTeamSchedule)
                 .status(specific.status())
                 .location(specific.location())
                 .date(specific.date())

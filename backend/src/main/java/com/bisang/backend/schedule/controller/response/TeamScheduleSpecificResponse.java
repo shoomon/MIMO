@@ -14,6 +14,7 @@ public record TeamScheduleSpecificResponse(
         Long teamScheduleId,
         Boolean isTeamMember,
         Boolean isTeamScheduleMember,
+        Boolean isMyTeamSchedule,
         ScheduleStatus status,
         String location,
         LocalDateTime date,
