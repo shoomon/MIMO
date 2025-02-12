@@ -45,7 +45,7 @@ public class ChatroomService {
         RedisChatMessage message = new RedisChatMessage(
                 teamId,
                 userId,
-                "",
+                nickname + "님이 입장하셨습니다.",
                 LocalDateTime.now(),
                 ChatType.ENTER
         );
@@ -55,11 +55,10 @@ public class ChatroomService {
     }
 
     public boolean leaveChatroom(Long userId, Long teamId) {
-
         RedisChatMessage message = new RedisChatMessage(
                 teamId,
                 userId,
-                "",
+                "누군가 퇴장하였습니다.",
                 LocalDateTime.now(),
                 ChatType.LEAVE);
 
