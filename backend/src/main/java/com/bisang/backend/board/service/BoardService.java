@@ -4,6 +4,8 @@ import java.util.*;
 
 import com.bisang.backend.board.controller.dto.*;
 import com.bisang.backend.board.controller.response.BoardListResponse;
+import com.bisang.backend.common.exception.BoardException;
+import com.bisang.backend.common.exception.ExceptionCode;
 import com.bisang.backend.s3.service.S3Service;
 import jakarta.persistence.EntityNotFoundException;
 
@@ -13,7 +15,6 @@ import com.bisang.backend.board.domain.*;
 import com.bisang.backend.board.repository.*;
 import com.bisang.backend.team.domain.TeamUser;
 import com.bisang.backend.team.repository.TeamUserJpaRepository;
-import com.bisang.backend.user.repository.UserJpaRepository;
 import com.bisang.backend.board.controller.response.BoardDetailResponse;
 
 import lombok.RequiredArgsConstructor;
@@ -22,18 +23,15 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class BoardService {
-    private final UserJpaRepository userJpaRepository;
     private final TeamUserJpaRepository teamUserJpaRepository;
     private final BoardJpaRepository boardJpaRepository;
     private final BoardImageJpaRepository boardImageJpaRepository;
     private final BoardLikeRepository boardLikeRepository;
     private final BoardDescriptionJpaRepository boardDescriptionJpaRepository;
-    private final TeamBoardJpaRepository teamBoardJpaRepository;
-    private final CommentJpaReporitory commentJpaReporitory;
+    private final CommentJpaRepository commentJpaRepository;
     private final BoardQuerydslRepository boardQuerydslRepository;
     private final CommentQuerydslRepository commentQuerydslRepository;
     private final S3Service s3Service;
-    private final CommentService commentService;
 
     //    @TeamMember
     public Long createPost(
@@ -93,6 +91,8 @@ public class BoardService {
         Board post = boardJpaRepository.findById(postId)
                 .orElseThrow(()-> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
 
+        if(!post.getUserId().equals(userId)) throw new BoardException(ExceptionCode.NOT_AUTHOR);
+
         if(title != null && !"".equals(title)){
             post.updateTitle(title);
             boardJpaRepository.save(post);
@@ -138,30 +138,32 @@ public class BoardService {
     public void deletePost(Long userId, Long postId){
         Board post = boardJpaRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
-        //좋아요 삭제
+
+        if(!post.getUserId().equals(userId)) throw new BoardException(ExceptionCode.NOT_AUTHOR);
+
         boardLikeRepository.deleteByBoardId(postId);
-        //S3에서 이미지 삭제
+
         List<BoardFileDto> boardFiles = boardImageJpaRepository.findByBoardId(postId);
         for (BoardFileDto file : boardFiles) {
             s3Service.deleteFile(userId, file.fileUri()); // S3에서 이미지 삭제
         }
-        //DB에서 파일 삭제
+
         boardImageJpaRepository.deleteByBoardId(postId);
-        //게시글 설명 삭제
+
         boardDescriptionJpaRepository.deleteById(post.getDescription().getId());
-        //게시글 삭제
+
         boardJpaRepository.delete(post);
-        //댓글 삭제
-        commentJpaReporitory.deleteByBoardId(postId);
+
+        commentJpaRepository.deleteByBoardId(postId);
     }
-//todo: 좋아요 로직 작성
+
     public String likePost(Long teamUserId, Long postId){
         Optional<BoardLike> userLike = boardLikeRepository.findByTeamUserIdAndBoardId(teamUserId, postId);
         System.out.println("유저 좋아요 결과: " + userLike.isPresent());
 
         if (userLike.isPresent()) {
             boardLikeRepository.delete(userLike.get());
-            boardJpaRepository.decreaseLikeCount(postId); // 좋아요 수 감소
+            boardJpaRepository.decreaseLikeCount(postId);
             return "좋아요 감소";
         }else{
             boardLikeRepository.save(BoardLike.builder()

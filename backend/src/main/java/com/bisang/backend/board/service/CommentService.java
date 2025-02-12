@@ -1,43 +1,75 @@
 package com.bisang.backend.board.service;
 
-import com.bisang.backend.board.controller.dto.CommentDto;
-import com.bisang.backend.board.controller.dto.CommentListDto;
-import com.bisang.backend.board.repository.CommentQuerydslRepository;
-import lombok.RequiredArgsConstructor;
+import com.bisang.backend.board.domain.Comment;
+import com.bisang.backend.board.repository.CommentJpaRepository;
+import com.bisang.backend.common.exception.BoardException;
+import com.bisang.backend.common.exception.ExceptionCode;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class CommentService {
-    CommentQuerydslRepository commentQuerydslRepository;
 
-    public List<CommentListDto> getCommentList(Long postId){
-        List<CommentListDto> result = new ArrayList<>();
-        Map<Long, List<CommentDto>> commentList = new HashMap<>();
-        List<CommentDto> comments = commentQuerydslRepository.getCommentList(postId);
+    private final CommentJpaRepository commentJpaRepository;
 
-        for(CommentDto comment : comments) {
-            if(comment.parentId() == null){
-                if(!commentList.containsKey(comment.commentId())){
-                    commentList.put(comment.commentId(), new ArrayList<>());
-                }
-            }else{
-                if(!commentList.containsKey(comment.parentId())){
-                    commentList.put(comment.parentId(), new ArrayList<>());
-                }
-                commentList.get(comment.parentId()).add(comment);
-            }
+    public void createComment(
+            Long userId,
+            Long teamUserId,
+            Long postId,
+            Long parentId,
+            String content) {
+        if(parentId == null) {
+            commentJpaRepository.save(
+                    Comment.builder()
+                            .boardId(postId)
+                            .teamUserId(teamUserId)
+                            .userId(userId)
+                            .parentCommentId(null)
+                            .content(content)
+                            .build()
+            );
+            return;
         }
-        for (CommentDto comment : comments) {
-            if (comment.parentId() == null) { // 최상위 댓글
-                result.add(new CommentListDto(comment, commentList.get(comment.commentId())));
-            }
-        }
-        return result;
+
+        commentJpaRepository.save(
+                Comment.builder()
+                        .boardId(postId)
+                        .teamUserId(teamUserId)
+                        .userId(userId)
+                        .parentCommentId(parentId)
+                        .content(content)
+                        .build()
+        );
     }
+
+    public void updateComment(Long userId, Long commentId, String content) {
+        Comment comment = commentJpaRepository.findById(commentId)
+                .orElseThrow(()->new EntityNotFoundException("댓글을 찾을 수 없습니다."));
+
+        if(!isAuthor(comment, userId)) throw new BoardException(ExceptionCode.NOT_AUTHOR);
+
+        comment.updateContent(content);
+        commentJpaRepository.save(comment);
+    }
+
+    public void deleteComment(Long userId, Long commentId) {
+        Comment comment = commentJpaRepository.findById(commentId)
+                .orElseThrow(()->new EntityNotFoundException("댓글을 찾을 수 없습니다."));
+
+        if(!isAuthor(comment, userId)) throw new BoardException(ExceptionCode.NOT_AUTHOR);
+
+        commentJpaRepository.delete(comment);
+    }
+
+    private boolean isAuthor(
+            Comment comment,
+            Long userId
+    ) {
+        if(comment.getUserId().equals(userId)) return true;
+        return false;
+    }
+
 }

@@ -69,10 +69,10 @@ public class BoardController {
     }
 
 //todo: 아래 테스트용 메소드 지우기
-    @GetMapping("/listAll")
-    public ResponseEntity<List<Board>> getPostListAll(@AuthUser User user) {
-        return ResponseEntity.ok(boardJpaRepository.findAll());
-    }
+//    @GetMapping("/listAll")
+//    public ResponseEntity<List<Board>> getPostListAll(@AuthUser User user) {
+//        return ResponseEntity.ok(boardJpaRepository.findAll());
+//    }
 
     @GetMapping("/detail")
     public ResponseEntity<BoardDetailResponse> getPostDetail(
