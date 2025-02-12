@@ -67,7 +67,7 @@ public class    TeamScheduleQuerydslRepository {
                         teamScheduleComment.id,
                         teamScheduleComment.userId.eq(userId),
                         user.profileUri,
-                        user.nickname,
+                        Expressions.stringTemplate("CAST({0} AS string)", teamScheduleComment.teamUserId),
                         teamScheduleComment.createdAt,
                         teamScheduleComment.parentCommentId.coalesce(teamScheduleComment.id),
                         Expressions.booleanTemplate("CASE WHEN {0} IS NULL THEN FALSE ELSE TRUE END",
@@ -77,28 +77,32 @@ public class    TeamScheduleQuerydslRepository {
                 .where(teamScheduleComment.teamScheduleId.eq(teamScheduleId))
                 .fetch();
 
-        List<String> nickname = comments.stream()
+        List<Long> teamUserIds = comments.stream()
                 .map(TeamScheduleCommentDto::name)
+                .map(Long::valueOf)
+                .distinct()
                 .toList();
 
-        Map<String, String> nicknameMap = queryFactory
-                .select(user.nickname, teamUser.nickname)
-                .from(user).join(teamUser).on(user.id.eq(teamUser.userId))
-                .where(user.nickname.in(nickname))
+        Map<Long, String> nicknameMap = queryFactory
+                .select(teamUser.id, teamUser.nickname)
+                .from(teamUser)
+                .where(teamUser.id.in(teamUserIds))
                 .fetch()
                 .stream()
                 .collect(Collectors.toMap(
-                        tuple -> tuple.get(user.nickname),  // 키: user.nickname
+                        tuple -> tuple.get(teamUser.id),  // 키: teamUser.id
                         tuple -> tuple.get(teamUser.nickname) // 값: teamUser.nickname
                 ));
 
         return comments.stream()
                 .map(comment -> {
+                    System.out.println(comment.name());
+                    System.out.println(nicknameMap);
                     return new TeamScheduleCommentDto(
                             comment.teamScheduleCommentId(),
                             comment.isMyComment(),
                             comment.profileUri(),
-                            nicknameMap.get(comment.name()),
+                            nicknameMap.get(Long.valueOf(comment.name())),
                             comment.time(),
                             comment.commentSortId(),
                             comment.hasParent(),
