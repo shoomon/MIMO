@@ -3,6 +3,7 @@ package com.bisang.backend.schedule.service;
 import static com.bisang.backend.common.exception.ExceptionCode.NOT_FOUND;
 import static com.bisang.backend.common.utils.PageUtils.SHORT_PAGE_SIZE;
 
+import com.bisang.backend.schedule.repository.ScheduleParticipantsJpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +25,7 @@ public class TeamScheduleEveryOneService {
     private final TeamUserJpaRepository teamUserJpaRepository;
     private final TeamScheduleJpaRepository teamScheduleJpaRepository;
     private final TeamScheduleQuerydslRepository teamScheduleQuerydslRepository;
+    private final ScheduleParticipantsJpaRepository participantsJpaRepository;
 
     @EveryOne
     @Transactional(readOnly = true)
@@ -47,10 +49,11 @@ public class TeamScheduleEveryOneService {
         var comments = teamScheduleQuerydslRepository.getTeamScheduleComments(teamScheduleId);
         var profiles = teamScheduleQuerydslRepository.getProfilesByScheduleId(teamScheduleId);
         boolean isTeamMember = userId == null ? false :  isTeamMember(userId, teamId);
-
+        boolean isTeamScheduleMember = participantsJpaRepository.existsByTeamScheduleIdAndUserId(teamScheduleId, userId);
         return TeamScheduleSpecificResponse.builder()
                 .teamScheduleId(teamScheduleId)
                 .isTeamMember(isTeamMember)
+                .isTeamScheduleMember(isTeamScheduleMember)
                 .status(specific.status())
                 .location(specific.location())
                 .date(specific.date())

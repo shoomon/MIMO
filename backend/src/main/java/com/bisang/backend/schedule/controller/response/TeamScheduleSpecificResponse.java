@@ -13,6 +13,7 @@ import lombok.Builder;
 public record TeamScheduleSpecificResponse(
         Long teamScheduleId,
         Boolean isTeamMember,
+        Boolean isTeamScheduleMember,
         ScheduleStatus status,
         String location,
         LocalDateTime date,
