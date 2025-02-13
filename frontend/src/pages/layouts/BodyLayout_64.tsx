@@ -6,7 +6,7 @@ export interface BodyLayout64Props {
 
 const BodyLayout_64 = ({ children }: BodyLayout64Props) => {
     return (
-        <div className="flex h-fit w-full flex-col items-center gap-16 bg-gray-50 px-8 py-8">
+        <div className="flex h-fit w-full flex-col items-center gap-16 bg-gray-50 px-8 py-4">
             {children}
         </div>
     );

@@ -23,7 +23,7 @@ const AlbumView = ({ items, id }: AlbumProps) => {
                                 <img
                                     src={item.imgSrc}
                                     alt=""
-                                    className="h-36 w-36 rounded-lg object-contain"
+                                    className="h-36 w-36 rounded-lg object-cover"
                                 />
                             </Link>
                         </li>

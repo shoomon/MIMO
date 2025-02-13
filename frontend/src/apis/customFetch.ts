@@ -64,6 +64,7 @@ export const customFetch = async (
         response = await fetch(url, {
             ...fetchOptions,
             headers,
+            credentials: 'include',
         });
     } catch (error) {
         console.error('Network error during fetch:', error);

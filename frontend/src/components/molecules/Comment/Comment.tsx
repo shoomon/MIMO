@@ -7,13 +7,15 @@ import ProfileImage, {
 
 interface CommentProps {
     commentId: number;
+    teamScheduleCommentId: number; // 추가: 수정 시 필요한 팀 일정 댓글 ID
     profileImage: ProfileImageProps;
     name: string;
     writedate: string;
     content: string;
     isReply: boolean;
     onDelete: (id: number) => void;
-    onUpdate: (id: number, newContent: string) => void;
+    // onUpdate는 이제 두 개의 인자만 받습니다.
+    onUpdate: (teamScheduleCommentId: number, content: string) => void;
 }
 
 interface FormData {
@@ -22,6 +24,7 @@ interface FormData {
 
 const Comment = ({
     commentId,
+    teamScheduleCommentId,
     profileImage,
     writedate,
     content,
@@ -53,7 +56,8 @@ const Comment = ({
     }, [isEditing, setFocus]);
 
     const onSubmit: SubmitHandler<FormData> = (data: FormData) => {
-        onUpdate(commentId, data.commentContent);
+        // 이제 teamScheduleCommentId와 수정된 내용을 인자로 전달합니다.
+        onUpdate(teamScheduleCommentId, data.commentContent);
         setIsEditing(false);
     };
 

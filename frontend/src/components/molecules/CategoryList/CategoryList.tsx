@@ -12,17 +12,17 @@ const CategoryList = ({ to }: { to?: string }) => {
     };
 
     const categoryList = [
-        { iconId: 'Bike', content: '바이크', path: 'category/bike' },
-        { iconId: 'Book', content: '독서', path: 'category/book' },
+        { iconId: 'Bike', content: '바이크', path: 'category/BIKE' },
+        { iconId: 'Book', content: '독서', path: 'category/BOOK' },
         { iconId: 'Car', content: '자동차', path: 'category/CAR' },
-        { iconId: 'CarWash', content: '세차', path: 'category/carwash' },
-        { iconId: 'Cooking', content: '요리', path: 'category/cooking' },
+        { iconId: 'CarWash', content: '세차', path: 'category/CAR' },
+        { iconId: 'Cooking', content: '요리', path: 'category/COOK' },
         { iconId: 'Dog', content: '반려동물', path: 'category/PET' },
-        { iconId: 'Exercise', content: '스포츠', path: 'category/exercise' },
-        { iconId: 'Game', content: '게임', path: 'category/game' },
-        { iconId: 'Gym', content: '헬스', path: 'category/gym' },
-        { iconId: 'Music', content: '음악 / 악기', path: 'category/music' },
-        { iconId: 'Camera', content: '사진 / 영상상', path: 'category/camera' },
+        { iconId: 'Exercise', content: '스포츠', path: 'category/SPORTS' },
+        { iconId: 'Game', content: '게임', path: 'category/GAME' },
+        { iconId: 'Gym', content: '헬스', path: 'category/HEALTH' },
+        { iconId: 'Music', content: '음악 / 악기', path: 'category/MUSIC' },
+        { iconId: 'Camera', content: '사진 / 영상', path: 'category/PHOTO' },
     ].map((item) => ({
         ...item,
         isSelected: `/${item.path}` === currentPath,
