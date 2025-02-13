@@ -1,6 +1,7 @@
 package com.bisang.backend.board.controller;
 
 import com.bisang.backend.board.controller.request.TeamBoardCreateRequest;
+import com.bisang.backend.board.controller.response.TeamBoardListResponse;
 import com.bisang.backend.board.service.TeamBoardService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +23,8 @@ public class TeamBoardController {
     private final TeamBoardService teamBoardService;
 
     @GetMapping
-    public ResponseEntity<String> getTeamBoardList() {
-        return ResponseEntity.ok("게시판이 조회되었습니다.");
+    public ResponseEntity<TeamBoardListResponse> getTeamBoardList(@RequestParam(value = "team") Long teamId) {
+        return ResponseEntity.ok(teamBoardService.getTeamBoardList(teamId));
     }
 
     @PostMapping
@@ -37,7 +38,7 @@ public class TeamBoardController {
     }
 
     @DeleteMapping
-    public ResponseEntity<String> deleteTeamBoard(@RequestParam Long teamId) {
+    public ResponseEntity<String> deleteTeamBoard(@RequestParam(value = "board") Long teamId) {
         teamBoardService.deleteTeamBoard(teamId);
         return ResponseEntity.ok("게시판이 삭제되었습니다.");
     }
