@@ -145,6 +145,7 @@ const TeamCreate: React.FC = () => {
 
     const currentField = steps[currentStep];
 
+    // 파일 및 select 입력용 핸들러
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
     ) => {
@@ -155,12 +156,22 @@ const TeamCreate: React.FC = () => {
                 [currentField.field]:
                     target.files && target.files[0] ? target.files[0] : null,
             }));
-        } else {
+        } else if (currentField.inputType === 'select') {
             setTeamData((prev) => ({
                 ...prev,
                 [currentField.field]: e.target.value,
             }));
         }
+    };
+
+    // 텍스트 입력 전용 핸들러 (InputForm에서 사용)
+    const handleTextChange: React.ChangeEventHandler<
+        HTMLInputElement | HTMLTextAreaElement
+    > = (e) => {
+        setTeamData((prev) => ({
+            ...prev,
+            [currentField.field]: e.target.value,
+        }));
     };
 
     const handleNext = async () => {
@@ -175,6 +186,7 @@ const TeamCreate: React.FC = () => {
             return;
         }
 
+        // 제목 중복 체크
         if (currentField.checkDuplicate && typeof value === 'string') {
             setLoading(true);
             try {
@@ -185,6 +197,7 @@ const TeamCreate: React.FC = () => {
                     return;
                 }
             } catch (err) {
+                console.log(err);
                 setError('제목 중복 체크 중 오류가 발생했습니다.');
                 setLoading(false);
                 return;
@@ -210,10 +223,12 @@ const TeamCreate: React.FC = () => {
         setLoading(true);
         setError('');
         try {
-            // 항상 plain object를 전달
+            // plain object를 전달하고, API 내부에서 FormData로 변환
             await createTeam(teamData);
             alert('팀 생성이 완료되었습니다.');
         } catch (err) {
+            console.log(err);
+
             setError('팀 생성 중 오류가 발생했습니다.');
         } finally {
             setLoading(false);
@@ -257,13 +272,13 @@ const TeamCreate: React.FC = () => {
                 </div>
             );
         } else {
-            // 기본 텍스트 입력은 InputForm 컴포넌트 사용
+            // 텍스트 입력은 InputForm 사용 (handleTextChange는 union 타입으로 정의됨)
             return (
                 <InputForm
                     id={currentField.field}
                     label={currentField.label}
                     value={teamData[currentField.field] as string}
-                    onChange={handleChange}
+                    onChange={handleTextChange}
                 />
             );
         }
