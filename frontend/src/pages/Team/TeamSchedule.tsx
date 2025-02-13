@@ -54,7 +54,7 @@ const TeamSchedule = () => {
                     scheduledDateTime={schedule.date}
                     label={schedule.title}
                     entryFee={schedule.price}
-                    memberList={schedule.profiles} // 변환된 memberList 사용
+                    memberList={schedule.profileUris} // 변환된 memberList 사용
                     detailLink={detailLink}
                     isClosed={isClosed}
                 />
@@ -71,7 +71,7 @@ const TeamSchedule = () => {
                         iconId="PlusCalendar"
                         iconType="svg"
                         onClick={() => {
-                            navigate('/create');
+                            navigate('create');
                         }}
                     />
                 )}

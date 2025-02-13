@@ -2,14 +2,12 @@ import { createComment } from '@/apis/TeamAPI';
 import { useState } from 'react';
 
 interface UseCommentProps {
-    userId: number;
-    teamId: number;
-    teamScheduleId: number;
+    teamId: string;
+    teamScheduleId: string;
     teamUserId: number;
 }
 
 export const useComment = ({
-    userId,
     teamId,
     teamScheduleId,
     teamUserId,
@@ -31,12 +29,9 @@ export const useComment = ({
             // 대댓글이 아닌 경우 parentCommentId = null
             // commentId는 서버에서 자동 생성되는 경우, 0이나 null로 넘겨도 상관 없습니다.
             await createComment(
-                userId,
                 teamId,
                 teamScheduleId,
-                0, // commentId는 신규라 0으로 예시
                 teamUserId,
-                null, // parentCommentId
                 value, // 실제 댓글 내용
             );
 

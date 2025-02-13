@@ -1,5 +1,5 @@
-import CustomTable from '@/utils/transformTableData';
 import { CellValue } from '@/utils/transformTableData';
+import CustomTable from '../MileageList/CustomTable';
 
 // request 버튼 클릭 핸들러 (영어로 작성)
 const requestHandler = () => {

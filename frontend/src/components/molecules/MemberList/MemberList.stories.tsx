@@ -6,9 +6,9 @@ const meta = {
     title: 'Components/Molecules/MemberList',
     component: MemberList,
     argTypes: {
-        userRole: {
+        role: {
             control: { type: 'radio' },
-            options: ['owner', 'coOwner', 'member'],
+            options: ['LEADER', 'CO_LEADER', 'MEMBER'],
         },
         bio: { control: 'text' },
         joinDate: { control: 'date' },
@@ -27,7 +27,7 @@ const sampleProfile: ProfileImageProps = {
 
 export const Owner: Story = {
     args: {
-        userRole: 'owner',
+        role: 'LEADER',
         userInfo: sampleProfile,
         bio: '모임장 bio sample text',
         joinDate: new Date().toISOString(),
@@ -36,7 +36,7 @@ export const Owner: Story = {
 
 export const CoOwner: Story = {
     args: {
-        userRole: 'coOwner',
+        role: 'LEADER',
         userInfo: sampleProfile,
         bio: '운영진 bio sample text',
         joinDate: new Date().toISOString(),
@@ -45,7 +45,7 @@ export const CoOwner: Story = {
 
 export const Member: Story = {
     args: {
-        userRole: 'member',
+        role: 'LEADER',
         userInfo: sampleProfile,
         bio: '멤버 bio sample text',
         joinDate: new Date().toISOString(),

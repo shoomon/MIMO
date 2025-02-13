@@ -8,8 +8,8 @@ import { TeamInfosResponse } from '@/types/Team';
 
 const Category = () => {
     const { categoryId } = useParams<{ categoryId?: string }>();
-
-    const { data, isLoading, error } = useQuery<TeamInfosResponse, Error>({
+    //isLoading, error
+    const { data } = useQuery<TeamInfosResponse, Error>({
         queryKey: ['category', categoryId],
         queryFn: () => getTeamInfosByCategory(categoryId!),
         enabled: Boolean(categoryId),
@@ -38,8 +38,8 @@ const Category = () => {
                     tagList={formattedTags}
                     reviewCount={item.reviewScore}
                     image={{
-                        memberCount: item.reviewScore,
-                        memberLimit: item.reviewScore,
+                        memberCount: item.currentCapacity,
+                        memberLimit: item.maxCapacity,
                         imgSrc: item.teamProfileUri,
                         showMember: true,
                     }}

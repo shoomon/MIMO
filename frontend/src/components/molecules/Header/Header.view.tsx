@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import SearchBar from '../SearchBar/SearchBar';
 import { ProfileImageProps } from '@/components/atoms/ProfileImage/ProfileImage';
 import MyInfoDropDown from '@/components/atoms/MyInfoDropDown/MyInfoDropDown';
-import { useAuth } from '@/hooks/useAuth';
+import { customFetch } from '@/apis/customFetch';
+import { useTokenStore } from '@/stores/tokenStore';
 
 export interface HeaderViewProps {
     userInfo?: ProfileImageProps;
@@ -87,7 +88,30 @@ const HeaderView = ({
     handleLogin,
 }: HeaderViewProps) => {
     // 유저 정보 받아와서 렌더링해야함함
-    const { userInfo } = useAuth();
+    const userInfo = {
+        userId: '25',
+        userName: '박성문',
+        imgSrc: 'https://cloudfront-ap-northeast-1.images.arcpublishing.com/chosun/2TKUKXYMQF7ASZEUJLG7L4GM4I.jpg',
+    };
+    const { setAccessToken } = useTokenStore();
+    const loginapi = async (): Promise<void> => {
+        try {
+            const params = {
+                email: 'admin',
+                name: 'admin',
+            };
+
+            const response = await customFetch('/login/oauth2/yame', {
+                method: 'POST',
+                params,
+            });
+            const data = await response.json();
+            setAccessToken(data.accessToken);
+        } catch (error) {
+            console.error('Error fetching area teams:', error);
+            throw error;
+        }
+    };
 
     return (
         <header className="w-full py-5">
@@ -109,15 +133,25 @@ const HeaderView = ({
                 </div>
 
                 {isLogin === true ? (
-                    <LoginedMenu
-                        onClickAlarm={onClickAlarm}
-                        onClickInfo={onClickInfo}
-                        userInfo={userInfo}
-                        alarmActive={alarmActive}
-                        infoActive={infoActive}
-                    />
+                    <>
+                        <LoginedMenu
+                            onClickAlarm={onClickAlarm}
+                            onClickInfo={onClickInfo}
+                            userInfo={userInfo}
+                            alarmActive={alarmActive}
+                            infoActive={infoActive}
+                        />
+                    </>
                 ) : (
-                    <NoLoginedMenu handleLogin={handleLogin} />
+                    <>
+                        <button
+                            onClick={loginapi}
+                            className="rounded-lg border border-gray-200 px-2 py-1"
+                        >
+                            임시 로그인
+                        </button>{' '}
+                        <NoLoginedMenu handleLogin={handleLogin} />
+                    </>
                 )}
             </div>
         </header>

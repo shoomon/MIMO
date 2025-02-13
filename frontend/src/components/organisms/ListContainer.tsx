@@ -24,13 +24,19 @@ function ListContainer({ gap, items, label, to }: ListContainerProps) {
         <div className="flex flex-col gap-6">
             <Title label={label} to={to} />
             <section className="embla" ref={emblaRef}>
-                <ul className={`embla__container gap-${gap}`}>
-                    {items.map((itemProps, index) => (
-                        <li key={index} className="embla__slide">
-                            {itemProps}
-                        </li>
-                    ))}
-                </ul>
+                {items.length > 0 ? (
+                    <ul className={`embla__container gap-${gap}`}>
+                        {items.map((itemProps, index) => (
+                            <li key={index} className="embla__slide">
+                                {itemProps}
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <div className="text-text flex h-36 items-center justify-center text-xl">
+                        일정이 존재하지 않습니다.
+                    </div>
+                )}
             </section>
         </div>
     );
