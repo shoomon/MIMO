@@ -40,6 +40,11 @@ public class TeamUserService {
     private final TeamUserQuerydslRepository teamUserQuerydslRepository;
 
     @EveryOne
+    public Boolean existsNicknameByTeamIdAndNickname(Long teamId, String nickname) {
+        return teamUserJpaRepository.existsByTeamIdAndNickname(teamId, nickname);
+    }
+
+    @EveryOne
     @Transactional
     public void joinTeam(Long userId, Long teamId, String nickname, TeamNotificationStatus status) {
         isAlreadyJoinChecker(teamId, userId);

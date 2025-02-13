@@ -54,6 +54,11 @@ public class TeamService {
     private final ProfileImageRepository profileImageRepository;
 
     @EveryOne
+    public Boolean existsTeamByName(String name) {
+        return teamJpaRepository.existsByName(name);
+    }
+
+    @EveryOne
     @Transactional
     public Long createTeam(
             Long leaderId,

@@ -1,8 +1,8 @@
 package com.bisang.backend.invite.controller.response;
 
-import com.bisang.backend.invite.controller.dto.TeamInviteDto;
-
 import java.util.List;
+
+import com.bisang.backend.invite.controller.dto.TeamInviteDto;
 
 public record TeamInvitesResponse(
     Integer size,

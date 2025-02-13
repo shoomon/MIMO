@@ -46,9 +46,8 @@ public class GuestAuthenticationArgumentResolver implements HandlerMethodArgumen
     ) throws Exception {
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
 
-        Cookie[] cookies = request.getCookies();
-
-        if (cookies == null) {
+        String authHeader = request.getHeader(AUTHORIZATION);
+        if (authHeader == null) {
             return null;
         }
 

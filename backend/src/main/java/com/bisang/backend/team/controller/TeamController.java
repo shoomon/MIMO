@@ -36,6 +36,14 @@ import lombok.RequiredArgsConstructor;
 public class TeamController {
     private final TeamService teamService;
 
+    @GetMapping("/exist-name")
+    public ResponseEntity<Boolean> existTeamName(
+        @Guest User user,
+        @RequestParam(name = "name") String name
+    ) {
+        return ResponseEntity.ok(teamService.existsTeamByName(name));
+    }
+
     @GetMapping("/area")
     public ResponseEntity<TeamInfosResponse> getTeamsByArea(
         @RequestParam("area") Area area,
