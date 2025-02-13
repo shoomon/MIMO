@@ -2,6 +2,7 @@ package com.bisang.backend.board.repository;
 
 import static com.bisang.backend.board.domain.QBoard.board;
 import static com.bisang.backend.board.domain.QBoardDescription.boardDescription;
+import static com.bisang.backend.board.domain.QBoardImage.boardImage;
 import static com.bisang.backend.board.domain.QTeamBoard.teamBoard;
 import static com.bisang.backend.team.domain.QTeamUser.teamUser;
 import static com.bisang.backend.user.domain.QUser.user;
@@ -11,6 +12,7 @@ import java.util.Optional;
 
 import com.bisang.backend.board.controller.dto.BoardInfoDto;
 import com.bisang.backend.board.controller.dto.SimpleBoardListDto;
+import com.bisang.backend.board.domain.QBoardImage;
 import com.bisang.backend.board.domain.QComment;
 import com.querydsl.jpa.JPAExpressions;
 import jakarta.persistence.EntityNotFoundException;
@@ -50,12 +52,23 @@ public class BoardQuerydslRepository {
 
     public List<SimpleBoardListDto> getBoardList(Long teamBoardId, Long offset, Integer pageSize){
         QComment commentSub = new QComment("commentSub");
-        return queryFactory
+        QBoardImage boardImageSub = new QBoardImage("boardThumbnailSub");
+        //todo: 디폴트 썸네일 이미지 주소
+        String defaultThumbnail = "";
+
+//todo: 여기로직이 좀 많이 이상한디
+        return  queryFactory
                 .select(Projections.constructor(SimpleBoardListDto.class,
                                 board.id,
                                 user.profileUri.as("userProfileUri"), // 유저 테이블에서 프로필 URI 가져오기
                                 teamUser.nickname.as("userNickname"), // 팀유저 테이블에서 닉네임 가져오기
                                 board.title.as("postTitle"),
+                        JPAExpressions
+                                .select(boardImageSub.fileUri
+                                        .coalesce(defaultThumbnail).as("imageUrl"))
+                                .from(boardImageSub)
+                                .where(boardImageSub.boardId.eq(board.id))
+                                .limit(1),
                                 board.likes.as("likeCount"),
                                 board.viewCount,
                                 board.createdAt,

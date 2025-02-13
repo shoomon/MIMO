@@ -9,7 +9,7 @@ public record SimpleBoardListDto(
         String userProfileUri,
         String userNickname,
         String postTitle,
-        //todo: 게시글 미리보기 이미지 추가
+        String imageUrl,
         Long likeCount,
         Long viewCount,
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yy.MM.dd HH:mm")
