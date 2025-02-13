@@ -50,7 +50,7 @@ export const useOauth = () => {
         if (oauthToken) {
             const fetchToken = async () => {
                 const data = await getTokenAPI(oauthToken);
-                console.log(data.accessToken);
+                console.log("백엔드 토큰 가져오기!", data.accessToken);
                 setAccessToken(data.accessToken);
             };
 

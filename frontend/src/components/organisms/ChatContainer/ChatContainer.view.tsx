@@ -13,24 +13,18 @@ const ChatContainerView = ({
     onClick,
 }: ChatContainerViewProps) => {
     return (
-        <section
-            className={`fixed inset-0 z-50 flex items-center justify-center bg-gray-500/50`}
-        >
-            <section className="flex max-h-[64rem] max-w-[30.5rem] flex-col border border-gray-200">
-                <span className="p-6 text-center text-2xl font-bold">
-                    채팅방
-                </span>
-                <section className="flex flex-col items-center border-t border-gray-200">
-                    {chatListItems.map((item) => {
-                        return (
-                            <ChatRoom
-                                item={item}
-                                key={item.chatroomId}
-                                onClick={onClick}
-                            />
-                        );
-                    })}
-                </section>
+        <section className="flex h-full max-w-[30.5rem] flex-col border border-gray-200">
+            <span className="p-6 text-center text-2xl font-bold">채팅방</span>
+            <section className="flex flex-col items-center border-t border-gray-200">
+                {chatListItems.map((item) => {
+                    return (
+                        <ChatRoom
+                            item={item}
+                            key={item.chatroomId}
+                            onClick={onClick}
+                        />
+                    );
+                })}
             </section>
         </section>
     );
