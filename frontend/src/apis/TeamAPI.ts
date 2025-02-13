@@ -1,3 +1,4 @@
+import { TeamData } from '@/pages/Team/TeamCreate';
 import { customFetch } from './customFetch';
 import {
     Area,
@@ -7,6 +8,54 @@ import {
     TeamSchedulesResponse,
     TeamUserResponse,
 } from '@/types/Team';
+
+export const createTeam = async (team: TeamData): Promise<void> => {
+    try {
+        // plain object를 FormData로 변환 (파일 유무에 상관없이)
+        const formData = new FormData();
+        formData.append('name', team.name);
+        formData.append('description', team.description);
+        formData.append('area', team.area);
+        formData.append('category', team.category);
+        formData.append('nickname', team.nickname);
+        formData.append('notificationStatus', team.notificationStatus);
+        formData.append('teamRecruitStatus', team.teamRecruitStatus);
+        formData.append('teamPrivateStatus', team.teamPrivateStatus);
+        formData.append('maxCapacity', team.maxCapacity);
+        if (team.teamProfile) {
+            formData.append(
+                'teamProfile',
+                team.teamProfile,
+                team.teamProfile.name,
+            );
+        }
+
+        await customFetch('/team', {
+            method: 'POST',
+            body: formData,
+        });
+    } catch (error) {
+        console.error('Error creating team:', error);
+        throw error;
+    }
+};
+
+export const validTeamName = async (name: string): Promise<boolean> => {
+    if (!name) {
+        throw new Error('팀 아이디가 없습니다.');
+    }
+
+    try {
+        const response = await customFetch('/team/exist-name', {
+            method: 'GET',
+            params: { name }, // params는 객체여야 함
+        });
+        return response.json();
+    } catch (error) {
+        console.error('Error validTeamName teamName:', error);
+        throw error;
+    }
+};
 
 export const getTeamInfo = async (teamId: string): Promise<TeamDto> => {
     if (!teamId) {
@@ -56,7 +105,7 @@ export const deleteUsers = async (
             teamUserId,
         });
 
-        const response = await customFetch('/team-leader', {
+        await customFetch('/team-leader', {
             method: 'DELETE',
             body,
         });

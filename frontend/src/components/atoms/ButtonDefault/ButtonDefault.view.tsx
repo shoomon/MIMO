@@ -24,7 +24,7 @@ const ButtonDefaultView = ({
             type={htmlType}
             onClick={onClick}
             disabled={disabled}
-            className={`hover:bg-brand-primary-100 flex h-[35px] w-fit cursor-pointer items-center justify-center gap-2 rounded-sm px-[8px] py-[4px] font-semibold ${buttonClass}`}
+            className={`hover:bg-brand-primary-200 flex h-[35px] w-fit cursor-pointer items-center justify-center gap-2 rounded-sm px-[8px] py-[4px] font-semibold ${buttonClass}`}
         >
             {iconId && <Icon id={iconId} type={iconType || 'svg'} />}
             <span className="whitespace-nowrap">{content}</span>
