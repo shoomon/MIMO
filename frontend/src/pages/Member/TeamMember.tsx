@@ -22,7 +22,7 @@ const TeamMember = () => {
             role: user.role, // 들어온 role 그대로 사용
             userInfo: {
                 userId: String(user.teamUserId), // 현재 값이 없으므로 빈 문자열
-                userName: user.nickname,
+                nickname: user.nickname,
                 profileUri: '', // 프로필 이미지 정보 없음
             },
             bio: '', // 한 줄 소개 정보 없음
