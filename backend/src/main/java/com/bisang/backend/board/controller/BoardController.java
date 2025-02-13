@@ -126,15 +126,4 @@ public class BoardController {
     ) {
         return ResponseEntity.ok(boardService.likePost(request.teamUserId(), request.boardId()));
     }
-
-//    @PostMapping("/{id}")
-//    public ResponseEntity<String> uploadImage(
-//            @AuthSimpleUser SimpleUser user,
-//            @PathVariable("id")Integer id,
-//            @RequestPart("file") MultipartFile multipartFile
-//    ) {
-//        String returnUrl = s3Service.saveFile(user.userId(), multipartFile);
-//
-//        return ResponseEntity.ok(returnUrl);
-//    }
 }
