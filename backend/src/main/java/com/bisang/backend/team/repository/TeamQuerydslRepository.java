@@ -55,7 +55,7 @@ public class TeamQuerydslRepository {
                 .select(Projections.constructor(TeamDto.class,
                         team.id,
                         Expressions.numberTemplate(Long.class, "{0}", teamUserId),
-                        Expressions.template(TeamUserRole.class, "{0}", role),
+                        Expressions.nullExpression(TeamUserRole.class),
                         team.teamProfileUri,
                         team.name,
                         teamDescription.description,
@@ -81,8 +81,8 @@ public class TeamQuerydslRepository {
         List<SimpleTeamDto> teams = queryFactory
             .select(Projections.constructor(SimpleTeamDto.class,
                     team.id,
-                    Expressions.constant(0L),
-                    Expressions.nullExpression(),
+                    Expressions.numberTemplate(Long.class, "{0}", 0L),
+                    Expressions.nullExpression(TeamUserRole.class),
                     team.name,
                     team.shortDescription,
                     team.teamProfileUri,
@@ -115,13 +115,13 @@ public class TeamQuerydslRepository {
         List<SimpleTeamDto> teams = queryFactory
             .select(Projections.constructor(SimpleTeamDto.class,
                     team.id,
-                    Expressions.constant(0L),
-                    Expressions.nullExpression(),
+                    Expressions.numberTemplate(Long.class, "{0}", 0L),
+                    Expressions.nullExpression(TeamUserRole.class),
                     team.name,
                     team.shortDescription,
                     team.teamProfileUri,
                     Expressions.numberTemplate(Double.class, "{0}", 0.0),
-                    Expressions.constant(0L),
+                    Expressions.numberTemplate(Long.class, "{0}", 0L),
                     team.maxCapacity,
                     JPAExpressions.select(teamUser.count())
                             .from(teamUser)
