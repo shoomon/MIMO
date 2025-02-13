@@ -92,6 +92,7 @@ public class TeamUserService {
     @Transactional(readOnly = true)
     public TeamUserResponse findTeamUsers(Long userId, Long teamId, TeamUserRole role, Long teamUserId) {
         List<TeamUserDto> teamUserInfos = teamUserQuerydslRepository.getTeamUserInfos(teamId, role, teamUserId);
+
         if (teamUserInfos.size() > PAGE_SIZE) {
             List<TeamUserDto> result = teamUserInfos.stream().limit(PAGE_SIZE).toList();
             return new TeamUserResponse(
