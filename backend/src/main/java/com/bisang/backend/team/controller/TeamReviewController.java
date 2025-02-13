@@ -4,18 +4,19 @@ import static org.springframework.http.HttpStatus.CREATED;
 
 import org.springframework.http.ResponseEntity;
 
+import com.bisang.backend.auth.annotation.AuthUser;
+import com.bisang.backend.auth.annotation.Guest;
+import com.bisang.backend.team.controller.response.TeamReviewResponse;
+import com.bisang.backend.team.service.TeamReviewService;
+import com.bisang.backend.user.domain.User;
+
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.bisang.backend.auth.annotation.AuthUser;
-import com.bisang.backend.auth.annotation.Guest;
-import com.bisang.backend.team.controller.response.TeamReviewResponse;
-import com.bisang.backend.team.service.TeamReviewService;
-import com.bisang.backend.user.domain.User;
 
 import lombok.RequiredArgsConstructor;
 
@@ -55,6 +56,16 @@ public class TeamReviewController {
         @RequestParam(name = "score") Long score
     ) {
         teamReviewService.updateReview(user.getId(), teamReviewId, teamId, memo, score);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteTeamReview(
+        @AuthUser User user,
+        @RequestParam(name = "teamId") Long teamId,
+        @RequestParam(name = "teamReviewId") Long teamReviewId
+    ) {
+        teamReviewService.deleteReview(user.getId(), teamId, teamReviewId);
         return ResponseEntity.ok().build();
     }
 }

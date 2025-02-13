@@ -55,6 +55,14 @@ public class TeamReviewService {
         teamReview.updateReview(memo, score);
     }
 
+    @Transactional
+    public void deleteReview(Long userId, Long teamId, Long teamReviewId) {
+        TeamReview teamReview = getTeamReview(teamReviewId);
+        TeamUser teamUser = getTeamUser(teamId, userId);
+        reviewValidation(teamReview, teamUser);
+        teamReviewJpaRepository.delete(teamReview);
+    }
+
     private void reviewValidation(TeamReview teamReview, TeamUser teamUser) {
         if (!teamReview.getTeamUserId().equals(teamUser.getId())) {
             throw new TeamException(NOT_FOUND);
