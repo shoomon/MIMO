@@ -56,7 +56,7 @@ public class TeamReview {
     private Long score;
 
     @Builder
-    private TeamReview(Long teamId, Long teamUserId, String memo, Long score) {
+    public TeamReview(Long teamId, Long teamUserId, String memo, Long score) {
         this.teamId = teamId;
         this.teamUserId = teamUserId;
         this.memo = memo;
