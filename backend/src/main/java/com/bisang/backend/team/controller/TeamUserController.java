@@ -19,6 +19,7 @@ import com.bisang.backend.team.controller.request.InviteTeamRequest;
 import com.bisang.backend.team.controller.request.JoinTeamRequest;
 import com.bisang.backend.team.controller.request.UpdateTeamUserNicknameRequest;
 import com.bisang.backend.team.controller.response.SingleTeamUserInfoResponse;
+import com.bisang.backend.team.controller.response.TeamInfosResponse;
 import com.bisang.backend.team.controller.response.TeamUserResponse;
 import com.bisang.backend.team.domain.TeamUserRole;
 import com.bisang.backend.team.service.TeamUserService;
@@ -38,6 +39,14 @@ public class TeamUserController {
             @RequestParam(name = "teamId") Long teamId
     ) {
         return ResponseEntity.ok(teamUserService.getMyTeamUserInfo(teamId, user.getId()));
+    }
+
+    @GetMapping("/my-team-info")
+    public ResponseEntity<TeamInfosResponse> getMyTeams(
+            @AuthUser User user,
+            @RequestParam(name = "teamId", required = false) Long teamId
+    ) {
+        return ResponseEntity.ok(teamUserService.getMyTeamInfos(user.getId(), teamId));
     }
 
     @GetMapping("/exist-nickname")

@@ -2,6 +2,7 @@ package com.bisang.backend.team.service;
 
 import static com.bisang.backend.common.exception.ExceptionCode.*;
 import static com.bisang.backend.common.utils.PageUtils.PAGE_SIZE;
+import static com.bisang.backend.common.utils.PageUtils.SHORT_PAGE_SIZE;
 import static com.bisang.backend.invite.domain.TeamInvite.createInviteRequest;
 import static com.bisang.backend.team.domain.TeamRecruitStatus.ACTIVE_PRIVATE;
 import static com.bisang.backend.team.domain.TeamRecruitStatus.ACTIVE_PUBLIC;
@@ -11,6 +12,8 @@ import static java.lang.Boolean.TRUE;
 
 import java.util.List;
 
+import com.bisang.backend.team.controller.dto.SimpleTeamDto;
+import com.bisang.backend.team.controller.response.TeamInfosResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,6 +42,18 @@ public class TeamUserService {
     private final TeamUserJpaRepository teamUserJpaRepository;
     private final TeamInviteJpaRepository teamInviteJpaRepository;
     private final TeamUserQuerydslRepository teamUserQuerydslRepository;
+
+    @Transactional(readOnly = true)
+    public TeamInfosResponse getMyTeamInfos(Long userId, Long teamId) {
+        List<SimpleTeamDto> teamInfos = teamUserQuerydslRepository.getTeamsByTeamIdAndUserId(teamId, userId);
+        Boolean hasNext = teamInfos.size() > SHORT_PAGE_SIZE;
+        Integer size = hasNext ? SHORT_PAGE_SIZE : teamInfos.size();
+        Long lastTeamId = hasNext ? null : teamInfos.get(size - 1).teamId();
+        if (hasNext) {
+            teamInfos.remove(size - 1);
+        }
+        return new TeamInfosResponse(size, hasNext, lastTeamId, teamInfos);
+    }
 
     @Transactional(readOnly = true)
     public MyTeamUserInfoDto getMyTeamUserInfo(Long teamId, Long userId) {
