@@ -1,18 +1,19 @@
 package com.bisang.backend.auth.service;
 
-import com.bisang.backend.account.service.AccountService;
-import com.bisang.backend.user.repository.UserJpaRepository;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 
+import com.bisang.backend.account.service.AccountService;
 import com.bisang.backend.auth.JwtUtil;
 import com.bisang.backend.auth.domain.RefreshToken;
 import com.bisang.backend.auth.domain.UserTokens;
 import com.bisang.backend.auth.infrastructure.GoogleOAuthProvider;
 import com.bisang.backend.auth.repository.RefreshTokenRepository;
 import com.bisang.backend.common.exception.InvalidJwtException;
+import com.bisang.backend.s3.repository.ProfileImageRepository;
 import com.bisang.backend.user.controller.request.UserCreateOrLoginRequest;
 import com.bisang.backend.user.domain.User;
+import com.bisang.backend.user.repository.UserJpaRepository;
 import com.bisang.backend.user.service.UserService;
 
 import lombok.Getter;
@@ -21,11 +22,14 @@ import lombok.RequiredArgsConstructor;
 import java.util.Optional;
 
 import static com.bisang.backend.common.exception.ExceptionCode.*;
+import static com.bisang.backend.s3.domain.ProfileImage.createUserProfile;
+import static com.bisang.backend.s3.service.S3Service.CAT_IMAGE_URI;
 
 @Getter
 @RequiredArgsConstructor
 @Service
 public class OAuth2Service {
+    private final ProfileImageRepository profileImageRepository;
     private final GoogleOAuthProvider googleOAuthProvider;
     private final JwtUtil jwtUtil;
     private final RefreshTokenRepository refreshTokenRepository;
@@ -58,9 +62,11 @@ public class OAuth2Service {
                 .email(email)
                 .name(name)
                 .nickname(name)
-                .profileUri("https://bisang-mimo-bucket.s3.ap-northeast-2.amazonaws.com/1a05c3f9-2638-4349-8a89-e90c5e584b89.jpg")
+                .profileUri(CAT_IMAGE_URI)
                 .build();
         userJpaRepository.save(user);
+        profileImageRepository.save(createUserProfile(user.getId(), CAT_IMAGE_URI));
+
         UserTokens userTokens = jwtUtil.createLoginToken(user.getId().toString());
         RefreshToken refreshToken = new RefreshToken(user.getId(), userTokens.getRefreshToken());
         refreshTokenRepository.save(refreshToken);
@@ -109,8 +115,8 @@ public class OAuth2Service {
                 .nickname(request.nickname())
                 .profileUri(request.profileUri())
                 .build();
-
         userService.saveUser(user);
+        profileImageRepository.save(createUserProfile(user.getId(), request.profileUri()));
         return user;
     }
 
