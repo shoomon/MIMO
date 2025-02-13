@@ -90,7 +90,7 @@ const HeaderView = ({
     // 유저 정보 받아와서 렌더링해야함함
     const userInfo = {
         userId: '25',
-        userName: '박성문',
+        nickname: '박성문',
         imgSrc: 'https://cloudfront-ap-northeast-1.images.arcpublishing.com/chosun/2TKUKXYMQF7ASZEUJLG7L4GM4I.jpg',
     };
     const { setAccessToken } = useTokenStore();
@@ -149,7 +149,7 @@ const HeaderView = ({
                             className="rounded-lg border border-gray-200 px-2 py-1"
                         >
                             임시 로그인
-                        </button>{' '}
+                        </button>
                         <NoLoginedMenu handleLogin={handleLogin} />
                     </>
                 )}

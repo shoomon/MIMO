@@ -88,8 +88,9 @@ const MemberList = ({
      * (추후 멤버 추방 기능 추가 예정)
      */
     const handleKickMember = (): void => {
-        console.log(userInfo.userId);
-
+        if (!userInfo.userId) {
+            return;
+        }
         deleteUsers(teamId, userInfo.userId);
     };
 

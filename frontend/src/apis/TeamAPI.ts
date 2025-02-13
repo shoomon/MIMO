@@ -11,7 +11,6 @@ import {
 
 export const createTeam = async (team: TeamData): Promise<void> => {
     try {
-        // plain object를 FormData로 변환 (파일 유무에 상관없이)
         const formData = new FormData();
         formData.append('name', team.name);
         formData.append('description', team.description);
@@ -115,6 +114,48 @@ export const deleteUsers = async (
         //  }
     } catch (error) {
         console.error('Error fetching delete team user:', error);
+        throw error;
+    }
+};
+
+export const joinTeamForPublic = async (
+    teamId: string,
+    nickname: string,
+    notificationStatus: 'ACTIVE' | 'INACTIVE',
+): Promise<void> => {
+    const body = {
+        teamId: teamId,
+        nickname: nickname,
+        notificationStatus: notificationStatus,
+    };
+    try {
+        await customFetch('/team-user', {
+            method: 'POST',
+            credentials: 'include',
+            body: JSON.stringify(body),
+        });
+    } catch (error) {
+        console.error('Error fetching joinTeamForPublic', error);
+        throw error;
+    }
+};
+
+export const joinTeamForPrivate = async (
+    teamId: string,
+    memo: string,
+): Promise<void> => {
+    const body = {
+        teamId: teamId,
+        memo: memo,
+    };
+    try {
+        await customFetch('/team-user/invite', {
+            method: 'POST',
+            credentials: 'include',
+            body: JSON.stringify(body),
+        });
+    } catch (error) {
+        console.error('Error fetching joinTeamForPrivate', error);
         throw error;
     }
 };

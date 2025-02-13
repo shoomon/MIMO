@@ -44,6 +44,8 @@ const TeamLayout = () => {
                                 ? data.teamUserId
                                 : null
                         }
+                        nickName="일단닉네임"
+                        notificationStatus={data?.recruitStatus}
                     />
                     <Album id={teamId ?? ''} items={album.items} />
                 </section>

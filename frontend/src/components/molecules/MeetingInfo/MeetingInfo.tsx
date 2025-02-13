@@ -3,7 +3,7 @@ import type { TagProps } from '@/components/atoms/Tag/Tag';
 import type { RatingStarProps } from '@/components/atoms/RatingStar/RatingStar';
 import getDisplayedTags from '@/utils/filterTagsByLength';
 import MeetingInfoView from './MeetingInfo.view';
-import { customFetch } from '@/apis/customFetch';
+import { joinTeamForPrivate, joinTeamForPublic } from '@/apis/TeamAPI';
 
 export interface MeetingInfoProps {
     teamId: string;
@@ -14,6 +14,9 @@ export interface MeetingInfoProps {
     maxCapacity: number;
     currentCapacity: number;
     teamUserId: number | null;
+    nickName: string;
+    recruitStatus: 'ACTIVE_PUBLIC' | 'ACTIVE_PRIVATE';
+    notificationStatus: 'ACTIVE' | 'INACTIVE';
 }
 
 const MeetingInfo = ({
@@ -25,26 +28,11 @@ const MeetingInfo = ({
     currentCapacity,
     teamId,
     teamUserId,
+    recruitStatus,
+    nickName,
+    notificationStatus,
 }: MeetingInfoProps) => {
     const displayedTags = getDisplayedTags(tag);
-
-    const joinapi = async (): Promise<void> => {
-        const body = {
-            teamId: teamId,
-            nickname: '아무거나',
-            notificationStatus: 'ACTIVE',
-        };
-        try {
-            await customFetch('/team-user', {
-                method: 'POST',
-                credentials: 'include',
-                body: JSON.stringify(body),
-            });
-        } catch (error) {
-            console.error('Error fetching area teams:', error);
-            throw error;
-        }
-    };
 
     const handleUpdateInfo = () => {
         console.log('Update Info button clicked');
@@ -52,8 +40,22 @@ const MeetingInfo = ({
     };
 
     const handleJoinRequest = () => {
-        joinapi();
-        console.log('Join Request button clicked');
+        if (recruitStatus === 'ACTIVE_PUBLIC') {
+            console.log('저기 도착');
+
+            joinTeamForPublic(teamId, nickName, notificationStatus);
+        } else if (recruitStatus === 'ACTIVE_PRIVATE') {
+            console.log('여기 도착');
+
+            let memo = window.prompt('메모를 입력하세요', '');
+            // 입력하지 않거나 공백만 입력한 경우 기본 메세지 사용
+            if (!memo || memo.trim() === '') {
+                memo = '안녕하세요? 잘 부탁드립니다.';
+            }
+            joinTeamForPrivate(teamId, memo);
+        } else {
+            throw new Error('이런');
+        }
     };
 
     return (
