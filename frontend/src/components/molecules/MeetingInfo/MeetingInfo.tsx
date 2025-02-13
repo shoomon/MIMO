@@ -4,9 +4,11 @@ import type { RatingStarProps } from '@/components/atoms/RatingStar/RatingStar';
 import getDisplayedTags from '@/utils/filterTagsByLength';
 import MeetingInfoView from './MeetingInfo.view';
 import { joinTeamForPrivate, joinTeamForPublic } from '@/apis/TeamAPI';
+import { TeamRecruitStatus, TeamUserRole } from '@/types/Team';
 
 export interface MeetingInfoProps {
     teamId: string;
+    role: TeamUserRole;
     subTitle: string;
     rating: RatingStarProps;
     title: string;
@@ -15,8 +17,7 @@ export interface MeetingInfoProps {
     currentCapacity: number;
     teamUserId: number | null;
     nickName: string;
-    recruitStatus: 'ACTIVE_PUBLIC' | 'ACTIVE_PRIVATE';
-    notificationStatus: 'ACTIVE' | 'INACTIVE';
+    recruitStatus: TeamRecruitStatus;
 }
 
 const MeetingInfo = ({
@@ -30,7 +31,6 @@ const MeetingInfo = ({
     teamUserId,
     recruitStatus,
     nickName,
-    notificationStatus,
 }: MeetingInfoProps) => {
     const displayedTags = getDisplayedTags(tag);
 

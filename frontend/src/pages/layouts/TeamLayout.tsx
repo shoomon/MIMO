@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Outlet, useParams } from 'react-router-dom';
 import { TeamDataMockup } from '@/mock/TeamLayoutMock';
 import tagFormatter from '@/utils/tagFormatter';
+import { typeChecker } from '@/utils/typeChecker';
 
 const TeamLayout = () => {
     const { teamId } = useParams() as { teamId: string };
@@ -14,6 +15,14 @@ const TeamLayout = () => {
         queryKey: ['teamInfo', teamId],
         queryFn: () => getTeamInfo(teamId),
     });
+
+    function isDefined<T>(data: T | null | undefined): data is T {
+        return data !== null && data !== undefined;
+    }
+
+    if (!isDefined(data)) {
+        throw new Error('데이터가 존재하지 않습니다.');
+    }
 
     const formattedTags = tagFormatter(data?.tags || []);
 
@@ -30,12 +39,12 @@ const TeamLayout = () => {
                 <section className="flex w-[29rem] flex-col gap-12 pl-4">
                     <MeetingInfo
                         teamId={teamId}
-                        subTitle={data?.description || 'subtitle이 없습니다.'}
+                        subTitle={data?.description}
                         rating={{
                             rating: data?.score || 0,
                             reviewCount: 0,
                         }}
-                        title={data?.name || 'title이 없습니다.'}
+                        title={data?.name}
                         tag={formattedTags}
                         maxCapacity={data?.maxCapacity || 0}
                         currentCapacity={data?.currentCapacity || 0}
@@ -45,9 +54,6 @@ const TeamLayout = () => {
                                 : null
                         }
                         nickName="일단닉네임"
-                        notificationStatus={
-                            data?.notificationStatus || 'ACTIVE'
-                        }
                         recruitStatus={data?.recruitStatus}
                     />
                     <Album id={teamId ?? ''} items={album.items} />

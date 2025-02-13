@@ -1,15 +1,15 @@
-import { TeamData } from '@/pages/Team/TeamCreate';
+import { TeamCreateRequest } from '@/pages/Team/TeamCreate';
 import { customFetch } from './customFetch';
 import {
     Area,
-    TeamDto,
+    TeamInfoResponse,
     TeamInfosResponse,
     TeamScheduleSpecificResponse,
     TeamSchedulesResponse,
     TeamUserResponse,
 } from '@/types/Team';
 
-export const createTeam = async (team: TeamData): Promise<void> => {
+export const createTeam = async (team: TeamCreateRequest): Promise<void> => {
     try {
         const formData = new FormData();
         formData.append('name', team.name);
@@ -56,7 +56,9 @@ export const validTeamName = async (name: string): Promise<boolean> => {
     }
 };
 
-export const getTeamInfo = async (teamId: string): Promise<TeamDto> => {
+export const getTeamInfo = async (
+    teamId: string,
+): Promise<TeamInfoResponse> => {
     if (!teamId) {
         throw new Error('팀 아이디가 없습니다.');
     }

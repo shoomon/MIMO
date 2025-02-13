@@ -11,21 +11,34 @@ export interface SimpleTeamResponse {
     maxCapacity: number;
     currentCapacity: number;
 }
-export interface TeamDto {
+
+export interface TeamInfoResponse {
     teamId: number;
     teamUserId: number;
+    role: TeamUserRole;
     profileUri: string;
     name: string;
     description: string;
-    recruitStatus: 'ACTIVE_PRIVATE' | 'ACTIVE_PUBLIC' | 'INACTIVE';
-
-    privateStatus: 'PRIVATE' | 'PUBLIC';
-    notificationStatus: 'ACTIVE' | 'INACTIVE';
+    recruitStatus: TeamRecruitStatus;
+    privateStatus: TeamPrivateStatus;
     area: Area;
     maxCapacity: number;
     currentCapacity: number;
     score: number;
     tags: string[];
+}
+
+export interface TeamCreateRequest {
+    name: string;
+    description: string;
+    area: string;
+    category: string;
+    nickname: string;
+    notificationStatus: TeamNotificationStatus;
+    teamRecruitStatus: TeamRecruitStatus;
+    teamPrivateStatus: TeamPrivateStatus;
+    maxCapacity: string;
+    teamProfile?: File | null;
 }
 
 export interface TeamResponse {
@@ -39,7 +52,9 @@ export interface TeamResponse {
     maxCapacity: number;
     currentCapacity: number;
 }
-
+export type TeamPrivateStatus = 'PRIVATE' | 'PUBLIC';
+export type TeamNotificationStatus = 'ACTIVE' | 'INACTIVE';
+export type TeamRecruitStatus = 'ACTIVE_PRIVATE' | 'ACTIVE_PUBLIC' | 'INACTIVE';
 export type TeamUserRole = 'LEADER' | 'CO_LEADER' | 'MEMBER';
 
 export interface TeamUserDto {
@@ -61,16 +76,6 @@ export interface TeamInfosResponse {
     hasNext: boolean;
     lastTeamId: number;
     teams: SimpleTeamResponse[];
-}
-
-export enum TeamRecruitStatus {
-    RECRUITING = 'RECRUITING',
-    CLOSED = 'CLOSED',
-}
-
-export enum TeamPrivateStatus {
-    PUBLIC = 'PUBLIC',
-    PRIVATE = 'PRIVATE',
 }
 
 export enum Area {
