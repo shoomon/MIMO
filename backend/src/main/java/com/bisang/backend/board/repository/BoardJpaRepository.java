@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import com.bisang.backend.board.domain.Board;
+import org.springframework.data.repository.query.Param;
 
 public interface BoardJpaRepository extends JpaRepository<Board, Long> {
     @Transactional
@@ -23,4 +24,9 @@ public interface BoardJpaRepository extends JpaRepository<Board, Long> {
     @Modifying
     @Query("UPDATE Board b SET b.likes = b.likes-1 WHERE b.id = :postId")
     void decreaseLikeCount(Long postId);
+
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM Board b WHERE b.teamBoardId = :teamBoardId")
+    void deleteAllByTeamBoardId(@Param(value = "teamBoardId") Long teamBoardId);
 }

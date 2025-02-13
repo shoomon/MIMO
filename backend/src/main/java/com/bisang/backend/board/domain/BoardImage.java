@@ -27,6 +27,9 @@ public class BoardImage {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
+    @Column(name = "team_id", nullable = false)
+    private Long teamId;
+
     @Column(name = "board_id", nullable = false)
     private Long boardId;
 

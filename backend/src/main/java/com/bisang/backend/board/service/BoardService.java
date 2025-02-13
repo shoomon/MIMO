@@ -10,7 +10,6 @@ import com.bisang.backend.s3.service.S3Service;
 import com.bisang.backend.user.repository.UserJpaRepository;
 import jakarta.persistence.EntityNotFoundException;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,7 +21,6 @@ import com.bisang.backend.board.controller.response.BoardDetailResponse;
 
 import lombok.RequiredArgsConstructor;
 
-//todo: 게시글 리스트, 댓글 리스트 가져올 때 offset 설정
 @Service
 @RequiredArgsConstructor
 public class BoardService {
@@ -40,25 +38,28 @@ public class BoardService {
 
     //    @TeamMember
     public Long createPost(
-            long teamBoardId,
-            long teamUserId,
-            long userId,
+            Long teamBoardId,
+            Long teamId,
+            Long userId,
             String title,
             String description,
-            List<MultipartFile> fileUris
+            List<MultipartFile> files
     ) {
+        TeamUser teamUser = teamUserJpaRepository.findByTeamIdAndUserId(teamId, userId)
+                .orElseThrow(() -> new EntityNotFoundException("팀유저를 찾을 수 없습니다."));
+
         BoardDescription boardDescription = boardDescriptionJpaRepository.save(new BoardDescription(description));
-        validationTeamUser(teamUserId);
 
         Board post = boardJpaRepository.save(Board.builder()
                 .teamBoardId(teamBoardId)
-                .teamUserId(teamUserId)
+                .teamUserId(teamUser.getId())
                 .userId(userId)
                 .title(title)
                 .description(boardDescription)
                 .build());
-        if (fileUris != null && !fileUris.isEmpty()) {
-            for(MultipartFile file : fileUris){
+        //todo: 사진 업로드 비동기 처리
+        if (files != null && !files.isEmpty()) {
+            for(MultipartFile file : files){
                 String uri = s3Service.saveFile(userId, file); //서비스가 서비스에 의존해도 되나 컨트롤러에서 업로드하고 file uri 리스트로 보내줘야하나
 
                 String fileExtension = uri.substring(uri.lastIndexOf(".") + 1).toLowerCase();
@@ -230,10 +231,4 @@ public class BoardService {
         }
         return result;
     }
-
-    private void validationTeamUser(long teamUserId) {
-        teamUserJpaRepository.findById(teamUserId)
-                .orElseThrow(() -> new EntityNotFoundException("팀유저를 찾을 수 없습니다."));
-    }
-
 }

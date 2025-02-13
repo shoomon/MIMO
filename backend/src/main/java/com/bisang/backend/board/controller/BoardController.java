@@ -42,7 +42,6 @@ public class BoardController {
     private final BoardService boardService;
     private final BoardJpaRepository boardJpaRepository;
 
-    //todo: 게시글 생성 시 S3 업로드 및 사진 uri 리스트 저장
     @Transactional
     @PostMapping
     public ResponseEntity<Long> createPost(
@@ -52,11 +51,11 @@ public class BoardController {
         return ResponseEntity.ok(
                 boardService.createPost(
                         request.teamBoardId(),
-                        request.teamUserId(),
+                        request.teamId(),
                         user.getId(),
                         request.title(),
                         request.description(),
-                        request.fileUris()
+                        request.files()
                 )
         );
     }

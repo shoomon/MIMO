@@ -66,5 +66,5 @@ oauth2:
       - openid
 
 openvidu:
-  url: "https://i12a504.p.ssafy.io"
+  url: "https://i12a504.p.ssafy.io:8443"
   secret: "MY_SECRET"

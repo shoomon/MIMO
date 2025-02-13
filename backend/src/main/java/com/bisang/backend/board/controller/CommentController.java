@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-//todo: 댓글 기능 구현
 @RestController
 @RequestMapping("/comment")
 @Slf4j
