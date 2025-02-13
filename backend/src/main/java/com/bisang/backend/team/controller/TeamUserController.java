@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bisang.backend.auth.annotation.AuthUser;
 import com.bisang.backend.auth.annotation.Guest;
+import com.bisang.backend.team.controller.dto.MyTeamUserInfoDto;
 import com.bisang.backend.team.controller.request.InviteTeamRequest;
 import com.bisang.backend.team.controller.request.JoinTeamRequest;
 import com.bisang.backend.team.controller.request.UpdateTeamUserNicknameRequest;
@@ -30,6 +31,14 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/team-user")
 public class TeamUserController {
     private final TeamUserService teamUserService;
+
+    @GetMapping("/my-info")
+    public ResponseEntity<MyTeamUserInfoDto> getMyTeamInfo(
+            @AuthUser User user,
+            @RequestParam(name = "teamId") Long teamId
+    ) {
+        return ResponseEntity.ok(teamUserService.getMyTeamUserInfo(teamId, user.getId()));
+    }
 
     @GetMapping("/exist-nickname")
     public ResponseEntity<Boolean> existsTeamUserNickname(

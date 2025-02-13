@@ -18,6 +18,7 @@ import com.bisang.backend.common.exception.TeamException;
 import com.bisang.backend.invite.domain.TeamInvite;
 import com.bisang.backend.invite.repository.TeamInviteJpaRepository;
 import com.bisang.backend.team.annotation.EveryOne;
+import com.bisang.backend.team.controller.dto.MyTeamUserInfoDto;
 import com.bisang.backend.team.controller.dto.TeamUserDto;
 import com.bisang.backend.team.controller.response.SingleTeamUserInfoResponse;
 import com.bisang.backend.team.controller.response.TeamUserResponse;
@@ -38,6 +39,12 @@ public class TeamUserService {
     private final TeamUserJpaRepository teamUserJpaRepository;
     private final TeamInviteJpaRepository teamInviteJpaRepository;
     private final TeamUserQuerydslRepository teamUserQuerydslRepository;
+
+    @Transactional(readOnly = true)
+    public MyTeamUserInfoDto getMyTeamUserInfo(Long teamId, Long userId) {
+        TeamUser teamUser = findTeamUserByTeamIdAndUserId(teamId, userId);
+        return MyTeamUserInfoDto.teamUserToDto(teamUser);
+    }
 
     @EveryOne
     public Boolean existsNicknameByTeamIdAndNickname(Long teamId, String nickname) {

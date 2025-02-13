@@ -14,6 +14,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
+import com.bisang.backend.team.controller.dto.MyTeamUserInfoDto;
 import com.bisang.backend.team.controller.dto.TeamInviteDto;
 import com.bisang.backend.team.controller.dto.TeamUserDto;
 import com.bisang.backend.team.domain.TeamUserRole;
@@ -27,6 +28,20 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TeamUserQuerydslRepository {
     private final JPAQueryFactory queryFactory;
+
+    public MyTeamUserInfoDto getMyTeamUserInfoDto(Long teamId, Long userId) {
+        return queryFactory
+                .select(Projections.constructor(MyTeamUserInfoDto.class,
+                        teamUser.teamId,
+                        teamUser.id,
+                        teamUser.nickname,
+                        teamUser.role,
+                        teamUser.status,
+                        teamUser.createdAt))
+                .from(teamUser)
+                .where(teamUser.teamId.eq(teamId), teamUser.userId.eq(userId))
+                .fetchOne();
+    }
 
     public List<TeamUserDto> getTeamUserInfo(Long teamId) {
         return queryFactory
