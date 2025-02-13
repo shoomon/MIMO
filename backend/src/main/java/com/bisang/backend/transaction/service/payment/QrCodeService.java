@@ -77,7 +77,7 @@ public class QrCodeService {
         }
 
         String uuid = UUID.randomUUID().toString();
-        redisTemplate.opsForValue().set(accountNumber, uuid, 33, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set(accountNumber, uuid, 63, TimeUnit.SECONDS);
 
         return uuid;
     }

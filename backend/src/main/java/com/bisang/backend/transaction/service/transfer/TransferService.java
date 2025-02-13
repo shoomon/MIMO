@@ -18,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TransferService {
     private final AccountDetailsService accountDetailsService;
-
     private final AccountJpaRepository accountJpaRepository;
 
     @Transactional

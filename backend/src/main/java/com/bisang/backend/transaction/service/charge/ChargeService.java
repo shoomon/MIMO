@@ -19,8 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 public class ChargeService {
-
-
     private final AccountDetailsService accountDetailsService;
     private final AccountJpaRepository accountJpaRepository;
 

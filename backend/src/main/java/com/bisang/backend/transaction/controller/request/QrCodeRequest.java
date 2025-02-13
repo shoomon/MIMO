@@ -8,10 +8,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class QrCodeRequest {
-
     private User user;
-
     private String accountNumber;
-
     private Long teamId;
 }

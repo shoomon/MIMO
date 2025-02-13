@@ -2,6 +2,7 @@ package com.bisang.backend.transaction.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,22 +25,30 @@ public class TransactionController {
     private final TransactionService transactionService;
 
     @PostMapping("/charge")
-    public void chargeBalance(
+    public ResponseEntity<Void> chargeBalance(
             @AuthUser User user,
             @RequestBody ChargeRequest chargeRequest
     ) {
         transactionService.chargeBalance(TransactionService.ADMIN_ACCOUNT_NUMBER, chargeRequest);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(null);
     }
 
     @PostMapping("/transfer")
-    public void transferBalance(
+    public ResponseEntity<Void> transferBalance(
             @AuthUser User user,
             @RequestBody TransferRequest transferRequest
     ) {
         transactionService.transferBalance(transferRequest);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(null);
     }
 
-    @PostMapping("/payment/qrcode/team")
+    @GetMapping("/payment/qrcode/team")
     public ResponseEntity<String> generateTeamQrCodeDetails(
             @AuthUser User user,
             @RequestBody QrCodeRequest qrCodeRequest
@@ -49,7 +58,7 @@ public class TransactionController {
                 .body(transactionService.generateExpiringUuidForTeam(qrCodeRequest));
     }
 
-    @PostMapping("/payment/qrcode/user")
+    @GetMapping("/payment/qrcode/user")
     public ResponseEntity<String> generateUserQrCodeDetails(
             @AuthUser User user,
             @RequestBody QrCodeRequest qrCodeRequest
@@ -60,10 +69,13 @@ public class TransactionController {
     }
 
     @PostMapping("/payment/pay")
-    public void pay(
-            @AuthUser User user,
+    public ResponseEntity<Void> pay(
             @RequestBody PaymentRequest paymentRequest
     ) {
         transactionService.pay(TransactionService.ADMIN_ACCOUNT_NUMBER, paymentRequest);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(null);
     }
 }
