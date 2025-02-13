@@ -17,8 +17,10 @@ export interface TeamDto {
     profileUri: string;
     name: string;
     description: string;
-    recruitStatus: TeamRecruitStatus;
-    privateStatus: TeamPrivateStatus;
+    recruitStatus: 'ACTIVE_PRIVATE' | 'ACTIVE_PUBLIC' | 'INACTIVE';
+
+    privateStatus: 'PRIVATE' | 'PUBLIC';
+    notificationStatus: 'ACTIVE' | 'INACTIVE';
     area: Area;
     maxCapacity: number;
     currentCapacity: number;
