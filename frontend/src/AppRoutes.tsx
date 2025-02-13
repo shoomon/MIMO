@@ -5,7 +5,8 @@ import {
     BoardDetail,
     BoardEdit,
     Category,
-    Chat,
+    ChatPage,
+    ChatRoom,
     DefaultLayout,
     GoogleCallback,
     Home,
@@ -48,11 +49,12 @@ const AppRoutes = () => {
                 <Route path="/list" element={<TeamList />} />
                 {/* 마이 페이지 */}
                 <Route path="/mypage" element={<MyPage />} />
+
                 {/* 팀  */}
                 <Route path="/team">
                     <Route index element={<Navigate to="/" replace />} />
                     {/* 팀 생성 */}
-                    <Route path="create" element={<TeamCreate />} />
+                    <Route path="create" element={<TeamCreate />} />h
                     <Route path=":teamId" element={<TeamLayout />}>
                         {/* 팀 메인 */}
                         <Route index element={<TeamDetail />} />
@@ -137,11 +139,13 @@ const AppRoutes = () => {
             {/* 화상 채팅 */}
             <Route path="/video" element={<VideoChat />} />
 
-            {/* 채팅 */}
-            <Route path="/chat" element={<Chat />} />
-
             {/* QR 코드 */}
             <Route path="/pay/:payId" element={<Payment />} />
+
+            {/* 채팅  */}
+            <Route path="/chat" element={<ChatPage />}>
+                <Route path=":roomId" element={<ChatRoom />} />
+            </Route>
         </Routes>
     );
 };

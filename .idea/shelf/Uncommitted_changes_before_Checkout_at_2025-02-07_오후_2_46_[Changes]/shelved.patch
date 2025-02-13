@@ -1,0 +1,192 @@
+Index: backend/build.gradle
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>plugins {\r\n    id 'java'\r\n    id 'org.springframework.boot' version '3.4.2'\r\n    id 'io.spring.dependency-management' version '1.1.7'\r\n    id \"org.sonarqube\" version \"6.0.1.5171\"\r\n    id 'checkstyle'\r\n}\r\n\r\ngroup = 'com.bisang'\r\nversion = '0.0.1-SNAPSHOT'\r\n\r\njava {\r\n    toolchain {\r\n        languageVersion = JavaLanguageVersion.of(17)\r\n    }\r\n}\r\n\r\nrepositories {\r\n    mavenCentral()\r\n}\r\n\r\ndependencies {\r\n    // Redis 의존성\r\n    implementation 'org.springframework.boot:spring-boot-starter-data-redis'\r\n    // MySQL 의존성\r\n    runtimeOnly 'com.mysql:mysql-connector-j'\r\n    // H2 데이터베이스\r\n    runtimeOnly 'com.h2database:h2'\r\n\r\n    // JPA 의존성\r\n    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'\r\n    // QueryDSL JPA 의존성 (Jakarta)\r\n    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'\r\n    compileOnly 'com.querydsl:querydsl-apt:5.0.0:jakarta'\r\n    compileOnly 'jakarta.annotation:jakarta.annotation-api'\r\n    compileOnly 'jakarta.persistence:jakarta.persistence-api'\r\n    annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jakarta'\r\n    annotationProcessor \"jakarta.persistence:jakarta.persistence-api\"\r\n\r\n    // JWT 토큰 관련 설정\r\n    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'\r\n    implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'\r\n    implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'\r\n    // 암호화 관련 설정\r\n    implementation 'org.mindrot:jbcrypt:0.4'\r\n\r\n    // Commons Lang3 설정\r\n    implementation 'org.apache.commons:commons-lang3:3.17.0'\r\n    implementation 'org.apache.commons:commons-collections4:4.4'\r\n\r\n    // Jackson 의존성 추가\r\n    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.0'\r\n    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.15.0'\r\n    implementation 'com.fasterxml.jackson.core:jackson-core:2.15.0'\r\n    // Validation 설정 추가\r\n    implementation 'org.springframework.boot:spring-boot-starter-validation'\r\n    // Spring Web\r\n    implementation 'org.springframework.boot:spring-boot-starter-web'\r\n\r\n    // Lombok 의존성\r\n    compileOnly 'org.projectlombok:lombok'\r\n    annotationProcessor 'org.projectlombok:lombok'\r\n    // 테스트 코드 관련 의존성\r\n    testImplementation 'org.springframework.boot:spring-boot-starter-test'\r\n    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'\r\n\r\n    // PortOne(결제 연동) 관련 의존성\r\n    implementation 'com.squareup.okhttp3:okhttp:4.9.3'\r\n\r\n    // JAVA 환경변수 관련 의존성\r\n    implementation 'io.github.cdimascio:java-dotenv:5.2.2'\r\n\r\n    // Redisson 관련 의존성\r\n    implementation 'org.redisson:redisson:3.23.4'\r\n}\r\n\r\nsonar {\r\n    properties {\r\n        property 'sonar.host.url', 'https://sonarcloud.io'\r\n        property \"sonar.projectKey\", \"5th-project-team_backend\"\r\n        property \"sonar.organization\", \"5th-project-team\"\r\n        // 자코코 결과 리포트 주소\r\n        property 'sonar.coverage.jacoco.xmlReportPaths', 'build/reports/jacoco/index.xml'\r\n        property 'sonar.sources', 'src'\r\n        property 'sonar.language', 'java'\r\n        property 'sonar.sourceEncoding', 'UTF-8'\r\n        // 테스트 커버리지에서 제외할 클래스\r\n        property 'sonar.exclusions', '**/test/**, **/resources/**, **/*Application*.java, **/*Controller*.java, **/*Config.java' +\r\n                '**/*Response.java, **/*Exception.java, **/security/**, **/support/**, **/Q*.java'\r\n        property 'sonar.test.inclusions', '**/*Test.java'\r\n        property 'sonar.java.coveragePlugin', 'jacoco'\r\n    }\r\n}\r\n\r\ncheckstyle {\r\n    maxWarnings = 0\r\n    configFile = file(\"${rootDir}/config/naver-checkstyle-rules.xml\")\r\n    configProperties = [\"suppressionFile\": \"${rootDir}/config/naver-checkstyle-suppressions.xml\"]\r\n    toolVersion = \"8.42\"\r\n}\r\n\r\ncompileJava.options.encoding = 'UTF-8'\r\ncompileTestJava.options.encoding = 'UTF-8'\r\n\r\ntasks.named('test') {\r\n    useJUnitPlatform()\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/backend/build.gradle b/backend/build.gradle
+--- a/backend/build.gradle	(revision 2481f0d3d6681492dab9c4c30b3581f66030d67b)
++++ b/backend/build.gradle	(date 1738906941000)
+@@ -64,9 +64,6 @@
+     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+ 
+-    // PortOne(결제 연동) 관련 의존성
+-    implementation 'com.squareup.okhttp3:okhttp:4.9.3'
+-
+     // JAVA 환경변수 관련 의존성
+     implementation 'io.github.cdimascio:java-dotenv:5.2.2'
+ 
+Index: backend/src/main/java/com/bisang/backend/Transaction/controller/TransactionController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.bisang.backend.Transaction.controller;\r\n\r\nimport com.bisang.backend.Transaction.controller.request.PaymentResultRequest;\r\nimport com.bisang.backend.Transaction.controller.request.TransferRequest;\r\nimport com.bisang.backend.Transaction.service.TransactionService;\r\nimport com.bisang.backend.auth.annotation.AuthUser;\r\nimport com.bisang.backend.user.domain.User;\r\nimport lombok.RequiredArgsConstructor;\r\nimport org.springframework.web.bind.annotation.PostMapping;\r\nimport org.springframework.web.bind.annotation.RequestBody;\r\nimport org.springframework.web.bind.annotation.RequestMapping;\r\nimport org.springframework.web.bind.annotation.RestController;\r\n\r\n@RestController\r\n@RequiredArgsConstructor\r\n@RequestMapping(\"/balance\")\r\npublic class TransactionController {\r\n    private final TransactionService transactionService;\r\n\r\n    @PostMapping(\"/charge\")\r\n    public void chargeBalance(\r\n            @AuthUser User user,\r\n            @RequestBody PaymentResultRequest paymentResultRequest\r\n    ) {\r\n        transactionService.chargeBalance(paymentResultRequest);\r\n    }\r\n\r\n    @PostMapping(\"/transfer\")\r\n    public void transferBalance(\r\n            @AuthUser User user,\r\n            @RequestBody TransferRequest transferRequest\r\n    ) {\r\n        transactionService.transferBalance(transferRequest);\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/backend/src/main/java/com/bisang/backend/Transaction/controller/TransactionController.java b/backend/src/main/java/com/bisang/backend/Transaction/controller/TransactionController.java
+--- a/backend/src/main/java/com/bisang/backend/Transaction/controller/TransactionController.java	(revision 2481f0d3d6681492dab9c4c30b3581f66030d67b)
++++ b/backend/src/main/java/com/bisang/backend/Transaction/controller/TransactionController.java	(date 1738894976766)
+@@ -1,6 +1,7 @@
+ package com.bisang.backend.Transaction.controller;
+ 
+-import com.bisang.backend.Transaction.controller.request.PaymentResultRequest;
++import com.bisang.backend.Transaction.controller.request.ChargeRequest;
++import com.bisang.backend.Transaction.controller.request.QrCodeRequest;
+ import com.bisang.backend.Transaction.controller.request.TransferRequest;
+ import com.bisang.backend.Transaction.service.TransactionService;
+ import com.bisang.backend.auth.annotation.AuthUser;
+@@ -20,9 +21,9 @@
+     @PostMapping("/charge")
+     public void chargeBalance(
+             @AuthUser User user,
+-            @RequestBody PaymentResultRequest paymentResultRequest
++            @RequestBody ChargeRequest chargeRequest
+     ) {
+-        transactionService.chargeBalance(paymentResultRequest);
++        transactionService.chargeBalance(chargeRequest);
+     }
+ 
+     @PostMapping("/transfer")
+@@ -32,4 +33,21 @@
+     ) {
+         transactionService.transferBalance(transferRequest);
+     }
++
++    @PostMapping("/payment/teamQrCode")
++    public String generateQrCodeDetails(
++            @AuthUser User user,
++            @RequestBody QrCodeRequest qrCodeRequest
++    ) {
++
++    }
++
++    @PostMapping("/payment/userQrCode")
++    public String generateQrCodeDetails(
++            @AuthUser User user,
++            @RequestBody QrCodeRequest qrCodeRequest
++    ) {
++
++    }
++
+ }
+\ No newline at end of file
+Index: backend/src/main/java/com/bisang/backend/Transaction/service/TransactionService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.bisang.backend.Transaction.service;\r\n\r\nimport com.bisang.backend.Transaction.controller.request.PaymentResultRequest;\r\nimport com.bisang.backend.Transaction.controller.request.TransferRequest;\r\nimport com.bisang.backend.Transaction.converter.TransactionConverter;\r\nimport com.bisang.backend.Transaction.domain.Transaction;\r\nimport com.bisang.backend.Transaction.domain.TransactionStatus;\r\nimport com.bisang.backend.Transaction.repository.TransactionLogJpaRepository;\r\nimport com.bisang.backend.Transaction.service.charge.ChargeService;\r\nimport com.bisang.backend.Transaction.service.transfer.TransferService;\r\nimport com.bisang.backend.common.annotation.DistributedLock;\r\nimport com.bisang.backend.common.exception.ExceptionCode;\r\nimport com.bisang.backend.common.exception.TransactionException;\r\nimport lombok.RequiredArgsConstructor;\r\nimport lombok.extern.slf4j.Slf4j;\r\n\r\n@Slf4j\r\n@RequiredArgsConstructor\r\npublic class TransactionService {\r\n    private static final String ADMIN_ACCOUNT_NUMBER = \"1000123456789\";\r\n\r\n    private final ChargeService chargeService;\r\n    private final TransferService transferService;\r\n\r\n    private final TransactionLogJpaRepository transactionLogJpaRepository;\r\n\r\n    @DistributedLock(name = \"관리자 계좌번호\", key = ADMIN_ACCOUNT_NUMBER, waitTime = 3, leaseTime = 3)\r\n    public void chargeBalance(PaymentResultRequest paymentResultRequest) {\r\n        Transaction transaction\r\n                = TransactionConverter.PaymentResultRequestToTransaction(paymentResultRequest);\r\n\r\n        transaction = saveTransactionLog(transaction);\r\n\r\n        try {\r\n            chargeService.charge(transaction);\r\n\r\n            updateTransactionStatus(transaction, TransactionStatus.SUCCESS);\r\n            log.info(\"Balance Charge Success: {}\", transaction);\r\n        } catch (Exception e) {\r\n            updateTransactionStatus(transaction, TransactionStatus.FAIL);\r\n            throw new TransactionException(ExceptionCode.BALANCE_CHARGE_FAIL);\r\n        }\r\n    }\r\n\r\n    public void transferBalance(TransferRequest transferRequest) {\r\n        Transaction transaction\r\n                = TransactionConverter.TransferRequestToTransaction(transferRequest);\r\n\r\n        transaction = saveTransactionLog(transaction);\r\n\r\n        try {\r\n            transferService.transfer(transaction);\r\n\r\n            updateTransactionStatus(transaction, TransactionStatus.SUCCESS);\r\n            log.info(\"Balance Transfer Success: {}\", transaction);\r\n        } catch (Exception e) {\r\n            updateTransactionStatus(transaction, TransactionStatus.FAIL);\r\n            throw new TransactionException(ExceptionCode.BALANCE_TRANSFER_FAIL);\r\n        }\r\n    }\r\n\r\n    private Transaction saveTransactionLog(Transaction transaction) {\r\n        return transactionLogJpaRepository.save(transaction);\r\n    }\r\n\r\n    private void updateTransactionStatus(\r\n            Transaction transaction,\r\n            TransactionStatus transactionStatus\r\n    ) {\r\n        transaction.updateTransactionStatus(transactionStatus);\r\n        transactionLogJpaRepository.save(transaction);\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/backend/src/main/java/com/bisang/backend/Transaction/service/TransactionService.java b/backend/src/main/java/com/bisang/backend/Transaction/service/TransactionService.java
+--- a/backend/src/main/java/com/bisang/backend/Transaction/service/TransactionService.java	(revision 2481f0d3d6681492dab9c4c30b3581f66030d67b)
++++ b/backend/src/main/java/com/bisang/backend/Transaction/service/TransactionService.java	(date 1738900012044)
+@@ -1,16 +1,19 @@
+ package com.bisang.backend.Transaction.service;
+ 
+-import com.bisang.backend.Transaction.controller.request.PaymentResultRequest;
++import com.bisang.backend.Transaction.controller.request.ChargeRequest;
++import com.bisang.backend.Transaction.controller.request.QrCodeRequest;
+ import com.bisang.backend.Transaction.controller.request.TransferRequest;
+ import com.bisang.backend.Transaction.converter.TransactionConverter;
+ import com.bisang.backend.Transaction.domain.Transaction;
+ import com.bisang.backend.Transaction.domain.TransactionStatus;
+ import com.bisang.backend.Transaction.repository.TransactionLogJpaRepository;
+ import com.bisang.backend.Transaction.service.charge.ChargeService;
++import com.bisang.backend.Transaction.service.payment.PaymentService;
+ import com.bisang.backend.Transaction.service.transfer.TransferService;
+ import com.bisang.backend.common.annotation.DistributedLock;
+ import com.bisang.backend.common.exception.ExceptionCode;
+ import com.bisang.backend.common.exception.TransactionException;
++import com.bisang.backend.user.domain.User;
+ import lombok.RequiredArgsConstructor;
+ import lombok.extern.slf4j.Slf4j;
+ 
+@@ -21,13 +24,14 @@
+ 
+     private final ChargeService chargeService;
+     private final TransferService transferService;
++    private final PaymentService paymentService;
+ 
+     private final TransactionLogJpaRepository transactionLogJpaRepository;
+ 
+     @DistributedLock(name = "관리자 계좌번호", key = ADMIN_ACCOUNT_NUMBER, waitTime = 3, leaseTime = 3)
+-    public void chargeBalance(PaymentResultRequest paymentResultRequest) {
++    public void chargeBalance(ChargeRequest chargeRequest) {
+         Transaction transaction
+-                = TransactionConverter.PaymentResultRequestToTransaction(paymentResultRequest);
++                = TransactionConverter.PaymentResultRequestToTransaction(chargeRequest);
+ 
+         transaction = saveTransactionLog(transaction);
+ 
+@@ -59,6 +63,10 @@
+         }
+     }
+ 
++    public String generateTeamQrCodeDetails(QrCodeRequest qrCodeRequest) {
++        return paymentService.generateTeamQrCodeDetails(qrCodeRequest);
++    }
++
+     private Transaction saveTransactionLog(Transaction transaction) {
+         return transactionLogJpaRepository.save(transaction);
+     }
+Index: backend/src/main/java/com/bisang/backend/Transaction/controller/request/PaymentResultRequest.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/backend/src/main/java/com/bisang/backend/Transaction/controller/request/PaymentResultRequest.java b/backend/src/main/java/com/bisang/backend/Transaction/controller/request/ChargeRequest.java
+rename from backend/src/main/java/com/bisang/backend/Transaction/controller/request/PaymentResultRequest.java
+rename to backend/src/main/java/com/bisang/backend/Transaction/controller/request/ChargeRequest.java
+--- a/backend/src/main/java/com/bisang/backend/Transaction/controller/request/PaymentResultRequest.java	(revision 2481f0d3d6681492dab9c4c30b3581f66030d67b)
++++ b/backend/src/main/java/com/bisang/backend/Transaction/controller/request/ChargeRequest.java	(date 1738892873092)
+@@ -5,7 +5,7 @@
+ 
+ @Getter
+ @NoArgsConstructor
+-public class PaymentResultRequest {
++public class ChargeRequest {
+     private Long paidAmount;
+     private String receiverAccountNumber;
+     private String receiverName;
+Index: backend/src/main/java/com/bisang/backend/Transaction/converter/TransactionConverter.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.bisang.backend.Transaction.converter;\r\n\r\nimport com.bisang.backend.Transaction.controller.request.PaymentResultRequest;\r\nimport com.bisang.backend.Transaction.controller.request.TransferRequest;\r\nimport com.bisang.backend.Transaction.domain.Transaction;\r\nimport com.bisang.backend.Transaction.domain.TransactionCategory;\r\nimport com.bisang.backend.Transaction.domain.TransactionStatus;\r\nimport jakarta.persistence.Converter;\r\n\r\n@Converter\r\npublic class TransactionConverter {\r\n\r\n    // 잔액 충전 트랜잭션\r\n    public static Transaction PaymentResultRequestToTransaction(PaymentResultRequest paymentResultRequest) {\r\n        return Transaction.builder()\r\n                .balance(paymentResultRequest.getPaidAmount())\r\n                .senderAccountNumber(null)\r\n                .receiverAccountNumber(paymentResultRequest.getReceiverAccountNumber())\r\n                .senderName(null)\r\n                .receiverName(paymentResultRequest.getReceiverName())\r\n                .impUid(paymentResultRequest.getImpUid())\r\n                .merchantUid(paymentResultRequest.getMerchantUid())\r\n                .memo(\"충전\")\r\n                .transactionCategory(TransactionCategory.CHARGE)\r\n                .transactionStatus(TransactionStatus.PENDING)\r\n                .build();\r\n    }\r\n\r\n    // 잔액 송금 트랜잭션\r\n    public static Transaction TransferRequestToTransaction(TransferRequest transferRequest) {\r\n        return Transaction.builder()\r\n                .balance(transferRequest.getBalance())\r\n                .senderAccountNumber(transferRequest.getSenderAccountNumber())\r\n                .receiverAccountNumber(transferRequest.getReceiverAccountNumber())\r\n                .senderName(transferRequest.getSenderName())\r\n                .receiverName(transferRequest.getReceiverName())\r\n                .impUid(null)\r\n                .merchantUid(null)\r\n                .memo(\"송금\")\r\n                .transactionCategory(TransactionCategory.TRANSFER)\r\n                .transactionStatus(TransactionStatus.PENDING)\r\n                .build();\r\n    }\r\n}\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/backend/src/main/java/com/bisang/backend/Transaction/converter/TransactionConverter.java b/backend/src/main/java/com/bisang/backend/Transaction/converter/TransactionConverter.java
+--- a/backend/src/main/java/com/bisang/backend/Transaction/converter/TransactionConverter.java	(revision 2481f0d3d6681492dab9c4c30b3581f66030d67b)
++++ b/backend/src/main/java/com/bisang/backend/Transaction/converter/TransactionConverter.java	(date 1738892873088)
+@@ -1,6 +1,6 @@
+ package com.bisang.backend.Transaction.converter;
+ 
+-import com.bisang.backend.Transaction.controller.request.PaymentResultRequest;
++import com.bisang.backend.Transaction.controller.request.ChargeRequest;
+ import com.bisang.backend.Transaction.controller.request.TransferRequest;
+ import com.bisang.backend.Transaction.domain.Transaction;
+ import com.bisang.backend.Transaction.domain.TransactionCategory;
+@@ -11,15 +11,15 @@
+ public class TransactionConverter {
+ 
+     // 잔액 충전 트랜잭션
+-    public static Transaction PaymentResultRequestToTransaction(PaymentResultRequest paymentResultRequest) {
++    public static Transaction PaymentResultRequestToTransaction(ChargeRequest chargeRequest) {
+         return Transaction.builder()
+-                .balance(paymentResultRequest.getPaidAmount())
++                .balance(chargeRequest.getPaidAmount())
+                 .senderAccountNumber(null)
+-                .receiverAccountNumber(paymentResultRequest.getReceiverAccountNumber())
++                .receiverAccountNumber(chargeRequest.getReceiverAccountNumber())
+                 .senderName(null)
+-                .receiverName(paymentResultRequest.getReceiverName())
+-                .impUid(paymentResultRequest.getImpUid())
+-                .merchantUid(paymentResultRequest.getMerchantUid())
++                .receiverName(chargeRequest.getReceiverName())
++                .impUid(chargeRequest.getImpUid())
++                .merchantUid(chargeRequest.getMerchantUid())
+                 .memo("충전")
+                 .transactionCategory(TransactionCategory.CHARGE)
+                 .transactionStatus(TransactionStatus.PENDING)

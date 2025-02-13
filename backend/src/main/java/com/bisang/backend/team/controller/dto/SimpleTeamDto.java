@@ -4,6 +4,7 @@ import java.util.List;
 
 public record SimpleTeamDto(
     Long teamId,
+    Long teamUserId,
     String name,
     String description,
     String teamProfileUri,

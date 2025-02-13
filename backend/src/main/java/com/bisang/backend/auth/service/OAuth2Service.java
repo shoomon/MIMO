@@ -3,6 +3,7 @@ package com.bisang.backend.auth.service;
 import static com.bisang.backend.common.exception.ExceptionCode.FAILED_TO_VALIDATE_TOKEN;
 import static com.bisang.backend.common.exception.ExceptionCode.INVALID_REFRESH_TOKEN;
 
+import com.bisang.backend.account.service.AccountService;
 import org.springframework.stereotype.Service;
 
 import com.bisang.backend.auth.JwtUtil;
@@ -26,6 +27,7 @@ public class OAuth2Service {
     private final JwtUtil jwtUtil;
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserService userService;
+    private final AccountService accountService;
 
     public UserTokens login(String code) {
         var userCreateOrLoginRequest = googleOAuthProvider.getUserInfoByGoogle(code);
@@ -71,7 +73,10 @@ public class OAuth2Service {
     }
 
     private User createUser(UserCreateOrLoginRequest request) {
+        String accountNumber = accountService.createUserAccount();
+
         User user = User.builder()
+                .accountNumber(accountNumber)
                 .email(request.email())
                 .name(request.name())
                 .nickname(request.nickname())
@@ -81,4 +86,5 @@ public class OAuth2Service {
         userService.saveUser(user);
         return user;
     }
+
 }

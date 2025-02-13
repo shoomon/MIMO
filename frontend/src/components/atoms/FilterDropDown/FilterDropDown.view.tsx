@@ -1,4 +1,4 @@
-import Icon from '../Icon/Icon';
+import { Icon } from '@/components/atoms';
 
 interface FilterDropDwonView {
     active: boolean;

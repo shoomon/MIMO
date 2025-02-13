@@ -1,25 +1,14 @@
-import ChatRoomView, { ChatRoomProps } from './ChatRoom.view';
+import ChatRoomView, { ChatRoomViewProps } from './ChatRoom.view';
 
-const ChatRoom = ({
-    id,
-    imgSrc,
-    title,
-    message,
-    date,
-    noReadCount,
-}: ChatRoomProps) => {
+const ChatRoom = ({ item, onClick }: ChatRoomViewProps) => {
     const shortMessage =
-        message.length > 20 ? message.substring(0, 20) + ' ...' : message;
-    return (
-        <ChatRoomView
-            id={id}
-            imgSrc={imgSrc}
-            title={title}
-            message={shortMessage}
-            date={date}
-            noReadCount={noReadCount}
-        />
-    );
+        item.lastChat.length > 20
+            ? item.lastChat.substring(0, 20) + ' ...'
+            : item.lastChat;
+
+    const chatRooms = { ...item, lastChat: shortMessage };
+
+    return <ChatRoomView item={chatRooms} onClick={onClick} />;
 };
 
 export default ChatRoom;

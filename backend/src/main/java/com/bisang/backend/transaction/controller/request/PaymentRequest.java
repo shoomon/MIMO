@@ -5,10 +5,11 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class PaymentResultRequest {
+public class PaymentRequest {
+    private String uuid;
     private Long paidAmount;
-    private String receiverAccountNumber;
+    private String senderAccountNumber;
+    private String senderName;
     private String receiverName;
-    private String impUid;
-    private String merchantUid;
+    private String memo;
 }

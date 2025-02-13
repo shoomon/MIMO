@@ -35,7 +35,7 @@ const MemberListView = ({
                     <div className="flex items-center gap-1">
                         {userRoleElement}
                         <span className="text-lg font-medium">
-                            {userInfo.userName}
+                            {userInfo.nickname}
                         </span>
                     </div>
                     <span className="text-md font-medium">{bio}</span>

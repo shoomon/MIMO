@@ -137,8 +137,14 @@ public class TeamService {
 
     @EveryOne
     @Transactional(readOnly = true)
-    public TeamDto getTeamGeneralInfo(Long teamId) {
-        return teamQuerydslRepository.getTeamInfo(teamId);
+    public TeamDto getTeamGeneralInfo(Long userId, Long teamId) {
+        return teamQuerydslRepository.getTeamInfo(userId, teamId);
+    }
+
+    @EveryOne
+    @Transactional(readOnly = true)
+    public SimpleTeamDto getSimpleTeamInfo(Long userId, Long teamId) {
+        return teamQuerydslRepository.getSimpleTeamInfo(userId, teamId);
     }
 
     @TeamLeader
