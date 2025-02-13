@@ -2,7 +2,7 @@ package com.bisang.backend.chat.batch;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
+import org.springframework.batch.core.configuration.support.DefaultBatchConfiguration;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
@@ -10,7 +10,6 @@ import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
-import org.springframework.batch.support.transaction.ResourcelessTransactionManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -19,8 +18,7 @@ import com.bisang.backend.chat.domain.ChatMessage;
 import com.bisang.backend.chat.domain.redis.RedisChatMessage;
 
 @Configuration
-@EnableBatchProcessing
-public class ChatMessageBatchConfig {
+public class ChatMessageBatchConfig extends DefaultBatchConfiguration {
 
     private final ItemReader<RedisChatMessage> chatItemReader;
     private final ItemProcessor<RedisChatMessage, ChatMessage> chatItemProcessor;
@@ -29,7 +27,8 @@ public class ChatMessageBatchConfig {
     public ChatMessageBatchConfig(
             ItemReader<RedisChatMessage> chatItemReader,
             ItemProcessor<RedisChatMessage, ChatMessage> chatItemProcessor,
-            ItemWriter<ChatMessage> chatItemWriter) {
+            ItemWriter<ChatMessage> chatItemWriter
+    ) {
         this.chatItemReader = chatItemReader;
         this.chatItemProcessor = chatItemProcessor;
         this.chatItemWriter = chatItemWriter;
@@ -54,10 +53,5 @@ public class ChatMessageBatchConfig {
                 .processor(chatItemProcessor)
                 .writer(chatItemWriter)
                 .build();
-    }
-
-    @Bean
-    public PlatformTransactionManager transactionManager() {
-        return new ResourcelessTransactionManager();
     }
 }
