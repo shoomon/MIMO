@@ -4,8 +4,8 @@ import static com.bisang.backend.common.exception.ExceptionCode.NOT_FOUND;
 import static com.bisang.backend.common.utils.PageUtils.SHORT_PAGE_SIZE;
 import static com.bisang.backend.team.domain.TeamUserRole.LEADER;
 
-import com.bisang.backend.schedule.repository.ScheduleParticipantsJpaRepository;
-import com.bisang.backend.team.domain.TeamUser;
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,14 +14,14 @@ import com.bisang.backend.schedule.controller.response.TeamScheduleSpecificRespo
 import com.bisang.backend.schedule.controller.response.TeamSchedulesResponse;
 import com.bisang.backend.schedule.domain.ScheduleStatus;
 import com.bisang.backend.schedule.domain.TeamSchedule;
+import com.bisang.backend.schedule.repository.ScheduleParticipantsJpaRepository;
 import com.bisang.backend.schedule.repository.TeamScheduleJpaRepository;
 import com.bisang.backend.schedule.repository.TeamScheduleQuerydslRepository;
 import com.bisang.backend.team.annotation.EveryOne;
+import com.bisang.backend.team.domain.TeamUser;
 import com.bisang.backend.team.repository.TeamUserJpaRepository;
 
 import lombok.RequiredArgsConstructor;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -53,7 +53,8 @@ public class TeamScheduleEveryOneService {
         var comments = teamScheduleQuerydslRepository.getTeamScheduleComments(userId, teamScheduleId);
         var profiles = teamScheduleQuerydslRepository.getProfilesByScheduleId(teamScheduleId);
         boolean isTeamMember = userId == null ? false :  isTeamMember(userId, teamId);
-        boolean isTeamScheduleMember = participantsJpaRepository.existsByTeamScheduleIdAndUserId(teamScheduleId, userId);
+        boolean isTeamScheduleMember
+                = participantsJpaRepository.existsByTeamScheduleIdAndUserId(teamScheduleId, userId);
 
         Boolean isMyTeamSchedule = false;
         Optional<TeamUser> teamUser = teamUserJpaRepository.findByTeamIdAndUserId(teamId, userId);

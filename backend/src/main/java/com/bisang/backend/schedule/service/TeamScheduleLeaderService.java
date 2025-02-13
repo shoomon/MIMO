@@ -1,5 +1,7 @@
 package com.bisang.backend.schedule.service;
 
+import static com.bisang.backend.common.exception.ExceptionCode.*;
+
 import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
@@ -16,8 +18,6 @@ import com.bisang.backend.team.domain.TeamUser;
 import com.bisang.backend.team.repository.TeamUserJpaRepository;
 
 import lombok.RequiredArgsConstructor;
-
-import static com.bisang.backend.common.exception.ExceptionCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -59,7 +59,8 @@ public class TeamScheduleLeaderService {
     }
 
     private TeamUser findTeamUserByTeamIdAndUserId(Long userId, Long teamId) {
-        return teamUserJpaRepository.findByTeamIdAndUserId(teamId, userId).orElseThrow(() -> new ScheduleException(NOT_FOUND));
+        return teamUserJpaRepository.findByTeamIdAndUserId(teamId, userId)
+                .orElseThrow(() -> new ScheduleException(NOT_FOUND));
     }
 
     @TeamLeader

@@ -1,11 +1,13 @@
 package com.bisang.backend.user.controller;
 
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
+
 import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,13 +32,12 @@ public class UserController {
         return ResponseEntity.ok(userService.getMyInfo(user));
     }
 
-    @PutMapping
+    @PutMapping(consumes = {MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Void> updateUserInfo(
         @AuthUser User user,
-        @Valid @RequestBody UpdateUserInfoRequest request
+        @Valid @ModelAttribute UpdateUserInfoRequest request
     ) {
-        userService.updateUserInfo(user, request.nickname(), request.name(), request.profileUri());
+        userService.updateUserInfo(user, request.nickname(), request.name(), request.profile());
         return ResponseEntity.ok().build();
     }
-
 }
