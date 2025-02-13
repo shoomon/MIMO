@@ -41,7 +41,7 @@ public class TeamReviewService {
 
     @TeamMember
     @Transactional
-    public void remainReview(Long teamId, Long userId, String memo, Long score) {
+    public void remainReview(Long userId, Long teamId, String memo, Long score) {
         TeamUser teamUser = getTeamUser(teamId, userId);
         teamReviewJpaRepository.save(new TeamReview(teamId, teamUser.getId(), memo, score));
     }
