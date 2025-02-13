@@ -149,8 +149,8 @@ public class    TeamScheduleQuerydslRepository {
     private List<ProfileDto> getTeamScheduleParticipants(TeamSimpleScheduleDto simpleSchedule) {
         return queryFactory
                 .select(Projections.constructor(ProfileDto.class,
-                                user.id,
-                                user.profileUri))
+                        user.id,
+                        user.profileUri))
                 .from(scheduleParticipants)
                 .join(user)
                 .on(scheduleParticipants.userId.eq(user.id))

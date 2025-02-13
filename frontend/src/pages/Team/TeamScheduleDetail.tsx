@@ -123,7 +123,7 @@ const TeamScheduleDetail = () => {
 
     const sampleProfile: ProfileImageProps = {
         userId: 'user123',
-        userName: 'Jane Doe',
+        nickname: 'Jane Doe',
         profileUri: 'https://randomuser.me/api/portraits/men/5.jpg',
     };
 

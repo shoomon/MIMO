@@ -74,12 +74,12 @@ const Comment = ({
                         <ProfileImage
                             userId={profileImage.userId}
                             profileUri={profileImage.profileUri}
-                            userName={name}
+                            nickname={name}
                             size={24}
                             addStyle="rounded-lg"
                         />
                         <span className="text-md font-bold">
-                            {profileImage.userName}
+                            {profileImage.nickname}
                         </span>
                     </div>
                     <span className="text-sm font-normal">{parsedDate}</span>

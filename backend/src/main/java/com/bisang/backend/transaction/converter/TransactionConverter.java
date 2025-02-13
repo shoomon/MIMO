@@ -2,7 +2,8 @@ package com.bisang.backend.transaction.converter;
 
 import org.springframework.stereotype.Component;
 
-import com.bisang.backend.transaction.controller.request.PaymentResultRequest;
+import com.bisang.backend.transaction.controller.request.ChargeRequest;
+import com.bisang.backend.transaction.controller.request.PaymentRequest;
 import com.bisang.backend.transaction.controller.request.TransferRequest;
 import com.bisang.backend.transaction.domain.Transaction;
 import com.bisang.backend.transaction.domain.TransactionCategory;
@@ -12,15 +13,15 @@ import com.bisang.backend.transaction.domain.TransactionStatus;
 public class TransactionConverter {
 
     // 잔액 충전 트랜잭션
-    public static Transaction paymentResultRequestToTransaction(PaymentResultRequest paymentResultRequest) {
+    public static Transaction chargeRequestToTransaction(ChargeRequest chargeRequest) {
         return Transaction.builder()
-                .balance(paymentResultRequest.getPaidAmount())
+                .balance(chargeRequest.getPaidAmount())
                 .senderAccountNumber(null)
-                .receiverAccountNumber(paymentResultRequest.getReceiverAccountNumber())
+                .receiverAccountNumber(chargeRequest.getReceiverAccountNumber())
                 .senderName(null)
-                .receiverName(paymentResultRequest.getReceiverName())
-                .impUid(paymentResultRequest.getImpUid())
-                .merchantUid(paymentResultRequest.getMerchantUid())
+                .receiverName(chargeRequest.getReceiverName())
+                .impUid(chargeRequest.getImpUid())
+                .merchantUid(chargeRequest.getMerchantUid())
                 .memo("충전")
                 .transactionCategory(TransactionCategory.CHARGE)
                 .transactionStatus(TransactionStatus.PENDING)
@@ -39,6 +40,22 @@ public class TransactionConverter {
                 .merchantUid(null)
                 .memo("송금")
                 .transactionCategory(TransactionCategory.TRANSFER)
+                .transactionStatus(TransactionStatus.PENDING)
+                .build();
+    }
+
+    // 잔액 결제 트랜잭션
+    public static Transaction paymentRequestToTransaction(PaymentRequest paymentRequest) {
+        return Transaction.builder()
+                .balance(paymentRequest.getPaidAmount())
+                .senderAccountNumber(paymentRequest.getSenderAccountNumber())
+                .receiverAccountNumber(null)
+                .senderName(paymentRequest.getSenderName())
+                .receiverName(paymentRequest.getReceiverName())
+                .impUid(null)
+                .merchantUid(null)
+                .memo(paymentRequest.getMemo())
+                .transactionCategory(TransactionCategory.PAYMENT)
                 .transactionStatus(TransactionStatus.PENDING)
                 .build();
     }

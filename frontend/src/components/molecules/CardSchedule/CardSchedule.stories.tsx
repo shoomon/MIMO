@@ -7,32 +7,32 @@ const memberListMock = [
     {
         userId: '1',
         profileUri: 'https://randomuser.me/api/portraits/men/1.jpg',
-        userName: 'User 1',
+        nickname: 'User 1',
     },
     {
         userId: '2',
         profileUri: 'https://randomuser.me/api/portraits/women/2.jpg',
-        userName: 'User 2',
+        nickname: 'User 2',
     },
     {
         userId: '3',
         profileUri: 'https://randomuser.me/api/portraits/men/3.jpg',
-        userName: 'User 3',
+        nickname: 'User 3',
     },
     {
         userId: '4',
         profileUri: 'https://randomuser.me/api/portraits/women/4.jpg',
-        userName: 'User 4',
+        nickname: 'User 4',
     },
     {
         userId: '5',
         profileUri: 'https://randomuser.me/api/portraits/men/5.jpg',
-        userName: 'User 5',
+        nickname: 'User 5',
     },
     {
         userId: '6',
         profileUri: 'https://randomuser.me/api/portraits/women/6.jpg',
-        userName: 'User 6',
+        nickname: 'User 6',
     },
 ];
 
