@@ -33,6 +33,7 @@ const ChatContainer = () => {
 
     return (
         <ChatContainerView
+            onClick={() => {}}
             chatListItems={data}
             chatroomName={null}
             chatroomImage={

@@ -1,5 +1,4 @@
 import { ChatRoom } from '@/components/molecules';
-import ChatRoomDetail from '@/components/molecules/ChatRoomDetail/ChatRoomDetail';
 import { ChatRoomResponse } from '@/types/Chat';
 
 interface ChatContainerViewProps {
@@ -11,13 +10,13 @@ interface ChatContainerViewProps {
 
 const ChatContainerView = ({
     chatListItems,
-    chatroomName,
-    chatroomImage,
     onClick,
 }: ChatContainerViewProps) => {
     return (
-        <section className="flex h-[64rem] w-full bg-lime-100">
-            <section className="flex w-[30.5rem] flex-col border border-gray-200">
+        <section
+            className={`fixed inset-0 z-50 flex items-center justify-center bg-gray-500/50`}
+        >
+            <section className="flex max-h-[64rem] max-w-[30.5rem] flex-col border border-gray-200">
                 <span className="p-6 text-center text-2xl font-bold">
                     채팅방
                 </span>
@@ -33,12 +32,6 @@ const ChatContainerView = ({
                     })}
                 </section>
             </section>
-            {chatroomName && chatroomImage && (
-                <ChatRoomDetail
-                    chatroomName={chatroomName}
-                    chatroomImage={chatroomImage}
-                />
-            )}
         </section>
     );
 };

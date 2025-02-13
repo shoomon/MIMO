@@ -11,9 +11,7 @@ const meta = {
     decorators: [
         (Story) => (
             <BrowserRouter>
-                <div className="h-[64rem]">
-                    <Story />
-                </div>
+                <Story />
             </BrowserRouter>
         ),
     ],

@@ -16,7 +16,7 @@ const ChatRoomDetailView = ({
     chatData,
 }: ChatRoomDetailProps) => {
     return (
-        <section className="flex h-full w-[30.5rem] flex-col border border-gray-200">
+        <section className="flex h-full w-[30.5rem] flex-col border border-gray-200 bg-white">
             <div className="flex justify-between p-6">
                 <div className="flex items-center gap-2">
                     <img
