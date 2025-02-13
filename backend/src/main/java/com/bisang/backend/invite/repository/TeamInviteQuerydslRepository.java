@@ -46,7 +46,7 @@ public class TeamInviteQuerydslRepository {
             .from(teamInvite).join(user).on(teamInvite.userId.eq(user.id))
             .where(teamInvite.teamId.eq(teamId), teamInvite.status.eq(WAITING), teamInviteIdLt)
             .orderBy(teamInvite.id.desc())
-            .limit(SHORT_PAGE_SIZE)
+            .limit(SHORT_PAGE_SIZE + 1)
             .fetch();
         invites.addAll(waitingInvite);
 
@@ -61,13 +61,13 @@ public class TeamInviteQuerydslRepository {
             .from(teamInvite).join(user).on(teamInvite.userId.eq(user.id))
             .where(teamInvite.teamId.eq(teamId), teamInvite.status.eq(REJECTED), teamInviteIdLt)
             .orderBy(teamInvite.id.desc())
-            .limit(SHORT_PAGE_SIZE)
+            .limit(SHORT_PAGE_SIZE + 1)
             .fetch();
         invites.addAll(rejectedInvite);
 
         return invites.stream()
             .sorted(comparing(TeamInviteDto::teamInviteId).reversed())
-            .limit(SHORT_PAGE_SIZE)
+            .limit(SHORT_PAGE_SIZE + 1)
             .toList();
     }
 }

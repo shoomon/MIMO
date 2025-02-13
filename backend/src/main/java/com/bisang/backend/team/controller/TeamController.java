@@ -23,8 +23,10 @@ import com.bisang.backend.team.controller.request.CreateTeamRequest;
 import com.bisang.backend.team.controller.request.UpdateTeamRequest;
 import com.bisang.backend.team.controller.response.TeamIdResponse;
 import com.bisang.backend.team.controller.response.TeamInfosResponse;
+import com.bisang.backend.team.controller.response.TeamReviewResponse;
 import com.bisang.backend.team.domain.Area;
 import com.bisang.backend.team.domain.TeamCategory;
+import com.bisang.backend.team.service.TeamReviewService;
 import com.bisang.backend.team.service.TeamService;
 import com.bisang.backend.user.domain.User;
 
@@ -35,6 +37,17 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/team")
 public class TeamController {
     private final TeamService teamService;
+    private final TeamReviewService teamReviewService;
+
+    @GetMapping("/review")
+    public ResponseEntity<TeamReviewResponse> getTeamReviews(
+        @Guest User user,
+        @RequestParam(name = "teamId") Long teamId,
+        @RequestParam(name = "lastTeamReviewId", required = false) Long lastTeamReviewId
+    ) {
+        var reviews = teamReviewService.getTeamReview(teamId, lastTeamReviewId);
+        return ResponseEntity.ok(reviews);
+    }
 
     @GetMapping("/exist-name")
     public ResponseEntity<Boolean> existTeamName(
