@@ -9,6 +9,21 @@ export interface SimpleTeamResponse {
     tags: string[];
     memberCount: number;
     maxCapacity: number;
+    currentCapacity: number;
+}
+export interface TeamDto {
+    teamId: number;
+    teamUserId: number;
+    profileUri: string;
+    name: string;
+    description: string;
+    recruitStatus: TeamRecruitStatus;
+    privateStatus: TeamPrivateStatus;
+    area: Area;
+    maxCapacity: number;
+    currentCapacity: number;
+    score: number;
+    tags: string[];
 }
 
 export interface TeamResponse {
@@ -21,6 +36,22 @@ export interface TeamResponse {
     area: Area;
     maxCapacity: number;
     currentCapacity: number;
+}
+
+export type TeamUserRole = 'LEADER' | 'CO_LEADER' | 'MEMBER';
+
+export interface TeamUserDto {
+    teamUserId: number;
+    nickname: string;
+    role: TeamUserRole;
+}
+
+export interface TeamUserResponse {
+    size: number;
+    hasNext: boolean;
+    role: TeamUserRole;
+    lastTeamUserId: number;
+    users: TeamUserDto[];
 }
 
 export interface TeamInfosResponse {
@@ -71,7 +102,7 @@ export interface TeamSimpleScheduleDto {
     date: string;
     title: string;
     price: number;
-    profiles: ProfileImageProps[];
+    profileUris: ProfileImageProps[];
 }
 
 export interface TeamSchedulesResponse {
@@ -82,14 +113,16 @@ export interface TeamSchedulesResponse {
 }
 
 export interface TeamScheduleSpecificResponse {
-    teamScheduleId: number;
     isTeamMember: boolean;
+    isTeamScheduleMember: boolean;
+    isMyTeamSchedule: boolean;
+    teamScheduleId: number;
     status: ScheduleStatus;
     location: string;
     date: Date;
     price: number;
     nameOfLeader: string;
-    profiles: ProfileImageProps[];
+    profileUris: ProfileImageProps[];
     maxParticipants: number;
     currentParticipants: number;
     title: string;
@@ -99,6 +132,7 @@ export interface TeamScheduleSpecificResponse {
 
 export interface TeamScheduleCommentDto {
     teamScheduleCommentId: number;
+    isMyComment: boolean;
     profileUri: string;
     name: string;
     time: string; // LocalDateTime을 string으로 처리

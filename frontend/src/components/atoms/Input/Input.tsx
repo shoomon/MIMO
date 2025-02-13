@@ -3,7 +3,7 @@ import { forwardRef } from 'react';
 interface BaseInputProps {
     id: string;
     /** 단일 행 입력일 경우 사용할 타입 */
-    type?: 'text' | 'email' | 'number' | 'password';
+    type?: 'text' | 'email' | 'number' | 'password' | 'datetime-local';
     placeholder?: string;
     value?: string | number;
     defaultValue?: string | number;
@@ -95,7 +95,7 @@ const Input = forwardRef<
         ref,
     ) => {
         const commonClasses =
-            'text-text-md text-dark w-full rounded-sm border border-gray-300 px-4 py-3 font-medium placeholder:text-gray-500 [&:not(:focus):hover]:border-gray-900' +
+            'text-text-md text-dark w-full rounded-sm border bg-white border-gray-300 px-4 py-3 font-medium placeholder:text-gray-500 [&:not(:focus):hover]:border-gray-900' +
             ` ${className}` +
             (readOnly || disabled
                 ? ' cursor-not-allowed bg-gray-100 opacity-55'

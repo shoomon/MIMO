@@ -10,7 +10,7 @@ const meta = {
         title: { control: 'text' },
         rating: { control: 'object' },
         tag: { control: 'object' },
-        member: { control: 'object' },
+        maxCapacity: { control: 'object' },
     },
     decorators: [
         (Story) => (
@@ -37,18 +37,15 @@ const sampleTagList = [
     { to: '/tag/storybook', label: 'Storybook' },
 ];
 
-// 더미 데이터: MemberCountProps (숫자 타입으로 수정)
-const sampleMember = {
-    memberCount: 3,
-    memberLimit: 10,
-};
-
 export const Default: Story = {
     args: {
+        teamId: '123',
         subTitle: 'Meeting Subtitle Sample',
         rating: sampleRating,
         title: 'Meeting Title Sample',
         tag: sampleTagList,
-        member: sampleMember,
+        maxCapacity: 12,
+        currentCapacity: 6,
+        teamUserId: 2,
     },
 };
