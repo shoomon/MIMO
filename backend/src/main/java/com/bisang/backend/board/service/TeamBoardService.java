@@ -19,7 +19,9 @@ public class TeamBoardService {
     private final TeamBoardQuerydslRepository teamBoardQuerydslRepository;
 //todo: 게시판 + 게시판 미리보기 게시글 반환
     public TeamBoardListResponse getTeamBoardList(Long teamId) {
-        List<TeamBoardDto> teamBoardList = teamBoardQuerydslRepository.getTeamBoardByTeamId(teamId);
+        TeamBoardListResponse teamBoardList = new TeamBoardListResponse(
+                teamBoardQuerydslRepository.getTeamBoardByTeamId(teamId)
+        );
         return null;
     }
 
