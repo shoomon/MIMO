@@ -4,6 +4,8 @@ import type { ProfileImageProps } from './../../atoms/ProfileImage/ProfileImage'
 import { Icon } from '@/components/atoms';
 import MemberListView from './MemberList.view';
 import { TeamUserRole } from '@/types/Team';
+import { deleteUsers } from '@/apis/TeamAPI';
+import { useParams } from 'react-router-dom';
 
 /**
  * MemberList 컴포넌트의 props 타입 정의
@@ -37,6 +39,11 @@ const MemberList = ({
 }: MemberListProps): JSX.Element => {
     /** 날짜를 포맷팅하여 변환 (두 번째 인자가 true인 경우 포맷 옵션 적용) */
     const parsedDate = dateParsing(new Date(joinDate), true);
+    const { teamId } = useParams<{ teamId: string }>();
+
+    if (!teamId) {
+        return <div>teamId가 없습니다.</div>;
+    }
 
     /**
      * 역할에 따른 아이콘 및 라벨을 렌더링하는 함수
@@ -81,7 +88,9 @@ const MemberList = ({
      * (추후 멤버 추방 기능 추가 예정)
      */
     const handleKickMember = (): void => {
-        // TODO: 멤버 추방 로직 구현
+        console.log(userInfo.userId);
+
+        deleteUsers(teamId, userInfo.userId);
     };
 
     return (

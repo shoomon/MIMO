@@ -46,6 +46,30 @@ export const getTeamUsers = async (
     }
 };
 
+export const deleteUsers = async (
+    teamId: string,
+    teamUserId: string,
+): Promise<void> => {
+    try {
+        const body = JSON.stringify({
+            teamId,
+            teamUserId,
+        });
+
+        const response = await customFetch('/team-leader', {
+            method: 'DELETE',
+            body,
+        });
+
+        //  if(response.status==200){
+
+        //  }
+    } catch (error) {
+        console.error('Error fetching delete team user:', error);
+        throw error;
+    }
+};
+
 export const getTeamInfosByCategory = async (
     category: string,
     teamId?: number,
@@ -225,11 +249,8 @@ export const updateSchedule = async (
             body,
             credentials: 'include',
         });
-
-        alert('일정이 성공적으로 업데이트되었습니다!');
     } catch (error) {
         console.error('Error updating schedule:', error);
-        alert('일정 업데이트 중 오류가 발생했습니다.');
     }
 };
 
