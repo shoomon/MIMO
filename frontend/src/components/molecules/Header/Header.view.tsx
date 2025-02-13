@@ -42,7 +42,7 @@ const LoginedMenu = ({
     onClickAlarm,
     onClickInfo,
 }: {
-    userInfo: ProfileImageProps;
+    userInfo?: ProfileImageProps;
     alarmActive: boolean;
     infoActive: boolean;
     onClickAlarm: (e: React.MouseEvent<HTMLButtonElement>) => void;

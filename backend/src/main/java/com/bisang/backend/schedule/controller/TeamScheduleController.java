@@ -1,11 +1,15 @@
 package com.bisang.backend.schedule.controller;
 
 import static com.bisang.backend.schedule.domain.ScheduleStatus.*;
+import static org.springframework.http.HttpStatus.CREATED;
+
+import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,12 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bisang.backend.auth.annotation.AuthUser;
 import com.bisang.backend.auth.annotation.Guest;
 import com.bisang.backend.schedule.controller.request.TeamScheduleCreateRequest;
-import com.bisang.backend.schedule.controller.request.TeamScheduleUpdateDateRequest;
-import com.bisang.backend.schedule.controller.request.TeamScheduleUpdateDescriptionRequest;
-import com.bisang.backend.schedule.controller.request.TeamScheduleUpdateLocationRequest;
-import com.bisang.backend.schedule.controller.request.TeamScheduleUpdateParticipantsRequest;
-import com.bisang.backend.schedule.controller.request.TeamScheduleUpdatePriceRequest;
-import com.bisang.backend.schedule.controller.request.TeamScheduleUpdateTitleRequest;
+import com.bisang.backend.schedule.controller.request.TeamScheduleUpdateRequest;
 import com.bisang.backend.schedule.controller.response.TeamScheduleCreateResponse;
 import com.bisang.backend.schedule.controller.response.TeamScheduleSpecificResponse;
 import com.bisang.backend.schedule.controller.response.TeamSchedulesResponse;
@@ -36,6 +35,16 @@ import lombok.RequiredArgsConstructor;
 public class TeamScheduleController {
     private final TeamScheduleLeaderService teamScheduleService;
     private final TeamScheduleEveryOneService teamScheduleEveryOneService;
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteSchedule(
+            @AuthUser User user,
+            @RequestParam Long teamId,
+            @RequestParam Long teamScheduleId
+    ) {
+        teamScheduleService.deleteTeamSchedule(user.getId(), teamId, teamScheduleId);
+        return ResponseEntity.ok().build();
+    }
 
     @GetMapping
     public ResponseEntity<TeamScheduleSpecificResponse> getSpecificSchedule(
@@ -78,107 +87,38 @@ public class TeamScheduleController {
     @PostMapping
     public ResponseEntity<TeamScheduleCreateResponse> createSchedule(
         @AuthUser User user,
-        @RequestBody TeamScheduleCreateRequest request
+        @Valid @RequestBody TeamScheduleCreateRequest request
     ) {
         TeamSchedule teamSchedule = teamScheduleService.createTeamSchedule(
-            user.getId(),
-            request.teamId(),
-            request.teamUserId(),
-            request.title(),
-            request.description(),
-            request.location(),
-            request.date(),
-            request.maxParticipants());
+                user.getId(),
+                request.teamId(),
+                request.title(),
+                request.description(),
+                request.location(),
+                request.date(),
+                request.maxParticipants(),
+                request.price(),
+                request.status());
 
-        return ResponseEntity.ok(new TeamScheduleCreateResponse(teamSchedule.getId()));
+        return ResponseEntity.status(CREATED).body(new TeamScheduleCreateResponse(teamSchedule.getId()));
     }
 
-    @PatchMapping("/title")
-    public ResponseEntity<Void> updateTitle(
-        @AuthUser User user,
-        @RequestBody TeamScheduleUpdateTitleRequest request
-    ) {
-        teamScheduleService.updateTitle(
-            user.getId(),
-            request.teamId(),
-            request.teamScheduleId(),
-            request.title()
-        );
-
-        return ResponseEntity.ok().build();
-    }
-
-    @PatchMapping("/description")
-    public ResponseEntity<Void> updateDescription(
-        @AuthUser User user,
-        @RequestBody TeamScheduleUpdateDescriptionRequest request
-    ) {
-        teamScheduleService.updateDescription(
-            user.getId(),
-            request.teamId(),
-            request.teamScheduleId(),
-            request.description()
-        );
-
-        return ResponseEntity.ok().build();
-    }
-
-    @PatchMapping("/date")
-    public ResponseEntity<Void> updateDate(
-        @AuthUser User user,
-        @RequestBody TeamScheduleUpdateDateRequest request
-    ) {
-        teamScheduleService.updateDate(
-            user.getId(),
-            request.teamId(),
-            request.teamScheduleId(),
-            request.date()
-        );
-
-        return ResponseEntity.ok().build();
-    }
-
-    @PatchMapping("/location")
-    public ResponseEntity<Void> updateLocation(
-        @AuthUser User user,
-        @RequestBody TeamScheduleUpdateLocationRequest request
-    ) {
-        teamScheduleService.updateLocation(
-            user.getId(),
-            request.teamId(),
-            request.teamScheduleId(),
-            request.location()
-        );
-
-        return ResponseEntity.ok().build();
-    }
-
-    @PatchMapping("/max-participants")
-    public ResponseEntity<Void> updateParticipants(
-        @AuthUser User user,
-        @RequestBody TeamScheduleUpdateParticipantsRequest request
-    ) {
-        teamScheduleService.updateParticipants(
-            user.getId(),
-            request.teamId(),
-            request.teamScheduleId(),
-            request.maxParticipants()
-        );
-
-        return ResponseEntity.ok().build();
-    }
-
-    @PatchMapping("/price")
-    public ResponseEntity<Void> updatePrice(
+    @PutMapping
+    public ResponseEntity<Void> updateTeamSchedule(
             @AuthUser User user,
-            @RequestBody TeamScheduleUpdatePriceRequest request
+            @Valid @RequestBody TeamScheduleUpdateRequest request
     ) {
-        teamScheduleService.updatePrice(
+        teamScheduleService.updateTeamSchedule(
                 user.getId(),
                 request.teamId(),
                 request.teamScheduleId(),
-                request.price()
-        );
+                request.title(),
+                request.description(),
+                request.location(),
+                request.date(),
+                request.maxParticipants(),
+                request.price(),
+                request.status());
 
         return ResponseEntity.ok().build();
     }

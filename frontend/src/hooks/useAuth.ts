@@ -17,10 +17,10 @@ export const useAuth = () => {
     });
 
     useEffect(() => {
-        if (data) {
+        if (isSuccess) {
             setLogin(true);
         }
-    }, [data]);
+    }, [isSuccess]);
 
     return { userInfo: data, isSuccess, isError, isLogin };
 };
