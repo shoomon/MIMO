@@ -60,8 +60,8 @@ public class BoardQuerydslRepository {
         return  queryFactory
                 .select(Projections.constructor(SimpleBoardListDto.class,
                                 board.id,
-                                user.profileUri.as("userProfileUri"), // 유저 테이블에서 프로필 URI 가져오기
-                                teamUser.nickname.as("userNickname"), // 팀유저 테이블에서 닉네임 가져오기
+                                user.profileUri.as("userProfileUri"),
+                                teamUser.nickname.as("userNickname"),
                                 board.title.as("postTitle"),
                         JPAExpressions
                                 .select(boardImageSub.fileUri
@@ -79,8 +79,8 @@ public class BoardQuerydslRepository {
                                 .where(commentSub.boardId.eq(board.id))
                         ))
                 .from(board)
-                .leftJoin(teamUser).on(board.teamUserId.eq(teamUser.id)) // 팀유저에서 닉네임 가져오기
-                .leftJoin(user).on(teamUser.userId.eq(user.id)) // 유저 정보 조인하여 프로필 URI 가져오기
+                .leftJoin(teamUser).on(board.teamUserId.eq(teamUser.id))
+                .leftJoin(user).on(teamUser.userId.eq(user.id))
                 .where(board.teamBoardId.eq(teamBoardId))
                 .groupBy(board.id, user.profileUri, teamUser.nickname,
                         board.title, board.likes, board.viewCount,
