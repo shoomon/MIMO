@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bisang.backend.auth.annotation.AuthUser;
+import com.bisang.backend.auth.annotation.Guest;
 import com.bisang.backend.team.controller.request.InviteTeamRequest;
 import com.bisang.backend.team.controller.request.JoinTeamRequest;
 import com.bisang.backend.team.controller.request.UpdateTeamUserNicknameRequest;
@@ -29,6 +30,15 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/team-user")
 public class TeamUserController {
     private final TeamUserService teamUserService;
+
+    @GetMapping("/exist-nickname")
+    public ResponseEntity<Boolean> existsTeamUserNickname(
+        @Guest User user,
+        @RequestParam(name = "teamId") Long teamId,
+        @RequestParam(name = "nickname") String nickname
+    ) {
+        return ResponseEntity.ok(teamUserService.existsNicknameByTeamIdAndNickname(teamId, nickname));
+    }
 
     @GetMapping("/users")
     public ResponseEntity<TeamUserResponse> getTeamUser(

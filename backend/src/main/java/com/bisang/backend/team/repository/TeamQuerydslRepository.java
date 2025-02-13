@@ -21,6 +21,7 @@ import com.bisang.backend.team.controller.dto.TeamDto;
 import com.bisang.backend.team.domain.Area;
 import com.bisang.backend.team.domain.TeamCategory;
 import com.bisang.backend.team.domain.TeamUser;
+import com.bisang.backend.team.domain.TeamUserRole;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
@@ -38,10 +39,12 @@ public class TeamQuerydslRepository {
 
     public TeamDto getTeamInfo(Long userId, Long teamId) {
         Long teamUserId = null;
+        TeamUserRole role = null;
         if (userId != null) {
             Optional<TeamUser> teamUser = teamUserJpaRepository.findByTeamIdAndUserId(teamId, userId);
             if (teamUser.isPresent()) {
                 teamUserId = teamUser.get().getId();
+                role = teamUser.get().getRole();
             }
         }
 
@@ -52,6 +55,7 @@ public class TeamQuerydslRepository {
                 .select(Projections.constructor(TeamDto.class,
                         team.id,
                         Expressions.numberTemplate(Long.class, "{0}", teamUserId),
+                        Expressions.template(TeamUserRole.class, "{0}", role),
                         team.teamProfileUri,
                         team.name,
                         teamDescription.description,
@@ -78,6 +82,7 @@ public class TeamQuerydslRepository {
             .select(Projections.constructor(SimpleTeamDto.class,
                     team.id,
                     Expressions.constant(0L),
+                    Expressions.nullExpression(),
                     team.name,
                     team.shortDescription,
                     team.teamProfileUri,
@@ -111,6 +116,7 @@ public class TeamQuerydslRepository {
             .select(Projections.constructor(SimpleTeamDto.class,
                     team.id,
                     Expressions.constant(0L),
+                    Expressions.nullExpression(),
                     team.name,
                     team.shortDescription,
                     team.teamProfileUri,
@@ -139,10 +145,12 @@ public class TeamQuerydslRepository {
                 .orElseThrow(() -> new TeamException(NOT_FOUND));
 
         Long teamUserId = null;
+        TeamUserRole role = null;
         if (userId != null) {
             Optional<TeamUser> teamUser = teamUserJpaRepository.findByTeamIdAndUserId(teamId, userId);
             if (teamUser.isPresent()) {
                 teamUserId = teamUser.get().getId();
+                role = teamUser.get().getRole();
             }
         }
 
@@ -151,6 +159,7 @@ public class TeamQuerydslRepository {
                 .select(Projections.constructor(SimpleTeamDto.class,
                         team.id,
                         Expressions.numberTemplate(Long.class, "{0}", teamUserId),
+                        Expressions.template(TeamUserRole.class, "{0}", role),
                         team.name,
                         team.shortDescription,
                         team.teamProfileUri,
@@ -179,6 +188,7 @@ public class TeamQuerydslRepository {
         return new SimpleTeamDto(
             dto.teamId(),
             dto.teamUserId(),
+            dto.role(),
             dto.name(),
             dto.description(),
             dto.teamProfileUri(),

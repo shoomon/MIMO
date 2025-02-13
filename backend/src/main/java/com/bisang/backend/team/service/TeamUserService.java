@@ -40,6 +40,11 @@ public class TeamUserService {
     private final TeamUserQuerydslRepository teamUserQuerydslRepository;
 
     @EveryOne
+    public Boolean existsNicknameByTeamIdAndNickname(Long teamId, String nickname) {
+        return teamUserJpaRepository.existsByTeamIdAndNickname(teamId, nickname);
+    }
+
+    @EveryOne
     @Transactional
     public void joinTeam(Long userId, Long teamId, String nickname, TeamNotificationStatus status) {
         isAlreadyJoinChecker(teamId, userId);
@@ -92,6 +97,7 @@ public class TeamUserService {
     @Transactional(readOnly = true)
     public TeamUserResponse findTeamUsers(Long userId, Long teamId, TeamUserRole role, Long teamUserId) {
         List<TeamUserDto> teamUserInfos = teamUserQuerydslRepository.getTeamUserInfos(teamId, role, teamUserId);
+
         if (teamUserInfos.size() > PAGE_SIZE) {
             List<TeamUserDto> result = teamUserInfos.stream().limit(PAGE_SIZE).toList();
             return new TeamUserResponse(

@@ -26,8 +26,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Service
 public class S3Service {
-    public static final String CAT_IMAGE_URI = "https://bisang-mimo-bucket.s3.ap-northeast-2.amazonaws.com/" +
-            "1a05c3f9-2638-4349-8a89-e90c5e584b89.jpg";
+    public static final String CAT_IMAGE_URI = "https://bisang-mimo-bucket.s3.ap-northeast-2.amazonaws.com/"
+        + "1a05c3f9-2638-4349-8a89-e90c5e584b89.jpg";
 
     private final AmazonS3 amazonS3;
 
