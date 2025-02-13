@@ -3,20 +3,19 @@ package com.bisang.backend.team.service;
 import static com.bisang.backend.common.exception.ExceptionCode.NOT_FOUND;
 import static com.bisang.backend.common.utils.PageUtils.PAGE_SIZE;
 
-import com.bisang.backend.common.exception.TeamException;
-import com.bisang.backend.team.annotation.TeamMember;
-import com.bisang.backend.team.domain.TeamReview;
-import com.bisang.backend.team.domain.TeamUser;
-import com.bisang.backend.team.repository.TeamUserJpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bisang.backend.common.exception.TeamException;
+import com.bisang.backend.team.annotation.TeamMember;
 import com.bisang.backend.team.controller.response.TeamReviewResponse;
+import com.bisang.backend.team.domain.TeamReview;
+import com.bisang.backend.team.domain.TeamUser;
 import com.bisang.backend.team.repository.TeamReviewJpaRepository;
 import com.bisang.backend.team.repository.TeamReviewQuerydslRepository;
+import com.bisang.backend.team.repository.TeamUserJpaRepository;
 
 import lombok.RequiredArgsConstructor;
-
 
 @Service
 @RequiredArgsConstructor
@@ -41,9 +40,30 @@ public class TeamReviewService {
     }
 
     @TeamMember
+    @Transactional
     public void remainReview(Long teamId, Long userId, String memo, Long score) {
         TeamUser teamUser = getTeamUser(teamId, userId);
         teamReviewJpaRepository.save(new TeamReview(teamId, teamUser.getId(), memo, score));
+    }
+
+    @Transactional
+    public void updateReview(Long userId, Long teamReviewId, Long teamId, String memo, Long score) {
+        TeamReview teamReview = getTeamReview(teamReviewId);
+        TeamUser teamUser = getTeamUser(teamId, userId);
+        reviewValidation(teamReview, teamUser);
+
+        teamReview.updateReview(memo, score);
+    }
+
+    private void reviewValidation(TeamReview teamReview, TeamUser teamUser) {
+        if (!teamReview.getTeamUserId().equals(teamUser.getId())) {
+            throw new TeamException(NOT_FOUND);
+        }
+    }
+
+    private TeamReview getTeamReview(Long teamReviewId) {
+        return teamReviewJpaRepository.findById(teamReviewId)
+            .orElseThrow(() -> new TeamException(NOT_FOUND));
     }
 
     private TeamUser getTeamUser(Long teamId, Long userId) {

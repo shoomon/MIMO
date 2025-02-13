@@ -76,4 +76,11 @@ public class TeamReview {
             throw new TeamException(INVALID_REQUEST);
         }
     }
+
+    public void updateReview(String memo, Long score) {
+        memoValidation(memo);
+        this.memo = memo;
+        scoreValidation(score);
+        this.score = score;
+    }
 }
