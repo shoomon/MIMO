@@ -43,7 +43,7 @@ public class TeamReviewController {
         @RequestParam(name = "memo") String memo,
         @RequestParam(name = "score") Long score
     ) {
-        teamReviewService.remainReview(teamId, user.getId(), memo, score);
+        teamReviewService.remainReview(user.getId(), teamId, memo, score);
         return ResponseEntity.status(CREATED).build();
     }
 
