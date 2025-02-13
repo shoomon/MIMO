@@ -2,6 +2,8 @@ package com.bisang.backend.schedule.controller;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
+import jakarta.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -28,7 +30,7 @@ public class TeamScheduleCommentController {
     @PostMapping
     public ResponseEntity<Void> createTeamScheduleComment(
             @AuthUser User user,
-            @RequestBody TeamScheduleCommentCreateRequest request
+            @Valid @RequestBody TeamScheduleCommentCreateRequest request
     ) {
         teamScheduleCommentService.createComment(
                 user.getId(),
@@ -44,7 +46,7 @@ public class TeamScheduleCommentController {
     @PatchMapping
     public ResponseEntity<Void> updateTeamScheduleComment(
             @AuthUser User user,
-            @RequestBody TeamScheduleCommentUpdateRequest request
+            @Valid @RequestBody TeamScheduleCommentUpdateRequest request
     ) {
         teamScheduleCommentService.updateComment(
                 user.getId(),
@@ -58,7 +60,7 @@ public class TeamScheduleCommentController {
     @DeleteMapping
     public ResponseEntity<Void> deleteTeamScheduleComment(
             @AuthUser User user,
-            @RequestBody TeamScheduleCommentDeleteRequest request
+            @Valid @RequestBody TeamScheduleCommentDeleteRequest request
     ) {
         teamScheduleCommentService.deleteComment(
                 user.getId(),

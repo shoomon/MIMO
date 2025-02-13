@@ -1,20 +1,23 @@
 package com.bisang.backend.team.controller;
 
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bisang.backend.auth.annotation.AuthUser;
+import com.bisang.backend.auth.annotation.Guest;
+import com.bisang.backend.team.controller.dto.SimpleTeamDto;
 import com.bisang.backend.team.controller.dto.TeamDto;
 import com.bisang.backend.team.controller.request.CreateTeamRequest;
 import com.bisang.backend.team.controller.request.UpdateTeamRequest;
@@ -49,10 +52,10 @@ public class TeamController {
         return ResponseEntity.ok(teamService.getTeamInfosByCategory(category, teamId));
     }
 
-    @PostMapping
+    @PostMapping(consumes = {MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<TeamIdResponse> createTeam(
         @AuthUser User user,
-        @RequestBody CreateTeamRequest req
+        @Valid @ModelAttribute CreateTeamRequest req
     ) {
         Long teamId = teamService.createTeam(
             user.getId(),
@@ -62,7 +65,7 @@ public class TeamController {
             req.description(),
             req.teamRecruitStatus(),
             req.teamPrivateStatus(),
-            req.teamProfileUri(),
+            req.teamProfile(),
             req.area(),
             req.category(),
             req.maxCapacity()
@@ -70,10 +73,10 @@ public class TeamController {
         return ResponseEntity.status(CREATED).body(new TeamIdResponse(teamId));
     }
 
-    @PutMapping
+    @PutMapping(consumes = {MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Void> updateTeam(
             @AuthUser User user,
-            @Valid @RequestBody UpdateTeamRequest req
+            @Valid @ModelAttribute UpdateTeamRequest req
     ) {
         teamService.updateTeam(
                 user.getId(),
@@ -82,7 +85,7 @@ public class TeamController {
                 req.description(),
                 req.recruitStatus(),
                 req.privateStatus(),
-                req.profileUri(),
+                req.profile(),
                 req.area()
         );
         return ResponseEntity.ok().build();
@@ -90,11 +93,32 @@ public class TeamController {
 
     @GetMapping
     public ResponseEntity<TeamDto> getTeamInfo(
-        @RequestParam Long teamId
+            @Guest User user,
+            @RequestParam Long teamId
     ) {
-        TeamDto teamInfo = teamService.getTeamGeneralInfo(teamId);
+        Long userId = null;
+        if (user != null) {
+            userId = user.getId();
+        }
+
+        TeamDto teamInfo = teamService.getTeamGeneralInfo(userId, teamId);
         return ResponseEntity.ok(teamInfo);
     }
+
+    @GetMapping("/simple")
+    public ResponseEntity<SimpleTeamDto> getSimpleTeamInfo(
+            @Guest User user,
+            @RequestParam Long teamId
+    ) {
+        Long userId = null;
+        if (user != null) {
+            userId = user.getId();
+        }
+
+        SimpleTeamDto teamInfo = teamService.getSimpleTeamInfo(userId, teamId);
+        return ResponseEntity.ok(teamInfo);
+    }
+
 
     @DeleteMapping
     public ResponseEntity<Void> deleteTeam(

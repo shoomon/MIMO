@@ -53,7 +53,7 @@ public class TeamUser {
     @Enumerated(STRING)
     private TeamUserRole role;
 
-    @Column(name = "nofitication_status", nullable = false)
+    @Column(name = "notification_status", nullable = false)
     @Enumerated(STRING)
     private TeamNotificationStatus status;
 

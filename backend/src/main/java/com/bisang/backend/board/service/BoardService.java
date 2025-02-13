@@ -1,9 +1,9 @@
 package com.bisang.backend.board.service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
-import com.bisang.backend.auth.annotation.AuthSimpleUser;
-import com.bisang.backend.auth.domain.SimpleUser;
 import com.bisang.backend.board.controller.dto.*;
 import com.bisang.backend.board.controller.response.BoardListResponse;
 import com.bisang.backend.common.exception.BoardException;
@@ -12,7 +12,6 @@ import com.bisang.backend.s3.service.S3Service;
 import com.bisang.backend.user.repository.UserJpaRepository;
 import jakarta.persistence.EntityNotFoundException;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.bisang.backend.board.domain.*;
@@ -22,9 +21,6 @@ import com.bisang.backend.team.repository.TeamUserJpaRepository;
 import com.bisang.backend.board.controller.response.BoardDetailResponse;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 //todo: 게시글 리스트, 댓글 리스트 가져올 때 offset 설정
@@ -65,7 +61,7 @@ public class BoardService {
         if (fileUris != null && !fileUris.isEmpty()) {
             for(MultipartFile file : fileUris){
                 String uri = s3Service.saveFile(userId, file); //서비스가 서비스에 의존해도 되나 컨트롤러에서 업로드하고 file uri 리스트로 보내줘야하나
-                
+
                 String fileExtension = uri.substring(uri.lastIndexOf(".") + 1).toLowerCase();
 
                 boardImageJpaRepository.save(BoardImage.builder()
@@ -149,6 +145,16 @@ public class BoardService {
             for(BoardFileDto file : filesToDelete){
                 BoardImage curfile = boardImageJpaRepository.findById(file.fileId())
                         .orElseThrow(()-> new EntityNotFoundException("첨부파일을 찾을 수 없습니다."));
+        boardDescription.updateDescription(description);
+        boardDescriptionJpaRepository.save(boardDescription);
+        //S3에서 파일 삭제
+        for (BoardFileDto file : filesToDelete) {
+            s3Service.deleteFile(file.fileUri()); // S3에서 이미지 삭제
+        }
+        //파일 삭제
+        for(BoardFileDto file : filesToDelete){
+            BoardImage curfile = boardImageJpaRepository.findById(file.fileId())
+                    .orElseThrow(()-> new EntityNotFoundException("첨부파일을 찾을 수 없습니다."));
 
                 boardImageJpaRepository.delete(curfile);
             }
@@ -180,7 +186,7 @@ public class BoardService {
 
         List<BoardFileDto> boardFiles = boardImageJpaRepository.findByBoardId(postId);
         for (BoardFileDto file : boardFiles) {
-            s3Service.deleteFile(userId, file.fileUri()); // S3에서 이미지 삭제
+            s3Service.deleteFile(file.fileUri()); // S3에서 이미지 삭제
         }
 
         boardImageJpaRepository.deleteByBoardId(postId);

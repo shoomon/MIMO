@@ -24,6 +24,8 @@ public enum ExceptionCode {
     NOT_ENOUGH_MONEY(4000, "잔고 잔액이 부족합니다."),
     BALANCE_CHARGE_FAIL(4001, "충전에 실패했습니다."),
     BALANCE_TRANSFER_FAIL(4002, "송금에 실패했습니다."),
+    BALANCE_PAY_FAIL(4003, "결제에 실패했습니다."),
+    EXPIRE_QR_CODE(4004, "만료된 QRCODE 입니다"),
 
     NOT_FOUND_TEAM(5000, "팀을 찾을 수가 없습니다."),
     ALREADY_JOINED_MEMBER(5001, "이미 가입된 회원입니다."),
@@ -36,9 +38,14 @@ public enum ExceptionCode {
     EXTRA_USER(5008, "해당 모임 중 본인을 제외한 남은 인원이 있어 모임을 해체할 수 없습니다."),
     FULL_TEAM_INVITE(5009, "해당 모임은 초대 신청이 모두 가득 찼습니다."),
     NOT_DELETE_LEADER(5010, "모임장은 모임에서 탈퇴할 수 없습니다."),
+    UNAUTHORIZED_USER(5011, "해당 작업에 대한 권한이 없는 회원입니다."),
+    NOT_MATCHED_TEAM_AND_ACCOUNT_NUMBER(5012, "해당 팀에게 할당된 계좌가 아닙니다."),
+    NOT_MATCHED_USER_AND_ACCOUNT_NUMBER(5013, "해당 유저에게 할당된 계좌가 아닙니다."),
 
     FULL_SCHEDULE(6000, "해당 일정은 정원을 초과했습니다."),
     NOT_MINUS_MONEY(6001, "일정의 금액은 음수일 수 없습니다."),
+    CLOSED_SCHEDULE(6002, "해당 일정은 닫힌 일정입니다."),
+    ALREADY_JOINED(6003, "이미 들어가 있는 참여자입니다."),
 
     NOT_AUTHOR(7001, "작성자만 글을 수정할 수 있습니다."),
     PAGE_LIMIT(7002, "최대 페이지 수를 초과할 수 없습니다.");

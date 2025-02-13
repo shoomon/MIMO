@@ -2,13 +2,14 @@ package com.bisang.backend.schedule.repository;
 
 import static com.bisang.backend.common.exception.ExceptionCode.NOT_FOUND;
 import static com.bisang.backend.common.utils.PageUtils.SHORT_PAGE_SIZE;
+import static com.bisang.backend.common.utils.PageUtils.SMALL_SCHEDULE_PAGE_SIZE;
 import static com.bisang.backend.schedule.domain.QScheduleParticipants.scheduleParticipants;
 import static com.bisang.backend.schedule.domain.QTeamSchedule.teamSchedule;
 import static com.bisang.backend.schedule.domain.QTeamScheduleComment.teamScheduleComment;
 import static com.bisang.backend.team.domain.QTeamUser.teamUser;
 import static com.bisang.backend.user.domain.QUser.user;
-import static com.querydsl.core.group.GroupBy.*;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.bisang.backend.common.exception.ScheduleException;
+import com.bisang.backend.schedule.controller.dto.ProfileDto;
 import com.bisang.backend.schedule.controller.dto.TeamScheduleCommentDto;
 import com.bisang.backend.schedule.controller.dto.TeamSimpleScheduleDto;
 import com.bisang.backend.schedule.controller.dto.TeamSpecificScheduleDto;
@@ -37,6 +39,20 @@ public class    TeamScheduleQuerydslRepository {
     private final JPAQueryFactory queryFactory;
     private final TeamScheduleJpaRepository teamScheduleJpaRepository;
     private final TeamUserJpaRepository teamUserJpaRepository;
+
+    public List<TeamSchedule> getTeamScheduleByStatusAndDateTime(ScheduleStatus status, LocalDateTime lastDateTime) {
+        BooleanBuilder lastDateTimeLt = new BooleanBuilder();
+        if (lastDateTime != null) {
+            lastDateTimeLt.and(teamSchedule.date.lt(lastDateTime));
+        }
+
+        return queryFactory
+                .selectFrom(teamSchedule)
+                .where(teamSchedule.scheduleStatus.eq(status), lastDateTimeLt)
+                .orderBy(teamSchedule.date.desc())
+                .limit(SMALL_SCHEDULE_PAGE_SIZE + 1)
+                .fetch();
+    }
 
     public TeamSpecificScheduleDto getTeamScheduleSpecific(Long teamScheduleId) {
         TeamSchedule schedule = findScheduleById(teamScheduleId);
@@ -60,12 +76,14 @@ public class    TeamScheduleQuerydslRepository {
                 .fetchOne();
     }
 
-    public List<TeamScheduleCommentDto> getTeamScheduleComments(Long teamScheduleId) {
+    public List<TeamScheduleCommentDto> getTeamScheduleComments(Long userId, Long teamScheduleId) {
+        userId = userId == null ? 0L : userId;
         List<TeamScheduleCommentDto> comments = queryFactory
                 .select(Projections.constructor(TeamScheduleCommentDto.class,
                         teamScheduleComment.id,
+                        teamScheduleComment.userId.eq(userId),
                         user.profileUri,
-                        user.nickname,
+                        Expressions.stringTemplate("CAST({0} AS string)", teamScheduleComment.teamUserId),
                         teamScheduleComment.createdAt,
                         teamScheduleComment.parentCommentId.coalesce(teamScheduleComment.id),
                         Expressions.booleanTemplate("CASE WHEN {0} IS NULL THEN FALSE ELSE TRUE END",
@@ -75,27 +93,32 @@ public class    TeamScheduleQuerydslRepository {
                 .where(teamScheduleComment.teamScheduleId.eq(teamScheduleId))
                 .fetch();
 
-        List<String> nickname = comments.stream()
+        List<Long> teamUserIds = comments.stream()
                 .map(TeamScheduleCommentDto::name)
+                .map(Long::valueOf)
+                .distinct()
                 .toList();
 
-        Map<String, String> nicknameMap = queryFactory
-                .select(user.nickname, teamUser.nickname)
-                .from(user).join(teamUser).on(user.id.eq(teamUser.userId))
-                .where(user.nickname.in(nickname))
+        Map<Long, String> nicknameMap = queryFactory
+                .select(teamUser.id, teamUser.nickname)
+                .from(teamUser)
+                .where(teamUser.id.in(teamUserIds))
                 .fetch()
                 .stream()
                 .collect(Collectors.toMap(
-                        tuple -> tuple.get(user.nickname),  // 키: user.nickname
+                        tuple -> tuple.get(teamUser.id),  // 키: teamUser.id
                         tuple -> tuple.get(teamUser.nickname) // 값: teamUser.nickname
                 ));
 
         return comments.stream()
                 .map(comment -> {
+                    System.out.println(comment.name());
+                    System.out.println(nicknameMap);
                     return new TeamScheduleCommentDto(
                             comment.teamScheduleCommentId(),
+                            comment.isMyComment(),
                             comment.profileUri(),
-                            nicknameMap.get(comment.name()),
+                            nicknameMap.get(Long.valueOf(comment.name())),
                             comment.time(),
                             comment.commentSortId(),
                             comment.hasParent(),
@@ -104,9 +127,11 @@ public class    TeamScheduleQuerydslRepository {
                 }).toList();
     }
 
-    public List<String> getProfilesByScheduleId(Long teamScheduleId) {
+    public List<ProfileDto> getProfilesByScheduleId(Long teamScheduleId) {
         return queryFactory
-                .select(user.profileUri)
+                .select(Projections.constructor(ProfileDto.class,
+                                user.id,
+                                user.profileUri))
                 .from(scheduleParticipants)
                 .join(user)
                 .on(scheduleParticipants.userId.eq(user.id))
@@ -146,9 +171,11 @@ public class    TeamScheduleQuerydslRepository {
                 )).toList();
     }
 
-    private List<String> getTeamScheduleParticipants(TeamSimpleScheduleDto simpleSchedule) {
+    private List<ProfileDto> getTeamScheduleParticipants(TeamSimpleScheduleDto simpleSchedule) {
         return queryFactory
-                .select(user.profileUri)
+                .select(Projections.constructor(ProfileDto.class,
+                        user.id,
+                        user.profileUri))
                 .from(scheduleParticipants)
                 .join(user)
                 .on(scheduleParticipants.userId.eq(user.id))

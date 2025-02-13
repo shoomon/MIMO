@@ -20,9 +20,11 @@ import com.bisang.backend.team.controller.dto.SimpleTeamDto;
 import com.bisang.backend.team.controller.dto.TeamDto;
 import com.bisang.backend.team.domain.Area;
 import com.bisang.backend.team.domain.TeamCategory;
+import com.bisang.backend.team.domain.TeamUser;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -30,18 +32,26 @@ import lombok.RequiredArgsConstructor;
 @Repository
 @RequiredArgsConstructor
 public class TeamQuerydslRepository {
+    private final TeamUserJpaRepository teamUserJpaRepository;
     private final JPAQueryFactory queryFactory;
+    private final TeamJpaRepository teamJpaRepository;
 
-    public TeamDto getTeamInfo(Long teamId) {
+    public TeamDto getTeamInfo(Long userId, Long teamId) {
+        Long teamUserId = null;
+        if (userId != null) {
+            Optional<TeamUser> teamUser = teamUserJpaRepository.findByTeamIdAndUserId(teamId, userId);
+            if (teamUser.isPresent()) {
+                teamUserId = teamUser.get().getId();
+            }
+        }
 
-        Long currentMemberCount = queryFactory.select(teamUser.count())
-                                                .from(teamUser)
-                                                .where(teamUser.id.eq(teamId)).fetchOne();
-
+        Long currentMemberCount = teamUserJpaRepository.countTeamUserByTeamId(teamId);
+        List<String> tags = getTags(teamId);
         return Optional.ofNullable(
                 queryFactory
                 .select(Projections.constructor(TeamDto.class,
                         team.id,
+                        Expressions.numberTemplate(Long.class, "{0}", teamUserId),
                         team.teamProfileUri,
                         team.name,
                         teamDescription.description,
@@ -49,7 +59,9 @@ public class TeamQuerydslRepository {
                         team.privateStatus,
                         team.areaCode,
                         team.maxCapacity,
-                        Expressions.numberTemplate(Long.class, "{0}", currentMemberCount)
+                        Expressions.numberTemplate(Long.class, "{0}", currentMemberCount),
+                        Expressions.constant(0D),
+                        Expressions.constant(tags)
                 ))
                 .from(team).join(teamDescription).on(team.description.id.eq(teamDescription.id))
                 .where(team.id.eq(teamId))
@@ -65,10 +77,16 @@ public class TeamQuerydslRepository {
         List<SimpleTeamDto> teams = queryFactory
             .select(Projections.constructor(SimpleTeamDto.class,
                     team.id,
+                    Expressions.constant(0L),
                     team.name,
                     team.shortDescription,
                     team.teamProfileUri,
                     Expressions.numberTemplate(Double.class, "{0}", 0.0),
+                    Expressions.constant(0L),
+                    team.maxCapacity,
+                    JPAExpressions.select(teamUser.count())
+                            .from(teamUser)
+                            .where(teamUser.teamId.eq(team.id)),
                     Expressions.constant(Collections.emptyList())
             ))
             .from(team)
@@ -92,10 +110,16 @@ public class TeamQuerydslRepository {
         List<SimpleTeamDto> teams = queryFactory
             .select(Projections.constructor(SimpleTeamDto.class,
                     team.id,
+                    Expressions.constant(0L),
                     team.name,
                     team.shortDescription,
                     team.teamProfileUri,
                     Expressions.numberTemplate(Double.class, "{0}", 0.0),
+                    Expressions.constant(0L),
+                    team.maxCapacity,
+                    JPAExpressions.select(teamUser.count())
+                            .from(teamUser)
+                            .where(teamUser.teamId.eq(team.id)),
                     Expressions.constant(Collections.emptyList())
             ))
             .from(team)
@@ -110,6 +134,38 @@ public class TeamQuerydslRepository {
             }).sorted(comparing(SimpleTeamDto::teamId)).toList();
     }
 
+    public SimpleTeamDto getSimpleTeamInfo(Long userId, Long teamId) {
+        teamJpaRepository.findTeamById(teamId)
+                .orElseThrow(() -> new TeamException(NOT_FOUND));
+
+        Long teamUserId = null;
+        if (userId != null) {
+            Optional<TeamUser> teamUser = teamUserJpaRepository.findByTeamIdAndUserId(teamId, userId);
+            if (teamUser.isPresent()) {
+                teamUserId = teamUser.get().getId();
+            }
+        }
+
+        List<String> tags = getTags(teamId);
+        return queryFactory
+                .select(Projections.constructor(SimpleTeamDto.class,
+                        team.id,
+                        Expressions.numberTemplate(Long.class, "{0}", teamUserId),
+                        team.name,
+                        team.shortDescription,
+                        team.teamProfileUri,
+                        Expressions.numberTemplate(Double.class, "{0}", 0.0),
+                        Expressions.constant(0L),
+                        team.maxCapacity,
+                        JPAExpressions.select(teamUser.count())
+                                .from(teamUser)
+                                .where(teamUser.teamId.eq(team.id)),
+                        Expressions.constant(tags)
+                ))
+                .from(team)
+                .where(team.id.eq(teamId)).fetchOne();
+    }
+
     private List<String> getTags(Long teamId) {
         return queryFactory
             .select(tag.name)
@@ -122,10 +178,14 @@ public class TeamQuerydslRepository {
     private SimpleTeamDto createSimpleDto(SimpleTeamDto dto, List<String> tags) {
         return new SimpleTeamDto(
             dto.teamId(),
+            dto.teamUserId(),
             dto.name(),
             dto.description(),
             dto.teamProfileUri(),
             dto.reviewScore(),
+            0L,
+            dto.maxCapacity(),
+            dto.currentCapacity(),
             tags
         );
     }

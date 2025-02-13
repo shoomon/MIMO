@@ -1,3 +1,4 @@
+# Base Image
 FROM openjdk:17-jdk-slim
 
 # 필수 패키지 설치
@@ -12,12 +13,6 @@ RUN echo "source /root/.sdkman/bin/sdkman-init.sh" >> /root/.bashrc
 # SDKMAN 초기화 후 Gradle 설치
 RUN bash -c "source /root/.sdkman/bin/sdkman-init.sh && sdk install gradle 8.12.1"
 
-# 환경변수 설정
-ENV SDKMAN_DIR="/root/.sdkman" \
-    GRADLE_HOME="/root/.sdkman/candidates/gradle/8.12.1" \
-    GRADLE_USER_HOME="/root/.gradle" \
-    PATH="/root/.sdkman/candidates/gradle/8.12.1/bin:${PATH}"
-
 # 작업 디렉토리 설정
 WORKDIR /app
 
@@ -30,10 +25,8 @@ COPY ./ /app/
 # Gradle 빌드 실행
 RUN bash -c "source /root/.sdkman/bin/sdkman-init.sh && gradle build --no-daemon --refresh-dependencies --no-watch-fs -x test -x checkstyleMain"
 
-
 # 빌드된 JAR 파일이 있는지 확인하고 출력
 RUN echo "Listing JAR files in /app/build/libs:" && ls -l /app/build/libs/
 
 # 애플리케이션 실행
 CMD ["java", "-jar", "/app/build/libs/backend-0.0.1-SNAPSHOT.jar"]
-
