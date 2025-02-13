@@ -46,6 +46,7 @@ public class TeamQuerydslRepository {
         }
 
         Long currentMemberCount = teamUserJpaRepository.countTeamUserByTeamId(teamId);
+        List<String> tags = getTags(teamId);
         return Optional.ofNullable(
                 queryFactory
                 .select(Projections.constructor(TeamDto.class,
@@ -58,7 +59,9 @@ public class TeamQuerydslRepository {
                         team.privateStatus,
                         team.areaCode,
                         team.maxCapacity,
-                        Expressions.numberTemplate(Long.class, "{0}", currentMemberCount)
+                        Expressions.numberTemplate(Long.class, "{0}", currentMemberCount),
+                        Expressions.constant(0D),
+                        Expressions.constant(tags)
                 ))
                 .from(team).join(teamDescription).on(team.description.id.eq(teamDescription.id))
                 .where(team.id.eq(teamId))
@@ -147,7 +150,7 @@ public class TeamQuerydslRepository {
         return queryFactory
                 .select(Projections.constructor(SimpleTeamDto.class,
                         team.id,
-                        Expressions.constant(teamUserId),
+                        Expressions.numberTemplate(Long.class, "{0}", teamUserId),
                         team.name,
                         team.shortDescription,
                         team.teamProfileUri,

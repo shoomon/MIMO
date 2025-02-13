@@ -33,10 +33,9 @@ public class ScheduleParticipantsController {
     @DeleteMapping
     public ResponseEntity<Void> leaveSchedule(
             @AuthUser User user,
-            @RequestParam(name = "teamScheduleId") Long teamScheduleId,
-            @RequestParam(name = "scheduleParticipantsId") Long scheduleParticipantsId
+            @RequestParam(name = "teamScheduleId") Long teamScheduleId
     ) {
-        scheduleParticipantsService.leaveSchedule(teamScheduleId.toString(), user.getId(), scheduleParticipantsId);
+        scheduleParticipantsService.leaveSchedule(teamScheduleId.toString(), user.getId(), teamScheduleId);
         return ResponseEntity.ok().build();
     }
 }

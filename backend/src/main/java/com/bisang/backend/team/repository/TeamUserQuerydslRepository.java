@@ -30,11 +30,14 @@ public class TeamUserQuerydslRepository {
 
     public List<TeamUserDto> getTeamUserInfo(Long teamId) {
         return queryFactory
-                .select(Projections.fields(TeamUserDto.class,
+                .select(Projections.constructor(TeamUserDto.class,
+                        user.id,
                         teamUser.id,
                         teamUser.nickname,
-                        teamUser.role))
-                .from(teamUser)
+                        user.profileUri,
+                        teamUser.role,
+                        teamUser.createdAt))
+                .from(teamUser).join(user).on(teamUser.userId.eq(user.id))
                 .where(teamUser.teamId.eq(teamId)).fetch();
     }
 
@@ -95,44 +98,56 @@ public class TeamUserQuerydslRepository {
         BooleanBuilder dynamicTeamUserIdGt
     ) {
         return queryFactory
-            .select(Projections.constructor(TeamUserDto.class,
-                teamUser.id,
-                teamUser.nickname,
-                teamUser.role
-            )).from(teamUser)
-            .where(teamUser.teamId.eq(teamId), dynamicRoleEq, dynamicTeamUserIdGt).fetch();
+                .select(Projections.constructor(TeamUserDto.class,
+                    user.id,
+                    teamUser.id,
+                    teamUser.nickname,
+                    user.profileUri,
+                    teamUser.role,
+                    teamUser.createdAt))
+                .from(teamUser).join(user).on(teamUser.userId.eq(user.id))
+                .where(teamUser.teamId.eq(teamId), dynamicRoleEq, dynamicTeamUserIdGt).fetch();
     }
 
     private List<TeamUserDto> getLeaders(Long teamId) {
         return queryFactory
-            .select(Projections.constructor(TeamUserDto.class,
-                teamUser.id,
-                teamUser.nickname,
-                teamUser.role
-            )).from(teamUser)
-            .where(teamUser.teamId.eq(teamId), teamUser.role.eq(LEADER)).fetch();
+                .select(Projections.constructor(TeamUserDto.class,
+                        user.id,
+                        teamUser.id,
+                        teamUser.nickname,
+                        user.profileUri,
+                        teamUser.role,
+                        teamUser.createdAt))
+                .from(teamUser).join(user).on(teamUser.userId.eq(user.id))
+                .where(teamUser.teamId.eq(teamId), teamUser.role.eq(LEADER)).fetch();
     }
 
     private List<TeamUserDto> getCoLeaders(Long teamId) {
         return queryFactory
-            .select(Projections.constructor(TeamUserDto.class,
-                teamUser.id,
-                teamUser.nickname,
-                teamUser.role
-            )).from(teamUser)
-            .where(teamUser.teamId.eq(teamId), teamUser.role.eq(CO_LEADER))
-            .orderBy(teamUser.id.asc()).fetch();
+                .select(Projections.constructor(TeamUserDto.class,
+                        user.id,
+                        teamUser.id,
+                        teamUser.nickname,
+                        user.profileUri,
+                        teamUser.role,
+                        teamUser.createdAt))
+                .from(teamUser).join(user).on(teamUser.userId.eq(user.id))
+                .where(teamUser.teamId.eq(teamId), teamUser.role.eq(CO_LEADER))
+                .orderBy(teamUser.id.asc()).fetch();
     }
 
     private List<TeamUserDto> getMembers(Long teamId) {
         return queryFactory
-            .select(Projections.constructor(TeamUserDto.class,
-                teamUser.id,
-                teamUser.nickname,
-                teamUser.role
-            )).from(teamUser)
-            .where(teamUser.teamId.eq(teamId), teamUser.role.eq(MEMBER))
-            .orderBy(teamUser.id.asc()).fetch();
+                .select(Projections.constructor(TeamUserDto.class,
+                        user.id,
+                        teamUser.id,
+                        teamUser.nickname,
+                        user.profileUri,
+                        teamUser.role,
+                        teamUser.createdAt))
+                .from(teamUser).join(user).on(teamUser.userId.eq(user.id))
+                .where(teamUser.teamId.eq(teamId), teamUser.role.eq(MEMBER))
+                .orderBy(teamUser.id.asc()).fetch();
     }
 
     private List<TeamUserDto> sortTeamUserDto(List<TeamUserDto> teamUserDtos) {
