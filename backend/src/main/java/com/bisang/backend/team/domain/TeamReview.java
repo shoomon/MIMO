@@ -15,6 +15,7 @@ import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 
 import org.apache.commons.lang3.Validate;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.bisang.backend.common.exception.TeamException;
@@ -30,7 +31,7 @@ import lombok.NoArgsConstructor;
 @Table(
         name = "team_review",
         indexes = {
-            @Index(name = "idx_team_teamUserId", columnList = "team_id, team_user_id desc")
+            @Index(name = "idx_team_review_id", columnList = "team_id, team_review_id desc")
         }
 )
 public class TeamReview {
@@ -44,6 +45,7 @@ public class TeamReview {
     @Column(name = "team_user_id", nullable = false, unique = true)
     private Long teamUserId;
 
+    @CreatedDate
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
@@ -54,7 +56,7 @@ public class TeamReview {
     private Long score;
 
     @Builder
-    private TeamReview(Long teamId, Long teamUserId, String memo, Long score) {
+    public TeamReview(Long teamId, Long teamUserId, String memo, Long score) {
         this.teamId = teamId;
         this.teamUserId = teamUserId;
         this.memo = memo;
@@ -73,5 +75,12 @@ public class TeamReview {
         if (!(score == 1 || score == 2 || score == 3 || score == 4 || score == 5)) {
             throw new TeamException(INVALID_REQUEST);
         }
+    }
+
+    public void updateReview(String memo, Long score) {
+        memoValidation(memo);
+        this.memo = memo;
+        scoreValidation(score);
+        this.score = score;
     }
 }
