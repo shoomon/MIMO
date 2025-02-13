@@ -116,7 +116,14 @@ public class BoardService {
     }
 
 //    @TeamMember
-    public void updatePost(Long userId, Long postId, String title, String description, List<BoardFileDto> filesToDelete,  List<BoardFileDto> filesToAdd) {
+    public void updatePost(
+            Long userId,
+            Long postId,
+            String title,
+            String description,
+            List<BoardFileDto> filesToDelete,
+            List<MultipartFile> filesToAdd
+    ) {
         Board post = boardJpaRepository.findById(postId)
                 .orElseThrow(()-> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
 
@@ -148,10 +155,10 @@ public class BoardService {
         }
 
         if(filesToAdd != null){
-            for(BoardFileDto file : filesToAdd){
-                String uri = file.fileUri();
+            for(MultipartFile file : filesToAdd){
+                String uri = s3Service.saveFile(userId, file);
                 String fileExtension = uri.substring(uri.lastIndexOf(".") + 1).toLowerCase();
-                System.out.println(file.fileExtension());
+                System.out.println(uri);
 
                 boardImageJpaRepository.save(BoardImage.builder()
                         .boardId(post.getId())
@@ -160,7 +167,6 @@ public class BoardService {
                         .build());
             }
         }
-
     }
 
 //    @TeamMember

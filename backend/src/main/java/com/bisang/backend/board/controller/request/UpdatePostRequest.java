@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 public record UpdatePostRequest(
         String title,
         String description,
-        List<MultipartFile> filesToDelete,
-        List<BoardFileDto> filesToAdd
+        List<BoardFileDto> filesToDelete,
+        List<MultipartFile> filesToAdd
 ) {
 }
