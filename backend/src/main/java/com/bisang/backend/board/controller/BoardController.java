@@ -33,7 +33,6 @@ import com.bisang.backend.user.domain.User;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.multipart.MultipartFile;
 
 //todo: 권한 체크, 500 에러 말고 커스텀 exception 구현 필요
 @RestController

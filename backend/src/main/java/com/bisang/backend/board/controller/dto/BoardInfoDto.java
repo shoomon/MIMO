@@ -1,8 +1,8 @@
 package com.bisang.backend.board.controller.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 public record BoardInfoDto(
         Long postId,
