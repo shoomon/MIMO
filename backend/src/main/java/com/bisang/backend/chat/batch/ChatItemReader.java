@@ -1,12 +1,12 @@
 package com.bisang.backend.chat.batch;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import com.bisang.backend.chat.domain.redis.RedisChatMessage;
 
 @Component
+@StepScope
 public class ChatItemReader implements ItemReader<RedisChatMessage> {
 
     private final RedisTemplate<String, RedisChatMessage> redisChatMessageTemplate;
@@ -44,8 +45,7 @@ public class ChatItemReader implements ItemReader<RedisChatMessage> {
         //7일 전 구하기
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime sevenDaysAgo = now.minusDays(7);
-        ZonedDateTime zonedDateTime = sevenDaysAgo.atZone(ZoneId.systemDefault());
-        double epochMilli = zonedDateTime.toInstant().toEpochMilli();
+        double epochMilli = sevenDaysAgo.toInstant(ZoneOffset.ofTotalSeconds(0)).toEpochMilli();
 
         for (String roomKey : chatRooms) {
             Set<TypedTuple<RedisChatMessage>> messages = redisChatMessageTemplate
