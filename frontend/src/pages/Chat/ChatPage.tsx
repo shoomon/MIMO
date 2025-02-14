@@ -33,10 +33,7 @@ const ChatPage = () => {
 
     return (
         <section className="flex h-[calc(100vh-14rem)]">
-            <ChatRoomList
-                onClick={handleRoomIn}
-                chatListItems={CHAT_LIST_DATA}
-            />
+            <ChatRoomList onClick={handleRoomIn} />
             <ChatRoomDetail
                 chatroomName={roomName}
                 chatroomImage={roomImage}

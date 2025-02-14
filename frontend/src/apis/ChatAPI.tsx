@@ -1,7 +1,7 @@
 import { ChatRoomResponse } from '@/types/Chat';
 import { customFetch } from './customFetch';
 
-export const getChatListAPI = async (): Promise<ChatRoomResponse> => {
+export const getChatListAPI = async (): Promise<ChatRoomResponse[]> => {
     try {
         const response = await customFetch('/chatroom', {
             method: 'GET',
