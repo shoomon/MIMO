@@ -3,15 +3,10 @@ package com.bisang.backend.team.controller;
 import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.bisang.backend.auth.annotation.AuthUser;
+import com.bisang.backend.installment.service.InstallmentService;
 import com.bisang.backend.team.controller.request.DowngradeRoleRequest;
 import com.bisang.backend.team.controller.request.InviteApproveRequest;
 import com.bisang.backend.team.controller.request.InviteRejectRequest;
@@ -29,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/team-leader")
 public class TeamLeaderController {
     private final TeamLeaderService teamLeaderService;
+    private final InstallmentService installmentService;
 
     @GetMapping("/users")
     public ResponseEntity<TeamUserResponse> getTeamUser(

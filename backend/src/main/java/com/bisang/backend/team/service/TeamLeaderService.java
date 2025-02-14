@@ -8,6 +8,7 @@ import static java.lang.Boolean.TRUE;
 
 import java.util.List;
 
+import com.bisang.backend.common.exception.ExceptionCode;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -126,6 +127,12 @@ public class TeamLeaderService {
     @Transactional(readOnly = true)
     public List<TeamInviteDto> findTeamInviteRequest(Long userId, Long teamId) {
         return teamUserQuerydslRepository.getTeamInviteInfo(teamId);
+    }
+
+    public void validateTeamLeader(Long teamId, Long userId) {
+        if (teamUserJpaRepository.findByTeamIdAndUserId(teamId, userId).isEmpty()) {
+            throw new TeamException(ExceptionCode.UNAUTHORIZED_USER);
+        }
     }
 
     private Team findTeamById(Long teamId) {

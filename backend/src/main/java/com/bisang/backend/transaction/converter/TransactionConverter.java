@@ -1,11 +1,11 @@
 package com.bisang.backend.transaction.converter;
 
+import com.bisang.backend.transaction.domain.Transaction;
 import org.springframework.stereotype.Component;
 
 import com.bisang.backend.transaction.controller.request.ChargeRequest;
 import com.bisang.backend.transaction.controller.request.PaymentRequest;
 import com.bisang.backend.transaction.controller.request.TransferRequest;
-import com.bisang.backend.transaction.domain.Transaction;
 import com.bisang.backend.transaction.domain.TransactionCategory;
 import com.bisang.backend.transaction.domain.TransactionStatus;
 

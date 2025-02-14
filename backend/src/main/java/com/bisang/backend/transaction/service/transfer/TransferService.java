@@ -3,14 +3,17 @@ package com.bisang.backend.transaction.service.transfer;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bisang.backend.installment.controller.request.InstallmentRequest;
+import com.bisang.backend.installment.domain.Installment;
+import com.bisang.backend.installment.repository.InstallmentJpaRepository;
+import com.bisang.backend.transaction.domain.Transaction;
 import com.bisang.backend.account.domain.Account;
 import com.bisang.backend.account.repository.AccountJpaRepository;
 import com.bisang.backend.common.exception.AccountException;
 import com.bisang.backend.common.exception.ExceptionCode;
-import com.bisang.backend.transaction.domain.AccountDetails;
-import com.bisang.backend.transaction.domain.Transaction;
+import com.bisang.backend.account.domain.AccountDetails;
 import com.bisang.backend.transaction.domain.TransactionCategory;
-import com.bisang.backend.transaction.service.AccountDetailsService;
+import com.bisang.backend.account.service.AccountDetailsService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 public class TransferService {
     private final AccountDetailsService accountDetailsService;
     private final AccountJpaRepository accountJpaRepository;
+    private final InstallmentJpaRepository installmentJpaRepository;
 
     @Transactional
     public void transfer(Transaction transaction) {
@@ -37,6 +41,20 @@ public class TransferService {
                 = accountDetailsService.createAccountDetails(transaction, TransactionCategory.DEPOSIT, "입금");
         accountDetailsService.saveAccountDetails(senderAccountDetails);
         accountDetailsService.saveAccountDetails(receiverAccountDetails);
+    }
+
+    @Transactional
+    public void installment(InstallmentRequest installmentRequest, Transaction transaction) {
+        transfer(transaction);
+
+        Installment installment = installmentJpaRepository.findByTeamIdAndRoundAndInstallmentStatus(
+                installmentRequest.getTeamId(),
+                installmentRequest.getUserId(),
+                installmentRequest.getRound()
+        ).orElseThrow(RuntimeException::new);
+
+        installment.updateInstallmentStatus();
+        installmentJpaRepository.save(installment);
     }
 
     private void validateSenderAccountBalance(String senderAccountNumber, Long balance) {

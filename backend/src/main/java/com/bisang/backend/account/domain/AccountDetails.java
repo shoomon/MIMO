@@ -1,4 +1,4 @@
-package com.bisang.backend.transaction.domain;
+package com.bisang.backend.account.domain;
 
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
@@ -6,6 +6,8 @@ import static lombok.AccessLevel.PROTECTED;
 
 import java.time.LocalDateTime;
 
+import com.bisang.backend.transaction.domain.Transaction;
+import com.bisang.backend.transaction.domain.TransactionCategory;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;

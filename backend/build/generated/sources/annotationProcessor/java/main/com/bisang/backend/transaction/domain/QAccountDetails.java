@@ -2,6 +2,7 @@ package com.bisang.backend.transaction.domain;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
+import com.bisang.backend.account.domain.AccountDetails;
 import com.querydsl.core.types.dsl.*;
 
 import com.querydsl.core.types.PathMetadata;

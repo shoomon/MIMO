@@ -1,5 +1,6 @@
 package com.bisang.backend.transaction.controller;
 
+import com.bisang.backend.installment.controller.request.InstallmentRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,6 +49,19 @@ public class TransactionController {
                 .body(null);
     }
 
+    @PostMapping("/installment/")
+    public ResponseEntity<Void> installmentBalance(
+            @AuthUser User user,
+            @RequestBody InstallmentRequest installmentRequest,
+            @RequestBody TransferRequest transferRequest
+    ) {
+        transactionService.installmentBalance(installmentRequest, transferRequest);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(null);
+    }
+
     @GetMapping("/payment/qrcode/team")
     public ResponseEntity<String> generateTeamQrCodeDetails(
             @AuthUser User user,
@@ -55,7 +69,7 @@ public class TransactionController {
     ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(transactionService.generateExpiringUuidForTeam(qrCodeRequest));
+                .body(transactionService.generateExpiringUuidForTeam(user, qrCodeRequest));
     }
 
     @GetMapping("/payment/qrcode/user")
@@ -65,7 +79,7 @@ public class TransactionController {
     ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(transactionService.generateExpiringUuidForUser(qrCodeRequest));
+                .body(transactionService.generateExpiringUuidForUser(user, qrCodeRequest));
     }
 
     @PostMapping("/payment/pay")

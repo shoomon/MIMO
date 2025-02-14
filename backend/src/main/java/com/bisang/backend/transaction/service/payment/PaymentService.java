@@ -7,14 +7,15 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import com.bisang.backend.account.domain.Account;
+import com.bisang.backend.account.domain.AccountDetails;
 import com.bisang.backend.account.repository.AccountJpaRepository;
+import com.bisang.backend.account.service.AccountDetailsService;
 import com.bisang.backend.common.exception.AccountException;
 import com.bisang.backend.common.exception.ExceptionCode;
+import com.bisang.backend.user.domain.User;
 import com.bisang.backend.transaction.controller.request.QrCodeRequest;
-import com.bisang.backend.transaction.domain.AccountDetails;
 import com.bisang.backend.transaction.domain.Transaction;
 import com.bisang.backend.transaction.domain.TransactionCategory;
-import com.bisang.backend.transaction.service.AccountDetailsService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,12 +27,12 @@ public class PaymentService {
 
     private final AccountJpaRepository accountJpaRepository;
 
-    public String generateExpiringUuidForTeam(QrCodeRequest qrCodeRequest) {
-        return qrCodeService.generateExpiringUuidForTeam(qrCodeRequest);
+    public String generateExpiringUuidForTeam(User user, QrCodeRequest qrCodeRequest) {
+        return qrCodeService.generateExpiringUuidForTeam(user, qrCodeRequest);
     }
 
-    public String generateExpiringUuidForUser(QrCodeRequest qrCodeRequest) {
-        return qrCodeService.generateExpiringUuidForUser(qrCodeRequest);
+    public String generateExpiringUuidForUser(User user, QrCodeRequest qrCodeRequest) {
+        return qrCodeService.generateExpiringUuidForUser(user, qrCodeRequest);
     }
 
     @Transactional
