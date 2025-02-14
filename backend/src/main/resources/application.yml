@@ -44,6 +44,12 @@ spring:
         use_sql_comments: false
     database-platform: org.hibernate.dialect.MySQLDialect
 
+  batch:
+    job:
+      enabled: false
+    jdbc:
+      initialize-schema: always
+
 cloud:
   aws:
     s3:

@@ -3,8 +3,10 @@ package com.bisang.backend.chat.controller;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.bisang.backend.auth.JwtUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,9 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.bisang.backend.auth.annotation.AuthSimpleUser;
 import com.bisang.backend.auth.annotation.AuthUser;
-import com.bisang.backend.auth.domain.SimpleUser;
 import com.bisang.backend.chat.controller.request.ChatMessageRequest;
 import com.bisang.backend.chat.controller.response.ChatMessageResponse;
 import com.bisang.backend.chat.domain.ChatType;
@@ -25,6 +25,7 @@ import com.bisang.backend.chat.service.ChatMessageService;
 import com.bisang.backend.chat.service.ChatroomUserService;
 import com.bisang.backend.common.exception.ChatAccessInvalidException;
 import com.bisang.backend.common.exception.ExceptionCode;
+import com.bisang.backend.common.utils.DateUtils;
 import com.bisang.backend.user.domain.User;
 
 import lombok.RequiredArgsConstructor;
@@ -36,20 +37,21 @@ public class ChatMessageController {
 
     private final ChatMessageService chatMessageService;
     private final ChatroomUserService chatroomUserService;
+    private final JwtUtil jwtUtil;
 
     @MessageMapping("/{roomId}")
     public void sendMessage(
             @DestinationVariable Long roomId,
-            @AuthSimpleUser User user,
+            @Header("Authorization") String token,
             ChatMessageRequest chat
     ) {
-        Long userId = user.getId();
-        if (chatroomUserService.isMember(roomId, userId, chat.teamUserId())) {
+        Long userId = Long.valueOf(jwtUtil.getSubject(token));
+
+        if (chatroomUserService.isMember(roomId, userId)) {
             RedisChatMessage redisMessage = new RedisChatMessage(
                     roomId,
                     userId,
-                    chat.teamUserId(),
-                    chat.chat(),
+                    chat.message(),
                     LocalDateTime.now(),
                     ChatType.MESSAGE
             );
@@ -62,12 +64,12 @@ public class ChatMessageController {
     public ResponseEntity<List<ChatMessageResponse>> getMessages(
             @AuthUser User user,
             @PathVariable("roomId") Long roomId,
-            @RequestParam("teamUserId") Long teamUserId,
             @RequestParam("messageId") Long messageId,
-            @RequestParam("timestamp") LocalDateTime timestamp
+            @RequestParam("timestamp") String timestamp
     ) {
-        if (chatroomUserService.isMember(roomId, user.getId(), teamUserId)) {
+        if (chatroomUserService.isMember(roomId, user.getId())) {
             List<ChatMessageResponse> list = chatMessageService.getMessages(roomId, messageId, timestamp);
+
             return ResponseEntity.ok().body(list);
         }
 
@@ -79,15 +81,14 @@ public class ChatMessageController {
     //테스트용
     @PostMapping("/test/{roomId}")
     public ResponseEntity<String> sendM(
-            @AuthSimpleUser SimpleUser user,
             @PathVariable Long roomId,
-            @RequestBody ChatMessageRequest chat) {
-        if (chatroomUserService.isMember(roomId, user.userId(), chat.teamUserId())) {
+            @RequestBody ChatMessageRequest chat
+    ) {
+        if (chatroomUserService.isMember(roomId, 11L)) {
             RedisChatMessage redisMessage = new RedisChatMessage(
                     roomId,
-                    user.userId(),
-                    chat.teamUserId(),
-                    chat.chat(),
+                    11L,
+                    chat.message(),
                     LocalDateTime.now(),
                     ChatType.MESSAGE
             );
