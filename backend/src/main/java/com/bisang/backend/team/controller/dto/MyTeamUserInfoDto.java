@@ -1,7 +1,12 @@
 package com.bisang.backend.team.controller.dto;
 
-import java.time.LocalDateTime;
+import static com.bisang.backend.common.utils.StringUtils.randomAlphaNumeric;
+import static com.bisang.backend.team.domain.TeamUserRole.GUEST;
 
+import java.time.LocalDateTime;
+import java.util.Optional;
+
+import com.bisang.backend.team.domain.Team;
 import com.bisang.backend.team.domain.TeamNotificationStatus;
 import com.bisang.backend.team.domain.TeamUser;
 import com.bisang.backend.team.domain.TeamUserRole;
@@ -17,13 +22,25 @@ public record MyTeamUserInfoDto(
         TeamNotificationStatus notificationStatus,
         LocalDateTime joinDate
 ) {
-    public static MyTeamUserInfoDto teamUserToDto(TeamUser teamUser) {
-        return MyTeamUserInfoDto.builder()
+    public static MyTeamUserInfoDto teamUserToDto(Optional<TeamUser> optionalTeamUser, Team team) {
+        if (optionalTeamUser.isPresent()) {
+            TeamUser teamUser = optionalTeamUser.get();
+            return MyTeamUserInfoDto.builder()
                 .teamId(teamUser.getTeamId())
                 .teamUserId(teamUser.getId())
                 .nickname(teamUser.getNickname())
                 .role(teamUser.getRole())
                 .notificationStatus(teamUser.getStatus())
                 .joinDate(teamUser.getCreatedAt()).build();
+        }
+
+        return MyTeamUserInfoDto.builder()
+            .teamId(team.getId())
+            .teamUserId(0L)
+            .nickname("GUEST" + randomAlphaNumeric(10))
+            .role(GUEST)
+            .notificationStatus(null)
+            .joinDate(LocalDateTime.now())
+            .build();
     }
 }

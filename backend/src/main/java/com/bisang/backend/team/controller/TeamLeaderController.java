@@ -50,7 +50,7 @@ public class TeamLeaderController {
         @RequestParam Long teamId,
         @RequestParam(required = false) Long lastTeamInviteId
     ) {
-        var teamInvites = teamInviteService.getTeamInvites(teamId, user.getId(), lastTeamInviteId);
+        var teamInvites = teamInviteService.getTeamInvites(user.getId(), teamId, lastTeamInviteId);
         return ResponseEntity.ok(teamInvites);
     }
 

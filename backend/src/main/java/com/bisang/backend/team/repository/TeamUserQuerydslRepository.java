@@ -7,23 +7,30 @@ import static com.bisang.backend.invite.domain.InviteStatus.WAITING;
 import static com.bisang.backend.invite.domain.QTeamInvite.teamInvite;
 import static com.bisang.backend.team.domain.QTag.tag;
 import static com.bisang.backend.team.domain.QTeam.team;
+import static com.bisang.backend.team.domain.QTeamReview.teamReview;
 import static com.bisang.backend.team.domain.QTeamTag.teamTag;
 import static com.bisang.backend.team.domain.QTeamUser.teamUser;
 import static com.bisang.backend.team.domain.TeamUserRole.*;
 import static com.bisang.backend.user.domain.QUser.user;
+import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparing;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.*;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
 import com.bisang.backend.team.controller.dto.SimpleTeamDto;
+import com.bisang.backend.team.controller.dto.SimpleTeamReviewDto;
 import com.bisang.backend.team.controller.dto.TeamInviteDto;
 import com.bisang.backend.team.controller.dto.TeamUserDto;
 import com.bisang.backend.team.domain.TeamUserRole;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
@@ -53,8 +60,6 @@ public class TeamUserQuerydslRepository {
         List<SimpleTeamDto> teams = queryFactory
                 .select(Projections.constructor(SimpleTeamDto.class,
                         team.id,
-                        Expressions.numberTemplate(Long.class, "{0}", 0L),
-                        Expressions.nullExpression(TeamUserRole.class),
                         team.name,
                         team.shortDescription,
                         team.teamProfileUri,
@@ -71,11 +76,23 @@ public class TeamUserQuerydslRepository {
                 .orderBy(team.id.desc())
                 .fetch();
 
+        List<Long> teamIds = teams.stream()
+            .map(SimpleTeamDto::teamId)
+            .toList();
+        Map<Long, List<String>> tagsMap = getTagsByTeamIds(teamIds);
+        Map<Long, SimpleTeamReviewDto> teamReviews = getReviewsByTeamIds(teamIds);
+
         return teams.stream()
-                .map(teamDto -> {
-                    List<String> tags = getTags(teamDto.teamId());
-                    return createSimpleDto(teamDto, tags);
-                }).sorted(comparing(SimpleTeamDto::teamId).reversed()).toList();
+            .map(teamDto -> {
+                List<String> tags = tagsMap.getOrDefault(teamDto.teamId(), emptyList());
+                SimpleTeamReviewDto simpleTeamReview
+                    = teamReviews.getOrDefault(
+                        teamDto.teamId(),
+                        new SimpleTeamReviewDto(teamDto.teamId(),0D,0L));
+                return createSimpleDto(teamDto, tags, simpleTeamReview);
+            })
+            .sorted(comparing(SimpleTeamDto::teamId).reversed())
+            .toList();
     }
 
     public List<TeamInviteDto> getTeamInviteInfo(Long teamId) {
@@ -190,7 +207,7 @@ public class TeamUserQuerydslRepository {
     private List<TeamUserDto> sortTeamUserDto(List<TeamUserDto> teamUserDtos) {
         return teamUserDtos.stream()
             .sorted(comparing((TeamUserDto dto) ->dto.role().getWeight())
-                .thenComparing(TeamUserDto::teamUserId))
+                .thenComparing(TeamUserDto::teamUserId).reversed())
             .limit(PAGE_SIZE + 1)
             .toList();
     }
@@ -210,19 +227,51 @@ public class TeamUserQuerydslRepository {
                 .fetch();
     }
 
-    private SimpleTeamDto createSimpleDto(SimpleTeamDto dto, List<String> tags) {
+    private SimpleTeamDto createSimpleDto(SimpleTeamDto dto, List<String> tags, SimpleTeamReviewDto simpleTeamReview) {
         return new SimpleTeamDto(
-                dto.teamId(),
-                dto.teamUserId(),
-                dto.role(),
-                dto.name(),
-                dto.description(),
-                dto.teamProfileUri(),
-                dto.reviewScore(),
-                0L,
-                dto.maxCapacity(),
-                dto.currentCapacity(),
-                tags
+            dto.teamId(),
+            dto.name(),
+            dto.description(),
+            dto.teamProfileUri(),
+            simpleTeamReview.reviewScore(),
+            simpleTeamReview.reviewCount(),
+            dto.maxCapacity(),
+            dto.currentCapacity(),
+            tags
         );
+    }
+
+    private Map<Long, List<String>> getTagsByTeamIds(List<Long> teamIds) {
+        List<Tuple> results = queryFactory
+            .select(teamTag.teamId, tag.name)
+            .from(teamTag)
+            .join(tag).on(teamTag.tagId.eq(tag.id))
+            .where(teamTag.teamId.in(teamIds))
+            .fetch();
+
+        return results.stream()
+            .collect(groupingBy(
+                tuple -> tuple.get(teamTag.teamId),
+                mapping(tuple -> tuple.get(tag.name), toList())
+            ));
+    }
+
+    private Map<Long, SimpleTeamReviewDto> getReviewsByTeamIds(List<Long> teamIds) {
+        List<SimpleTeamReviewDto> teamReviews = queryFactory
+            .select(Projections.constructor(SimpleTeamReviewDto.class,
+                teamReview.teamId,
+                teamReview.score.avg(),
+                teamReview.count()
+            ))
+            .from(teamReview)
+            .where(teamReview.teamId.in(teamIds))
+            .groupBy(teamReview.teamId)
+            .fetch();
+
+        return teamReviews.stream()
+            .collect(toMap(
+                SimpleTeamReviewDto::teamId,
+                identity()
+            ));
     }
 }
