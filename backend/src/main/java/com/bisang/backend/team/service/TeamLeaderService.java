@@ -8,12 +8,12 @@ import static java.lang.Boolean.TRUE;
 
 import java.util.List;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bisang.backend.chat.service.ChatroomService;
 import com.bisang.backend.common.exception.TeamException;
+import com.bisang.backend.common.utils.StringUtils;
 import com.bisang.backend.invite.domain.TeamInvite;
 import com.bisang.backend.invite.repository.TeamInviteJpaRepository;
 import com.bisang.backend.team.annotation.TeamCoLeader;
@@ -48,7 +48,7 @@ public class TeamLeaderService {
         // CHATTING 방에 넣기. 여기는 닉네임 어떻게 되는거지?
         teamInviteJpaRepository.save(teamInvite);
 
-        String tmpNickname = RandomStringUtils.randomAlphabetic(10);
+        String tmpNickname = StringUtils.randomAlphaNumeric(10);
         TeamUser teamUser = TeamUser.createTeamMember(teamInvite.getUserId(), teamId, tmpNickname, ACTIVE);
         teamUserJpaRepository.save(teamUser);
     }

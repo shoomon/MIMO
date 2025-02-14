@@ -17,15 +17,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import com.bisang.backend.team.controller.dto.SimpleTeamReviewDto;
-import com.bisang.backend.team.domain.*;
-import com.querydsl.core.Tuple;
 import org.springframework.stereotype.Repository;
 
 import com.bisang.backend.common.exception.TeamException;
 import com.bisang.backend.team.controller.dto.SimpleTeamDto;
+import com.bisang.backend.team.controller.dto.SimpleTeamReviewDto;
 import com.bisang.backend.team.controller.dto.TeamDto;
+import com.bisang.backend.team.domain.Area;
+import com.bisang.backend.team.domain.TeamCategory;
+
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
@@ -128,7 +130,7 @@ public class TeamQuerydslRepository {
                 SimpleTeamReviewDto simpleTeamReview
                     = teamReviews.getOrDefault(
                         teamDto.teamId(),
-                        new SimpleTeamReviewDto(teamDto.teamId(),0D,0L));
+                        new SimpleTeamReviewDto(teamDto.teamId(), 0D, 0L));
                 return createSimpleDto(teamDto, tags, simpleTeamReview);
             })
             .sorted(comparing(SimpleTeamDto::teamId).reversed())

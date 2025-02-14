@@ -3,7 +3,6 @@ package com.bisang.backend.team.domain;
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
-import static java.lang.Math.max;
 import static java.lang.Math.min;
 import static lombok.AccessLevel.PROTECTED;
 

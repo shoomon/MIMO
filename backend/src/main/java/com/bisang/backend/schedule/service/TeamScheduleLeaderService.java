@@ -1,6 +1,7 @@
 package com.bisang.backend.schedule.service;
 
 import static com.bisang.backend.common.exception.ExceptionCode.*;
+import static java.time.temporal.ChronoUnit.MINUTES;
 
 import java.time.LocalDateTime;
 
@@ -46,7 +47,7 @@ public class TeamScheduleLeaderService {
                 .title(title)
                 .description(description)
                 .location(location)
-                .date(date)
+                .date(date.truncatedTo(MINUTES))
                 .maxParticipants(maxParticipants)
                 .price(price)
                 .status(status).build();
