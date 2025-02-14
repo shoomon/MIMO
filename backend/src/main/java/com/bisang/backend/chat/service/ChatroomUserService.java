@@ -21,7 +21,6 @@ public class ChatroomUserService {
     private final ChatroomJpaRepository chatroomJpaRepository;
     private final ChatMessageService chatMessageService;
     private final ChatroomRepository chatroomRepository;
-    private final ChatroomService chatroomService;
 
     public boolean isMember(Long teamId, Long userId) {
         return chatroomUserRepository.isMember(teamId, userId);

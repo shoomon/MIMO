@@ -23,7 +23,6 @@ public class ChatroomService {
     private final ChatMessageRepository chatMessageRepository;
     private final ChatroomUserRepository chatroomUserRepository;
     private final ChatroomRepository chatroomRepository;
-
     private final ChatroomUserService chatroomUserService;
 
     public void createChatroom(
