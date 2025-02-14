@@ -1,10 +1,10 @@
 package com.bisang.backend.auth.infrastructure;
 
 import static com.bisang.backend.common.utils.StringUtils.encodeString;
+import static com.bisang.backend.common.utils.StringUtils.randomAlphaNumeric;
 
 import java.util.Map;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -70,7 +70,7 @@ public class GoogleOAuthProvider {
         Map<String, Object> userInfo = userInfoResponse.getBody();
         String email = (String) userInfo.get("email");
         String name = (String) userInfo.get("name");
-        String nickname = RandomStringUtils.randomAlphanumeric(20);
+        String nickname = randomAlphaNumeric(20);
         String picture = (String) userInfo.get("picture");
 
         return new UserCreateOrLoginRequest(email, name, nickname, picture);

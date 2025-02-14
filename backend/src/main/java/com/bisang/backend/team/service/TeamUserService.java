@@ -11,9 +11,8 @@ import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
 import java.util.List;
+import java.util.Optional;
 
-import com.bisang.backend.team.controller.dto.SimpleTeamDto;
-import com.bisang.backend.team.controller.response.TeamInfosResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,8 +21,10 @@ import com.bisang.backend.invite.domain.TeamInvite;
 import com.bisang.backend.invite.repository.TeamInviteJpaRepository;
 import com.bisang.backend.team.annotation.EveryOne;
 import com.bisang.backend.team.controller.dto.MyTeamUserInfoDto;
+import com.bisang.backend.team.controller.dto.SimpleTeamDto;
 import com.bisang.backend.team.controller.dto.TeamUserDto;
 import com.bisang.backend.team.controller.response.SingleTeamUserInfoResponse;
+import com.bisang.backend.team.controller.response.TeamInfosResponse;
 import com.bisang.backend.team.controller.response.TeamUserResponse;
 import com.bisang.backend.team.domain.Team;
 import com.bisang.backend.team.domain.TeamNotificationStatus;
@@ -57,8 +58,9 @@ public class TeamUserService {
 
     @Transactional(readOnly = true)
     public MyTeamUserInfoDto getMyTeamUserInfo(Long teamId, Long userId) {
-        TeamUser teamUser = findTeamUserByTeamIdAndUserId(teamId, userId);
-        return MyTeamUserInfoDto.teamUserToDto(teamUser);
+        Optional<TeamUser> teamUser = teamUserJpaRepository.findByTeamIdAndUserId(teamId, userId);
+        Team team = findTeamById(teamId);
+        return MyTeamUserInfoDto.teamUserToDto(teamUser, team);
     }
 
     @EveryOne
