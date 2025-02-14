@@ -1,17 +1,19 @@
-import { TeamData } from '@/pages/Team/TeamCreate';
 import { customFetch } from './customFetch';
 import {
     Area,
-    TeamDto,
+    MyTeamProfileResponse,
+    TeamCreateRequest,
+    TeamInfoResponse,
     TeamInfosResponse,
+    TeamInvitesResponse,
+    TeamNotificationStatus,
     TeamScheduleSpecificResponse,
     TeamSchedulesResponse,
     TeamUserResponse,
 } from '@/types/Team';
 
-export const createTeam = async (team: TeamData): Promise<void> => {
+export const createTeam = async (team: TeamCreateRequest): Promise<void> => {
     try {
-        // plain object를 FormData로 변환 (파일 유무에 상관없이)
         const formData = new FormData();
         formData.append('name', team.name);
         formData.append('description', team.description);
@@ -57,7 +59,9 @@ export const validTeamName = async (name: string): Promise<boolean> => {
     }
 };
 
-export const getTeamInfo = async (teamId: string): Promise<TeamDto> => {
+export const getTeamInfo = async (
+    teamId: string,
+): Promise<TeamInfoResponse> => {
     if (!teamId) {
         throw new Error('팀 아이디가 없습니다.');
     }
@@ -75,13 +79,31 @@ export const getTeamInfo = async (teamId: string): Promise<TeamDto> => {
     }
 };
 
+export const getMyTeamProfile = async (
+    teamId: string,
+): Promise<MyTeamProfileResponse> => {
+    if (!teamId) {
+        throw new Error('팀 아이디가 없습니다.');
+    }
+
+    try {
+        const response = await customFetch('/team-user/my-info', {
+            method: 'GET',
+            params: { teamId }, // params는 객체여야 함
+        });
+        return response.json();
+    } catch (error) {
+        console.error('Error fetching category teams:', error);
+        throw error;
+    }
+};
+
 export const getTeamUsers = async (
     teamId: string,
 ): Promise<TeamUserResponse> => {
     if (!teamId) {
         throw new Error('팀 아이디가 없습니다.');
     }
-
     try {
         const response = await customFetch('/team-user/users', {
             method: 'GET',
@@ -95,9 +117,108 @@ export const getTeamUsers = async (
     }
 };
 
+export const getInvites = async (
+    teamId: string,
+): Promise<TeamInvitesResponse> => {
+    if (!teamId) {
+        throw new Error('팀 아이디가 없습니다.');
+    }
+    try {
+        const response = await customFetch('/team-leader/invite', {
+            method: 'GET',
+            params: { teamId }, // params는 객체여야 함
+        });
+
+        return response.json();
+    } catch (error) {
+        console.error('Error fetching category teams:', error);
+        throw error;
+    }
+};
+
+export const acceptMember = async (
+    teamId: string,
+    inviteId: number,
+): Promise<void> => {
+    try {
+        const body = JSON.stringify({
+            teamId,
+            inviteId,
+        });
+
+        await customFetch('/team-leader/invite-approve', {
+            method: 'PATCH',
+            body,
+        });
+    } catch (error) {
+        console.error('Error fetching delete team user:', error);
+        throw error;
+    }
+};
+
+export const rejectMember = async (
+    teamId: string,
+    inviteId: number,
+): Promise<void> => {
+    try {
+        const body = JSON.stringify({
+            teamId,
+            inviteId,
+        });
+
+        await customFetch('team-leader/invite-reject', {
+            method: 'PATCH',
+            body,
+        });
+    } catch (error) {
+        console.error('Error fetching delete team user:', error);
+        throw error;
+    }
+};
+
+export const upgradeRole = async (
+    teamId: string,
+    teamUserId: number,
+): Promise<void> => {
+    try {
+        const body = JSON.stringify({
+            teamId,
+            teamUserId,
+        });
+
+        await customFetch('/team-leader/role-upgrade', {
+            method: 'PATCH',
+            body,
+        });
+    } catch (error) {
+        console.error('Error fetching delete team user:', error);
+        throw error;
+    }
+};
+
+export const downgradeRole = async (
+    teamId: string,
+    teamUserId: number,
+): Promise<void> => {
+    try {
+        const body = JSON.stringify({
+            teamId,
+            teamUserId,
+        });
+
+        await customFetch('/team-leader/role-downgrade', {
+            method: 'PATCH',
+            body,
+        });
+    } catch (error) {
+        console.error('Error fetching delete team user:', error);
+        throw error;
+    }
+};
+
 export const deleteUsers = async (
     teamId: string,
-    teamUserId: string,
+    teamUserId: number,
 ): Promise<void> => {
     try {
         const body = JSON.stringify({
@@ -109,12 +230,50 @@ export const deleteUsers = async (
             method: 'DELETE',
             body,
         });
-
-        //  if(response.status==200){
-
-        //  }
     } catch (error) {
         console.error('Error fetching delete team user:', error);
+        throw error;
+    }
+};
+
+export const joinTeamForPublic = async (
+    teamId: string,
+    nickname: string,
+    notificationStatus: TeamNotificationStatus,
+): Promise<void> => {
+    const body = {
+        teamId: teamId,
+        nickname: nickname,
+        notificationStatus: notificationStatus,
+    };
+    try {
+        await customFetch('/team-user', {
+            method: 'POST',
+            credentials: 'include',
+            body: JSON.stringify(body),
+        });
+    } catch (error) {
+        console.error('Error fetching joinTeamForPublic', error);
+        throw error;
+    }
+};
+
+export const joinTeamForPrivate = async (
+    teamId: string,
+    memo: string,
+): Promise<void> => {
+    const body = {
+        teamId: teamId,
+        memo: memo,
+    };
+    try {
+        await customFetch('/team-user/invite', {
+            method: 'POST',
+            credentials: 'include',
+            body: JSON.stringify(body),
+        });
+    } catch (error) {
+        console.error('Error fetching joinTeamForPrivate', error);
         throw error;
     }
 };

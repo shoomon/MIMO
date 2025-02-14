@@ -1,8 +1,8 @@
 export interface OAuthResponse {
-  accessToken: string;
+    accessToken: string;
 }
 
 export interface UserResponse {
-  nickname: string;
-  profileUri: string;
+    nickname: string;
+    profileUri: string;
 }

@@ -1,4 +1,4 @@
-import { getTeamInfo } from '@/apis/TeamAPI';
+import { getMyTeamProfile, getTeamInfo } from '@/apis/TeamAPI';
 import { Album, DetailNav, MeetingInfo } from '@/components/molecules';
 import { useQuery } from '@tanstack/react-query';
 import { Outlet, useParams } from 'react-router-dom';
@@ -10,18 +10,23 @@ const TeamLayout = () => {
 
     const album = TeamDataMockup;
 
-    const { data } = useQuery({
+    const { data: teamData } = useQuery({
         queryKey: ['teamInfo', teamId],
         queryFn: () => getTeamInfo(teamId),
     });
 
-    const formattedTags = tagFormatter(data?.tags || []);
+    const { data: myProfileData } = useQuery({
+        queryKey: ['ProfileInfo', teamId],
+        queryFn: () => getMyTeamProfile(teamId),
+    });
+
+    const formattedTags = tagFormatter(teamData?.tags || []);
 
     return (
         <main className="w-full">
             <section className="w-full">
                 <img
-                    src={data?.profileUri}
+                    src={teamData?.profileUri}
                     alt={teamId}
                     className="h-[22.5rem] w-full object-cover"
                 />
@@ -30,19 +35,28 @@ const TeamLayout = () => {
                 <section className="flex w-[29rem] flex-col gap-12 pl-4">
                     <MeetingInfo
                         teamId={teamId}
-                        subTitle={data?.description || 'subtitle이 없습니다.'}
+                        subTitle={
+                            teamData?.description || 'subtitle이 없습니다.'
+                        }
                         rating={{
-                            rating: data?.score || 0,
+                            rating: teamData?.score || 0,
                             reviewCount: 0,
                         }}
-                        title={data?.name || 'title이 없습니다.'}
+                        title={teamData?.name || 'title이 없습니다.'}
                         tag={formattedTags}
-                        maxCapacity={data?.maxCapacity || 0}
-                        currentCapacity={data?.currentCapacity || 0}
+                        maxCapacity={teamData?.maxCapacity || 0}
+                        currentCapacity={teamData?.currentCapacity || 0}
                         teamUserId={
-                            data?.teamUserId !== undefined
-                                ? data.teamUserId
+                            myProfileData?.teamUserId !== undefined
+                                ? myProfileData.teamUserId
                                 : null
+                        }
+                        nickName="일단닉네임"
+                        recruitStatus={
+                            teamData?.recruitStatus || 'ACTIVE_PUBLIC'
+                        }
+                        notificationStatus={
+                            myProfileData?.notificationStatus || 'ACTIVE'
                         }
                     />
                     <Album id={teamId ?? ''} items={album.items} />
