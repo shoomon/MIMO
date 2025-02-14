@@ -26,7 +26,14 @@ public class ChatroomService {
 
     private final ChatroomUserService chatroomUserService;
 
-    public void createChatroom(Long userId, Long teamId, String nickname, String title, String profileUri, ChatroomStatus status) {
+    public void createChatroom(
+            Long userId,
+            Long teamId,
+            String nickname,
+            String title,
+            String profileUri,
+            ChatroomStatus status
+    ) {
         Chatroom chatroom = Chatroom.createTeamChatroom(userId, teamId, title, profileUri, status);
 
         chatroomRepository.insertChatroom(chatroom);

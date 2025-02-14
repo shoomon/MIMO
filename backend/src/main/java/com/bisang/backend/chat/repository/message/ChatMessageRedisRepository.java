@@ -7,15 +7,15 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.bisang.backend.common.utils.DateUtils;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 import org.springframework.stereotype.Repository;
 
 import com.bisang.backend.chat.domain.redis.RedisChatMessage;
+import com.bisang.backend.common.utils.DateUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
 
@@ -95,7 +95,9 @@ public class ChatMessageRedisRepository {
     }
 
     public Long unreadCount(Long chatroomId, Double lastReadScore) {
-        return redisChatMessageTemplate.opsForZSet().count(teamMessageKey + chatroomId, lastReadScore, Double.MAX_VALUE);
+        return redisChatMessageTemplate
+                .opsForZSet()
+                .count(teamMessageKey + chatroomId, lastReadScore, Double.MAX_VALUE);
     }
 
     public boolean checkChat(Long chatroomId, Double lastReadScore) {

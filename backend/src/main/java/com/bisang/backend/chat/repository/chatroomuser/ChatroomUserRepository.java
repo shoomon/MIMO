@@ -98,9 +98,7 @@ public class ChatroomUserRepository {
 
     @Transactional
     public void updateLastRead(Long userId, LocalDateTime lastDateTime, Long roomId, Long lastChatId) {
-        //TODO: db에 어떻게 저장할지 생각해봐야함
-//        ChatroomUser chatroomUser = chatroomUserJpaRepository.findByChatroomIdAndUserId(roomId, userId).orElseThrow(() -> new AccountException(NOT_FOUND));
-//        chatroomUser.setLastRead(lastChatId);
+        //TODO: db에 어떻게 저장할지 생각해봐야함. 저장 해야하나..? 어차피 실시간이 아닌데?
         chatroomUserRedisRepository.insertLastReadScore(roomId, userId, lastDateTime, lastChatId);
     }
 

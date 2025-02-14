@@ -41,7 +41,9 @@ public class ChatroomUserRedisRepository {
     }
 
     public void insertLastReadScore(Long chatroomId, Long userId, LocalDateTime lastDateTime, Long lastChatId) {
-        double score = lastDateTime.toInstant(ZoneOffset.ofTotalSeconds(0)).toEpochMilli() + (lastChatId % 1000) / 1000.0;
+        double score = lastDateTime
+                .toInstant(ZoneOffset.ofTotalSeconds(0))
+                .toEpochMilli() + (lastChatId % 1000) / 1000.0;
         System.out.println("calculate:" + score);
         redisDoubleTemplate.opsForValue().set(lastReadScoreKey + chatroomId + ":" + userId, score);
         redisLongTemplate.opsForValue().set(lastReadIdKey + chatroomId + ":" + userId, lastChatId);

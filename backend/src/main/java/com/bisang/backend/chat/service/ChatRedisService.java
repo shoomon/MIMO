@@ -31,31 +31,31 @@ public class ChatRedisService {
 
     private static final DefaultRedisScript<Long> SEND_MESSAGE_SCRIPT = new DefaultRedisScript<>(
             // Lua 스크립트 시작
-            "local messageId = redis.call('INCR', KEYS[1])\n" +
-                    "local timestamp = tonumber(ARGV[1])\n" +
-                    "local chatroomId = ARGV[2]\n" +
-                    "local messageJson = ARGV[3]\n" +
-                    "\n" +
-                    "-- 스코어 계산: millisecond + messageId의 일부 소수점 덧붙임\n" +
-                    "local score = timestamp + (messageId % 1000) / 1000.0\n" +
-                    "\n" +
-                    "-- messageJson 내 \"id\":null -> \"id\":messageId 로 치환\n" +
-                    "local messageJsonWithId = messageJson:gsub('\"id\":null', '\"id\":' .. messageId)\n" +
-                    "\n" +
-                    "-- (1) userChatroom:<userId> ZSET에 chatroomId 추가 (score 업데이트)\n" +
-                    "for i = 4, #ARGV do\n" +
-                    "    local userId = ARGV[i]\n" +
-                    "    local userChatroomKey = KEYS[2] .. userId\n" +
-                    "    -- 이미 존재하더라도 오류 처리 없이 score 업데이트\n" +
-                    "    redis.call('ZADD', userChatroomKey, score, chatroomId)\n" +
-                    "end\n" +
-                    "\n" +
-                    "-- (2) teamMessage:<chatroomId> ZSET에 메시지 JSON 추가\n" +
-                    "local teamMessageKey = KEYS[3] .. chatroomId\n" +
-                    "redis.call('ZADD', teamMessageKey, score, messageJsonWithId)\n" +
-                    "\n" +
-                    "-- (3) 반환: 새로 발급된 messageId\n" +
-                    "return messageId\n",
+            "local messageId = redis.call('INCR', KEYS[1])\n"
+                    + "local timestamp = tonumber(ARGV[1])\n"
+                    + "local chatroomId = ARGV[2]\n"
+                    + "local messageJson = ARGV[3]\n"
+                    + "\n"
+                    + "-- 스코어 계산: millisecond + messageId의 일부 소수점 덧붙임\n"
+                    + "local score = timestamp + (messageId % 1000) / 1000.0\n"
+                    + "\n"
+                    + "-- messageJson 내 \"id\":null -> \"id\":messageId 로 치환\n"
+                    + "local messageJsonWithId = messageJson:gsub('\"id\":null', '\"id\":' .. messageId)\n"
+                    + "\n"
+                    + "-- (1) userChatroom:<userId> ZSET에 chatroomId 추가 (score 업데이트)\n"
+                    + "for i = 4, #ARGV do\n"
+                    + "    local userId = ARGV[i]\n"
+                    + "    local userChatroomKey = KEYS[2] .. userId\n"
+                    + "    -- 이미 존재하더라도 오류 처리 없이 score 업데이트\n"
+                    + "    redis.call('ZADD', userChatroomKey, score, chatroomId)\n"
+                    + "end\n"
+                    + "\n"
+                    + "-- (2) teamMessage:<chatroomId> ZSET에 메시지 JSON 추가\n"
+                    + "local teamMessageKey = KEYS[3] .. chatroomId\n"
+                    + "redis.call('ZADD', teamMessageKey, score, messageJsonWithId)\n"
+                    + "\n"
+                    + "-- (3) 반환: 새로 발급된 messageId\n"
+                    + "return messageId\n",
             Long.class
     );
 

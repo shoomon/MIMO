@@ -28,5 +28,6 @@ public class ChatMessagesScheduler {
         JobParameters jobParameters = new JobParametersBuilder()
                 .addLong("timestamp", System.currentTimeMillis()) // 새로운 파라미터 추가
                 .toJobParameters();
-        jobLauncher.run(chatMessageJob, jobParameters);    }
+        jobLauncher.run(chatMessageJob, jobParameters);
+    }
 }

@@ -3,18 +3,22 @@ package com.bisang.backend.chat.controller;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.bisang.backend.chat.controller.request.LastReadRequest;
-import com.bisang.backend.chat.service.ChatroomUserService;
-import com.bisang.backend.common.utils.DateUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.bisang.backend.auth.annotation.AuthUser;
+import com.bisang.backend.chat.controller.request.LastReadRequest;
 import com.bisang.backend.chat.controller.response.ChatroomResponse;
 import com.bisang.backend.chat.domain.ChatroomStatus;
 import com.bisang.backend.chat.service.ChatroomService;
+import com.bisang.backend.chat.service.ChatroomUserService;
+import com.bisang.backend.common.utils.DateUtils;
 import com.bisang.backend.user.domain.User;
 
 import lombok.RequiredArgsConstructor;
@@ -57,8 +61,19 @@ public class ChatroomController {
     //테스트용
 
     @GetMapping("/test/create-chatroom")
-    public ResponseEntity<String> createChatroom(@AuthUser User user, @RequestParam("title") String title, @RequestParam("teamId") Long teamId) {
-        chatroomService.createChatroom(user.getId(), teamId, user.getNickname(), title, "", ChatroomStatus.GROUP);
+    public ResponseEntity<String> createChatroom(
+            @AuthUser User user,
+            @RequestParam("title") String title,
+            @RequestParam("teamId") Long teamId
+    ) {
+        chatroomService.createChatroom(
+                user.getId(),
+                teamId,
+                user.getNickname(),
+                title,
+                "",
+                ChatroomStatus.GROUP
+        );
         return ResponseEntity.ok().body(title + " 생성 성공");
     }
 

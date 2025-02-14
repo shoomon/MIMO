@@ -1,12 +1,10 @@
 package com.bisang.backend.chat.repository.message;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import com.bisang.backend.chat.repository.chatroomuser.ChatroomUserRedisRepository;
 import org.springframework.stereotype.Repository;
 
 import com.bisang.backend.chat.domain.ChatMessage;
@@ -91,7 +89,7 @@ public class ChatMessageRepository {
     public Long calculateUnreadCount(Long chatroomId, Double lastReadScore, Long lastChatId) {
         boolean isChatPresent = chatMessageRedisRepository.checkChat(chatroomId, lastReadScore);
         if (isChatPresent) {
-            return chatMessageRedisRepository.unreadCount(chatroomId, lastReadScore)-1;
+            return chatMessageRedisRepository.unreadCount(chatroomId, lastReadScore) - 1;
         }
 
         Long redisChatCount = chatMessageRedisRepository.countAllChat(chatroomId);

@@ -63,7 +63,13 @@ public class Chatroom {
         return new Chatroom(userId, title, profileUri, status);
     }
 
-    public static Chatroom createTeamChatroom(Long userId, Long teamId, String title, String profileUri, ChatroomStatus status) {
+    public static Chatroom createTeamChatroom(
+            Long userId,
+            Long teamId,
+            String title,
+            String profileUri,
+            ChatroomStatus status
+    ) {
         return new Chatroom(userId, teamId, title, profileUri, status);
     }
 
