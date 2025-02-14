@@ -11,9 +11,9 @@ export interface SimpleTeamResponse {
     maxCapacity: number;
     currentCapacity: number;
 }
-export interface TeamDto {
+
+export interface TeamInfoResponse {
     teamId: number;
-    teamUserId: number;
     profileUri: string;
     name: string;
     description: string;
@@ -24,6 +24,28 @@ export interface TeamDto {
     currentCapacity: number;
     score: number;
     tags: string[];
+}
+
+export interface MyTeamProfileResponse {
+    teamId: number;
+    teamUserId: number;
+    nickname: string;
+    role: TeamUserRole;
+    notificationStatus: TeamNotificationStatus;
+    joinDate: string;
+}
+
+export interface TeamCreateRequest {
+    name: string;
+    description: string;
+    area: string;
+    category: string;
+    nickname: string;
+    notificationStatus: TeamNotificationStatus;
+    teamRecruitStatus: TeamRecruitStatus;
+    teamPrivateStatus: TeamPrivateStatus;
+    maxCapacity: string;
+    teamProfile?: File | null;
 }
 
 export interface TeamResponse {
@@ -37,13 +59,19 @@ export interface TeamResponse {
     maxCapacity: number;
     currentCapacity: number;
 }
-
-export type TeamUserRole = 'LEADER' | 'CO_LEADER' | 'MEMBER';
+export type TeamPrivateStatus = 'PRIVATE' | 'PUBLIC';
+export type TeamNotificationStatus = 'ACTIVE' | 'INACTIVE';
+export type TeamRecruitStatus = 'ACTIVE_PRIVATE' | 'ACTIVE_PUBLIC' | 'INACTIVE';
+export type TeamUserRole = 'LEADER' | 'CO_LEADER' | 'MEMBER' | 'GUEST';
+export type InviteStatus = 'ACCEPTED' | 'WAITING' | 'REJECTED';
 
 export interface TeamUserDto {
     teamUserId: number;
     nickname: string;
     role: TeamUserRole;
+    userId: number;
+    profileUri: string;
+    joinTime: string;
 }
 
 export interface TeamUserResponse {
@@ -54,21 +82,29 @@ export interface TeamUserResponse {
     users: TeamUserDto[];
 }
 
+export interface TeamInvitesResponse {
+    size: number;
+    hasNext: boolean;
+    role: TeamUserRole;
+    lastTeamUserId: number;
+    teamInvites: teamInvites[];
+}
+
+export interface teamInvites {
+    teamInviteId: number;
+    teamId: number;
+    userId: number;
+    status: InviteStatus;
+    name: string;
+    memo: string;
+    ProfileImage: string;
+}
+
 export interface TeamInfosResponse {
     size: number;
     hasNext: boolean;
     lastTeamId: number;
     teams: SimpleTeamResponse[];
-}
-
-export enum TeamRecruitStatus {
-    RECRUITING = 'RECRUITING',
-    CLOSED = 'CLOSED',
-}
-
-export enum TeamPrivateStatus {
-    PUBLIC = 'PUBLIC',
-    PRIVATE = 'PRIVATE',
 }
 
 export enum Area {

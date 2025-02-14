@@ -136,7 +136,7 @@ const HeaderView = ({
                             className="rounded-lg border border-gray-200 px-2 py-1"
                         >
                             임시 로그인
-                        </button>{' '}
+                        </button>
                         <NoLoginedMenu handleLogin={handleLogin} />
                     </>
                 )}

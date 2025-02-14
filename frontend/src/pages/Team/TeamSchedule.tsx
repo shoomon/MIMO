@@ -10,6 +10,8 @@ import {
 import CardSchedule from '@/components/molecules/CardSchedule/CardSchedule';
 import { TeamSimpleScheduleDto } from '@/types/Team';
 import { ButtonDefault } from '@/components/atoms';
+import BaseLayout from '../layouts/BaseLayout';
+import ButtonLayout from '../layouts/ButtonLayout';
 
 const TeamSchedule = () => {
     const { teamId } = useParams<{ teamId: string }>();
@@ -63,8 +65,8 @@ const TeamSchedule = () => {
     };
 
     return (
-        <section className="flex flex-col gap-2">
-            <div className="flex min-h-[43px] items-start justify-end self-stretch py-2">
+        <BaseLayout>
+            <ButtonLayout>
                 {hasPermission && (
                     <ButtonDefault
                         content="일정 생성"
@@ -75,7 +77,7 @@ const TeamSchedule = () => {
                         }}
                     />
                 )}
-            </div>
+            </ButtonLayout>
             <BodyLayout_64>
                 <>
                     <div className="w-full">
@@ -104,7 +106,7 @@ const TeamSchedule = () => {
                     </div>
                 </>
             </BodyLayout_64>
-        </section>
+        </BaseLayout>
     );
 };
 
