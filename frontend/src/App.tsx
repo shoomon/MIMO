@@ -17,7 +17,7 @@ function App() {
                 onDeleteClick={modalProps?.onDeleteClick}
                 onCancelClick={modalProps?.onCancelClick}
             />
-            <div className="mx-auto w-full max-w-[1440px]">
+            <div className="mx-auto flex w-full max-w-[1440px] flex-col px-4 pb-4">
                 <AppRoutes />
             </div>
         </QueryClientProvider>

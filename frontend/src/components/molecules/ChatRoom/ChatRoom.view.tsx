@@ -17,7 +17,7 @@ const ChatRoomView = ({ item, onClick }: ChatRoomViewProps) => {
                 alt=""
                 className="h-[4.5rem] w-[4.5rem] rounded-xl"
             />
-            <div className="max-w-[19 rem] flex flex-col justify-between overflow-hidden pr-6 whitespace-nowrap">
+            <div className="max-w-[19 rem] flex flex-col justify-between overflow-hidden pr-6 text-left whitespace-nowrap">
                 <span className="text-text text-lg font-extrabold">
                     {item.chatroomName}
                 </span>

@@ -1,22 +1,20 @@
 import { ChatRoom } from '@/components/molecules';
 import { ChatRoomResponse } from '@/types/Chat';
 
-interface ChatContainerViewProps {
+export interface ChatRoomListViewProps {
     chatListItems: ChatRoomResponse[];
-    chatroomName: string | null;
-    chatroomImage: string | null;
     onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
-const ChatContainerView = ({
+const ChatRoomListView = ({
     chatListItems,
     onClick,
-}: ChatContainerViewProps) => {
+}: ChatRoomListViewProps) => {
     return (
-        <section className="flex h-full max-w-[30.5rem] flex-col border border-gray-200">
+        <section className="flex w-full max-w-[30.5rem] flex-col border border-gray-200">
             <span className="p-6 text-center text-2xl font-bold">채팅방</span>
-            <section className="flex flex-col items-center border-t border-gray-200">
-                {chatListItems.map((item) => {
+            <section className="flex flex-1 flex-col items-center overflow-y-scroll border-t border-gray-200">
+                {chatListItems.map((item: ChatRoomResponse) => {
                     return (
                         <ChatRoom
                             item={item}
@@ -30,4 +28,4 @@ const ChatContainerView = ({
     );
 };
 
-export default ChatContainerView;
+export default ChatRoomListView;
