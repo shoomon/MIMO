@@ -1,6 +1,5 @@
 package com.bisang.backend.chat.repository.message;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -20,11 +19,7 @@ public class ChatMessageRepository {
     private final ChatMessageRedisRepository chatMessageRedisRepository;
     private final ChatMessageJpaRepository chatMessageJpaRepository;
 
-    public void redisSaveMessage(long teamId, RedisChatMessage message) {
-        chatMessageRedisRepository.saveMessage(teamId, message);
-    }
-
-    public List<RedisChatMessage> getMessages(Long roomId, Long messageId, LocalDateTime timestamp) {
+    public List<RedisChatMessage> getMessages(Long roomId, Long messageId, String timestamp) {
         List<RedisChatMessage> messageList = chatMessageRedisRepository.getMessages(roomId, messageId, timestamp);
         int size = messageList.size();
         System.out.println(size);
@@ -89,5 +84,17 @@ public class ChatMessageRepository {
         }
         result.put("lastChat", chatMessage.getMessage());
         result.put("lastDatetime", chatMessage.getCreatedAt());
+    }
+
+    public Long calculateUnreadCount(Long chatroomId, Double lastReadScore, Long lastChatId) {
+        boolean isChatPresent = chatMessageRedisRepository.checkChat(chatroomId, lastReadScore);
+        if (isChatPresent) {
+            return chatMessageRedisRepository.unreadCount(chatroomId, lastReadScore) - 1;
+        }
+
+        Long redisChatCount = chatMessageRedisRepository.countAllChat(chatroomId);
+        Long dbChatCount = chatMessageJpaRepository.countByChatroomIdAndIdGreaterThan(chatroomId, lastChatId);
+
+        return redisChatCount + dbChatCount;
     }
 }

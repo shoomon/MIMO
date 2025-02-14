@@ -6,13 +6,23 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
+import com.bisang.backend.auth.JwtUtil;
+import com.bisang.backend.chat.websocket.WebSocketHandshakeInterceptor;
+
+import lombok.RequiredArgsConstructor;
+
 @Configuration
 @EnableWebSocketMessageBroker
+@RequiredArgsConstructor
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+
+    private final JwtUtil jwtUtil;
+
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("ws")       //핸드셰이크 요청할 때 /ws으로 요청
                 .setAllowedOriginPatterns("*")      //CORS 설정
+                .addInterceptors(new WebSocketHandshakeInterceptor(jwtUtil))
                 .withSockJS();                        //SockJS 연결. 스프링은 SockJS
     }
 
