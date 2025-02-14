@@ -141,7 +141,6 @@ public class TeamQuerydslRepository {
             dynamicTeamIdLt.and(team.id.lt(teamId));
         }
 
-        Long userCount = getUserCount(teamId);
         List<SimpleTeamDto> teams = queryFactory
             .select(Projections.constructor(SimpleTeamDto.class,
                     team.id,
@@ -151,7 +150,9 @@ public class TeamQuerydslRepository {
                     Expressions.numberTemplate(Double.class, "{0}", 0.0),
                     Expressions.numberTemplate(Long.class, "{0}", 0L),
                     team.maxCapacity,
-                    Expressions.numberTemplate(Long.class, "{0}", userCount),
+                    JPAExpressions.select(teamUser.count())
+                            .from(teamUser)
+                            .where(teamUser.teamId.eq(team.id)),
                     Expressions.constant(emptyList())
             ))
             .from(team)
