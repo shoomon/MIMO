@@ -6,7 +6,6 @@ import {
     BoardEdit,
     Category,
     ChatPage,
-    ChatRoom,
     DefaultLayout,
     GoogleCallback,
     Home,
@@ -49,6 +48,8 @@ const AppRoutes = () => {
                 <Route path="/list" element={<TeamList />} />
                 {/* 마이 페이지 */}
                 <Route path="/mypage" element={<MyPage />} />
+                {/* 채팅  */}
+                <Route path="/chat" element={<ChatPage />} />
 
                 {/* 팀  */}
                 <Route path="/team">
@@ -141,11 +142,6 @@ const AppRoutes = () => {
 
             {/* QR 코드 */}
             <Route path="/pay/:payId" element={<Payment />} />
-
-            {/* 채팅  */}
-            <Route path="/chat" element={<ChatPage />}>
-                <Route path=":roomId" element={<ChatRoom />} />
-            </Route>
         </Routes>
     );
 };
