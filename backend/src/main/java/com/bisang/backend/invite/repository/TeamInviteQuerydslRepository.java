@@ -24,6 +24,13 @@ import lombok.RequiredArgsConstructor;
 public class TeamInviteQuerydslRepository {
     private final JPAQueryFactory queryFactory;
 
+    public Long countTeamInvite(Long teamId) {
+        return queryFactory
+                .select(teamInvite.count())
+                .from(teamInvite)
+                .where(teamInvite.teamId.eq(teamId), teamInvite.status.in(REJECTED, WAITING))
+                .fetchOne();
+    }
 
     public List<TeamInviteDto> findTeamInvites(
         Long teamId, Long lastTeamInviteId

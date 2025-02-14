@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bisang.backend.common.exception.TeamException;
 import com.bisang.backend.invite.domain.TeamInvite;
 import com.bisang.backend.invite.repository.TeamInviteJpaRepository;
+import com.bisang.backend.invite.repository.TeamInviteQuerydslRepository;
 import com.bisang.backend.team.annotation.EveryOne;
 import com.bisang.backend.team.controller.dto.MyTeamUserInfoDto;
 import com.bisang.backend.team.controller.dto.SimpleTeamDto;
@@ -42,6 +43,7 @@ public class TeamUserService {
     private final TeamJpaRepository teamJpaRepository;
     private final TeamUserJpaRepository teamUserJpaRepository;
     private final TeamInviteJpaRepository teamInviteJpaRepository;
+    private final TeamInviteQuerydslRepository teamInviteQuerydslRepository;
     private final TeamUserQuerydslRepository teamUserQuerydslRepository;
 
     @Transactional(readOnly = true)
@@ -96,7 +98,7 @@ public class TeamUserService {
 
         Team team = findTeamById(teamId);
         Long currentUserCount = teamUserJpaRepository.countTeamUserByTeamId(teamId);
-        Long currentInviteCount = teamInviteJpaRepository.countByTeamId(teamId);
+        Long currentInviteCount = teamInviteQuerydslRepository.countTeamInvite(teamId);
         if (team.getMaxCapacity() > currentUserCount + currentInviteCount) {
             if (team.getRecruitStatus() == ACTIVE_PRIVATE) {
                 TeamInvite inviteRequest = createInviteRequest(teamId, userId, memo);

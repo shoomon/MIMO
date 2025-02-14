@@ -9,7 +9,7 @@ spring:
 
   main:
     allow-bean-definition-overriding: true
-    
+
   # 파일 업로드 용량 제한, resolve-lazily: 스프링 내부 서버까지 응답을 받기 위함.
   servlet:
     multipart:

@@ -7,6 +7,7 @@ import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -88,6 +89,11 @@ public class TeamLeaderService {
         TeamUser teamUser = findTeamUserById(teamUserId);
         leaderCannotDeleteValidation(team, teamUser);
         teamUserJpaRepository.delete(teamUser);
+
+        Optional<TeamInvite> teamInvite = teamInviteJpaRepository.findByTeamIdAndUserId(teamId, userId);
+        if (teamInvite.isEmpty()) {
+            teamInviteJpaRepository.delete(teamInvite.get());
+        }
     }
 
     private void leaderCannotDeleteValidation(Team team, TeamUser teamUser) {
