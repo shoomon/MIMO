@@ -55,6 +55,8 @@ public class BoardQuerydslRepository {
     }
 
     public List<SimpleBoardListDto> getBoardList(Long teamBoardId, Long offset, Integer pageSize) {
+        Long curOffset = offset == null ? 0 : offset;
+
         return queryFactory
                 .select(Projections.constructor(SimpleBoardListDto.class,
                         board.id.as("postId"),
@@ -71,7 +73,7 @@ public class BoardQuerydslRepository {
                 .from(board)
                 .where(board.teamBoardId.eq(teamBoardId))
                 .orderBy(board.createdAt.desc())
-                .offset(offset)
+                .offset(curOffset)
                 .limit(pageSize)
                 .fetch();
     }

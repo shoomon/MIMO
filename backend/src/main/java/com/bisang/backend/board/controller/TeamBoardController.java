@@ -38,8 +38,8 @@ public class TeamBoardController {
     }
 
     @DeleteMapping
-    public ResponseEntity<String> deleteTeamBoard(@RequestParam(value = "board") Long teamId) {
-        teamBoardService.deleteTeamBoard(teamId);
+    public ResponseEntity<String> deleteTeamBoard(@RequestParam(value = "board") Long teamBoardId) {
+        teamBoardService.deleteTeamBoard(teamBoardId);
         return ResponseEntity.ok("게시판이 삭제되었습니다.");
     }
 }

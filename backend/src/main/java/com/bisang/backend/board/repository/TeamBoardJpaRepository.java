@@ -12,6 +12,6 @@ public interface TeamBoardJpaRepository extends JpaRepository<TeamBoard, Long> {
     @Query("SELECT b.boardName FROM TeamBoard b WHERE b.id = :teamBoardId")
     String getTeamBoardNameById(@Param("teamBoardId") Long teamBoardId);
 
-    @Query("SELECT b FROM TeamBoard b WHERE b.teamId = :teamId")
+    @Query("SELECT b FROM TeamBoard b WHERE b.teamId = :teamBoardId")
     List<TeamBoard> findAllByTeamId(@Param("teamBoardId") Long teamId);
 }
