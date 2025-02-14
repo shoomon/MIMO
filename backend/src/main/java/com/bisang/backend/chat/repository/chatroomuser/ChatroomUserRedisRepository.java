@@ -5,6 +5,7 @@ import java.time.ZoneOffset;
 import java.util.Set;
 
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Repository;
 
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ public class ChatroomUserRedisRepository {
 
     private final RedisTemplate<String, Long> redisLongTemplate;
     private final RedisTemplate<String, Double> redisDoubleTemplate;
+    private final StringRedisTemplate redisTemplate;
 
     // chatroomId로 해당 채팅방에 속해있는 모든 유저의 userId를 저장하고 가져오는 키
     private static final String teamMemberKey = "teamMember:";
@@ -27,7 +29,7 @@ public class ChatroomUserRedisRepository {
     }
 
     public void deleteMember(Long teamId, Long userId) {
-        redisLongTemplate.opsForSet().remove(teamMemberKey + teamId, userId);
+        redisTemplate.opsForSet().remove(teamMemberKey + teamId, userId);
     }
 
     public boolean isMember(Long teamId, Long userId) {

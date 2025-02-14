@@ -20,13 +20,8 @@ public class ChatMessageRepository {
 
     private final ChatMessageRedisRepository chatMessageRedisRepository;
     private final ChatMessageJpaRepository chatMessageJpaRepository;
-    private final ChatroomUserRedisRepository chatroomUserRedisRepository;
 
-    public void redisSaveMessage(long teamId, RedisChatMessage message) {
-        chatMessageRedisRepository.saveMessage(teamId, message);
-    }
-
-    public List<RedisChatMessage> getMessages(Long roomId, Long messageId, LocalDateTime timestamp) {
+    public List<RedisChatMessage> getMessages(Long roomId, Long messageId, String timestamp) {
         List<RedisChatMessage> messageList = chatMessageRedisRepository.getMessages(roomId, messageId, timestamp);
         int size = messageList.size();
         System.out.println(size);

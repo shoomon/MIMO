@@ -7,8 +7,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.bisang.backend.common.utils.DateUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ZSetOperations;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 import org.springframework.stereotype.Repository;
 
@@ -21,57 +24,56 @@ import lombok.RequiredArgsConstructor;
 public class ChatMessageRedisRepository {
 
     private final RedisTemplate<String, RedisChatMessage> redisChatMessageTemplate;
+    private final StringRedisTemplate redisTemplate;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
-    // 채팅 메시지 ID를 auto_increment해줄 key
-    private static final String messageIdKey = "chat:message:id";
     // 채팅 메시지를 저장하고 조회할 때 사용할 키
     private static final String teamMessageKey = "teamMessage:";
 
-    public void saveMessage(long teamId, RedisChatMessage message) {
-        Long messageId = redisChatMessageTemplate.opsForValue().increment(messageIdKey);
-        long timestamp = message.getTimestamp().toInstant(ZoneOffset.ofTotalSeconds(0)).toEpochMilli();
+    public List<RedisChatMessage> getMessages(Long teamId, Long messageId, String timestamp) {
 
-        double score = timestamp + (messageId % 1000) / 1000.0;
-
-        message.setId(messageId);
-
-        redisChatMessageTemplate.opsForZSet().add(teamMessageKey + teamId, message, score);
-    }
-
-    public List<RedisChatMessage> getMessages(Long teamId, Long messageId, LocalDateTime timestamp) {
         String key = teamMessageKey + teamId;
-        double score = timestamp.toInstant(ZoneOffset.ofTotalSeconds(0)).toEpochMilli() + (messageId % 1000) / 1000.0;
-
-        Set<TypedTuple<RedisChatMessage>> result;
+        Set<TypedTuple<String>> result;
+        List<String> list;
 
         if (messageId < 0) {
-            // maxId가 0보다 작으면 모든 요소에서 내림차순으로 100개를 가져오기
-            result = redisChatMessageTemplate.opsForZSet()
+            result = redisTemplate.opsForZSet()
                     .reverseRangeByScoreWithScores(key, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0, 30);
+
             return getRedisChatMessages(result);
         }
 
-        // maxId가 0 이상이면, score보다 작은 값을 내림차순으로 100개 가져옴
-        result = redisChatMessageTemplate.opsForZSet()
+        LocalDateTime datetime = DateUtils.DateToLocalDateTime(timestamp);
+        double score = datetime.toInstant(ZoneOffset.ofTotalSeconds(0)).toEpochMilli() + (messageId % 1000) / 1000.0;
+        result = redisTemplate.opsForZSet()
                 .reverseRangeByScoreWithScores(key, Double.NEGATIVE_INFINITY, score, 1, 30);
-
         return getRedisChatMessages(result);
     }
 
-    private static List<RedisChatMessage> getRedisChatMessages(
-            Set<TypedTuple<RedisChatMessage>> result
+    private List<RedisChatMessage> getRedisChatMessages(
+            Set<TypedTuple<String>> result
     ) {
         if (result == null) {
             return Collections.emptyList();
         }
 
-        return result.stream()
+        List<String> list = result.stream()
                 .map(TypedTuple::getValue)
+                .collect(Collectors.toList());
+
+        return list.stream()
+                .map(json -> {
+                    try {
+                        return objectMapper.readValue(json, RedisChatMessage.class);
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException("Failed to deserialize message", e);
+                    }
+                })
                 .collect(Collectors.toList());
     }
 
     public RedisChatMessage getLastMessage(Long chatroomId) {
-        Set<RedisChatMessage> result = redisChatMessageTemplate
+        Set<String> result = redisTemplate
                 .opsForZSet()
                 .reverseRange(teamMessageKey + chatroomId, 0, 0);
 
@@ -79,7 +81,17 @@ public class ChatMessageRedisRepository {
             return null;
         }
 
-        return result.iterator().next();
+        List<RedisChatMessage> messages = result.stream()
+            .map(json -> {
+                try {
+                    return objectMapper.readValue(json, RedisChatMessage.class);
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException(e);
+                }
+            })
+            .toList();
+
+        return messages.isEmpty() ? null : messages.get(0);
     }
 
     public Long unreadCount(Long chatroomId, Double lastReadScore) {

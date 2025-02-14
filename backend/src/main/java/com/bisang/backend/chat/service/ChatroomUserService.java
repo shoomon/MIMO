@@ -21,6 +21,7 @@ public class ChatroomUserService {
     private final ChatroomJpaRepository chatroomJpaRepository;
     private final ChatMessageService chatMessageService;
     private final ChatroomRepository chatroomRepository;
+    private final ChatroomService chatroomService;
 
     public boolean isMember(Long teamId, Long userId) {
         return chatroomUserRepository.isMember(teamId, userId);
@@ -37,9 +38,10 @@ public class ChatroomUserService {
     }
 
 
-    public void enterChatroom(Long chatroomId, Long userId, String nickname) {
-        ChatroomUser chatroomUser = ChatroomUser.createChatroomUser(chatroomId, userId, nickname, LocalDateTime.now());
+    public void enterChatroom(Long teamId, Long userId, String nickname) {
+        Long chatroomId = chatroomJpaRepository.findIdByTeamId(teamId);
 
+        ChatroomUser chatroomUser = ChatroomUser.createChatroomUser(chatroomId, userId, nickname, LocalDateTime.now());
         chatroomUserRepository.insertJpaMemberUser(chatroomUser);
 
         RedisChatMessage message = new RedisChatMessage(

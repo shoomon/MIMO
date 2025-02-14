@@ -66,8 +66,7 @@ public class ChatMessageController {
             @RequestParam("timestamp") String timestamp
     ) {
         if (chatroomUserService.isMember(roomId, user.getId())) {
-            LocalDateTime datetime = DateUtils.DateToLocalDateTime(timestamp);
-            List<ChatMessageResponse> list = chatMessageService.getMessages(roomId, messageId, datetime);
+            List<ChatMessageResponse> list = chatMessageService.getMessages(roomId, messageId, timestamp);
 
             return ResponseEntity.ok().body(list);
         }
@@ -83,10 +82,10 @@ public class ChatMessageController {
             @PathVariable Long roomId,
             @RequestBody ChatMessageRequest chat
     ) {
-        if (chatroomUserService.isMember(roomId, 1L)) {
+        if (chatroomUserService.isMember(roomId, 11L)) {
             RedisChatMessage redisMessage = new RedisChatMessage(
                     roomId,
-                    1L,
+                    11L,
                     chat.message(),
                     LocalDateTime.now(),
                     ChatType.MESSAGE

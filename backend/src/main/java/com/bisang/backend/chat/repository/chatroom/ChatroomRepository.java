@@ -25,10 +25,6 @@ public class ChatroomRepository {
     private final ChatroomJpaRepository chatroomJpaRepository;
     private final RedisCacheRepository redisCacheRepository;
 
-    public void redisUpdateUserChatroom(long userId, long teamId, Double timestamp) {
-        chatroomRedisRepository.updateUserChatroom(userId, teamId, timestamp);
-    }
-
     public void redisDeleteUserChatroom(long userId, long teamId) {
         chatroomRedisRepository.deleteUserChatroom(userId, teamId);
     }
@@ -50,6 +46,7 @@ public class ChatroomRepository {
     }
 
     public Map<Object, Object> getChatroomInfo(Long chatroomId) {
+        System.out.println("chatroomId:" + chatroomId);
         Map<Object, Object> chatroomInfo = redisCacheRepository.getChatroomInfo(chatroomId);
         if (chatroomInfo.isEmpty()) {
             ChatroomTitleProfileDto info = chatroomJpaRepository

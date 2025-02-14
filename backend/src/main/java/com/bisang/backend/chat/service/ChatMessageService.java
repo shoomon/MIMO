@@ -1,18 +1,14 @@
 package com.bisang.backend.chat.service;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import com.bisang.backend.chat.controller.response.ChatMessageResponse;
 import com.bisang.backend.chat.domain.redis.RedisChatMessage;
-import com.bisang.backend.chat.repository.chatroom.ChatroomRepository;
 import com.bisang.backend.chat.repository.chatroomuser.ChatroomUserRepository;
 import com.bisang.backend.chat.repository.message.ChatMessageRepository;
 
@@ -24,22 +20,13 @@ public class ChatMessageService {
 
     private final ChatMessageRepository chatMessageRepository;
     private final ChatroomUserRepository chatroomUserRepository;
-    private final ChatroomRepository chatroomRepository;
 
     private final SimpMessagingTemplate template;
+    private final ChatRedisService chatRedisService;
 
     public void broadcastMessage(Long chatroomId, RedisChatMessage message) {
-        Set<Long> teamMembers = chatroomUserRepository.getTeamMembers(chatroomId);
 
-        //여기에 teamMember 없으면 log 찍어야하나? 없을 수 없는 곳인데 없는 경우임
-
-        for (Long userId : teamMembers) {
-            chatroomRepository.redisUpdateUserChatroom(
-                    userId,
-                    chatroomId,
-                    (double)message.getTimestamp().toInstant(ZoneOffset.ofTotalSeconds(0)).toEpochMilli());
-        }
-        chatMessageRepository.redisSaveMessage(chatroomId, message);
+        chatRedisService.afterSendMessage(chatroomId, message);
 
         Map<Object, Object> userInfo = chatroomUserRepository.getUserInfo(chatroomId, message.getUserId());
         ChatMessageResponse messageResponse = new ChatMessageResponse(
@@ -55,7 +42,7 @@ public class ChatMessageService {
 //        template.convertAndSend("/sub/chat" + teamId, messageResponse);
     }
 
-    public List<ChatMessageResponse> getMessages(Long roomId, Long messageId, LocalDateTime timestamp) {
+    public List<ChatMessageResponse> getMessages(Long roomId, Long messageId, String timestamp) {
         List<RedisChatMessage> messageList = chatMessageRepository.getMessages(roomId, messageId, timestamp);
         List<ChatMessageResponse> responseList = new LinkedList<>();
 
