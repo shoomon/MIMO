@@ -2,22 +2,10 @@ import React, { useState } from 'react';
 import { ButtonDefault, Title } from '@/components/atoms';
 import { InputForm } from '@/components/molecules';
 import { createTeam, validTeamName } from '@/apis/TeamAPI';
-
-export interface TeamData {
-    name: string;
-    description: string;
-    area: string;
-    category: string;
-    nickname: string;
-    notificationStatus: string;
-    teamRecruitStatus: string;
-    teamPrivateStatus: string;
-    maxCapacity: string;
-    teamProfile?: File | null;
-}
+import { TeamCreateRequest } from '@/types/Team';
 
 interface Step {
-    field: keyof TeamData;
+    field: keyof TeamCreateRequest;
     label: string;
     inputType?: 'text' | 'select' | 'file';
     options?: { value: string; label: string }[];
@@ -128,15 +116,15 @@ const steps: Step[] = [
 
 const TeamCreate: React.FC = () => {
     const [currentStep, setCurrentStep] = useState<number>(0);
-    const [teamData, setTeamData] = useState<TeamData>({
+    const [teamData, setTeamData] = useState<TeamCreateRequest>({
         name: '',
         description: '',
         area: '',
         category: '',
         nickname: '',
-        notificationStatus: '',
-        teamRecruitStatus: '',
-        teamPrivateStatus: '',
+        notificationStatus: 'ACTIVE',
+        teamRecruitStatus: 'ACTIVE_PUBLIC',
+        teamPrivateStatus: 'PUBLIC',
         maxCapacity: '',
         teamProfile: null,
     });

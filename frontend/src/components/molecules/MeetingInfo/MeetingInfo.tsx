@@ -3,7 +3,9 @@ import type { TagProps } from '@/components/atoms/Tag/Tag';
 import type { RatingStarProps } from '@/components/atoms/RatingStar/RatingStar';
 import getDisplayedTags from '@/utils/filterTagsByLength';
 import MeetingInfoView from './MeetingInfo.view';
-import { customFetch } from '@/apis/customFetch';
+import { joinTeamForPrivate, joinTeamForPublic } from '@/apis/TeamAPI';
+import { TeamNotificationStatus, TeamRecruitStatus } from '@/types/Team';
+import useMyTeamProfile from '@/hooks/useMyTeamProfile';
 
 export interface MeetingInfoProps {
     teamId: string;
@@ -14,6 +16,9 @@ export interface MeetingInfoProps {
     maxCapacity: number;
     currentCapacity: number;
     teamUserId: number | null;
+    nickName: string;
+    recruitStatus: TeamRecruitStatus;
+    notificationStatus: TeamNotificationStatus;
 }
 
 const MeetingInfo = ({
@@ -25,26 +30,11 @@ const MeetingInfo = ({
     currentCapacity,
     teamId,
     teamUserId,
+    recruitStatus,
+    nickName,
+    notificationStatus,
 }: MeetingInfoProps) => {
     const displayedTags = getDisplayedTags(tag);
-
-    const joinapi = async (): Promise<void> => {
-        const body = {
-            teamId: teamId,
-            nickname: '아무거나',
-            notificationStatus: 'ACTIVE',
-        };
-        try {
-            await customFetch('/team-user', {
-                method: 'POST',
-                credentials: 'include',
-                body: JSON.stringify(body),
-            });
-        } catch (error) {
-            console.error('Error fetching area teams:', error);
-            throw error;
-        }
-    };
 
     const handleUpdateInfo = () => {
         console.log('Update Info button clicked');
@@ -52,10 +42,23 @@ const MeetingInfo = ({
     };
 
     const handleJoinRequest = () => {
-        joinapi();
-        console.log('Join Request button clicked');
+        if (recruitStatus === 'ACTIVE_PUBLIC') {
+            joinTeamForPublic(teamId, nickName, notificationStatus);
+        } else if (recruitStatus === 'ACTIVE_PRIVATE') {
+            let memo = window.prompt('메모를 입력하세요', '');
+            if (!memo || memo.trim() === '') {
+                memo = '안녕하세요? 잘 부탁드립니다.';
+            }
+            joinTeamForPrivate(teamId, memo);
+        } else {
+            throw new Error('이런');
+        }
     };
+    const { data: myProfileData } = useMyTeamProfile(teamId);
 
+    if (!myProfileData) {
+        return;
+    }
     return (
         <MeetingInfoView
             subTitle={subTitle}
@@ -67,6 +70,7 @@ const MeetingInfo = ({
             onUpdateInfo={handleUpdateInfo}
             onJoinRequest={handleJoinRequest}
             teamUserId={teamUserId}
+            role={myProfileData.role}
         />
     );
 };

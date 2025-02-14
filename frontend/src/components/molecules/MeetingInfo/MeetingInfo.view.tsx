@@ -3,6 +3,7 @@ import { ButtonDefault } from '@/components/atoms';
 import RatingStar, {
     RatingStarProps,
 } from '@/components/atoms/RatingStar/RatingStar';
+import { TeamUserRole } from '@/types/Team';
 
 export interface MeetingInfoViewProps {
     subTitle: string;
@@ -14,6 +15,7 @@ export interface MeetingInfoViewProps {
     onUpdateInfo: () => void;
     onJoinRequest: () => void;
     teamUserId: number | null;
+    role: TeamUserRole;
 }
 
 const MeetingInfoView = ({
@@ -25,7 +27,7 @@ const MeetingInfoView = ({
     currentCapacity,
     onUpdateInfo,
     onJoinRequest,
-    teamUserId,
+    role,
 }: MeetingInfoViewProps) => {
     return (
         <div className="flex w-full flex-col gap-1">
@@ -42,19 +44,21 @@ const MeetingInfoView = ({
                 <div className="text-xl font-medium text-gray-700">
                     멤버 {currentCapacity}/{maxCapacity}
                 </div>
-                <div className="flex gap-3">
-                    <ButtonDefault
-                        type="default"
-                        iconId="Pen"
-                        content="정보 수정"
-                        onClick={onUpdateInfo}
-                    />
-                    {teamUserId == null && (
+                <div className="flex gap-2">
+                    {role === 'GUEST' && (
                         <ButtonDefault
                             type="primary"
                             iconId="Mail"
                             content="가입신청"
                             onClick={onJoinRequest}
+                        />
+                    )}
+                    {role === 'LEADER' && (
+                        <ButtonDefault
+                            type="default"
+                            iconId="Pen"
+                            content="정보 수정"
+                            onClick={onUpdateInfo}
                         />
                     )}
                 </div>
