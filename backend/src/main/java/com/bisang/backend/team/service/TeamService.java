@@ -54,6 +54,11 @@ public class TeamService {
     private final ProfileImageRepository profileImageRepository;
 
     @EveryOne
+    public Boolean existsTeamByName(String name) {
+        return teamJpaRepository.existsByName(name);
+    }
+
+    @EveryOne
     @Transactional
     public Long createTeam(
             Long leaderId,
@@ -114,7 +119,7 @@ public class TeamService {
         List<SimpleTeamDto> teams = teamQuerydslRepository.getTeamsByAreaCode(area, teamId);
         Boolean hasNext = teams.size() > SHORT_PAGE_SIZE;
         Integer size = hasNext ? SHORT_PAGE_SIZE : teams.size();
-        Long lastTeamId = hasNext ? null : teams.get(size - 1).teamId();
+        Long lastTeamId = hasNext ? teams.get(size - 1).teamId() : null;
         if (hasNext) {
             teams.remove(size - 1);
         }
@@ -127,7 +132,7 @@ public class TeamService {
         List<SimpleTeamDto> teams = teamQuerydslRepository.getTeamsByCategory(category, teamId);
         Boolean hasNext = teams.size() > SHORT_PAGE_SIZE;
         Integer size = hasNext ? SHORT_PAGE_SIZE : teams.size();
-        Long lastTeamId = hasNext ? null : teams.get(size - 1).teamId();
+        Long lastTeamId = hasNext ? teams.get(size - 1).teamId() : null;
         if (hasNext) {
             teams.remove(size - 1);
         }

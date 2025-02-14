@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
 import com.bisang.backend.common.exception.ScheduleException;
 import com.bisang.backend.schedule.controller.dto.ProfileDto;
@@ -33,9 +33,9 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
+@Repository
 @RequiredArgsConstructor
-public class    TeamScheduleQuerydslRepository {
+public class TeamScheduleQuerydslRepository {
     private final JPAQueryFactory queryFactory;
     private final TeamScheduleJpaRepository teamScheduleJpaRepository;
     private final TeamUserJpaRepository teamUserJpaRepository;
@@ -47,12 +47,27 @@ public class    TeamScheduleQuerydslRepository {
         }
 
         return queryFactory
-                .selectFrom(teamSchedule)
-                .where(teamSchedule.scheduleStatus.eq(status), lastDateTimeLt)
-                .orderBy(teamSchedule.date.desc())
-                .limit(SMALL_SCHEDULE_PAGE_SIZE + 1)
-                .fetch();
+            .selectFrom(teamSchedule)
+            .where(teamSchedule.scheduleStatus.eq(status), lastDateTimeLt)
+            .orderBy(teamSchedule.date.desc())
+            .limit(SMALL_SCHEDULE_PAGE_SIZE + 1)
+            .fetch();
     }
+
+    public List<TeamSchedule> getTeamScheduleByStatusAndScheduleIdLt(ScheduleStatus status, Long lastScheduleId) {
+        BooleanBuilder lastScheduleIdLt = new BooleanBuilder();
+        if (lastScheduleId != null) {
+            lastScheduleIdLt.and(teamSchedule.id.lt(lastScheduleId));
+        }
+
+        return queryFactory
+            .selectFrom(teamSchedule)
+            .where(teamSchedule.scheduleStatus.eq(status), lastScheduleIdLt)
+            .orderBy(teamSchedule.date.desc())
+            .limit(SMALL_SCHEDULE_PAGE_SIZE + 1)
+            .fetch();
+    }
+
 
     public TeamSpecificScheduleDto getTeamScheduleSpecific(Long teamScheduleId) {
         TeamSchedule schedule = findScheduleById(teamScheduleId);

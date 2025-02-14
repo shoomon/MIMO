@@ -8,7 +8,6 @@ import com.bisang.backend.team.domain.TeamRecruitStatus;
 
 public record TeamDto(
         Long teamId,
-        Long teamUserId,
         String profileUri,
         String name,
         String description,
@@ -17,7 +16,8 @@ public record TeamDto(
         Area area,
         Long maxCapacity,
         Long currentCapacity,
-        Double score,
+        Double reviewScore,
+        Long reviewCount,
         List<String> tags
 ) {
 }

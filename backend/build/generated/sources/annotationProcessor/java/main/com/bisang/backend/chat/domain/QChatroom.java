@@ -25,6 +25,8 @@ public class QChatroom extends EntityPathBase<Chatroom> {
 
     public final EnumPath<ChatroomStatus> status = createEnum("status", ChatroomStatus.class);
 
+    public final NumberPath<Long> teamId = createNumber("teamId", Long.class);
+
     public final StringPath title = createString("title");
 
     public final NumberPath<Long> userId = createNumber("userId", Long.class);

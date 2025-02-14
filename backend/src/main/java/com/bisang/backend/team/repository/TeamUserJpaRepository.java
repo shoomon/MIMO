@@ -16,6 +16,8 @@ public interface TeamUserJpaRepository extends JpaRepository<TeamUser, Long> {
 
     Long countTeamUserByTeamId(Long teamId);
 
+    Boolean existsByTeamIdAndNickname(Long teamId, String nickname);
+
     @Query("SELECT u.nickname FROM TeamUser u WHERE u.id = :teamUserId")
     String getTeamUserNickname(@Param("teamUserId") Long teamUserId);
 }
