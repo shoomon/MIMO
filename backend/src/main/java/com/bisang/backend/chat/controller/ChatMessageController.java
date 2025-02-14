@@ -3,10 +3,11 @@ package com.bisang.backend.chat.controller;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.bisang.backend.auth.JwtUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,14 +37,15 @@ public class ChatMessageController {
 
     private final ChatMessageService chatMessageService;
     private final ChatroomUserService chatroomUserService;
+    private final JwtUtil jwtUtil;
 
     @MessageMapping("/{roomId}")
     public void sendMessage(
             @DestinationVariable Long roomId,
-            SimpMessageHeaderAccessor headerAccessor,
+            @Header("Authorization") String token,
             ChatMessageRequest chat
     ) {
-        Long userId = (Long)headerAccessor.getSessionAttributes().get("userId");
+        Long userId = Long.valueOf(jwtUtil.getSubject(token));
 
         if (chatroomUserService.isMember(roomId, userId)) {
             RedisChatMessage redisMessage = new RedisChatMessage(

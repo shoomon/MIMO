@@ -2,6 +2,7 @@ package com.bisang.backend.chat.websocket;
 
 import java.util.Map;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpRequest;
@@ -15,8 +16,11 @@ import com.bisang.backend.common.exception.ExceptionCode;
 
 import lombok.RequiredArgsConstructor;
 
+import static java.rmi.server.LogStream.log;
+
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class WebSocketHandshakeInterceptor implements HandshakeInterceptor {
 
     private final JwtUtil jwtUtil;
@@ -39,9 +43,6 @@ public class WebSocketHandshakeInterceptor implements HandshakeInterceptor {
                 throw new AccountException(ExceptionCode.UNAUTHORIZED_ACCESS);
             }
 
-            Long userId = Long.valueOf(jwtUtil.getSubject(token));
-            attributes.put("userId", userId);
-
             return true;
         }
         return false;
@@ -54,6 +55,8 @@ public class WebSocketHandshakeInterceptor implements HandshakeInterceptor {
             WebSocketHandler wsHandler,
             Exception exception
     ) {
-
+        if (exception != null) {
+            log.error("WebSocket Handshake failed: {}", exception.getMessage());
+        }
     }
 }
