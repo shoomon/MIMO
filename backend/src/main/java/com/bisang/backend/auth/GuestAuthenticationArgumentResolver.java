@@ -1,5 +1,6 @@
 package com.bisang.backend.auth;
 
+import static com.amazonaws.util.AWSRequestMetrics.Field.Exception;
 import static com.bisang.backend.common.exception.ExceptionCode.*;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -45,7 +46,8 @@ public class GuestAuthenticationArgumentResolver implements HandlerMethodArgumen
     ) throws Exception {
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
 
-        if (request == null) {
+        String authHeader = request.getHeader(AUTHORIZATION);
+        if (authHeader == null) {
             return null;
         }
 

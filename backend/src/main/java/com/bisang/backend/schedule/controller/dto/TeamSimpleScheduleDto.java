@@ -8,6 +8,6 @@ public record TeamSimpleScheduleDto(
     LocalDateTime date,
     String title,
     Long price,
-    List<String> profileUris
+    List<ProfileDto> profileUris
 ) {
 }

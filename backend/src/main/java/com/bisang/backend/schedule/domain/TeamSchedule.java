@@ -32,6 +32,7 @@ import lombok.NoArgsConstructor;
         name = "team_schedule",
         indexes = {
             @Index(name = "idx_schedule_team_id", columnList = "team_id"),
+            @Index(name = "idx_schedule_status_date", columnList = "schedule_status, date desc")
         }
 )
 public class TeamSchedule extends BaseTimeEntity {

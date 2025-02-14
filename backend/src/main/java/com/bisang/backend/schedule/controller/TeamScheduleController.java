@@ -6,6 +6,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -35,6 +36,16 @@ public class TeamScheduleController {
     private final TeamScheduleLeaderService teamScheduleService;
     private final TeamScheduleEveryOneService teamScheduleEveryOneService;
 
+    @DeleteMapping
+    public ResponseEntity<Void> deleteSchedule(
+            @AuthUser User user,
+            @RequestParam Long teamId,
+            @RequestParam Long teamScheduleId
+    ) {
+        teamScheduleService.deleteTeamSchedule(user.getId(), teamId, teamScheduleId);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping
     public ResponseEntity<TeamScheduleSpecificResponse> getSpecificSchedule(
             @Guest User user,
@@ -60,7 +71,7 @@ public class TeamScheduleController {
             @RequestParam Long teamId,
             @RequestParam(required = false) Long lastTeamScheduleId
     ) {
-        var adhocSchedule = teamScheduleEveryOneService.getSchedules(teamId, REGURAL, lastTeamScheduleId);
+        var adhocSchedule = teamScheduleEveryOneService.getSchedules(teamId, REGULAR, lastTeamScheduleId);
         return ResponseEntity.ok(adhocSchedule);
     }
 

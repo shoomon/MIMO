@@ -123,7 +123,7 @@ public class BoardService {
         boardDescriptionJpaRepository.save(boardDescription);
         //S3에서 파일 삭제
         for (BoardFileDto file : filesToDelete) {
-            s3Service.deleteFile(userId, file.fileUri()); // S3에서 이미지 삭제
+            s3Service.deleteFile(file.fileUri()); // S3에서 이미지 삭제
         }
         //파일 삭제
         for(BoardFileDto file : filesToDelete){
@@ -154,7 +154,7 @@ public class BoardService {
         //S3에서 이미지 삭제
         List<BoardFileDto> boardFiles = boardImageJpaRepository.findByBoardId(postId);
         for (BoardFileDto file : boardFiles) {
-            s3Service.deleteFile(userId, file.fileUri()); // S3에서 이미지 삭제
+            s3Service.deleteFile(file.fileUri()); // S3에서 이미지 삭제
         }
         //DB에서 파일 삭제
         boardImageJpaRepository.deleteByBoardId(postId);

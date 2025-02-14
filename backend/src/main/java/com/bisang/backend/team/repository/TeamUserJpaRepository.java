@@ -13,4 +13,6 @@ public interface TeamUserJpaRepository extends JpaRepository<TeamUser, Long> {
     Optional<TeamUser> findByTeamIdAndUserId(Long teamId, Long userId);
 
     Long countTeamUserByTeamId(Long teamId);
+
+    Boolean existsByTeamIdAndNickname(Long teamId, String nickname);
 }
