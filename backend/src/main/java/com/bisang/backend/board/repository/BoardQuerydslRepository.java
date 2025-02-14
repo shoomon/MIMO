@@ -19,7 +19,9 @@ import com.bisang.backend.board.controller.dto.BoardThumbnailDto;
 import com.bisang.backend.board.controller.dto.CommentCountDto;
 import com.bisang.backend.board.controller.dto.ProfileNicknameDto;
 import com.bisang.backend.board.controller.dto.SimpleBoardListDto;
+import com.bisang.backend.board.domain.QBoardImage;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.JPAExpressions;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Repository;
 
@@ -98,15 +100,21 @@ public class BoardQuerydslRepository {
     }
 
     public Map<Long, String> getImageThumbnailList(List<Long> boardId) {
+        QBoardImage i = QBoardImage.boardImage;
+        QBoardImage i2 = new QBoardImage("i2");
+
         List<BoardThumbnailDto> images = queryFactory
                 .select(Projections.constructor(BoardThumbnailDto.class,
-                        boardImage.boardId,
-                        boardImage.fileUri
+                        i.boardId,
+                        i.fileUri
                 ))
-                .from(boardImage)
-                .where(boardImage.boardId.in(boardId))
-                .orderBy(boardImage.id.asc())
-                .limit(1)
+                .from(i)
+                .where(boardImage.id.eq(
+                        JPAExpressions.select(i2.id.min())
+                                .from(i2)
+                                .where(i2.boardId.eq(i.boardId))
+                        )
+                        .and(i.boardId.in(boardId)))
                 .fetch();
 
         return images.stream()

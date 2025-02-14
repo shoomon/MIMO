@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import com.bisang.backend.board.domain.Board;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface BoardJpaRepository extends JpaRepository<Board, Long> {
     @Transactional
     @Modifying
@@ -29,4 +31,7 @@ public interface BoardJpaRepository extends JpaRepository<Board, Long> {
     @Modifying
     @Query("DELETE FROM Board b WHERE b.teamBoardId = :teamBoardId")
     void deleteAllByTeamBoardId(@Param(value = "teamBoardId") Long teamBoardId);
+
+    @Query("SELECT b.id FROM Board b WHERE b.teamBoardId = :teamBoardId")
+    List<Long> findTeamBoardIdByTeamBoardId(@Param(value = "teamBoardId") Long teamBoardId);
 }

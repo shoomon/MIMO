@@ -211,7 +211,7 @@ public class BoardService {
     }
 
     //    @TeamMember
-    public void deletePost(Long userId, Long postId){
+    public void deletePost(Long userId, Long postId) {
         Board post = boardJpaRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
 

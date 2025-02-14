@@ -4,9 +4,7 @@ import com.bisang.backend.board.controller.dto.SimpleBoardListDto;
 import com.bisang.backend.board.controller.dto.TeamBoardDto;
 import com.bisang.backend.board.controller.response.TeamBoardListResponse;
 import com.bisang.backend.board.domain.TeamBoard;
-import com.bisang.backend.board.repository.BoardJpaRepository;
-import com.bisang.backend.board.repository.BoardQuerydslRepository;
-import com.bisang.backend.board.repository.TeamBoardJpaRepository;
+import com.bisang.backend.board.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,8 +16,10 @@ import java.util.List;
 public class TeamBoardService {
     private final TeamBoardJpaRepository teamBoardJpaRepository;
     private final BoardJpaRepository boardJpaRepository;
-    private final BoardQuerydslRepository boardQuerydslRepository;
     private final BoardService boardService;
+    private final CommentJpaRepository commentJpaRepository;
+    private final BoardImageJpaRepository boardImageJpaRepository;
+    private final BoardLikeRepository boardLikeRepository;
 
     public TeamBoardListResponse getTeamBoardList(Long teamId) {
         List<TeamBoardDto> list = new ArrayList<>();
@@ -44,7 +44,16 @@ public class TeamBoardService {
     }
 
     public void deleteTeamBoard(Long teamBoardId) {
+        List<Long> boardIdList = boardJpaRepository.findTeamBoardIdByTeamBoardId(teamBoardId);
+
         boardJpaRepository.deleteAllByTeamBoardId(teamBoardId);
+
+        for(Long boardId : boardIdList){
+            commentJpaRepository.deleteByBoardId(boardId);
+            boardImageJpaRepository.deleteByBoardId(boardId);
+            boardLikeRepository.deleteByBoardId(boardId);
+        }
+
         teamBoardJpaRepository.deleteById(teamBoardId);
     }
 }
