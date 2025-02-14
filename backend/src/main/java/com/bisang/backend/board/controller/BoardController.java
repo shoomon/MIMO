@@ -2,6 +2,7 @@ package com.bisang.backend.board.controller;
 
 import static com.bisang.backend.common.exception.ExceptionCode.PAGE_LIMIT;
 import static com.bisang.backend.common.utils.PageUtils.SHORT_PAGE_SIZE;
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -9,11 +10,13 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bisang.backend.auth.annotation.AuthUser;
@@ -30,6 +33,7 @@ import com.bisang.backend.user.domain.User;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.multipart.MultipartFile;
 
 //todo: 권한 체크, 500 에러 말고 커스텀 exception 구현 필요
 @RestController
@@ -43,10 +47,10 @@ public class BoardController {
     private final BoardJpaRepository boardJpaRepository;
 
     @Transactional
-    @PostMapping
+    @PostMapping(consumes = MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Long> createPost(
             @AuthUser User user,
-            @Valid @RequestBody CreatePostRequest request
+            @Valid @ModelAttribute CreatePostRequest request
     ) {
         return ResponseEntity.ok(
                 boardService.createPost(
@@ -72,7 +76,7 @@ public class BoardController {
         }
 
         Long offset = (page - 1) * SHORT_PAGE_SIZE;
-        return ResponseEntity.ok(boardService.getPostList(teamBoardId, offset, SHORT_PAGE_SIZE));
+        return ResponseEntity.ok(boardService.getPostListResponse(teamBoardId, offset, SHORT_PAGE_SIZE));
     }
 
 //todo: 아래 테스트용 메소드 지우기
@@ -90,18 +94,18 @@ public class BoardController {
     }
 
     @Transactional
-    @PutMapping
+    @PutMapping(consumes = MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> updatePost(
             @AuthUser User user,
             @RequestParam(value = "post", required = true) Long postId,
-            @Valid @RequestBody UpdatePostRequest request
+            @Valid @ModelAttribute UpdatePostRequest request
     ) {
         boardService.updatePost(
                 user.getId(),
                 postId,
                 request.title(),
                 request.description(),
-                request.filesToDelete(),
+                request.getFilesToDelete(),
                 request.filesToAdd());
         return ResponseEntity.ok("게시글이 수정되었습니디.");
     }

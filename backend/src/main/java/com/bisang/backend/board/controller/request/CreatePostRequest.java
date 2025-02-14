@@ -15,6 +15,6 @@ public record CreatePostRequest(
         String title,
         @NotBlank(message = "내용을 입력해야 합니다.")
         String description,
-        List<MultipartFile> files
+        MultipartFile[] files
 ) {
 }

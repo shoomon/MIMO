@@ -40,8 +40,9 @@ public class BoardImage {
     private String fileUri;
 
     @Builder
-    private BoardImage(Long boardId, String fileExtension, String fileUri) {
+    private BoardImage(Long boardId, Long teamId, String fileExtension, String fileUri) {
         this.boardId = boardId;
+        this.teamId = teamId;
         this.fileExtension = fileExtension;
         this.fileUri = fileUri;
     }

@@ -19,14 +19,15 @@ public class TeamBoardService {
     private final TeamBoardJpaRepository teamBoardJpaRepository;
     private final BoardJpaRepository boardJpaRepository;
     private final BoardQuerydslRepository boardQuerydslRepository;
+    private final BoardService boardService;
 
     public TeamBoardListResponse getTeamBoardList(Long teamId) {
         List<TeamBoardDto> list = new ArrayList<>();
         List<TeamBoard> teamBoardList = teamBoardJpaRepository.findAllByTeamId(teamId);
 
         for(TeamBoard teamBoard : teamBoardList) {
-            List<SimpleBoardListDto> boardList = boardQuerydslRepository
-                    .getBoardList(teamBoard.getId(), null, 10);
+            List<SimpleBoardListDto> boardList = boardService
+                    .getPostList(teamBoard.getId(), null, 10);
             TeamBoardDto teamBoardDto = new TeamBoardDto(teamBoard.getId(), teamBoard.getBoardName(), boardList);
             list.add(teamBoardDto);
         }

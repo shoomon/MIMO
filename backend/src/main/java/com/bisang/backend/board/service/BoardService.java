@@ -43,7 +43,7 @@ public class BoardService {
             Long userId,
             String title,
             String description,
-            List<MultipartFile> files
+            MultipartFile[] files
     ) {
         TeamUser teamUser = teamUserJpaRepository.findByTeamIdAndUserId(teamId, userId)
                 .orElseThrow(() -> new EntityNotFoundException("팀유저를 찾을 수 없습니다."));
@@ -53,12 +53,13 @@ public class BoardService {
         Board post = boardJpaRepository.save(Board.builder()
                 .teamBoardId(teamBoardId)
                 .teamUserId(teamUser.getId())
+//                        .teamUserId(1L)
                 .userId(userId)
                 .title(title)
                 .description(boardDescription)
                 .build());
         //todo: 사진 업로드 비동기 처리
-        if (files != null && !files.isEmpty()) {
+        if (files != null) {
             for(MultipartFile file : files){
                 String uri = s3Service.saveFile(userId, file); //서비스가 서비스에 의존해도 되나 컨트롤러에서 업로드하고 file uri 리스트로 보내줘야하나
 
@@ -66,6 +67,7 @@ public class BoardService {
 
                 boardImageJpaRepository.save(BoardImage.builder()
                         .boardId(post.getId())
+                        .teamId(teamId)
                         .fileExtension(fileExtension)
                         .fileUri(uri)
                         .build());
@@ -74,10 +76,46 @@ public class BoardService {
         return post.getId();
     }
 
+    public List<SimpleBoardListDto> getPostList(Long teamBoardId, Long offset, Integer pageSize) {
+        List<SimpleBoardListDto> boardList = boardQuerydslRepository.getBoardList(teamBoardId, offset, pageSize);
+
+        List<Long> boardIdList = boardList.stream().map(SimpleBoardListDto::getId).toList();
+
+        Map<Long, Long> commentCount = boardQuerydslRepository.getCommentCount(boardIdList);
+        Map<Long, String> imageUriList = boardQuerydslRepository.getImageThumbnailList(boardIdList);
+        Map<Long, ProfileNicknameDto> userList = boardQuerydslRepository.getBoardUserList(boardIdList);
+
+        List<SimpleBoardListDto> list = new ArrayList<>();
+
+        for(SimpleBoardListDto board : boardList) {
+            Long boardId = board.getId();
+
+            Long comment = commentCount.getOrDefault(boardId, 0L);
+            String imageUri = imageUriList.getOrDefault(boardId, "defaultImageUri");
+            ProfileNicknameDto user = userList.getOrDefault(boardId, new ProfileNicknameDto(0L, "", ""));
+
+            list.add(new SimpleBoardListDto(
+                    board.getId(),
+                    user.profileUri(),
+                    user.nickname(),
+                    board.postTitle(),
+                    imageUri,
+                    board.likeCount(),
+                    board.viewCount(),
+                    board.createdAt(),
+                    board.updatedAt(),
+                    comment
+            ));
+        }
+        return list;
+    }
+
     //    @TeamMember
-    public BoardListResponse getPostList(Long teamBoardId, Long offset, Integer pageSize){
+    public BoardListResponse getPostListResponse(Long teamBoardId, Long offset, Integer pageSize){
         String boardName = teamBoardJpaRepository.getTeamBoardNameById(teamBoardId);
-        List<SimpleBoardListDto> list = boardQuerydslRepository.getBoardList(teamBoardId, offset, pageSize);
+
+        List<SimpleBoardListDto> list = getPostList(teamBoardId, offset, pageSize);
+
         return new BoardListResponse(boardName, list);
     }
 
@@ -118,10 +156,13 @@ public class BoardService {
             String title,
             String description,
             List<BoardFileDto> filesToDelete,
-            List<MultipartFile> filesToAdd
+            MultipartFile[] filesToAdd
     ) {
         Board post = boardJpaRepository.findById(postId)
                 .orElseThrow(()-> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
+
+//        TeamUser teamUser = teamUserJpaRepository.findById(post.getTeamUserId())
+//                .orElseThrow(() -> new EntityNotFoundException("팀유저를 찾을 수 없습니다."));
 
         if(!post.getUserId().equals(userId)) throw new BoardException(ExceptionCode.NOT_AUTHOR);
 
@@ -150,6 +191,8 @@ public class BoardService {
             }
         }
 
+
+
         if(filesToAdd != null){
             for(MultipartFile file : filesToAdd){
                 String uri = s3Service.saveFile(userId, file);
@@ -158,6 +201,8 @@ public class BoardService {
 
                 boardImageJpaRepository.save(BoardImage.builder()
                         .boardId(post.getId())
+//                        .teamId(teamUser.getTeamId())
+                                .teamId(1L)
                         .fileExtension(fileExtension)
                         .fileUri(uri)
                         .build());

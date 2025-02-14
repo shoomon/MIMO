@@ -3,22 +3,26 @@ package com.bisang.backend.board.repository;
 import static com.bisang.backend.board.domain.QBoard.board;
 import static com.bisang.backend.board.domain.QBoardDescription.boardDescription;
 import static com.bisang.backend.board.domain.QBoardImage.boardImage;
+import static com.bisang.backend.board.domain.QComment.comment;
 import static com.bisang.backend.board.domain.QTeamBoard.teamBoard;
 import static com.bisang.backend.team.domain.QTeamUser.teamUser;
 import static com.bisang.backend.user.domain.QUser.user;
+import static com.querydsl.core.group.GroupBy.groupBy;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.bisang.backend.board.controller.dto.BoardInfoDto;
+import com.bisang.backend.board.controller.dto.BoardThumbnailDto;
+import com.bisang.backend.board.controller.dto.CommentCountDto;
+import com.bisang.backend.board.controller.dto.ProfileNicknameDto;
 import com.bisang.backend.board.controller.dto.SimpleBoardListDto;
-import com.bisang.backend.board.domain.QBoardImage;
-import com.bisang.backend.board.domain.QComment;
-import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.core.types.dsl.Expressions;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Repository;
 
-import com.bisang.backend.board.controller.dto.BoardDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -50,44 +54,81 @@ public class BoardQuerydslRepository {
                 .fetchOne()).orElseThrow(() -> new EntityNotFoundException("게시글 정보를 찾을 수 없습니다."));
     }
 
-    public List<SimpleBoardListDto> getBoardList(Long teamBoardId, Long offset, Integer pageSize){
-        QComment commentSub = new QComment("commentSub");
-        QBoardImage boardImageSub = new QBoardImage("boardThumbnailSub");
-        //todo: 디폴트 썸네일 이미지 주소
-        String defaultThumbnail = "";
-
-//todo: 여기로직이 좀 많이 이상한디
-        return  queryFactory
+    public List<SimpleBoardListDto> getBoardList(Long teamBoardId, Long offset, Integer pageSize) {
+        return queryFactory
                 .select(Projections.constructor(SimpleBoardListDto.class,
-                                board.id,
-                                user.profileUri.as("userProfileUri"),
-                                teamUser.nickname.as("userNickname"),
-                                board.title.as("postTitle"),
-                        JPAExpressions
-                                .select(boardImageSub.fileUri
-                                        .coalesce(defaultThumbnail).as("imageUrl"))
-                                .from(boardImageSub)
-                                .where(boardImageSub.boardId.eq(board.id))
-                                .limit(1),
-                                board.likes.as("likeCount"),
-                                board.viewCount,
-                                board.createdAt,
-                                board.lastModifiedAt.as("updatedAt"),
-                        JPAExpressions
-                                .select(commentSub.id.count())
-                                .from(commentSub)
-                                .where(commentSub.boardId.eq(board.id))
-                        ))
+                        board.id.as("postId"),
+                        Expressions.nullExpression(String.class),
+                        Expressions.nullExpression(String.class),
+                        board.title,
+                        Expressions.nullExpression(String.class),
+                        board.likes,
+                        board.viewCount,
+                        board.createdAt,
+                        board.lastModifiedAt,
+                        Expressions.nullExpression(Long.class)
+                ))
                 .from(board)
-                .leftJoin(teamUser).on(board.teamUserId.eq(teamUser.id))
-                .leftJoin(user).on(teamUser.userId.eq(user.id))
                 .where(board.teamBoardId.eq(teamBoardId))
-                .groupBy(board.id, user.profileUri, teamUser.nickname,
-                        board.title, board.likes, board.viewCount,
-                        board.createdAt, board.lastModifiedAt)
                 .orderBy(board.createdAt.desc())
                 .offset(offset)
                 .limit(pageSize)
                 .fetch();
+    }
+
+    public Map<Long, Long> getCommentCount(List<Long> boardId) {
+        List<CommentCountDto> commentCount =  queryFactory
+                .select(Projections.constructor(CommentCountDto.class,
+                        comment.boardId,
+                        comment.id.count()
+                        ))
+                .from(comment)
+                .where(comment.boardId.in(boardId))
+                .groupBy(comment.boardId)
+                .fetch();
+
+        return commentCount.stream()
+                .collect(Collectors.toMap(
+                        CommentCountDto::getBoardId,
+                        CommentCountDto::getCount,
+                        (existing, replacement) -> existing
+                ));
+    }
+
+    public Map<Long, String> getImageThumbnailList(List<Long> boardId) {
+        List<BoardThumbnailDto> images = queryFactory
+                .select(Projections.constructor(BoardThumbnailDto.class,
+                        boardImage.boardId,
+                        boardImage.fileUri
+                ))
+                .from(boardImage)
+                .where(boardImage.boardId.in(boardId))
+                .orderBy(boardImage.id.asc())
+                .limit(1)
+                .fetch();
+
+        return images.stream()
+                .collect(Collectors.toMap(
+                        BoardThumbnailDto::getBoardId,
+                        BoardThumbnailDto::getImageUri,
+                        (existing, replacement) -> existing // 중복된 boardId가 있을 경우 첫 번째 값 유지
+                ));
+    }
+
+    public Map<Long, ProfileNicknameDto> getBoardUserList(List<Long> boardId) {
+        List<ProfileNicknameDto> users =  queryFactory
+                .select(Projections.constructor(ProfileNicknameDto.class,
+                        board.id,
+                        user.profileUri,
+                        teamUser.nickname
+                        ))
+                .from(board)
+                .join(user).on(user.id.eq(board.userId))
+                .join(teamUser).on(teamUser.id.eq(board.teamUserId))
+                .where(board.id.in(boardId))
+                .fetch();
+
+        return users.stream()
+                .collect(Collectors.toMap(ProfileNicknameDto::getBoardId, dto -> dto));
     }
 }
