@@ -6,6 +6,7 @@ public record TeamInviteDto(
     Long teamInviteId,
     Long teamId,
     Long userId,
+    String profileUri,
     InviteStatus status,
     String name,
     String memo

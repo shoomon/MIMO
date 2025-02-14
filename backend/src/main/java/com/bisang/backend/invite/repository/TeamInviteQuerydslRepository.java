@@ -40,6 +40,7 @@ public class TeamInviteQuerydslRepository {
                 teamInvite.id,
                 teamInvite.teamId,
                 teamInvite.userId,
+                user.profileUri,
                 teamInvite.status,
                 user.name,
                 teamInvite.memo))
@@ -55,6 +56,7 @@ public class TeamInviteQuerydslRepository {
                 teamInvite.id,
                 teamInvite.teamId,
                 teamInvite.userId,
+                user.profileUri,
                 teamInvite.status,
                 user.name,
                 teamInvite.memo))

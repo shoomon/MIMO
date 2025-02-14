@@ -18,15 +18,4 @@ public class AlarmQuerydslRepository {
     private final JPAQueryFactory queryFactory;
 
 
-    public List<AlarmDto> getAlarms(LocalDateTime time) {
-        LocalDateTime endTime = time.plusMinutes(1);
-
-        queryFactory
-            .select(Projections.constructor,
-                )
-            .from(teamSchedule)
-            .join(scheduleParticipants)
-            .on(teamSchedule.id.eq(scheduleParticipants.teamScheduleId))
-            .where(teamSchedule.date.eq(time), teamSchedule)
-    }
 }
