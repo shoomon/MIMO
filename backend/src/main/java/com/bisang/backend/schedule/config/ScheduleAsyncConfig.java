@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 @Configuration
-public class ScheduleAysncConfig {
+public class ScheduleAsyncConfig {
     private static final int CORE_POOL_SIZE = 10;
     private static final int MAX_POOL_SIZE = 50;
     private static final int QUEUE_CAPACITY = 20;
