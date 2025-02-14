@@ -207,7 +207,7 @@ public class TeamUserQuerydslRepository {
     private List<TeamUserDto> sortTeamUserDto(List<TeamUserDto> teamUserDtos) {
         return teamUserDtos.stream()
             .sorted(comparing((TeamUserDto dto) ->dto.role().getWeight())
-                .thenComparing(TeamUserDto::teamUserId).reversed())
+                .thenComparing(TeamUserDto::teamUserId))
             .limit(PAGE_SIZE + 1)
             .toList();
     }
