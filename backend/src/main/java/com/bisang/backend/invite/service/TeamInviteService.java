@@ -22,7 +22,7 @@ public class TeamInviteService {
     @TeamLeader
     @Transactional(readOnly = true)
     public TeamInvitesResponse getTeamInvites(
-        Long teamId, Long userId, Long lastTeamInviteId
+        Long userId, Long teamId,  Long lastTeamInviteId
     ) {
         List<TeamInviteDto> invites = teamInviteQuerydslRepository.findTeamInvites(teamId, lastTeamInviteId);
         Boolean hasNext = invites.size() > SHORT_PAGE_SIZE;

@@ -48,7 +48,7 @@ public class TeamUserService {
         List<SimpleTeamDto> teamInfos = teamUserQuerydslRepository.getTeamsByTeamIdAndUserId(teamId, userId);
         Boolean hasNext = teamInfos.size() > SHORT_PAGE_SIZE;
         Integer size = hasNext ? SHORT_PAGE_SIZE : teamInfos.size();
-        Long lastTeamId = hasNext ? null : teamInfos.get(size - 1).teamId();
+        Long lastTeamId = hasNext ? teamInfos.get(size - 1).teamId() : null;
         if (hasNext) {
             teamInfos.remove(size - 1);
         }
