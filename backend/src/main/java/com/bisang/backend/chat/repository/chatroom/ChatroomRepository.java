@@ -38,7 +38,7 @@ public class ChatroomRepository {
 
         if (userChatroom == null || userChatroom.isEmpty()) {
             //TODO: 배치로 메시지 db저장하는거 하고 나면 마지막 메시지 가져와서 그 기준으로 sort 할 수 있을듯..?
-            //TODO: 하고나면 레디스에 업데이트 해줘야함
+            //TODO: 하고나면 레디스에 업데이트 해줘야함, 근데 솔직히 해줘야함?
             userChatroom = chatroomJpaRepository.findAllIdsByUserId(userId);
         }
         return userChatroom;
@@ -52,7 +52,9 @@ public class ChatroomRepository {
     public Map<Object, Object> getChatroomInfo(Long chatroomId) {
         Map<Object, Object> chatroomInfo = redisCacheRepository.getChatroomInfo(chatroomId);
         if (chatroomInfo.isEmpty()) {
-            ChatroomTitleProfileDto info = chatroomJpaRepository.findTitleAndProfileUriById(chatroomId);
+            ChatroomTitleProfileDto info = chatroomJpaRepository
+                    .findTitleAndProfileUriById(chatroomId)
+                    .orElseThrow(()->new ChatroomException(NOT_FOUND_TEAM));
 
             chatroomInfo.put("title", info.getTitle());
             chatroomInfo.put("profileUri", info.getProfileUri());
