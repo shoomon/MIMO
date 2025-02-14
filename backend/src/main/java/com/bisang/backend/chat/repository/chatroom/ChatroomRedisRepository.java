@@ -28,11 +28,11 @@ public class ChatroomRedisRepository {
         Set<ZSetOperations.TypedTuple<String>> result = redisTemplate.opsForZSet()
                 .reverseRangeWithScores(chatroomKey + userId, 0, -1);
 
-        List<Long> value = result.stream()
+        if (result == null) return null;
+
+        return result.stream()
                 .map(tuple -> Long.valueOf(tuple.getValue()))
                 .toList();
-
-        return value;
     }
 
 }
