@@ -14,7 +14,7 @@ const DefaultLayout = () => {
     const { isLogin } = useAuth();
 
     return (
-        <div className="flex flex-col px-4">
+        <>
             <Header
                 isLogin={isLogin}
                 alarmActive={false}
@@ -28,12 +28,13 @@ const DefaultLayout = () => {
                 onClickInfo={handleToggleInfo}
                 handleLogin={handleLogin}
             />
-            <div className="flex flex-col gap-3">
+
+            <div className="flex flex-1 flex-col gap-3">
                 <MainNav />
                 <NavLevel />
                 <Outlet />
             </div>
-        </div>
+        </>
     );
 };
 

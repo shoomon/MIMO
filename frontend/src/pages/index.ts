@@ -28,4 +28,3 @@ export {default as BoardDetail} from "./Board/BoardDetail";
 export {default as BoardEdit} from "./Board/BoardEdit";
 export {default as GoogleCallback} from "./GoogleCallback";
 export {default as ChatPage} from "./Chat/ChatPage";
-export {default as ChatRoom} from "./Chat/ChatRoom";

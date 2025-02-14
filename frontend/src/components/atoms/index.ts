@@ -20,3 +20,4 @@ export { default as Search } from './Search/Search';
 export { default as Switch } from './Switch/Switch';
 export { default as Tag } from './Tag/Tag';
 export { default as Title } from './Title/Title';
+export { default as ChatAlarm } from "./ChatAlarm/ChatAlarm";

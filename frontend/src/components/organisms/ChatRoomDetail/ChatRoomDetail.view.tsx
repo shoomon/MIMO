@@ -16,14 +16,16 @@ const ChatRoomDetailView = ({
     chatData,
 }: ChatRoomDetailProps) => {
     return (
-        <section className="flex h-full w-[30.5rem] flex-col border border-gray-200 bg-white">
+        <section className="flex w-full flex-col border border-gray-200 bg-white">
             <div className="flex justify-between p-6">
                 <div className="flex items-center gap-2">
-                    <img
-                        src={chatroomImage}
-                        alt=""
-                        className="h-[1.875rem] w-[1.875rem] rounded-sm"
-                    />
+                    {chatroomImage && (
+                        <img
+                            src={chatroomImage}
+                            alt=""
+                            className="h-[1.875rem] w-[1.875rem] rounded-sm"
+                        />
+                    )}
                     <span className="text-2xl font-bold">{chatroomName}</span>
                 </div>
                 <Link
@@ -34,7 +36,7 @@ const ChatRoomDetailView = ({
                     <span>영상 통화</span>
                 </Link>
             </div>
-            <div className="flex h-full w-full flex-col gap-2.5 border-t border-gray-200 p-6">
+            <div className="flex h-full w-full flex-col gap-2.5 overflow-y-scroll border-t border-gray-200 p-6">
                 {chatData.map((data) => {
                     return <ChatItemView {...data} key={data.item.id} />;
                 })}
