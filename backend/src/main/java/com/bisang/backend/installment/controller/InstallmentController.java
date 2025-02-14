@@ -15,7 +15,7 @@ import com.bisang.backend.user.domain.User;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping
+@RequestMapping("/installment")
 @RequiredArgsConstructor
 public class InstallmentController {
     private final InstallmentService installmentService;
@@ -33,7 +33,7 @@ public class InstallmentController {
                 .body(null);
     }
 
-    @GetMapping
+    @GetMapping("/pay")
     public ResponseEntity<List<InstallmentResponse>> getInstallmentPayerDetails(
             @AuthUser User user,
             @RequestParam Long teamId,
@@ -44,7 +44,7 @@ public class InstallmentController {
                 .body(installmentService.getInstallmentPayerDetails(user.getId(), teamId, round));
     }
 
-    @GetMapping
+    @GetMapping("/non-pay")
     public ResponseEntity<List<InstallmentResponse>> getInstallmentNonPayerDetails(
             @AuthUser User user,
             @RequestParam Long teamId,
@@ -55,7 +55,7 @@ public class InstallmentController {
                 .body(installmentService.getInstallmentNonPayerDetails(user.getId(), teamId, round));
     }
 
-    @GetMapping
+    @GetMapping("/pay-install")
     public ResponseEntity<Boolean> isUserPayInstallment(
             @AuthUser User user,
             @RequestParam Long teamId,

@@ -16,12 +16,14 @@ import com.bisang.backend.transaction.repository.AccountDetailsJpaRepository;
 
 import lombok.RequiredArgsConstructor;
 
+import static com.bisang.backend.transaction.domain.TransactionCategory.*;
+
 @Service
 @RequiredArgsConstructor
 public class AccountDetailsService {
-    private AccountService accountService;
+    private final AccountService accountService;
 
-    private AccountDetailsJpaRepository accountDetailsJpaRepository;
+    private final AccountDetailsJpaRepository accountDetailsJpaRepository;
 
     public AccountDetails createAccountDetails(
             Transaction transaction,
@@ -50,7 +52,7 @@ public class AccountDetailsService {
 
         accountService.validateUserAccount(userId, accountNumber);
 
-        return accountDetailsJpaRepository.findByReceiverAccountNumber(accountNumber, "DEPOSIT");
+        return accountDetailsJpaRepository.findByReceiverAccountNumberAndTransactionCategory(accountNumber, DEPOSIT);
     }
     
     public List<AccountDetails> getUserChargeAccountDetails(User user) {
@@ -59,7 +61,7 @@ public class AccountDetailsService {
 
         accountService.validateUserAccount(userId, accountNumber);
 
-        return accountDetailsJpaRepository.findByReceiverAccountNumber(accountNumber, "CHARGE");
+        return accountDetailsJpaRepository.findByReceiverAccountNumberAndTransactionCategory(accountNumber, CHARGE);
     }
 
     public List<AccountDetails> getUserTransferAccountDetails(User user) {
@@ -68,7 +70,7 @@ public class AccountDetailsService {
 
         accountService.validateUserAccount(userId, accountNumber);
 
-        return accountDetailsJpaRepository.findBySenderAccountNumber(accountNumber, "TRANSFER");
+        return accountDetailsJpaRepository.findBySenderAccountNumberAndTransactionCategory(accountNumber, TRANSFER);
     }
 
     public List<AccountDetails> getUserPayAccountDetails(User user) {
@@ -77,7 +79,7 @@ public class AccountDetailsService {
 
         accountService.validateUserAccount(userId, accountNumber);
 
-        return accountDetailsJpaRepository.findBySenderAccountNumber(accountNumber, "PAY");
+        return accountDetailsJpaRepository.findBySenderAccountNumberAndTransactionCategory(accountNumber, PAYMENT);
     }
 
     @Transactional

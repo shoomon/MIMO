@@ -47,7 +47,7 @@ public class TransferService {
     public void installment(InstallmentRequest installmentRequest, Transaction transaction) {
         transfer(transaction);
 
-        Installment installment = installmentJpaRepository.findByTeamIdAndRoundAndInstallmentStatus(
+        Installment installment = installmentJpaRepository.findByTeamIdAndUserIdAndRound(
                 installmentRequest.getTeamId(),
                 installmentRequest.getUserId(),
                 installmentRequest.getRound()
