@@ -35,10 +35,11 @@ public class TeamUserController {
 
     @GetMapping("/my-info")
     public ResponseEntity<MyTeamUserInfoDto> getMyTeamInfo(
-            @AuthUser User user,
+            @Guest User user,
             @RequestParam(name = "teamId") Long teamId
     ) {
-        return ResponseEntity.ok(teamUserService.getMyTeamUserInfo(teamId, user.getId()));
+        Long userId = user == null ? null : user.getId();
+        return ResponseEntity.ok(teamUserService.getMyTeamUserInfo(teamId, userId));
     }
 
     @GetMapping("/my-team-info")

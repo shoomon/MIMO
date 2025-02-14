@@ -15,6 +15,7 @@ import com.bisang.backend.schedule.repository.TeamScheduleJpaRepository;
 import com.bisang.backend.schedule.repository.TeamScheduleQuerydslRepository;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
@@ -23,7 +24,8 @@ public class ScheduleCloseExecutorService {
     private final TeamScheduleJpaRepository teamScheduleJpaRepository;
 
     @Async("scheduleCloseExecutor")
-    public LocalDateTime closeAdhocSchedule(LocalDateTime lastDateTime) {
+    @Transactional
+    public Long closeAdhocSchedule(LocalDateTime lastDateTime) {
         List<TeamSchedule> closedAdhocSchedules
                 = teamScheduleQuerydslRepository.getTeamScheduleByStatusAndDateTime(AD_HOC, lastDateTime);
         if (closedAdhocSchedules.size() > SMALL_SCHEDULE_PAGE_SIZE) {
@@ -31,7 +33,7 @@ public class ScheduleCloseExecutorService {
                 teamSchedule.updateStatus(CLOSED);
             }
             teamScheduleJpaRepository.saveAll(closedAdhocSchedules);
-            return closedAdhocSchedules.get(SMALL_SCHEDULE_PAGE_SIZE).getDate();
+            return closedAdhocSchedules.get(SMALL_SCHEDULE_PAGE_SIZE).getId();
         }
 
         for (TeamSchedule teamSchedule : closedAdhocSchedules) {
@@ -42,7 +44,28 @@ public class ScheduleCloseExecutorService {
     }
 
     @Async("scheduleCloseExecutor")
-    public LocalDateTime closeRegularSchedule(LocalDateTime lastDateTime) {
+    @Transactional
+    public Long closeAdhocScheduleById(Long lastScheduleId) {
+        List<TeamSchedule> closedAdhocSchedules
+            = teamScheduleQuerydslRepository.getTeamScheduleByStatusAndScheduleIdLt(AD_HOC, lastScheduleId);
+        if (closedAdhocSchedules.size() > SMALL_SCHEDULE_PAGE_SIZE) {
+            for (TeamSchedule teamSchedule : closedAdhocSchedules) {
+                teamSchedule.updateStatus(CLOSED);
+            }
+            teamScheduleJpaRepository.saveAll(closedAdhocSchedules);
+            return closedAdhocSchedules.get(SMALL_SCHEDULE_PAGE_SIZE).getId();
+        }
+
+        for (TeamSchedule teamSchedule : closedAdhocSchedules) {
+            teamSchedule.updateStatus(AD_HOC);
+        }
+        teamScheduleJpaRepository.saveAll(closedAdhocSchedules);
+        return null;
+    }
+
+    @Async("scheduleCloseExecutor")
+    @Transactional
+    public Long closeRegularSchedule(LocalDateTime lastDateTime) {
         List<TeamSchedule> closedRegularSchedules
                 = teamScheduleQuerydslRepository.getTeamScheduleByStatusAndDateTime(REGULAR, lastDateTime);
         if (closedRegularSchedules.size() > SMALL_SCHEDULE_PAGE_SIZE) {
@@ -50,7 +73,7 @@ public class ScheduleCloseExecutorService {
                 teamSchedule.updateStatus(CLOSED);
             }
             teamScheduleJpaRepository.saveAll(closedRegularSchedules);
-            return closedRegularSchedules.get(SMALL_SCHEDULE_PAGE_SIZE).getDate();
+            return closedRegularSchedules.get(SMALL_SCHEDULE_PAGE_SIZE).getId();
         }
 
         for (TeamSchedule teamSchedule : closedRegularSchedules) {
@@ -60,17 +83,42 @@ public class ScheduleCloseExecutorService {
         return null;
     }
 
+    @Async("scheduleCloseExecutor")
+    @Transactional
+    public Long closeRegularScheduleById(Long lastScheduleId) {
+        List<TeamSchedule> closedAdhocSchedules
+            = teamScheduleQuerydslRepository.getTeamScheduleByStatusAndScheduleIdLt(REGULAR, lastScheduleId);
+        if (closedAdhocSchedules.size() > SMALL_SCHEDULE_PAGE_SIZE) {
+            for (TeamSchedule teamSchedule : closedAdhocSchedules) {
+                teamSchedule.updateStatus(CLOSED);
+            }
+            teamScheduleJpaRepository.saveAll(closedAdhocSchedules);
+            return closedAdhocSchedules.get(SMALL_SCHEDULE_PAGE_SIZE).getId();
+        }
+
+        for (TeamSchedule teamSchedule : closedAdhocSchedules) {
+            teamSchedule.updateStatus(AD_HOC);
+        }
+        teamScheduleJpaRepository.saveAll(closedAdhocSchedules);
+        return null;
+    }
+
     @Scheduled(cron = "0 * * * * *")
     public void closeScheduleJob() {
         LocalDateTime nextRegularDateTime = LocalDateTime.now();
-        do {
-            nextRegularDateTime = closeRegularSchedule(nextRegularDateTime);
-        } while (nextRegularDateTime != null);
+        Long lastRegularScheduleId = closeRegularSchedule(nextRegularDateTime);
+        if (lastRegularScheduleId != null) {
+            do {
+                lastRegularScheduleId = closeRegularScheduleById(lastRegularScheduleId);
+            } while (lastRegularScheduleId != null);
+        }
 
         LocalDateTime nextAdhocDateTime = LocalDateTime.now();
-        do {
-            nextAdhocDateTime = closeRegularSchedule(nextAdhocDateTime);
-        } while (nextAdhocDateTime != null);
-
+        Long lastAdhocScheduleId = closeAdhocSchedule(nextAdhocDateTime);
+        if (lastAdhocScheduleId != null) {
+            do {
+                lastAdhocScheduleId = closeAdhocScheduleById(lastAdhocScheduleId);
+            } while (lastAdhocScheduleId != null);
+        }
     }
 }

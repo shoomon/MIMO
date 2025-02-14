@@ -1,6 +1,12 @@
 package com.bisang.backend.auth.service;
 
-import org.apache.commons.lang3.RandomStringUtils;
+import static com.bisang.backend.common.exception.ExceptionCode.*;
+import static com.bisang.backend.common.utils.StringUtils.randomAlphaNumeric;
+import static com.bisang.backend.s3.domain.ProfileImage.createUserProfile;
+import static com.bisang.backend.s3.service.S3Service.CAT_IMAGE_URI;
+
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 import com.bisang.backend.account.service.AccountService;
@@ -18,12 +24,6 @@ import com.bisang.backend.user.service.UserService;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-
-import java.util.Optional;
-
-import static com.bisang.backend.common.exception.ExceptionCode.*;
-import static com.bisang.backend.s3.domain.ProfileImage.createUserProfile;
-import static com.bisang.backend.s3.service.S3Service.CAT_IMAGE_URI;
 
 @Getter
 @RequiredArgsConstructor
@@ -50,7 +50,7 @@ public class OAuth2Service {
 
     public UserTokens loginYame(String email, String name) {
         Optional<User> findUser = userJpaRepository.findByEmail(email);
-        String account = RandomStringUtils.randomAlphabetic(13);
+        String account = randomAlphaNumeric(13);
         if (findUser.isPresent()) {
             UserTokens userTokens = jwtUtil.createLoginToken(findUser.get().getId().toString());
             RefreshToken refreshToken = new RefreshToken(findUser.get().getId(), userTokens.getRefreshToken());
