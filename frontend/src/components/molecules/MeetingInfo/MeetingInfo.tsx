@@ -4,11 +4,11 @@ import type { RatingStarProps } from '@/components/atoms/RatingStar/RatingStar';
 import getDisplayedTags from '@/utils/filterTagsByLength';
 import MeetingInfoView from './MeetingInfo.view';
 import { joinTeamForPrivate, joinTeamForPublic } from '@/apis/TeamAPI';
-import { TeamRecruitStatus, TeamUserRole } from '@/types/Team';
+import { TeamNotificationStatus, TeamRecruitStatus } from '@/types/Team';
+import useMyTeamProfile from '@/hooks/useMyTeamProfile';
 
 export interface MeetingInfoProps {
     teamId: string;
-    role: TeamUserRole;
     subTitle: string;
     rating: RatingStarProps;
     title: string;
@@ -18,6 +18,7 @@ export interface MeetingInfoProps {
     teamUserId: number | null;
     nickName: string;
     recruitStatus: TeamRecruitStatus;
+    notificationStatus: TeamNotificationStatus;
 }
 
 const MeetingInfo = ({
@@ -31,6 +32,7 @@ const MeetingInfo = ({
     teamUserId,
     recruitStatus,
     nickName,
+    notificationStatus,
 }: MeetingInfoProps) => {
     const displayedTags = getDisplayedTags(tag);
 
@@ -41,14 +43,9 @@ const MeetingInfo = ({
 
     const handleJoinRequest = () => {
         if (recruitStatus === 'ACTIVE_PUBLIC') {
-            console.log('저기 도착');
-
             joinTeamForPublic(teamId, nickName, notificationStatus);
         } else if (recruitStatus === 'ACTIVE_PRIVATE') {
-            console.log('여기 도착');
-
             let memo = window.prompt('메모를 입력하세요', '');
-            // 입력하지 않거나 공백만 입력한 경우 기본 메세지 사용
             if (!memo || memo.trim() === '') {
                 memo = '안녕하세요? 잘 부탁드립니다.';
             }
@@ -57,7 +54,11 @@ const MeetingInfo = ({
             throw new Error('이런');
         }
     };
+    const { data: myProfileData } = useMyTeamProfile(teamId);
 
+    if (!myProfileData) {
+        return;
+    }
     return (
         <MeetingInfoView
             subTitle={subTitle}
@@ -69,6 +70,7 @@ const MeetingInfo = ({
             onUpdateInfo={handleUpdateInfo}
             onJoinRequest={handleJoinRequest}
             teamUserId={teamUserId}
+            role={myProfileData.role}
         />
     );
 };

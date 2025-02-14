@@ -1,9 +1,12 @@
-import { TeamCreateRequest } from '@/pages/Team/TeamCreate';
 import { customFetch } from './customFetch';
 import {
     Area,
+    MyTeamProfileResponse,
+    TeamCreateRequest,
     TeamInfoResponse,
     TeamInfosResponse,
+    TeamInvitesResponse,
+    TeamNotificationStatus,
     TeamScheduleSpecificResponse,
     TeamSchedulesResponse,
     TeamUserResponse,
@@ -76,13 +79,31 @@ export const getTeamInfo = async (
     }
 };
 
+export const getMyTeamProfile = async (
+    teamId: string,
+): Promise<MyTeamProfileResponse> => {
+    if (!teamId) {
+        throw new Error('팀 아이디가 없습니다.');
+    }
+
+    try {
+        const response = await customFetch('/team-user/my-info', {
+            method: 'GET',
+            params: { teamId }, // params는 객체여야 함
+        });
+        return response.json();
+    } catch (error) {
+        console.error('Error fetching category teams:', error);
+        throw error;
+    }
+};
+
 export const getTeamUsers = async (
     teamId: string,
 ): Promise<TeamUserResponse> => {
     if (!teamId) {
         throw new Error('팀 아이디가 없습니다.');
     }
-
     try {
         const response = await customFetch('/team-user/users', {
             method: 'GET',
@@ -96,9 +117,108 @@ export const getTeamUsers = async (
     }
 };
 
+export const getInvites = async (
+    teamId: string,
+): Promise<TeamInvitesResponse> => {
+    if (!teamId) {
+        throw new Error('팀 아이디가 없습니다.');
+    }
+    try {
+        const response = await customFetch('/team-leader/invite', {
+            method: 'GET',
+            params: { teamId }, // params는 객체여야 함
+        });
+
+        return response.json();
+    } catch (error) {
+        console.error('Error fetching category teams:', error);
+        throw error;
+    }
+};
+
+export const acceptMember = async (
+    teamId: string,
+    inviteId: number,
+): Promise<void> => {
+    try {
+        const body = JSON.stringify({
+            teamId,
+            inviteId,
+        });
+
+        await customFetch('/team-leader/invite-approve', {
+            method: 'PATCH',
+            body,
+        });
+    } catch (error) {
+        console.error('Error fetching delete team user:', error);
+        throw error;
+    }
+};
+
+export const rejectMember = async (
+    teamId: string,
+    inviteId: number,
+): Promise<void> => {
+    try {
+        const body = JSON.stringify({
+            teamId,
+            inviteId,
+        });
+
+        await customFetch('team-leader/invite-reject', {
+            method: 'PATCH',
+            body,
+        });
+    } catch (error) {
+        console.error('Error fetching delete team user:', error);
+        throw error;
+    }
+};
+
+export const upgradeRole = async (
+    teamId: string,
+    teamUserId: number,
+): Promise<void> => {
+    try {
+        const body = JSON.stringify({
+            teamId,
+            teamUserId,
+        });
+
+        await customFetch('/team-leader/role-upgrade', {
+            method: 'PATCH',
+            body,
+        });
+    } catch (error) {
+        console.error('Error fetching delete team user:', error);
+        throw error;
+    }
+};
+
+export const downgradeRole = async (
+    teamId: string,
+    teamUserId: number,
+): Promise<void> => {
+    try {
+        const body = JSON.stringify({
+            teamId,
+            teamUserId,
+        });
+
+        await customFetch('/team-leader/role-downgrade', {
+            method: 'PATCH',
+            body,
+        });
+    } catch (error) {
+        console.error('Error fetching delete team user:', error);
+        throw error;
+    }
+};
+
 export const deleteUsers = async (
     teamId: string,
-    teamUserId: string,
+    teamUserId: number,
 ): Promise<void> => {
     try {
         const body = JSON.stringify({
@@ -110,10 +230,6 @@ export const deleteUsers = async (
             method: 'DELETE',
             body,
         });
-
-        //  if(response.status==200){
-
-        //  }
     } catch (error) {
         console.error('Error fetching delete team user:', error);
         throw error;
@@ -123,7 +239,7 @@ export const deleteUsers = async (
 export const joinTeamForPublic = async (
     teamId: string,
     nickname: string,
-    notificationStatus: 'ACTIVE' | 'INACTIVE',
+    notificationStatus: TeamNotificationStatus,
 ): Promise<void> => {
     const body = {
         teamId: teamId,

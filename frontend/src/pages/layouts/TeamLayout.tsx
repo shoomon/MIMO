@@ -1,36 +1,32 @@
-import { getTeamInfo } from '@/apis/TeamAPI';
+import { getMyTeamProfile, getTeamInfo } from '@/apis/TeamAPI';
 import { Album, DetailNav, MeetingInfo } from '@/components/molecules';
 import { useQuery } from '@tanstack/react-query';
 import { Outlet, useParams } from 'react-router-dom';
 import { TeamDataMockup } from '@/mock/TeamLayoutMock';
 import tagFormatter from '@/utils/tagFormatter';
-import { typeChecker } from '@/utils/typeChecker';
 
 const TeamLayout = () => {
     const { teamId } = useParams() as { teamId: string };
 
     const album = TeamDataMockup;
 
-    const { data } = useQuery({
+    const { data: teamData } = useQuery({
         queryKey: ['teamInfo', teamId],
         queryFn: () => getTeamInfo(teamId),
     });
 
-    function isDefined<T>(data: T | null | undefined): data is T {
-        return data !== null && data !== undefined;
-    }
+    const { data: myProfileData } = useQuery({
+        queryKey: ['ProfileInfo', teamId],
+        queryFn: () => getMyTeamProfile(teamId),
+    });
 
-    if (!isDefined(data)) {
-        throw new Error('데이터가 존재하지 않습니다.');
-    }
-
-    const formattedTags = tagFormatter(data?.tags || []);
+    const formattedTags = tagFormatter(teamData?.tags || []);
 
     return (
         <main className="w-full">
             <section className="w-full">
                 <img
-                    src={data?.profileUri}
+                    src={teamData?.profileUri}
                     alt={teamId}
                     className="h-[22.5rem] w-full object-cover"
                 />
@@ -39,22 +35,29 @@ const TeamLayout = () => {
                 <section className="flex w-[29rem] flex-col gap-12 pl-4">
                     <MeetingInfo
                         teamId={teamId}
-                        subTitle={data?.description}
+                        subTitle={
+                            teamData?.description || 'subtitle이 없습니다.'
+                        }
                         rating={{
-                            rating: data?.score || 0,
+                            rating: teamData?.score || 0,
                             reviewCount: 0,
                         }}
-                        title={data?.name}
+                        title={teamData?.name || 'title이 없습니다.'}
                         tag={formattedTags}
-                        maxCapacity={data?.maxCapacity || 0}
-                        currentCapacity={data?.currentCapacity || 0}
+                        maxCapacity={teamData?.maxCapacity || 0}
+                        currentCapacity={teamData?.currentCapacity || 0}
                         teamUserId={
-                            data?.teamUserId !== undefined
-                                ? data.teamUserId
+                            myProfileData?.teamUserId !== undefined
+                                ? myProfileData.teamUserId
                                 : null
                         }
                         nickName="일단닉네임"
-                        recruitStatus={data?.recruitStatus}
+                        recruitStatus={
+                            teamData?.recruitStatus || 'ACTIVE_PUBLIC'
+                        }
+                        notificationStatus={
+                            myProfileData?.notificationStatus || 'ACTIVE'
+                        }
                     />
                     <Album id={teamId ?? ''} items={album.items} />
                 </section>
