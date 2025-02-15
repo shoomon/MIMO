@@ -2,11 +2,13 @@ package com.bisang.backend.chat.repository.chatroomuser;
 
 import static com.bisang.backend.common.exception.ExceptionCode.NOT_FOUND;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Set;
 
 import jakarta.transaction.Transactional;
 
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 
 import com.bisang.backend.chat.domain.ChatroomUser;
@@ -17,7 +19,6 @@ import com.bisang.backend.user.repository.UserJpaRepository;
 
 import lombok.RequiredArgsConstructor;
 
-
 @Repository
 @RequiredArgsConstructor
 public class ChatroomUserRepository {
@@ -27,17 +28,19 @@ public class ChatroomUserRepository {
     private final UserJpaRepository userJpaRepository;
     private final RedisCacheRepository redisCacheRepository;
 
-    public void insertRedisMemberUser(Long teamId, Long userId, Long teamUserId) {
-        chatroomUserRedisRepository.insertMember(teamId, userId, teamUserId);
+    public void insertRedisMemberUser(Long teamId, Long userId) {
+        chatroomUserRedisRepository.insertMember(teamId, userId);
     }
 
     public void insertJpaMemberUser(ChatroomUser chatroomUser) {
         chatroomUserJpaRepository.save(chatroomUser);
     }
 
-    public void removeMember(Long teamId, Long userId, Long teamUserId) {
-        chatroomUserRedisRepository.deleteMember(teamId, userId, teamUserId);
-        chatroomUserJpaRepository.deleteById(teamUserId);
+    @Transactional
+    @Modifying
+    public void removeMember(Long teamId, Long userId) {
+        chatroomUserRedisRepository.deleteMember(teamId, userId);
+        chatroomUserJpaRepository.deleteByChatroomIdAndUserId(teamId, userId);
     }
 
     public Set<Long> getTeamMembers(long teamId) {
@@ -48,33 +51,32 @@ public class ChatroomUserRepository {
         return teamMembers;
     }
 
-    public boolean isMember(Long teamId, Long userId, Long teamUserId) {
-        if (chatroomUserRedisRepository.isMember(teamId, userId, teamUserId)) {
+    public boolean isMember(Long teamId, Long userId) {
+        if (chatroomUserRedisRepository.isMember(teamId, userId)) {
             return true;
         }
 
-        if (chatroomUserJpaRepository.existsByIdAndUserIdAndChatroomId(
-                teamUserId,
+        if (chatroomUserJpaRepository.existsByUserIdAndChatroomId(
                 userId,
                 teamId
         )) {
-            chatroomUserRedisRepository.insertMember(teamId, userId, teamUserId);
+            chatroomUserRedisRepository.insertMember(teamId, userId);
             return true;
         }
 
         return false;
     }
 
-    public Map<Object, Object> getUserInfo(Long teamUserId, Long userId) {
-        Map<Object, Object> userInfo = redisCacheRepository.getUserProfile(teamUserId);
+    public Map<Object, Object> getUserInfo(Long chatroomId, Long userId) {
+        Map<Object, Object> userInfo = redisCacheRepository.getUserProfile(chatroomId, userId);
 
         if (userInfo.isEmpty()) {
-            String nickname = chatroomUserJpaRepository.findNicknameById(teamUserId);
+            String nickname = chatroomUserJpaRepository.findNicknameByTeamIdAndUserId(chatroomId, userId);
 
             User user = userJpaRepository.findById(userId).orElseThrow(() -> new AccountException(NOT_FOUND));
             String profileImage = user.getProfileUri();
 
-            redisCacheRepository.cacheUserProfile(teamUserId, nickname, profileImage);
+            redisCacheRepository.cacheUserProfile(chatroomId, userId, nickname, profileImage);
 
             userInfo.put("nickname", nickname);
             userInfo.put("profileImage", profileImage);
@@ -83,28 +85,28 @@ public class ChatroomUserRepository {
         return userInfo;
     }
 
-    public Long getTeamUserId(Long userId, Long teamId) {
-        Long teamUserId = chatroomUserRedisRepository.getTeamUserId(userId, teamId);
-        if (teamUserId == null) {
-            return chatroomUserJpaRepository.findTeamUserIdByUserIdAndChatroomId(userId, teamId);
-        }
-
-        return teamUserId;
-    }
-
     @Transactional
     public void updateNickname(Long userId, Long teamId, String nickname) {
-        Long teamUserId = getTeamUserId(userId, teamId);
-        redisCacheRepository.updateUserNickName(teamUserId, nickname);
+
+        redisCacheRepository.updateUserNickName(teamId, userId, nickname);
 
         ChatroomUser user = chatroomUserJpaRepository
-                .findById(teamUserId)
+                .findByChatroomIdAndUserId(teamId, userId)
                 .orElseThrow(() -> new AccountException(NOT_FOUND));
         user.setNickname(nickname);
     }
 
-    public void updateProfileUri(Long userId, Long teamId, String profileUri) {
-        Long teamUserId = getTeamUserId(userId, teamId);
-        redisCacheRepository.updateUserProfileUri(teamUserId, profileUri);
+    @Transactional
+    public void updateLastRead(Long userId, LocalDateTime lastDateTime, Long roomId, Long lastChatId) {
+        //TODO: db에 어떻게 저장할지 생각해봐야함. 저장 해야하나..? 어차피 실시간이 아닌데?
+        chatroomUserRedisRepository.insertLastReadScore(roomId, userId, lastDateTime, lastChatId);
+    }
+
+    public Double getLastReadScore(Long chatroomId, Long userId) {
+        return chatroomUserRedisRepository.getLastReadScore(chatroomId, userId);
+    }
+
+    public Long getLastReadChatId(Long chatroomId, Long userId) {
+        return chatroomUserRedisRepository.getLastReadChatId(chatroomId, userId);
     }
 }

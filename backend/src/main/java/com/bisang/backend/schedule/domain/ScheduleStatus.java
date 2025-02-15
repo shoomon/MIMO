@@ -9,7 +9,7 @@ import lombok.Getter;
  */
 @Getter
 public enum ScheduleStatus {
-    AD_HOC("번개모임"), REGURAL("정기모임"), CLOSED("종료된 모임");
+    AD_HOC("번개모임"), REGULAR("정기모임"), CLOSED("종료된 모임");
 
     private String name;
 

@@ -3,6 +3,8 @@ package com.bisang.backend.schedule.service;
 import static com.bisang.backend.common.exception.ExceptionCode.*;
 import static com.bisang.backend.schedule.domain.ScheduleStatus.CLOSED;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,14 +53,14 @@ public class ScheduleParticipantsService {
     public void leaveSchedule(
             String key, // teamScheduleId의 String 형태
             Long userId,
-            Long scheduleParticipantsId
+            Long teamScheduleId
     ) {
-        ScheduleParticipants participants = findParticipantsById(scheduleParticipantsId);
-        participantsValidation(userId, participants);
-        scheduleParticipantsJpaRepository.delete(participants);
-
-        TeamSchedule schedule = findScheduleById(participants.getTeamScheduleId());
+        TeamSchedule schedule = findScheduleById(teamScheduleId);
         leaderValidation(userId, schedule);
+
+        var participants = scheduleParticipantsJpaRepository.findByTeamScheduleId(teamScheduleId);
+        scheduleParticipantsJpaRepository.delete(findParticipant(userId, participants));
+
         schedule.decreaseCurrentParticipants();
         teamScheduleJpaRepository.save(schedule);
     }
@@ -71,10 +73,11 @@ public class ScheduleParticipantsService {
         }
     }
 
-    private void participantsValidation(Long userId, ScheduleParticipants participants) {
-        if (!participants.getUserId().equals(userId)) { // 다른 유저는 삭제할 수 없음.
-            throw new ScheduleException(INVALID_REQUEST);
-        }
+    private ScheduleParticipants findParticipant(Long userId, List<ScheduleParticipants> participants) {
+        return participants.stream()
+                .filter(participant -> participant.getUserId().equals(userId))
+                .findFirst()
+                .orElseThrow(() -> new ScheduleException(INVALID_REQUEST));
     }
 
     private void isJoinPossibleValidation(TeamSchedule teamSchedule, Long userId) {

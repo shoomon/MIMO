@@ -7,14 +7,14 @@ import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
 import java.util.List;
+import java.util.Optional;
 
-import com.bisang.backend.common.exception.ExceptionCode;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bisang.backend.chat.service.ChatroomService;
 import com.bisang.backend.common.exception.TeamException;
+import com.bisang.backend.common.utils.StringUtils;
 import com.bisang.backend.invite.domain.TeamInvite;
 import com.bisang.backend.invite.repository.TeamInviteJpaRepository;
 import com.bisang.backend.team.annotation.TeamCoLeader;
@@ -49,7 +49,7 @@ public class TeamLeaderService {
         // CHATTING 방에 넣기. 여기는 닉네임 어떻게 되는거지?
         teamInviteJpaRepository.save(teamInvite);
 
-        String tmpNickname = RandomStringUtils.randomAlphabetic(10);
+        String tmpNickname = StringUtils.randomAlphaNumeric(10);
         TeamUser teamUser = TeamUser.createTeamMember(teamInvite.getUserId(), teamId, tmpNickname, ACTIVE);
         teamUserJpaRepository.save(teamUser);
     }
@@ -89,6 +89,11 @@ public class TeamLeaderService {
         TeamUser teamUser = findTeamUserById(teamUserId);
         leaderCannotDeleteValidation(team, teamUser);
         teamUserJpaRepository.delete(teamUser);
+
+        Optional<TeamInvite> teamInvite = teamInviteJpaRepository.findByTeamIdAndUserId(teamId, userId);
+        if (teamInvite.isEmpty()) {
+            teamInviteJpaRepository.delete(teamInvite.get());
+        }
     }
 
     private void leaderCannotDeleteValidation(Team team, TeamUser teamUser) {
@@ -127,12 +132,6 @@ public class TeamLeaderService {
     @Transactional(readOnly = true)
     public List<TeamInviteDto> findTeamInviteRequest(Long userId, Long teamId) {
         return teamUserQuerydslRepository.getTeamInviteInfo(teamId);
-    }
-
-    public void validateTeamLeader(Long teamId, Long userId) {
-        if (teamUserJpaRepository.findByTeamIdAndUserId(teamId, userId).isEmpty()) {
-            throw new TeamException(ExceptionCode.UNAUTHORIZED_USER);
-        }
     }
 
     private Team findTeamById(Long teamId) {

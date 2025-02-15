@@ -8,6 +8,4 @@ import com.bisang.backend.invite.domain.TeamInvite;
 
 public interface TeamInviteJpaRepository extends JpaRepository<TeamInvite, Long> {
     Optional<TeamInvite> findByTeamIdAndUserId(Long teamId, Long userId);
-
-    Long countByTeamId(Long teamId);
 }
