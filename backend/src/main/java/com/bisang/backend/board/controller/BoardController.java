@@ -45,7 +45,6 @@ public class BoardController {
     private final BoardService boardService;
     private final BoardJpaRepository boardJpaRepository;
 
-    @Transactional
     @PostMapping(consumes = MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Long> createPost(
             @AuthUser User user,
@@ -92,7 +91,6 @@ public class BoardController {
         return ResponseEntity.ok(boardService.getPostDetail(postId));
     }
 
-    @Transactional
     @PutMapping(consumes = MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> updatePost(
             @AuthUser User user,
@@ -100,8 +98,6 @@ public class BoardController {
             @Valid @ModelAttribute UpdatePostRequest request
     ) {
 
-        System.out.println(request.filesToDelete());
-        System.out.println(request.getFilesToDeleteList().size());
         boardService.updatePost(
                 user.getId(),
                 postId,
@@ -112,7 +108,6 @@ public class BoardController {
         return ResponseEntity.ok("게시글이 수정되었습니디.");
     }
 
-    @Transactional
     @DeleteMapping
     public ResponseEntity<String> deletePost(
             @AuthUser User user,
@@ -122,7 +117,6 @@ public class BoardController {
         return ResponseEntity.ok("게시글이 삭제되었습니다.");
     }
 
-    @Transactional
     @PostMapping("/like")
     public ResponseEntity<String> likePost(
             @AuthUser User user,

@@ -37,6 +37,7 @@ public class BoardService {
     private final UserJpaRepository userJpaRepository;
     private final TeamBoardJpaRepository teamBoardJpaRepository;
 
+    @Transactional
     //    @TeamMember
     public Long createPost(
             Long teamBoardId,
@@ -152,6 +153,7 @@ public class BoardService {
         return postDetail;
     }
 
+    @Transactional
     //    @TeamMember
     public void updatePost(
             Long userId,
@@ -209,6 +211,7 @@ public class BoardService {
         }
     }
 
+    @Transactional
     //    @TeamMember
     public void deletePost(Long userId, Long postId) {
         Board post = boardJpaRepository.findById(postId)
