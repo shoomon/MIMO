@@ -50,6 +50,12 @@ public class BoardService {
         TeamUser teamUser = teamUserJpaRepository.findByTeamIdAndUserId(teamId, userId)
                 .orElseThrow(() -> new EntityNotFoundException("팀유저를 찾을 수 없습니다."));
 
+        Long boardCount = boardJpaRepository.countBoardsByTeamBoardId(teamBoardId);
+
+        if(boardCount > 10000){
+            throw new BoardException(ExceptionCode.BOARD_LIMIT);
+        }
+
         BoardDescription boardDescription = boardDescriptionJpaRepository.save(new BoardDescription(description));
 
         Board post = boardJpaRepository.save(Board.builder()

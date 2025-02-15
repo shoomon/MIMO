@@ -31,4 +31,6 @@ public interface BoardJpaRepository extends JpaRepository<Board, Long> {
 
     @Query("SELECT b.id FROM Board b WHERE b.teamBoardId = :teamBoardId")
     List<Long> findTeamBoardIdByTeamBoardId(@Param(value = "teamBoardId") Long teamBoardId);
+
+    long countBoardsByTeamBoardId(Long teamBoardId);
 }
