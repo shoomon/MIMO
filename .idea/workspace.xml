@@ -114,23 +114,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.BackendApplication.executor": "Run",
-    "DefaultHtmlFileTemplate": "HTML File",
-    "Gradle.Build backend.executor": "Run",
-    "Gradle.Download Sources.executor": "Run",
-    "Gradle.backend [:com.bisang.backend.BackendApplication.main()].executor": "Run",
-    "Gradle.backend [:com.bisang.backend.point.infrastructure.PortOneProvider.main()].executor": "Run",
-    "Gradle.backend [build].executor": "Run",
-    "Gradle.backend [clean].executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "S12P11A504-131",
-    "kotlin-language-version-configured": "true",
-    "settings.editor.selected.configurable": "preferences.lookFeel"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.BackendApplication.executor&quot;: &quot;Run&quot;,
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;Gradle.Build backend.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Download Sources.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.backend [:com.bisang.backend.BackendApplication.main()].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.backend [:com.bisang.backend.point.infrastructure.PortOneProvider.main()].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.backend [build].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.backend [clean].executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;S12P11A504-131&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\SSAFY\IdeaProjects\S12P11A504\backend\src\main\resources\templates" />
