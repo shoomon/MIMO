@@ -3,14 +3,17 @@ package com.bisang.backend.transaction.service.transfer;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bisang.backend.installment.controller.request.InstallmentRequest;
+import com.bisang.backend.installment.domain.Installment;
+import com.bisang.backend.installment.repository.InstallmentJpaRepository;
+import com.bisang.backend.transaction.domain.Transaction;
 import com.bisang.backend.account.domain.Account;
 import com.bisang.backend.account.repository.AccountJpaRepository;
 import com.bisang.backend.common.exception.AccountException;
 import com.bisang.backend.common.exception.ExceptionCode;
-import com.bisang.backend.transaction.domain.AccountDetails;
-import com.bisang.backend.transaction.domain.Transaction;
+import com.bisang.backend.account.domain.AccountDetails;
 import com.bisang.backend.transaction.domain.TransactionCategory;
-import com.bisang.backend.transaction.service.AccountDetailsService;
+import com.bisang.backend.account.service.AccountDetailsService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,13 +21,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TransferService {
     private final AccountDetailsService accountDetailsService;
-
     private final AccountJpaRepository accountJpaRepository;
+    private final InstallmentJpaRepository installmentJpaRepository;
 
     @Transactional
     public void transfer(Transaction transaction) {
         String senderAccountNumber = transaction.getSenderAccountNumber();
         String receiverAccountNumber = transaction.getReceiverAccountNumber();
+        System.out.println(receiverAccountNumber);
         Long balance = transaction.getBalance();
 
         validateSenderAccountBalance(senderAccountNumber, balance);
@@ -38,6 +42,12 @@ public class TransferService {
                 = accountDetailsService.createAccountDetails(transaction, TransactionCategory.DEPOSIT, "입금");
         accountDetailsService.saveAccountDetails(senderAccountDetails);
         accountDetailsService.saveAccountDetails(receiverAccountDetails);
+    }
+
+    @Transactional
+    public void installment(InstallmentRequest installmentRequest, Transaction transaction) {
+        transfer(transaction);
+        updateInstallment(installmentRequest);
     }
 
     private void validateSenderAccountBalance(String senderAccountNumber, Long balance) {
@@ -54,9 +64,21 @@ public class TransferService {
         accountJpaRepository.save(account);
     }
 
-    private void updateReceiverAccountBalance(String accountNumber, Long balance) {
-        Account account = accountJpaRepository.findByAccountNumber(accountNumber);
+    private void updateReceiverAccountBalance(String receiverAccountNumber, Long balance) {
+        Account account = accountJpaRepository.findByAccountNumber(receiverAccountNumber);
         account.increaseBalance(balance);
         accountJpaRepository.save(account);
+    }
+
+    private void updateInstallment(InstallmentRequest installmentRequest) {
+        Installment installment = installmentJpaRepository.findByTeamIdAndUserIdAndRound(
+                installmentRequest.getTeamId(),
+                installmentRequest.getUserId(),
+                installmentRequest.getRound()
+        ).orElseThrow(RuntimeException::new);
+
+        installment.updateInstallmentStatusToYes();
+        installment.updateInstallmentDate();
+        installmentJpaRepository.save(installment);
     }
 }

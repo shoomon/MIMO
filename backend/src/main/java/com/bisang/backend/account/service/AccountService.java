@@ -6,6 +6,10 @@ import java.util.stream.IntStream;
 
 import org.springframework.stereotype.Service;
 
+import com.bisang.backend.common.exception.AccountException;
+import com.bisang.backend.common.exception.ExceptionCode;
+import com.bisang.backend.team.repository.TeamJpaRepository;
+import com.bisang.backend.user.repository.UserJpaRepository;
 import com.bisang.backend.account.domain.Account;
 import com.bisang.backend.account.repository.AccountJpaRepository;
 
@@ -21,6 +25,8 @@ public class AccountService {
     private static final int RANDOM_NUMBER_RANGE_MAX = 1_000_000_000;
 
     private final AccountJpaRepository accountJpaRepository;
+    private final UserJpaRepository userJpaRepository;
+    private final TeamJpaRepository teamJpaRepository;
 
     public Account createTeamAccount() {
         String accountNumber = IntStream.range(0, MAX_RETRY)
@@ -44,6 +50,18 @@ public class AccountService {
         accountJpaRepository.save(new Account(accountNumber));
 
         return accountNumber;
+    }
+
+    public void validateTeamAccount(Long teamId, String accountNumber) {
+        if (teamJpaRepository.findByIdAndAccountNumber(teamId, accountNumber).isEmpty()) {
+            throw new AccountException(ExceptionCode.NOT_MATCHED_TEAM_AND_ACCOUNT_NUMBER);
+        }
+    }
+
+    public void validateUserAccount(Long userId, String accountNumber) {
+        if (userJpaRepository.findByIdAndAccountNumber(userId, accountNumber).isEmpty()) {
+            throw new AccountException(ExceptionCode.NOT_MATCHED_USER_AND_ACCOUNT_NUMBER);
+        }
     }
 
     private String createRandomNineNumber() {

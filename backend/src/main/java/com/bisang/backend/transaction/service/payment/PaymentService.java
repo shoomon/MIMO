@@ -7,32 +7,23 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import com.bisang.backend.account.domain.Account;
+import com.bisang.backend.account.domain.AccountDetails;
 import com.bisang.backend.account.repository.AccountJpaRepository;
+import com.bisang.backend.account.service.AccountDetailsService;
 import com.bisang.backend.common.exception.AccountException;
 import com.bisang.backend.common.exception.ExceptionCode;
+import com.bisang.backend.user.domain.User;
 import com.bisang.backend.transaction.controller.request.QrCodeRequest;
-import com.bisang.backend.transaction.domain.AccountDetails;
 import com.bisang.backend.transaction.domain.Transaction;
 import com.bisang.backend.transaction.domain.TransactionCategory;
-import com.bisang.backend.transaction.service.AccountDetailsService;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class PaymentService {
-    private final QrCodeService qrCodeService;
     private final AccountDetailsService accountDetailsService;
-
     private final AccountJpaRepository accountJpaRepository;
-
-    public String generateExpiringUuidForTeam(QrCodeRequest qrCodeRequest) {
-        return qrCodeService.generateExpiringUuidForTeam(qrCodeRequest);
-    }
-
-    public String generateExpiringUuidForUser(QrCodeRequest qrCodeRequest) {
-        return qrCodeService.generateExpiringUuidForUser(qrCodeRequest);
-    }
 
     @Transactional
     public void pay(Transaction transaction) {
@@ -48,10 +39,6 @@ public class PaymentService {
         AccountDetails payerAccountDetails
                 = accountDetailsService.createAccountDetails(transaction, TransactionCategory.PAYMENT, "결제");
         accountDetailsService.saveAccountDetails(payerAccountDetails);
-    }
-
-    public void validateQrCodeExpiration(String uuid) {
-        qrCodeService.validateUuidExpiringTime(uuid);
     }
 
     private void validateAccountBalance(String senderAccountNumber, Long balance) {

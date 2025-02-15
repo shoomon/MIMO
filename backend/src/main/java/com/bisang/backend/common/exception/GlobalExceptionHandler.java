@@ -154,7 +154,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(TransactionException.class)
     public ResponseEntity<ExceptionResponse> handleTransactionException(TransactionException exception) {
         log.warn(exception.getMessage(), exception);
-        return ResponseEntity.badRequest()
+        return ResponseEntity.internalServerError()
                 .body(new ExceptionResponse(exception.getCode(), exception.getMessage()));
     }
 }

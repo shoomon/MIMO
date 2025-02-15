@@ -9,6 +9,7 @@ import static com.bisang.backend.s3.service.S3Service.CAT_IMAGE_URI;
 import java.util.List;
 import java.util.Optional;
 
+import com.bisang.backend.account.service.AccountService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,6 +45,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class TeamService {
+    private final AccountService accountService;
     private final TagJpaRepository tagJpaRepository;
     private final TeamDescriptionJpaRepository teamDescriptionJpaRepository;
     private final TeamJpaRepository teamJpaRepository;
