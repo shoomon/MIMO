@@ -16,16 +16,16 @@ public record UpdatePostRequest(
         String title,
         @NotBlank(message = "내용을 입력하세요.")
         String description,
-        String filesToDeleteJson,
+        String filesToDelete,
         MultipartFile[] filesToAdd
 ) {
-    public List<BoardFileDto> getFilesToDelete() {
-        if (filesToDeleteJson == null || filesToDeleteJson.isBlank()) {
+    public List<BoardFileDto> getFilesToDeleteList() {
+        if (filesToDelete == null || filesToDelete.isBlank()) {
             return Collections.emptyList();
         }
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.readValue(filesToDeleteJson, new TypeReference<List<BoardFileDto>>() {});
+            return objectMapper.readValue(filesToDelete, new TypeReference<List<BoardFileDto>>() {});
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Invalid JSON format for filesToDelete", e);
         }

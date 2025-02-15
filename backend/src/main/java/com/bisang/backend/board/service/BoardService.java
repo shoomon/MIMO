@@ -46,15 +46,15 @@ public class BoardService {
             String description,
             MultipartFile[] files
     ) {
-        TeamUser teamUser = teamUserJpaRepository.findByTeamIdAndUserId(teamId, userId)
-                .orElseThrow(() -> new EntityNotFoundException("팀유저를 찾을 수 없습니다."));
+//        TeamUser teamUser = teamUserJpaRepository.findByTeamIdAndUserId(teamId, userId)
+//                .orElseThrow(() -> new EntityNotFoundException("팀유저를 찾을 수 없습니다."));
 
         BoardDescription boardDescription = boardDescriptionJpaRepository.save(new BoardDescription(description));
 
         Board post = boardJpaRepository.save(Board.builder()
                 .teamBoardId(teamBoardId)
-                .teamUserId(teamUser.getId())
-//                        .teamUserId(1L)
+//                .teamUserId(teamUser.getId())
+                        .teamUserId(1L)
                 .userId(userId)
                 .title(title)
                 .description(boardDescription)
@@ -62,6 +62,7 @@ public class BoardService {
         //todo: 사진 업로드 비동기 처리
         if (files != null) {
             for(MultipartFile file : files){
+//                if(file.isEmpty()) continue;
                 String uri = s3Service.saveFile(userId, file);
 
                 String fileExtension = uri.substring(uri.lastIndexOf(".") + 1).toLowerCase();
@@ -163,8 +164,8 @@ public class BoardService {
         Board post = boardJpaRepository.findById(postId)
                 .orElseThrow(()-> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
 
-        TeamUser teamUser = teamUserJpaRepository.findById(post.getTeamUserId())
-                .orElseThrow(() -> new EntityNotFoundException("팀유저를 찾을 수 없습니다."));
+//        TeamUser teamUser = teamUserJpaRepository.findById(post.getTeamUserId())
+//                .orElseThrow(() -> new EntityNotFoundException("팀유저를 찾을 수 없습니다."));
 
         if(!post.getUserId().equals(userId)) throw new BoardException(ExceptionCode.NOT_AUTHOR);
 
@@ -176,6 +177,7 @@ public class BoardService {
 
         boardDescription.updateDescription(description);
         boardDescriptionJpaRepository.save(boardDescription);
+        System.out.println(filesToDelete.size());
 
         if(filesToDelete != null){
             for (BoardFileDto file : filesToDelete) {
@@ -195,12 +197,11 @@ public class BoardService {
             for(MultipartFile file : filesToAdd){
                 String uri = s3Service.saveFile(userId, file);
                 String fileExtension = uri.substring(uri.lastIndexOf(".") + 1).toLowerCase();
-                System.out.println(uri);
 
                 boardImageJpaRepository.save(BoardImage.builder()
                         .boardId(post.getId())
-                        .teamId(teamUser.getTeamId())
-//                                .teamId(1L)
+//                        .teamId(teamUser.getTeamId())
+                                .teamId(1L)
                         .fileExtension(fileExtension)
                         .fileUri(uri)
                         .build());

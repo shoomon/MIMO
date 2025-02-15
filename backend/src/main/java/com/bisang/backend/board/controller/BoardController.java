@@ -99,12 +99,15 @@ public class BoardController {
             @RequestParam(value = "post", required = true) Long postId,
             @Valid @ModelAttribute UpdatePostRequest request
     ) {
+
+        System.out.println(request.filesToDelete());
+        System.out.println(request.getFilesToDeleteList().size());
         boardService.updatePost(
                 user.getId(),
                 postId,
                 request.title(),
                 request.description(),
-                request.getFilesToDelete(),
+                request.getFilesToDeleteList(),
                 request.filesToAdd());
         return ResponseEntity.ok("게시글이 수정되었습니디.");
     }
