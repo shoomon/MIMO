@@ -4,26 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ce0c64dd-4326-401e-b4f1-7b7313c859a1" name="Changes" comment="refactor: 띄어쓰기, 반환타입 등 수정">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/build/generated/sources/annotationProcessor/java/main/com/bisang/backend/transaction/domain/QAccountDetails.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/generated/sources/annotationProcessor/java/main/com/bisang/backend/transaction/domain/QAccountDetails.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/account/service/AccountService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/account/service/AccountService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/controller/TeamLeaderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/controller/TeamLeaderController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/service/TeamLeaderService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/service/TeamLeaderService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/controller/TransactionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/controller/TransactionController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/controller/request/QrCodeRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/controller/request/QrCodeRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/converter/TransactionConverter.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/converter/TransactionConverter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/domain/AccountDetails.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/account/domain/AccountDetails.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/domain/TransactionCategory.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/domain/TransactionCategory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/repository/AccountDetailsJpaRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/repository/AccountDetailsJpaRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/repository/TransactionLogJpaRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/repository/TransactionLogJpaRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/service/AccountDetailsService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/account/service/AccountDetailsService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/service/TransactionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/service/TransactionService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/service/charge/ChargeService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/service/charge/ChargeService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/service/payment/PaymentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/service/payment/PaymentService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/service/payment/QrCodeService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/service/payment/QrCodeService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/service/transfer/TransferService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/service/transfer/TransferService.java" afterDir="false" />
-    </list>
+    <list default="true" id="ce0c64dd-4326-401e-b4f1-7b7313c859a1" name="Changes" comment="chore: 작업을 위한 gitlab 연동" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -42,23 +23,7 @@
         </task>
         <projects_view>
           <tree_state>
-            <expand>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="backend" type="f1a62948:ProjectNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="backend" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="backend" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-                <item name="build" type="c8890929:TasksNode$1" />
-              </path>
-            </expand>
+            <expand />
             <select />
           </tree_state>
         </projects_view>
@@ -119,6 +84,7 @@
   &quot;associatedIndex&quot;: 2
 }</component>
   <component name="ProjectId" id="2sVxsg9JEJEpH8vUQ0JivFcZ0d2" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -151,7 +117,7 @@
       <recent name="com.bisang.backend.point.domain" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.backend [build]">
+  <component name="RunManager" selected="Application.BackendApplication">
     <configuration name="BackendApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <envs>
         <env name="GOOGLE_TOKEN_URI" value="https://oauth2.googleapis.com/token" />
@@ -523,7 +489,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="build: build.gradle 의존성 추가" />
     <MESSAGE value="chore: gitignore 파일 수정" />
     <MESSAGE value="feat: 계좌 생성 로직 구현" />
     <MESSAGE value="feat: 계좌 재시도 로직 추가 / 계좌 유효성 검증 로직 추가 / 계좌 번호 생성 메서드명 수정" />
@@ -548,6 +513,7 @@
     <MESSAGE value="feat: 결제 기능 구현 완료" />
     <MESSAGE value="merge: backend_dev 병합" />
     <MESSAGE value="refactor: 띄어쓰기, 반환타입 등 수정" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactor: 띄어쓰기, 반환타입 등 수정" />
+    <MESSAGE value="chore: 작업을 위한 gitlab 연동" />
+    <option name="LAST_COMMIT_MESSAGE" value="chore: 작업을 위한 gitlab 연동" />
   </component>
 </project>
