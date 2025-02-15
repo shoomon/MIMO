@@ -242,14 +242,12 @@ public class BoardService {
     }
 
     @Transactional
-    public String likePost(Long teamUserId, Long postId){
+    public Void likePost(Long teamUserId, Long postId){
         Optional<BoardLike> userLike = boardLikeRepository.findByTeamUserIdAndBoardId(teamUserId, postId);
-        System.out.println("유저 좋아요 결과: " + userLike.isPresent());
 
         if (userLike.isPresent()) {
             boardLikeRepository.delete(userLike.get());
             boardJpaRepository.decreaseLikeCount(postId);
-            return "좋아요 감소";
         }else{
             boardLikeRepository.save(BoardLike.builder()
                     .teamUserId(teamUserId)
@@ -257,7 +255,6 @@ public class BoardService {
                     .build()
             );
             boardJpaRepository.increaseLikeCount(postId);
-            return "좋아요 증가";
         }
     }
 

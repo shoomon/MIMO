@@ -118,7 +118,7 @@ public class BoardController {
     }
 
     @PostMapping("/like")
-    public ResponseEntity<String> likePost(
+    public ResponseEntity<Void> likePost(
             @AuthUser User user,
             @Valid @RequestBody LikePostRequest request
     ) {
