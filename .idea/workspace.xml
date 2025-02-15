@@ -4,8 +4,26 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ce0c64dd-4326-401e-b4f1-7b7313c859a1" name="Changes" comment="refactor: 띄어쓰기, 반환타입 등 수정">
+    <list default="true" id="ce0c64dd-4326-401e-b4f1-7b7313c859a1" name="Changes" comment="chore: 작업을 위한 gitlab 연동">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.gradle/8.11.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.gradle/8.11.1/executionHistory/executionHistory.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.gradle/8.11.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.gradle/8.11.1/executionHistory/executionHistory.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.gradle/8.11.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.gradle/8.11.1/fileHashes/fileHashes.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.gradle/8.11.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.gradle/8.11.1/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.gradle/8.11.1/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.gradle/8.11.1/fileHashes/resourceHashesCache.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.gradle/file-system.probe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/s3/service/S3Service.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/s3/service/S3Service.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/schedule/domain/TeamSchedule$TeamScheduleBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/schedule/domain/TeamSchedule$TeamScheduleBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/controller/response/SingleTeamUserInfoResponse$SingleTeamUserInfoResponseBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/controller/response/SingleTeamUserInfoResponse$SingleTeamUserInfoResponseBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/domain/Team$TeamBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/domain/Team$TeamBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/domain/TeamUser$TeamUserBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/domain/TeamUser$TeamUserBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/transaction/domain/Transaction$TransactionBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/transaction/domain/Transaction$TransactionBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/transaction/domain/Transaction.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/transaction/domain/Transaction.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/user/controller/response/UserMyResponse$UserMyResponseBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/user/controller/response/UserMyResponse$UserMyResponseBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/reports/problems/problems-report.html" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/reports/problems/problems-report.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/tmp/compileJava/previous-compilation-data.bin" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/tmp/compileJava/previous-compilation-data.bin" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -96,21 +114,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
-    &quot;Gradle.Download Sources.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.backend [:com.bisang.backend.BackendApplication.main()].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.backend [:com.bisang.backend.point.infrastructure.PortOneProvider.main()].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.backend [build].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.backend [clean].executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;S12P11A504-131&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.BackendApplication.executor": "Run",
+    "DefaultHtmlFileTemplate": "HTML File",
+    "Gradle.Build backend.executor": "Run",
+    "Gradle.Download Sources.executor": "Run",
+    "Gradle.backend [:com.bisang.backend.BackendApplication.main()].executor": "Run",
+    "Gradle.backend [:com.bisang.backend.point.infrastructure.PortOneProvider.main()].executor": "Run",
+    "Gradle.backend [build].executor": "Run",
+    "Gradle.backend [clean].executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "S12P11A504-131",
+    "kotlin-language-version-configured": "true",
+    "settings.editor.selected.configurable": "preferences.lookFeel"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\SSAFY\IdeaProjects\S12P11A504\backend\src\main\resources\templates" />
@@ -147,6 +167,7 @@
         <env name="S3_SECRET_KEY" value="1LXYn3zrczpEjR1wNyT0QIGOn9/AoY8eHD5yU5wo" />
       </envs>
       <option name="MAIN_CLASS_NAME" value="com.bisang.backend.BackendApplication" />
+      <option name="PROGRAM_PARAMETERS" value="GOOGLE_TOKEN_URI=https://oauth2.googleapis.com/token;GOOGLE_RESOURCE_URI=https://www.googleapis.com/oauth2/v2/userinfo;GOOGLE_CLIENT_ID=385340399378-kumk6r07je1g3fthqlupuh78roghr7l4.apps.googleusercontent.com;GOOGLE_CLIENT_SECRET=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;GOOGLE_REDIRECT_URI=http://localhost:5500;SECRET_KEY=6I90nKd!pR@w#uL2xMv&amp;TgYzQaXj%Nc5oP^B$Vm*H7LfRxWq;ACCESS_TOKEN_EXPIRY=3600000;REFRESH_TOKEN_EXPIRY=604800000 ;DB_URL=stg-yswa-kr-practice-db-master.mariadb.database.azure.com:3306;DB_ID=S12P12A504@stg-yswa-kr-practice-db-master.mariadb.database.azure.com;DB_PASSWORD=1234;REDIS_URI=i12a504.p.ssafy.io;REDIS_PORT=6379;S3_BUCKET_NAME=bisang-mimo-bucket;S3_ACCESS_KEY=AKIAWLF26L5R2K6N3C4N;S3_SECRET_KEY=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" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="com.bisang.backend.*" />
@@ -218,9 +239,9 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.BackendApplication" />
         <item itemvalue="Gradle.backend [build]" />
         <item itemvalue="Gradle.backend [clean]" />
-        <item itemvalue="Application.BackendApplication" />
         <item itemvalue="Gradle.backend [build]" />
       </list>
     </recent_temporary>
@@ -490,7 +511,15 @@
       <option name="project" value="LOCAL" />
       <updated>1739624648915</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="chore: 작업을 위한 gitlab 연동">
+      <option name="closed" value="true" />
+      <created>1739624739441</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1739624739441</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -528,8 +557,8 @@
     <MESSAGE value="feat: 송금입금 기능 구현 및 일부 클래스명 변경, 클래스 위치 이동" />
     <MESSAGE value="feat: 결제 기능 구현 완료" />
     <MESSAGE value="merge: backend_dev 병합" />
-    <MESSAGE value="chore: 작업을 위한 gitlab 연동" />
     <MESSAGE value="refactor: 띄어쓰기, 반환타입 등 수정" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactor: 띄어쓰기, 반환타입 등 수정" />
+    <MESSAGE value="chore: 작업을 위한 gitlab 연동" />
+    <option name="LAST_COMMIT_MESSAGE" value="chore: 작업을 위한 gitlab 연동" />
   </component>
 </project>
