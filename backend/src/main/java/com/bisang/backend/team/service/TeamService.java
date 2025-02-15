@@ -9,6 +9,8 @@ import static com.bisang.backend.s3.service.S3Service.CAT_IMAGE_URI;
 import java.util.List;
 import java.util.Optional;
 
+import com.bisang.backend.board.domain.TeamBoard;
+import com.bisang.backend.board.repository.TeamBoardJpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -52,6 +54,7 @@ public class TeamService {
     private final TeamUserJpaRepository teamUserJpaRepository;
     private final S3Service s3Service;
     private final ProfileImageRepository profileImageRepository;
+    private final TeamBoardJpaRepository teamBoardJpaRepository;
 
     @EveryOne
     public Boolean existsTeamByName(String name) {
@@ -106,6 +109,13 @@ public class TeamService {
         Tag categoryTag = findTagByName(teamCategory.getName());
         TeamTag categoryTeamTag = new TeamTag(newTeam.getId(), categoryTag.getId());
         teamTagJpaRepository.save(categoryTeamTag);
+        
+        //기본 게시판 생성
+        teamBoardJpaRepository.save(TeamBoard.builder()
+                .teamId(newTeam.getId())
+                .boardName("자유게시판")
+                .build()
+        );
 
         // 팀 유저 저장
         var teamUser = TeamUser.createTeamLeader(leaderId, newTeam.getId(), nickname, notificationStatus);
