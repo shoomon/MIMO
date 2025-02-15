@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ce0c64dd-4326-401e-b4f1-7b7313c859a1" name="Changes" comment="chore: 작업을 위한 gitlab 연동" />
+    <list default="true" id="ce0c64dd-4326-401e-b4f1-7b7313c859a1" name="Changes" comment="refactor: 띄어쓰기, 반환타입 등 수정">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -23,7 +25,12 @@
         </task>
         <projects_view>
           <tree_state>
-            <expand />
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="backend" type="f1a62948:ProjectNode" />
+              </path>
+            </expand>
             <select />
           </tree_state>
         </projects_view>
@@ -119,6 +126,8 @@
   </component>
   <component name="RunManager" selected="Application.BackendApplication">
     <configuration name="BackendApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="ALTERNATIVE_JRE_PATH" value="liberica-17" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
       <envs>
         <env name="GOOGLE_TOKEN_URI" value="https://oauth2.googleapis.com/token" />
         <env name="GOOGLE_RESOURCE_URI" value="https://www.googleapis.com/oauth2/v2/userinfo" />
@@ -138,7 +147,6 @@
         <env name="S3_SECRET_KEY" value="1LXYn3zrczpEjR1wNyT0QIGOn9/AoY8eHD5yU5wo" />
       </envs>
       <option name="MAIN_CLASS_NAME" value="com.bisang.backend.BackendApplication" />
-      <module name="backend.main" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="com.bisang.backend.*" />
@@ -474,7 +482,15 @@
       <option name="project" value="LOCAL" />
       <updated>1739434214793</updated>
     </task>
-    <option name="localTasksCounter" value="32" />
+    <task id="LOCAL-00032" summary="refactor: 띄어쓰기, 반환타입 등 수정">
+      <option name="closed" value="true" />
+      <created>1739624648915</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1739624648915</updated>
+    </task>
+    <option name="localTasksCounter" value="33" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -512,8 +528,8 @@
     <MESSAGE value="feat: 송금입금 기능 구현 및 일부 클래스명 변경, 클래스 위치 이동" />
     <MESSAGE value="feat: 결제 기능 구현 완료" />
     <MESSAGE value="merge: backend_dev 병합" />
-    <MESSAGE value="refactor: 띄어쓰기, 반환타입 등 수정" />
     <MESSAGE value="chore: 작업을 위한 gitlab 연동" />
-    <option name="LAST_COMMIT_MESSAGE" value="chore: 작업을 위한 gitlab 연동" />
+    <MESSAGE value="refactor: 띄어쓰기, 반환타입 등 수정" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor: 띄어쓰기, 반환타입 등 수정" />
   </component>
 </project>
