@@ -10,6 +10,7 @@ import com.bisang.backend.s3.service.S3Service;
 import com.bisang.backend.user.repository.UserJpaRepository;
 import jakarta.persistence.EntityNotFoundException;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -119,6 +120,7 @@ public class BoardService {
         return new BoardListResponse(boardName, list);
     }
 
+    @Transactional
     //    @TeamMember
     public BoardDetailResponse getPostDetail(Long postId) {
         BoardDetailResponse postDetail = null;
@@ -229,6 +231,7 @@ public class BoardService {
         commentJpaRepository.deleteByBoardId(postId);
     }
 
+    @Transactional
     public String likePost(Long teamUserId, Long postId){
         Optional<BoardLike> userLike = boardLikeRepository.findByTeamUserIdAndBoardId(teamUserId, postId);
         System.out.println("유저 좋아요 결과: " + userLike.isPresent());

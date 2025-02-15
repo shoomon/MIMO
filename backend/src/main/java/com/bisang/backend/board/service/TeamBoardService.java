@@ -5,6 +5,8 @@ import com.bisang.backend.board.controller.dto.TeamBoardDto;
 import com.bisang.backend.board.controller.response.TeamBoardListResponse;
 import com.bisang.backend.board.domain.TeamBoard;
 import com.bisang.backend.board.repository.*;
+import com.bisang.backend.team.annotation.TeamLeader;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +36,7 @@ public class TeamBoardService {
         return new TeamBoardListResponse(list);
     }
 
+//    @TeamLeader
     public String createTeamBoard(Long teamId, String title) {
         TeamBoard teamBoard = teamBoardJpaRepository.save(TeamBoard.builder()
                 .teamId(teamId)
@@ -43,6 +46,8 @@ public class TeamBoardService {
         return teamBoard.getBoardName();
     }
 
+    @Transactional
+//    @TeamLeader
     public void deleteTeamBoard(Long teamBoardId) {
         List<Long> boardIdList = boardJpaRepository.findTeamBoardIdByTeamBoardId(teamBoardId);
 

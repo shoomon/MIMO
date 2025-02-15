@@ -34,7 +34,7 @@ import com.bisang.backend.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-//todo: 권한 체크, 500 에러 말고 커스텀 exception 구현 필요
+//todo: 권한 체크
 @RestController
 @RequestMapping("/board")
 @Slf4j
@@ -119,7 +119,6 @@ public class BoardController {
         return ResponseEntity.ok("게시글이 삭제되었습니다.");
     }
 
-    //todo: 좋아요 구현
     @Transactional
     @PostMapping("/like")
     public ResponseEntity<String> likePost(

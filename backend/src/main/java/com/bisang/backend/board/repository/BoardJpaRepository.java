@@ -12,22 +12,19 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface BoardJpaRepository extends JpaRepository<Board, Long> {
-    @Transactional
+
     @Modifying
     @Query("UPDATE Board b SET b.viewCount = b.viewCount+1 WHERE b.id = :postId")
     void increaseViewCount(Long postId);
 
-    @Transactional
     @Modifying
     @Query("UPDATE Board b SET b.likes = b.likes+1 WHERE b.id = :postId")
     void increaseLikeCount(Long postId);
 
-    @Transactional
     @Modifying
     @Query("UPDATE Board b SET b.likes = b.likes-1 WHERE b.id = :postId")
     void decreaseLikeCount(Long postId);
 
-    @Transactional
     @Modifying
     @Query("DELETE FROM Board b WHERE b.teamBoardId = :teamBoardId")
     void deleteAllByTeamBoardId(@Param(value = "teamBoardId") Long teamBoardId);

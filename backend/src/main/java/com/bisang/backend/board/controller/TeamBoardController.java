@@ -30,7 +30,6 @@ public class TeamBoardController {
         return ResponseEntity.ok(teamBoardService.getTeamBoardList(teamId));
     }
 
-    //todo: 팀장 권한 체크
     @PostMapping
     public ResponseEntity<String> createTeamBoard(
             @Valid @RequestBody TeamBoardCreateRequest request
@@ -41,7 +40,6 @@ public class TeamBoardController {
         return ResponseEntity.ok("게시판 \"" + boardName + "\"이 생성되었습니다.");
     }
 
-    //todo: 팀장 권한 체크
     @DeleteMapping
     public ResponseEntity<String> deleteTeamBoard(@RequestParam(value = "board") Long teamBoardId) {
         teamBoardService.deleteTeamBoard(teamBoardId);
