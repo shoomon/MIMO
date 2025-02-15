@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import com.bisang.backend.chat.controller.response.ChatroomResponse;
@@ -18,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ChatroomService {
 
     private final ChatMessageRepository chatMessageRepository;
@@ -35,7 +37,7 @@ public class ChatroomService {
     ) {
         Chatroom chatroom = Chatroom.createTeamChatroom(userId, teamId, title, profileUri, status);
 
-        chatroomRepository.insertChatroom(chatroom);
+        chatroomRepository.insertJpaChatroom(chatroom);
 
         chatroomUserService.enterChatroom(chatroom.getId(), userId, nickname);
     }
@@ -51,12 +53,16 @@ public class ChatroomService {
         for (Long chatroomId : chatroom) {
             Map<Object, Object> chatroomInfo = chatroomRepository.getChatroomInfo(chatroomId);
             Map<String, Object> lastChat = chatMessageRepository.getLastChat(chatroomId);
-
             Map<Object, Object> userInfo = chatroomUserRepository.getUserInfo(chatroomId, userId);
 
-            double lastReadScore = chatroomUserRepository.getLastReadScore(chatroomId, userId);
-            Long lastReadChatId = chatroomUserRepository.getLastReadChatId(chatroomId, userId);
-            Long unreadCount = chatMessageRepository.calculateUnreadCount(chatroomId, lastReadScore, lastReadChatId);
+            Long unreadCount = 0L;
+            try {
+                Double lastReadScore = chatroomUserRepository.getLastReadScore(chatroomId, userId);
+                Long lastReadChatId = chatroomUserRepository.getLastReadChatId(chatroomId, userId);
+                unreadCount = chatMessageRepository.calculateUnreadCount(chatroomId, lastReadScore, lastReadChatId);
+            } catch (NullPointerException e) {
+                log.error("lastReadScore가 없습니다");
+            }
 
             ChatroomResponse cr = new ChatroomResponse(chatroomId,
                     (String)chatroomInfo.get("title"),

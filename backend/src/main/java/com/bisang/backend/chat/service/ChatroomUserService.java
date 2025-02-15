@@ -52,7 +52,7 @@ public class ChatroomUserService {
         );
 
         chatroomUserRepository.insertRedisMemberUser(chatroomId, userId);
-        chatroomUserRepository.updateLastRead(userId, message.getTimestamp(), chatroomId, userId);
+        chatroomUserRepository.updateLastRead(userId, message.getTimestamp(), chatroomId, 0L);
         chatMessageService.broadcastMessage(chatroomId, message);
     }
 
