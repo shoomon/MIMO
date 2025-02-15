@@ -61,7 +61,7 @@ public class BoardService {
         //todo: 사진 업로드 비동기 처리
         if (files != null) {
             for(MultipartFile file : files){
-                String uri = s3Service.saveFile(userId, file); //서비스가 서비스에 의존해도 되나 컨트롤러에서 업로드하고 file uri 리스트로 보내줘야하나
+                String uri = s3Service.saveFile(userId, file);
 
                 String fileExtension = uri.substring(uri.lastIndexOf(".") + 1).toLowerCase();
 
@@ -166,18 +166,14 @@ public class BoardService {
 
         if(!post.getUserId().equals(userId)) throw new BoardException(ExceptionCode.NOT_AUTHOR);
 
-        if(title != null && !"".equals(title)){
-            post.updateTitle(title);
-            boardJpaRepository.save(post);
-        }
+        post.updateTitle(title);
+        boardJpaRepository.save(post);
 
-        if(description != null && !"".equals(description)){
-            BoardDescription boardDescription = boardDescriptionJpaRepository.findById(post.getDescription().getId())
-                    .orElseThrow(()-> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
+        BoardDescription boardDescription = boardDescriptionJpaRepository.findById(post.getDescription().getId())
+                .orElseThrow(()-> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
 
-            boardDescription.updateDescription(description);
-            boardDescriptionJpaRepository.save(boardDescription);
-        }
+        boardDescription.updateDescription(description);
+        boardDescriptionJpaRepository.save(boardDescription);
 
         if(filesToDelete != null){
             for (BoardFileDto file : filesToDelete) {
