@@ -3,8 +3,11 @@ package com.bisang.backend.user.service;
 import static com.bisang.backend.s3.domain.ImageType.USER;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
+import com.bisang.backend.board.controller.dto.SimpleBoardDto;
+import com.bisang.backend.board.controller.dto.SimpleCommentDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -56,6 +59,14 @@ public class UserService {
                 .comments(new ArrayList<>())
                 .build();
     }
+
+//    public List<SimpleBoardDto> getUserBoardList(Long userId) {
+//
+//    }
+//
+//    public List<SimpleCommentDto> getUserCommentList(Long userId) {
+//
+//    }
 
     private void updateUserProfile(User user, MultipartFile profile) {
         if (profile != null) {

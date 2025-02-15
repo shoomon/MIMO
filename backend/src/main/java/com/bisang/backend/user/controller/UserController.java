@@ -32,6 +32,16 @@ public class UserController {
         return ResponseEntity.ok(userService.getMyInfo(user));
     }
 
+    @GetMapping("/board")
+    public ResponseEntity<Void> getMyBoardList() {
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/comment")
+    public ResponseEntity<Void> getMyComentList() {
+        return ResponseEntity.ok().build();
+    }
+
     @PutMapping(consumes = {MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Void> updateUserInfo(
         @AuthUser User user,

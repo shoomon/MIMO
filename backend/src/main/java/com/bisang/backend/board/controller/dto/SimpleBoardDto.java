@@ -3,9 +3,12 @@ package com.bisang.backend.board.controller.dto;
 import java.time.LocalDateTime;
 
 public record SimpleBoardDto(
-        Long boardId,
-        String title,
+        String boardTitle,
         String teamName,
-        LocalDateTime writeDate
+        LocalDateTime createdAt,
+        String imageUri,
+        Long teamId,
+        Long teamBoardId,
+        Long boardId
 ) {
 }
