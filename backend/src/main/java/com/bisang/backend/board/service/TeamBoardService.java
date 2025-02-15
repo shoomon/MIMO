@@ -1,10 +1,12 @@
 package com.bisang.backend.board.service;
 
+import com.bisang.backend.board.controller.dto.BoardFileDto;
 import com.bisang.backend.board.controller.dto.SimpleBoardListDto;
 import com.bisang.backend.board.controller.dto.TeamBoardDto;
 import com.bisang.backend.board.controller.response.TeamBoardListResponse;
 import com.bisang.backend.board.domain.TeamBoard;
 import com.bisang.backend.board.repository.*;
+import com.bisang.backend.s3.service.S3Service;
 import com.bisang.backend.team.annotation.TeamLeader;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ public class TeamBoardService {
     private final CommentJpaRepository commentJpaRepository;
     private final BoardImageJpaRepository boardImageJpaRepository;
     private final BoardLikeRepository boardLikeRepository;
+    private final S3Service s3Service;
 
     public TeamBoardListResponse getTeamBoardList(Long teamId) {
         List<TeamBoardDto> list = new ArrayList<>();
@@ -55,6 +58,12 @@ public class TeamBoardService {
 
         for(Long boardId : boardIdList){
             commentJpaRepository.deleteByBoardId(boardId);
+
+            List<BoardFileDto> imageUri = boardImageJpaRepository.findByBoardId(boardId);
+            for(BoardFileDto image : imageUri){
+                s3Service.deleteFile(image.fileUri());
+            }
+
             boardImageJpaRepository.deleteByBoardId(boardId);
             boardLikeRepository.deleteByBoardId(boardId);
         }
