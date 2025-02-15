@@ -5,7 +5,7 @@ import java.util.List;
 import com.bisang.backend.board.controller.dto.SimpleBoardListDto;
 
 public record BoardListResponse(
-        String boardName,
+        String teamBoardName,
         List<SimpleBoardListDto> boardList
 ) {
 }
