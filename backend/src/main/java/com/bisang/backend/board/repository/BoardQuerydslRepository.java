@@ -56,6 +56,21 @@ public class BoardQuerydslRepository {
                 .fetchOne()).orElseThrow(() -> new EntityNotFoundException("게시글 정보를 찾을 수 없습니다."));
     }
 
+    public List<Long> getBoardIdListByTeamBoardId(
+            List<Long> teamBoardId,
+            Long lastReadId,
+            int limit
+    ) {
+        return queryFactory
+                .select(board.id)
+                .from(board)
+                .where(board.teamBoardId.in(teamBoardId)
+                        .and(board.id.lt(lastReadId)))
+                .orderBy(board.id.desc())
+                .limit(limit)
+                .fetch();
+    }
+
     public List<SimpleBoardListDto> getBoardList(Long teamBoardId, Long offset, Integer pageSize) {
         Long curOffset = offset == null ? 0 : offset;
 

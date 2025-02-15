@@ -122,6 +122,7 @@ public class BoardController {
             @AuthUser User user,
             @Valid @RequestBody LikePostRequest request
     ) {
-        return ResponseEntity.ok(boardService.likePost(request.teamUserId(), request.boardId()));
+        boardService.likePost(request.teamUserId(), request.boardId());
+        return ResponseEntity.ok().build();
     }
 }

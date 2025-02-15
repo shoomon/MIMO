@@ -242,7 +242,7 @@ public class BoardService {
     }
 
     @Transactional
-    public Void likePost(Long teamUserId, Long postId){
+    public void likePost(Long teamUserId, Long postId){
         Optional<BoardLike> userLike = boardLikeRepository.findByTeamUserIdAndBoardId(teamUserId, postId);
 
         if (userLike.isPresent()) {
