@@ -102,7 +102,7 @@ public class ChatroomUserRepository {
         chatroomUserRedisRepository.insertLastReadScore(roomId, userId, lastDateTime, lastChatId);
     }
 
-    public double getLastReadScore(Long chatroomId, Long userId) {
+    public Double getLastReadScore(Long chatroomId, Long userId) {
         return chatroomUserRedisRepository.getLastReadScore(chatroomId, userId);
     }
 

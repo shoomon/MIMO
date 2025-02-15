@@ -40,7 +40,7 @@ public class ChatroomRepository {
         return userChatroom;
     }
 
-    public void insertChatroom(Chatroom chatroom) {
+    public void insertJpaChatroom(Chatroom chatroom) {
         System.out.println("insertChatroom");
         chatroomJpaRepository.save(chatroom);
     }
