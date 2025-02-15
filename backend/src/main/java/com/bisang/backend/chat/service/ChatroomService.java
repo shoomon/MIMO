@@ -38,7 +38,6 @@ public class ChatroomService {
         Chatroom chatroom = Chatroom.createTeamChatroom(userId, teamId, title, profileUri, status);
 
         chatroomRepository.insertJpaChatroom(chatroom);
-
         chatroomUserService.enterChatroom(chatroom.getId(), userId, nickname);
     }
 
