@@ -24,7 +24,7 @@ public class ChargeService {
 
     @Transactional
     public void charge(Transaction transaction) {
-        String receiverAccountNumber = transaction.getSenderAccountNumber();
+        String receiverAccountNumber = transaction.getReceiverAccountNumber();
         Long balance = transaction.getBalance();
 
         updateAccountBalance(ADMIN_ACCOUNT_NUMBER, balance);

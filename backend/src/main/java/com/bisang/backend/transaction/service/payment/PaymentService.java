@@ -22,18 +22,8 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class PaymentService {
-    private final QrCodeService qrCodeService;
     private final AccountDetailsService accountDetailsService;
-
     private final AccountJpaRepository accountJpaRepository;
-
-    public String generateExpiringUuidForTeam(User user, QrCodeRequest qrCodeRequest) {
-        return qrCodeService.generateExpiringUuidForTeam(user, qrCodeRequest);
-    }
-
-    public String generateExpiringUuidForUser(User user, QrCodeRequest qrCodeRequest) {
-        return qrCodeService.generateExpiringUuidForUser(user, qrCodeRequest);
-    }
 
     @Transactional
     public void pay(Transaction transaction) {
@@ -49,10 +39,6 @@ public class PaymentService {
         AccountDetails payerAccountDetails
                 = accountDetailsService.createAccountDetails(transaction, TransactionCategory.PAYMENT, "결제");
         accountDetailsService.saveAccountDetails(payerAccountDetails);
-    }
-
-    public void validateQrCodeExpiration(String uuid) {
-        qrCodeService.validateUuidExpiringTime(uuid);
     }
 
     private void validateAccountBalance(String senderAccountNumber, Long balance) {

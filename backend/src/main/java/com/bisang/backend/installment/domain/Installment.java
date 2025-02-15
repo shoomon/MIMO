@@ -4,14 +4,26 @@ import static lombok.AccessLevel.PROTECTED;
 
 import java.time.LocalDateTime;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Index;
+import jakarta.persistence.Table;
+
+import org.springframework.data.annotation.Id;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+
 
 @Getter
 @Entity
+@ToString
 @NoArgsConstructor(access = PROTECTED)
 @Table(
         name = "installment",
@@ -60,8 +72,12 @@ public class Installment {
         return installmentStatus.toString().equals("YES");
     }
 
-    public void updateInstallmentStatus () {
+    public void updateInstallmentStatusToYes () {
         this.installmentStatus = InstallmentStatus.YES;
+    }
+
+    public void updateInstallmentDate() {
+        this.installmentDate = LocalDateTime.now();
     }
 }
 

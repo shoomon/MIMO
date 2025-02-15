@@ -1,9 +1,7 @@
 package com.bisang.backend.transaction.controller;
 
-import com.bisang.backend.installment.controller.request.InstallmentRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,8 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bisang.backend.auth.annotation.AuthUser;
 import com.bisang.backend.transaction.controller.request.ChargeRequest;
+import com.bisang.backend.installment.controller.request.InstallmentRequest;
 import com.bisang.backend.transaction.controller.request.PaymentRequest;
-import com.bisang.backend.transaction.controller.request.QrCodeRequest;
 import com.bisang.backend.transaction.controller.request.TransferRequest;
 import com.bisang.backend.transaction.service.TransactionService;
 import com.bisang.backend.user.domain.User;
@@ -49,40 +47,19 @@ public class TransactionController {
                 .body(null);
     }
 
-    @PostMapping("/installment/")
+    @PostMapping("/installment")
     public ResponseEntity<Void> installmentBalance(
             @AuthUser User user,
-            @RequestBody InstallmentRequest installmentRequest,
-            @RequestBody TransferRequest transferRequest
+            @RequestBody InstallmentRequest installmentRequest
     ) {
-        transactionService.installmentBalance(installmentRequest, transferRequest);
+        transactionService.installmentBalance(installmentRequest);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(null);
     }
 
-    @GetMapping("/payment/qrcode/team")
-    public ResponseEntity<String> generateTeamQrCodeDetails(
-            @AuthUser User user,
-            @RequestBody QrCodeRequest qrCodeRequest
-    ) {
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(transactionService.generateExpiringUuidForTeam(user, qrCodeRequest));
-    }
-
-    @GetMapping("/payment/qrcode/user")
-    public ResponseEntity<String> generateUserQrCodeDetails(
-            @AuthUser User user,
-            @RequestBody QrCodeRequest qrCodeRequest
-    ) {
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(transactionService.generateExpiringUuidForUser(user, qrCodeRequest));
-    }
-
-    @PostMapping("/payment/pay")
+    @PostMapping("/pay")
     public ResponseEntity<Void> pay(
             @RequestBody PaymentRequest paymentRequest
     ) {

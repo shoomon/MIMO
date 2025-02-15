@@ -2,13 +2,13 @@ package com.bisang.backend.installment.controller;
 
 import java.util.List;
 
-import com.bisang.backend.installment.controller.response.InstallmentResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.bisang.backend.auth.annotation.AuthUser;
 import com.bisang.backend.installment.controller.request.InstallmentRequest;
+import com.bisang.backend.installment.controller.response.InstallmentResponse;
 import com.bisang.backend.installment.service.InstallmentService;
 import com.bisang.backend.user.domain.User;
 
@@ -20,10 +20,10 @@ import lombok.RequiredArgsConstructor;
 public class InstallmentController {
     private final InstallmentService installmentService;
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<Void> createInstallment(
             @AuthUser User user,
-            @RequestParam Long teamId,
+            @RequestParam("teamId") Long teamId,
             @RequestBody List<InstallmentRequest> installmentRequests
     ) {
         installmentService.createInstallment(user.getId(), teamId, installmentRequests);
@@ -33,10 +33,10 @@ public class InstallmentController {
                 .body(null);
     }
 
-    @GetMapping("/pay")
+    @GetMapping("/payer-details")
     public ResponseEntity<List<InstallmentResponse>> getInstallmentPayerDetails(
             @AuthUser User user,
-            @RequestParam Long teamId,
+            @RequestParam("teamId") Long teamId,
             @RequestParam("round") Long round
     ) {
         return ResponseEntity
@@ -44,10 +44,10 @@ public class InstallmentController {
                 .body(installmentService.getInstallmentPayerDetails(user.getId(), teamId, round));
     }
 
-    @GetMapping("/non-pay")
+    @GetMapping("/non-payer-details")
     public ResponseEntity<List<InstallmentResponse>> getInstallmentNonPayerDetails(
             @AuthUser User user,
-            @RequestParam Long teamId,
+            @RequestParam("teamId") Long teamId,
             @RequestParam("round") Long round
     ) {
         return ResponseEntity
@@ -55,10 +55,10 @@ public class InstallmentController {
                 .body(installmentService.getInstallmentNonPayerDetails(user.getId(), teamId, round));
     }
 
-    @GetMapping("/pay-install")
+    @GetMapping("/check")
     public ResponseEntity<Boolean> isUserPayInstallment(
             @AuthUser User user,
-            @RequestParam Long teamId,
+            @RequestParam("teamId") Long teamId,
             @RequestParam("round") Long round
     ) {
 

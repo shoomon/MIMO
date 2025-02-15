@@ -5,19 +5,14 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
 import java.time.LocalDateTime;
+import java.util.List; // List 추가
+
+import jakarta.persistence.*;
+
+import org.springframework.data.annotation.CreatedDate;
 
 import com.bisang.backend.transaction.domain.Transaction;
 import com.bisang.backend.transaction.domain.TransactionCategory;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-
-import org.springframework.data.annotation.CreatedDate;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -29,9 +24,9 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor(access = PROTECTED)
 @Table(
-    name = "account_details",
-    indexes = {
-    }
+        name = "account_details",
+        indexes = {
+        }
 )
 public class AccountDetails {
     @Id
@@ -39,9 +34,9 @@ public class AccountDetails {
     @Column(name = "account_details_id")
     private Long accountDetailsId;
 
-    @OneToOne
-    @JoinColumn(name = "transaction_id", referencedColumnName = "transaction_id", unique = true, nullable = false)
-    private Transaction transactionId;
+    @ManyToOne
+    @JoinColumn(name = "transaction_id", referencedColumnName = "transaction_id", nullable = false)
+    private Transaction transactionId;  // 단일 트랜잭션
 
     @Column(name = "balance", nullable = false)
     private Long balance;
@@ -71,14 +66,14 @@ public class AccountDetails {
 
     @Builder
     public AccountDetails(
-        Transaction transactionId,
-        Long balance,
-        String senderAccountNumber,
-        String receiverAccountNumber,
-        String senderName,
-        String receiverName,
-        String memo,
-        TransactionCategory transactionCategory
+            Transaction transactionId,
+            Long balance,
+            String senderAccountNumber,
+            String receiverAccountNumber,
+            String senderName,
+            String receiverName,
+            String memo,
+            TransactionCategory transactionCategory
     ) {
         this.transactionId = transactionId;
         this.balance = balance;

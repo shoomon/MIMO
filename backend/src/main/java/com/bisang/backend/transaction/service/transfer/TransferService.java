@@ -28,6 +28,7 @@ public class TransferService {
     public void transfer(Transaction transaction) {
         String senderAccountNumber = transaction.getSenderAccountNumber();
         String receiverAccountNumber = transaction.getReceiverAccountNumber();
+        System.out.println(receiverAccountNumber);
         Long balance = transaction.getBalance();
 
         validateSenderAccountBalance(senderAccountNumber, balance);
@@ -46,15 +47,7 @@ public class TransferService {
     @Transactional
     public void installment(InstallmentRequest installmentRequest, Transaction transaction) {
         transfer(transaction);
-
-        Installment installment = installmentJpaRepository.findByTeamIdAndUserIdAndRound(
-                installmentRequest.getTeamId(),
-                installmentRequest.getUserId(),
-                installmentRequest.getRound()
-        ).orElseThrow(RuntimeException::new);
-
-        installment.updateInstallmentStatus();
-        installmentJpaRepository.save(installment);
+        updateInstallment(installmentRequest);
     }
 
     private void validateSenderAccountBalance(String senderAccountNumber, Long balance) {
@@ -71,9 +64,21 @@ public class TransferService {
         accountJpaRepository.save(account);
     }
 
-    private void updateReceiverAccountBalance(String accountNumber, Long balance) {
-        Account account = accountJpaRepository.findByAccountNumber(accountNumber);
+    private void updateReceiverAccountBalance(String receiverAccountNumber, Long balance) {
+        Account account = accountJpaRepository.findByAccountNumber(receiverAccountNumber);
         account.increaseBalance(balance);
         accountJpaRepository.save(account);
+    }
+
+    private void updateInstallment(InstallmentRequest installmentRequest) {
+        Installment installment = installmentJpaRepository.findByTeamIdAndUserIdAndRound(
+                installmentRequest.getTeamId(),
+                installmentRequest.getUserId(),
+                installmentRequest.getRound()
+        ).orElseThrow(RuntimeException::new);
+
+        installment.updateInstallmentStatusToYes();
+        installment.updateInstallmentDate();
+        installmentJpaRepository.save(installment);
     }
 }
