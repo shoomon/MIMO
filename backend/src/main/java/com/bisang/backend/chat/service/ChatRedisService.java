@@ -114,10 +114,10 @@ public class ChatRedisService {
 
         // Lua 스크립트 내용
         String luaScript =
-                "redis.call('SADD', KEYS[1], ARGV[1]);" +
-                        "redis.call('SET', KEYS[2], ARGV[2]);" +
-                        "redis.call('SET', KEYS[3], ARGV[3]);" +
-                        "return 1;";
+                "redis.call('SADD', KEYS[1], ARGV[1]);"
+                        + "redis.call('SET', KEYS[2], ARGV[2]);"
+                        + "redis.call('SET', KEYS[3], ARGV[3]);"
+                        + "return 1;";
 
         // 실행할 RedisScript 객체 생성 (반환 타입은 Long 예시)
         DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>();
