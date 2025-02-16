@@ -14,14 +14,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ChatroomRedisRepository {
 
-    private final RedisTemplate<String, Long> redisLongTemplate;
     private final StringRedisTemplate redisTemplate;
 
     //유저별 채팅방 찾을 때 사용할 키
     private static final String chatroomKey = "userChatroom:";
 
-    public void deleteUserChatroom(long userId, long teamId) {
-        redisLongTemplate.opsForZSet().remove(chatroomKey + userId, teamId);
+    public void deleteUserChatroom(long userId, long chatroomId) {
+        redisTemplate.opsForZSet().remove(chatroomKey + userId, String.valueOf(chatroomId));
     }
 
     public List<Long> getUserChatroom(long userId) {
