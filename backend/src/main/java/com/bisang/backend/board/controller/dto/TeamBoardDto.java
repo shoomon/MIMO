@@ -5,6 +5,6 @@ import java.util.List;
 public record TeamBoardDto(
         Long teamBoardId,
         String teamBoardName,
-        List<SimpleBoardListDto> postList
+        List<SimpleBoardListDto> boardList
 ) {
 }
