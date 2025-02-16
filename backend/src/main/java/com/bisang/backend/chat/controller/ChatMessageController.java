@@ -65,6 +65,8 @@ public class ChatMessageController {
 
             chatMessageService.broadcastMessage(roomId, redisMessage);
         }
+
+        throw new UnauthorizedChatException(NOT_FOUND_TEAM_USER);
     }
 
     @MessageExceptionHandler(AccountException.class)
