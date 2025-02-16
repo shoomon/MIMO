@@ -10,6 +10,7 @@ import static com.bisang.backend.s3.service.S3Service.CAT_IMAGE_URI;
 import java.util.List;
 import java.util.Optional;
 
+import com.bisang.backend.team.controller.response.TeamTitleDescSearchResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -203,8 +204,10 @@ public class TeamService {
 
     @EveryOne
     @Transactional(readOnly = true)
-    public List<Team> getTeamsByTitleOrDescription(String searchKeyword) {
-        return teamQuerydslRepository.searchTeams(searchKeyword);
+    public TeamTitleDescSearchResponse getTeamsByTitleOrDescription(String searchKeyword, Integer pageNumber) {
+        List<SimpleTeamDto> teams = teamQuerydslRepository.searchTeams(searchKeyword, pageNumber);
+        Long numberOfTeams = teamQuerydslRepository.searchTeamsCount(searchKeyword);
+        return new TeamTitleDescSearchResponse(numberOfTeams.intValue(), pageNumber, teams.size(), teams);
     }
 
     @TeamLeader

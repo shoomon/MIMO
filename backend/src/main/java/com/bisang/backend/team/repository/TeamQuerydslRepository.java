@@ -25,8 +25,6 @@ import com.bisang.backend.team.controller.dto.SimpleTeamReviewDto;
 import com.bisang.backend.team.controller.dto.TeamDto;
 import com.bisang.backend.team.domain.Area;
 import com.bisang.backend.team.domain.TeamCategory;
-
-import com.bisang.backend.team.domain.Team;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
@@ -43,12 +41,56 @@ public class TeamQuerydslRepository {
     private final JPAQueryFactory queryFactory;
     private final TeamJpaRepository teamJpaRepository;
 
-    public List<Team> searchTeams(String searchText) {
-        return queryFactory.selectFrom(team)
+    public Long searchTeamsCount(String searchText) {
+        return queryFactory
+                .select(team.count())
+                .from(team)
                 .leftJoin(teamDescription).on(team.id.eq(teamDescription.id))
                 .where(team.name.contains(searchText)
                         .or(teamDescription.description.contains(searchText)))
+                .fetchOne();
+    }
+
+    public List<SimpleTeamDto> searchTeams(String searchText, Integer pageNumber) {
+        List<SimpleTeamDto> teams = queryFactory
+                .select(Projections.constructor(SimpleTeamDto.class,
+                        team.id,
+                        team.name,
+                        team.shortDescription,
+                        team.teamProfileUri,
+                        Expressions.numberTemplate(Double.class, "{0}", 0.0),
+                        Expressions.numberTemplate(Long.class, "{0}", 0L),
+                        team.maxCapacity,
+                        JPAExpressions.select(teamUser.count())
+                                .from(teamUser)
+                                .where(teamUser.teamId.eq(team.id)),
+                        Expressions.constant(emptyList())
+                        ))
+                .from(team)
+                .leftJoin(teamDescription).on(team.id.eq(teamDescription.id))
+                .where(team.name.contains(searchText)
+                        .or(teamDescription.description.contains(searchText)))
+                .limit(SHORT_PAGE_SIZE)
+                .offset((pageNumber - 1) * SHORT_PAGE_SIZE)
                 .fetch();
+
+        List<Long> teamIds = teams.stream()
+                .map(SimpleTeamDto::teamId)
+                .toList();
+        Map<Long, List<String>> tagsMap = getTagsByTeamIds(teamIds);
+        Map<Long, SimpleTeamReviewDto> teamReviews = getReviewsByTeamIds(teamIds);
+
+        return teams.stream()
+                .map(teamDto -> {
+                    List<String> tags = tagsMap.getOrDefault(teamDto.teamId(), emptyList());
+                    SimpleTeamReviewDto simpleTeamReview
+                            = teamReviews.getOrDefault(
+                            teamDto.teamId(),
+                            new SimpleTeamReviewDto(teamDto.teamId(), 0D, 0L));
+                    return createSimpleDto(teamDto, tags, simpleTeamReview);
+                })
+                .sorted(comparing(SimpleTeamDto::teamId).reversed())
+                .toList();
     }
 
     public TeamDto getTeamInfo(Long userId, Long teamId) {
