@@ -1,0 +1,53 @@
+import type { Meta, StoryObj } from '@storybook/react';
+import MeetingInfo from './MeetingInfo';
+import { BrowserRouter } from 'react-router-dom';
+
+const meta = {
+    title: 'Components/Molecules/MeetingInfo',
+    component: MeetingInfo,
+    argTypes: {
+        subTitle: { control: 'text' },
+        title: { control: 'text' },
+        rating: { control: 'object' },
+        tag: { control: 'object' },
+        maxCapacity: { control: 'object' },
+    },
+    decorators: [
+        (Story) => (
+            <BrowserRouter>
+                <Story />
+            </BrowserRouter>
+        ),
+    ],
+} satisfies Meta<typeof MeetingInfo>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+// 더미 데이터: RatingStarProps (숫자 타입으로 수정)
+const sampleRating = {
+    rating: 4.5,
+    reviewCount: 23, // reviewCount가 number 타입입니다.
+};
+
+// 더미 데이터: TagProps 배열
+const sampleTagList = [
+    { to: '/tag/react', label: 'React' },
+    { to: '/tag/javascript', label: 'JavaScript' },
+    { to: '/tag/storybook', label: 'Storybook' },
+];
+
+export const Default: Story = {
+    args: {
+        teamId: '123',
+        subTitle: 'Meeting Subtitle Sample',
+        rating: sampleRating,
+        title: 'Meeting Title Sample',
+        tag: sampleTagList,
+        maxCapacity: 12,
+        currentCapacity: 6,
+        teamUserId: 2,
+        nickName: 'jump',
+        recruitStatus: 'ACTIVE_PUBLIC',
+    },
+};

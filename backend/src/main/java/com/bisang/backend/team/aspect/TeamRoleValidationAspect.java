@@ -23,7 +23,6 @@ public class TeamRoleValidationAspect {
     private final TeamJpaRepository teamJpaRepository;
     private final TeamUserJpaRepository teamUserJpaRepository;
 
-
     /**
      * @TeamLeader 메서드 검증 로직, team의 LeaderId와 요청자의 userId가 동일한 지 확인
      */
@@ -50,6 +49,17 @@ public class TeamRoleValidationAspect {
         if (teamUser.isMember()) {
             throw new TeamException(INVALID_REQUEST);
         }
+
+        return joinPoint.proceed();
+    }
+
+    /**
+     * @TeamMember 메서드 검증 로직, 해당 UserId가 해당 Team에 존재하면 통과
+     */
+    @Around("@annotation(com.bisang.backend.team.annotation.TeamMember) && args(userId, teamId, ..)")
+    public Object validateTeamMember(ProceedingJoinPoint joinPoint, Long userId, Long teamId) throws Throwable {
+        teamUserJpaRepository.findByTeamIdAndUserId(teamId, userId)
+                .orElseThrow(() -> new TeamException(NOT_FOUND));
 
         return joinPoint.proceed();
     }

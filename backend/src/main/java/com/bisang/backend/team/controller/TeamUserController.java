@@ -1,5 +1,7 @@
 package com.bisang.backend.team.controller;
 
+import jakarta.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,16 +44,16 @@ public class TeamUserController {
     @PostMapping
     public ResponseEntity<Void> joinTeam(
         @AuthUser User user,
-        @RequestBody JoinTeamRequest req
+        @Valid @RequestBody JoinTeamRequest req
     ) {
-        teamUserService.joinTeam(user.getId(), req.teamId(), req.nickname(), req.status());
+        teamUserService.joinTeam(user.getId(), req.teamId(), req.nickname(), req.notificationStatus());
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/invite")
     public ResponseEntity<Void> inviteTeam(
         @AuthUser User user,
-        @RequestBody InviteTeamRequest req
+        @Valid @RequestBody InviteTeamRequest req
     ) {
         teamUserService.inviteRequest(user.getId(), req.teamId(), req.memo());
         return ResponseEntity.ok().build();
@@ -69,7 +71,7 @@ public class TeamUserController {
     @PatchMapping
     public ResponseEntity<Void> updateNickname(
         @AuthUser User user,
-        @RequestBody UpdateTeamUserNicknameRequest req
+        @Valid @RequestBody UpdateTeamUserNicknameRequest req
     ) {
         teamUserService.updateNickname(user.getId(), req.teamId(), req.nickname());
         return ResponseEntity.ok().build();

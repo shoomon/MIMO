@@ -24,8 +24,9 @@ export const Default: Story = {
     args: {
         userInfo: {
             userId: '25',
-            userName: '박성문',
-            imgSrc: 'https://cloudfront-ap-northeast-1.images.arcpublishing.com/chosun/2TKUKXYMQF7ASZEUJLG7L4GM4I.jpg',
+            nickname: '박성문',
+            profileUri:
+                'https://cloudfront-ap-northeast-1.images.arcpublishing.com/chosun/2TKUKXYMQF7ASZEUJLG7L4GM4I.jpg',
         },
         active: true,
         addStyle: '',

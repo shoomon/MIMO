@@ -13,6 +13,7 @@ import jakarta.persistence.Table;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @NoArgsConstructor(access = PROTECTED)
@@ -32,6 +33,7 @@ public class Chatroom {
     @Column(length = 40, name = "chatroom_title", nullable = false)
     private String title;
 
+    @Setter
     @Column(name = "profile_uri")
     private String profileUri;
 

@@ -7,7 +7,6 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
-import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
@@ -17,8 +16,6 @@ import com.querydsl.core.types.dsl.PathInits;
 public class QTeamSchedule extends EntityPathBase<TeamSchedule> {
 
     private static final long serialVersionUID = -1056770028L;
-
-    private static final PathInits INITS = PathInits.DIRECT2;
 
     public static final QTeamSchedule teamSchedule = new QTeamSchedule("teamSchedule");
 
@@ -31,7 +28,7 @@ public class QTeamSchedule extends EntityPathBase<TeamSchedule> {
 
     public final DateTimePath<java.time.LocalDateTime> date = createDateTime("date", java.time.LocalDateTime.class);
 
-    public final QScheduleDescription description;
+    public final StringPath description = createString("description");
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
@@ -41,6 +38,8 @@ public class QTeamSchedule extends EntityPathBase<TeamSchedule> {
     public final StringPath location = createString("location");
 
     public final NumberPath<Long> maxParticipants = createNumber("maxParticipants", Long.class);
+
+    public final NumberPath<Long> price = createNumber("price", Long.class);
 
     public final EnumPath<ScheduleStatus> scheduleStatus = createEnum("scheduleStatus", ScheduleStatus.class);
 
@@ -53,24 +52,15 @@ public class QTeamSchedule extends EntityPathBase<TeamSchedule> {
     public final StringPath title = createString("title");
 
     public QTeamSchedule(String variable) {
-        this(TeamSchedule.class, forVariable(variable), INITS);
+        super(TeamSchedule.class, forVariable(variable));
     }
 
     public QTeamSchedule(Path<? extends TeamSchedule> path) {
-        this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
+        super(path.getType(), path.getMetadata());
     }
 
     public QTeamSchedule(PathMetadata metadata) {
-        this(metadata, PathInits.getFor(metadata, INITS));
-    }
-
-    public QTeamSchedule(PathMetadata metadata, PathInits inits) {
-        this(TeamSchedule.class, metadata, inits);
-    }
-
-    public QTeamSchedule(Class<? extends TeamSchedule> type, PathMetadata metadata, PathInits inits) {
-        super(type, metadata, inits);
-        this.description = inits.isInitialized("description") ? new QScheduleDescription(forProperty("description")) : null;
+        super(TeamSchedule.class, metadata);
     }
 
 }

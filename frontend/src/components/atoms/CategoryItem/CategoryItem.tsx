@@ -1,9 +1,12 @@
+import { Link } from 'react-router-dom';
 import Icon from '../Icon/Icon';
 
-interface CategoryItemProps {
+export interface CategoryItemProps {
     iconId: string;
     content: string;
-    onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+    path: string;
+    isSelected?: boolean;
+    onClick?: (path: string, event: React.MouseEvent) => void;
 }
 
 /**
@@ -12,23 +15,39 @@ interface CategoryItemProps {
  * @component
  * @param {string} iconId - 아이콘의 ID입니다.
  * @param {string} content - 버튼의 텍스트 내용입니다.
- * @param {(e: React.MouseEvent<HTMLButtonElement>) => void} [onClick] - 클릭 이벤트 핸들러입니다.
+ * @param {string} path - 이동할 경로입니다.
  * @returns {JSX.Element} - 렌더링된 `CategoryItem` 컴포넌트를 반환합니다.
  */
 
-const CategoryItem = ({ iconId, content, onClick }: CategoryItemProps) => {
+const CategoryItem = ({
+    iconId,
+    content,
+    path,
+    isSelected = false,
+    onClick,
+}: CategoryItemProps) => {
+    const handleClick = (event: React.MouseEvent) => {
+        if (onClick) {
+            event.preventDefault();
+            onClick(path, event);
+        }
+    };
+
     return (
-        <button
-            onClick={onClick}
-            className="flex h-fit w-[100px] flex-col items-center justify-center gap-3 rounded-lg bg-white py-2 hover:bg-gray-100"
+        <Link
+            to={path}
+            onClick={handleClick}
+            className={`flex h-fit w-[100px] flex-col items-center justify-center gap-3 rounded-lg py-2 ${isSelected ? 'bg-blue-100 hover:bg-blue-200' : 'bg-white hover:bg-gray-200'}`}
         >
             <div>
                 <Icon type="png" id={iconId} />
             </div>
-            <div className="w-fit justify-center text-lg font-medium text-black">
+            <div
+                className={`w-fit justify-center text-lg font-medium ${isSelected ? 'text-black' : 'text-black'}`}
+            >
                 {content}
             </div>
-        </button>
+        </Link>
     );
 };
 

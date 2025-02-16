@@ -30,8 +30,6 @@ import lombok.extern.slf4j.Slf4j;
 public class S3Service {
 
     private final AmazonS3 amazonS3;
-    private Set<String> uploadedFileNames = new HashSet<>();
-    private Set<Long> uploadedFileSizes = new HashSet<>();
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
@@ -87,26 +85,6 @@ public class S3Service {
         }
 
         return amazonS3.getUrl(bucket, randomFilename).toString();
-    }
-
-    // 요청에 중복되는 파일 여부 확인
-    private boolean isDuplicate(Long userId, MultipartFile multipartFile) {
-        String fileName = multipartFile.getOriginalFilename();
-        Long fileSize = multipartFile.getSize();
-
-        if (uploadedFileNames.contains(fileName) && uploadedFileSizes.contains(fileSize)) {
-            return true;
-        }
-
-        uploadedFileNames.add(fileName);
-        uploadedFileSizes.add(fileSize);
-
-        return false;
-    }
-
-    private void clear() {
-        uploadedFileNames.clear();
-        uploadedFileSizes.clear();
     }
 
     // 랜덤파일명 생성 (파일명 중복 방지)

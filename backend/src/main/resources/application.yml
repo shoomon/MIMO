@@ -1,3 +1,7 @@
+server:
+  servlet:
+    context-path: /api
+
 spring:
   application:
     name: backend
@@ -25,6 +29,8 @@ spring:
     url: jdbc:mysql://${DB_URL}/s12p12a504?socketTimeout=2000
     hikari:
       connection-timeout: 3000
+      maximum-pool-size: 2
+      minimum-idle: 2
 
   # JPA
   jpa:
@@ -57,3 +63,7 @@ oauth2:
       - email
       - profile
       - openid
+
+openvidu:
+  url: "https://i12a504.p.ssafy.io"
+  secret: "MY_SECRET"

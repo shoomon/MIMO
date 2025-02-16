@@ -7,12 +7,15 @@ import ProfileImage, {
 
 interface CommentProps {
     commentId: number;
+    teamScheduleCommentId: number; // 추가: 수정 시 필요한 팀 일정 댓글 ID
     profileImage: ProfileImageProps;
+    name: string;
     writedate: string;
     content: string;
     isReply: boolean;
     onDelete: (id: number) => void;
-    onUpdate: (id: number, newContent: string) => void;
+    // onUpdate는 이제 두 개의 인자만 받습니다.
+    onUpdate: (teamScheduleCommentId: number, content: string) => void;
 }
 
 interface FormData {
@@ -21,10 +24,12 @@ interface FormData {
 
 const Comment = ({
     commentId,
+    teamScheduleCommentId,
     profileImage,
     writedate,
     content,
     isReply,
+    name,
     onDelete,
     onUpdate,
 }: CommentProps) => {
@@ -51,8 +56,8 @@ const Comment = ({
     }, [isEditing, setFocus]);
 
     const onSubmit: SubmitHandler<FormData> = (data: FormData) => {
-        // 서버에 업데이트 요청 전에 추가 검증 또는 sanitize 로직을 넣을 수 있음
-        onUpdate(commentId, data.commentContent);
+        // 이제 teamScheduleCommentId와 수정된 내용을 인자로 전달합니다.
+        onUpdate(teamScheduleCommentId, data.commentContent);
         setIsEditing(false);
     };
 
@@ -68,13 +73,13 @@ const Comment = ({
                     <div className="flex gap-1">
                         <ProfileImage
                             userId={profileImage.userId}
-                            imgSrc={profileImage.imgSrc}
-                            userName={profileImage.userName}
+                            profileUri={profileImage.profileUri}
+                            nickname={name}
                             size={24}
                             addStyle="rounded-lg"
                         />
                         <span className="text-md font-bold">
-                            {profileImage.userName}
+                            {profileImage.nickname}
                         </span>
                     </div>
                     <span className="text-sm font-normal">{parsedDate}</span>

@@ -6,6 +6,7 @@ import com.bisang.backend.team.domain.TeamRecruitStatus;
 
 public record TeamDto(
         Long teamId,
+        Long teamUserId,
         String profileUri,
         String name,
         String description,
