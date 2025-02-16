@@ -5,12 +5,11 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
-import com.bisang.backend.account.domain.AccountDetails;
 import jakarta.persistence.*;
 
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -21,6 +20,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @NoArgsConstructor(access = PROTECTED)
+@EntityListeners(AuditingEntityListener.class)
 /**
  *  1, 2번 인덱스 : 트랜잭션 오류시 개발자 수동 수정을 위한 인덱스
  *  3 번 인덱스 : 배치 작업을 통한 실패 트랜잭션 자동 복구를 위한 인덱스

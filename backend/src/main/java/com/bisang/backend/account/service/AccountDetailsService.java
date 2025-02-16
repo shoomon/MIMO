@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import com.bisang.backend.account.controller.response.AccountDetailsResponse;
+import com.bisang.backend.account.converter.AccountDetailsConverter;
 import jakarta.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
@@ -46,57 +48,61 @@ public class AccountDetailsService {
         accountDetailsJpaRepository.save(accountDetails);
     }
 
-    public List<AccountDetails> getUserDepositAccountDetails(User user) {
+    public List<AccountDetailsResponse> getUserDepositAccountDetails(User user) {
         Long userId = user.getId();
         String accountNumber  = user.getAccountNumber();
 
         accountService.validateUserAccount(userId, accountNumber);
 
-        return accountDetailsJpaRepository.findByReceiverAccountNumberAndTransactionCategory(accountNumber, DEPOSIT);
+        List<AccountDetails> accountDetails = accountDetailsJpaRepository.findByReceiverAccountNumberAndTransactionCategory(accountNumber, DEPOSIT);
+        return AccountDetailsConverter.accountDetailsToAccountDetailsResponses(accountDetails);
     }
     
-    public List<AccountDetails> getUserChargeAccountDetails(User user) {
+    public List<AccountDetailsResponse> getUserChargeAccountDetails(User user) {
         Long userId = user.getId();
         String accountNumber  = user.getAccountNumber();
 
         accountService.validateUserAccount(userId, accountNumber);
 
-        return accountDetailsJpaRepository.findByReceiverAccountNumberAndTransactionCategory(accountNumber, CHARGE);
+        List<AccountDetails> accountDetails = accountDetailsJpaRepository.findByReceiverAccountNumberAndTransactionCategory(accountNumber, CHARGE);
+        return AccountDetailsConverter.accountDetailsToAccountDetailsResponses(accountDetails);
     }
 
-    public List<AccountDetails> getUserTransferAccountDetails(User user) {
+    public List<AccountDetailsResponse> getUserTransferAccountDetails(User user) {
         Long userId = user.getId();
         String accountNumber  = user.getAccountNumber();
 
         accountService.validateUserAccount(userId, accountNumber);
 
-        return accountDetailsJpaRepository.findBySenderAccountNumberAndTransactionCategory(accountNumber, TRANSFER);
+        List<AccountDetails> accountDetails = accountDetailsJpaRepository.findBySenderAccountNumberAndTransactionCategory(accountNumber, TRANSFER);
+        return AccountDetailsConverter.accountDetailsToAccountDetailsResponses(accountDetails);
     }
 
-    public List<AccountDetails> getUserPayAccountDetails(User user) {
+    public List<AccountDetailsResponse> getUserPayAccountDetails(User user) {
         Long userId = user.getId();
         String accountNumber  = user.getAccountNumber();
 
         accountService.validateUserAccount(userId, accountNumber);
 
-        return accountDetailsJpaRepository.findBySenderAccountNumberAndTransactionCategory(accountNumber, PAYMENT);
+        List<AccountDetails> accountDetails = accountDetailsJpaRepository.findBySenderAccountNumberAndTransactionCategory(accountNumber, PAYMENT);
+        return AccountDetailsConverter.accountDetailsToAccountDetailsResponses(accountDetails);
     }
 
     @Transactional
-    public List<AccountDetails> getUserAllAccountDetails(User user) {
+    public List<AccountDetailsResponse> getUserAllAccountDetails(User user) {
         Long userId = user.getId();
         String accountNumber  = user.getAccountNumber();
 
         accountService.validateUserAccount(userId, accountNumber);
 
-        List<AccountDetails> allAccountDetails = new ArrayList<>();
+        List<AccountDetailsResponse> allAccountDetails = new ArrayList<>();
 
         allAccountDetails.addAll(getUserDepositAccountDetails(user));
         allAccountDetails.addAll(getUserChargeAccountDetails(user));
         allAccountDetails.addAll(getUserTransferAccountDetails(user));
         allAccountDetails.addAll(getUserPayAccountDetails(user));
 
-        allAccountDetails.sort(Comparator.comparing(AccountDetails::getCreatedAt).reversed());
+        allAccountDetails.sort(Comparator.comparing(AccountDetailsResponse::getCreatedAt).reversed());
 
         return allAccountDetails;
     }
