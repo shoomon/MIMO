@@ -78,6 +78,9 @@ public class TeamScheduleCommentService {
     ) {
         TeamScheduleComment comment = findCommentById(teamScheduleCommentId);
         hasComment(comment, userId);
+        teamScheduleCommentJpaRepository.delete(comment);
+        teamScheduleCommentJpaRepository.deleteByParentCommentId(teamScheduleCommentId);
+        /* 댓글 쇼~~~~
         if (comment.getParentCommentId() == null) {
             Long childCommentCnt = teamScheduleCommentJpaRepository.countByParentCommentId(comment.getId());
             if (childCommentCnt > 0) {
@@ -101,8 +104,7 @@ public class TeamScheduleCommentService {
             teamScheduleCommentJpaRepository.delete(comment);
             return;
         }
-
-        teamScheduleCommentJpaRepository.delete(comment);
+         */
     }
 
     private void hasComment(

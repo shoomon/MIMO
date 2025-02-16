@@ -15,4 +15,6 @@ public interface TeamScheduleCommentJpaRepository extends JpaRepository<TeamSche
     Long countById(Long id);
 
     Long countByParentCommentId(Long parentCommentId);
+
+    void deleteByParentCommentId(Long parentCommentId);
 }
