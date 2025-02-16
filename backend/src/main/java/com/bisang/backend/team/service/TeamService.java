@@ -201,6 +201,12 @@ public class TeamService {
         return teamQuerydslRepository.getSimpleTeamInfo(userId, teamId);
     }
 
+    @EveryOne
+    @Transactional(readOnly = true)
+    public List<Team> getTeamsByTitleOrDescription(String searchKeyword) {
+        return teamQuerydslRepository.searchTeams(searchKeyword);
+    }
+
     @TeamLeader
     public void updateTeam(
             Long userId,

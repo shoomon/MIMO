@@ -24,11 +24,14 @@ import com.bisang.backend.team.controller.request.UpdateTeamRequest;
 import com.bisang.backend.team.controller.response.TeamIdResponse;
 import com.bisang.backend.team.controller.response.TeamInfosResponse;
 import com.bisang.backend.team.domain.Area;
+import com.bisang.backend.team.domain.Team;
 import com.bisang.backend.team.domain.TeamCategory;
 import com.bisang.backend.team.service.TeamService;
 import com.bisang.backend.user.domain.User;
 
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -79,6 +82,13 @@ public class TeamController {
             req.maxCapacity()
         );
         return ResponseEntity.status(CREATED).body(new TeamIdResponse(teamId));
+    }
+
+    @GetMapping("/title-description")
+    public ResponseEntity<List<Team>> getTitleDescription(
+        @RequestParam String searchKeyword
+    )  {
+        return ResponseEntity.ok(teamService.getTeamsByTitleOrDescription(searchKeyword));
     }
 
     @PutMapping(consumes = {MULTIPART_FORM_DATA_VALUE})

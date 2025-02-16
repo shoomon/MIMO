@@ -26,6 +26,7 @@ import com.bisang.backend.team.controller.dto.TeamDto;
 import com.bisang.backend.team.domain.Area;
 import com.bisang.backend.team.domain.TeamCategory;
 
+import com.bisang.backend.team.domain.Team;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
@@ -41,6 +42,14 @@ public class TeamQuerydslRepository {
     private final TeamUserJpaRepository teamUserJpaRepository;
     private final JPAQueryFactory queryFactory;
     private final TeamJpaRepository teamJpaRepository;
+
+    public List<Team> searchTeams(String searchText) {
+        return queryFactory.selectFrom(team)
+                .leftJoin(teamDescription).on(team.id.eq(teamDescription.id))
+                .where(team.name.contains(searchText)
+                        .or(teamDescription.description.contains(searchText)))
+                .fetch();
+    }
 
     public TeamDto getTeamInfo(Long userId, Long teamId) {
         isTeamExistValidation(teamId);
