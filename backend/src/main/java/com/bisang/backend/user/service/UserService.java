@@ -112,16 +112,17 @@ public class UserService {
         //댓글 키 - 게시물 키 매핑
         Map<Long, Long> commentToBoardMap = commentList.stream()
                 .collect(Collectors.toMap(Comment::getId, Comment::getBoardId));
+        //댓글이 가진 게시글 키 리스트
+        List<Long> commentBoardId = new ArrayList<>(commentToBoardMap.values());
         //키 값은 boardId
-        List<Long> commentId = new ArrayList<>(comment.keySet());
-        Map<Long, BoardTeamDto> boardTeam = boardQuerydslRepository.getBoardTeamListByCommentId(commentId);
+        Map<Long, BoardTeamDto> boardTeam = boardQuerydslRepository.getBoardTeamListByCommentId(commentBoardId);
         System.out.println("게시글+게시판+팀: "+boardTeam.size());
         //키 값은 boardId
         List<Long> boardId = new ArrayList<>(boardTeam.keySet());
         Map<Long, String> thumbnail = boardQuerydslRepository.getImageThumbnailList(boardId);
         System.out.println("이미지: "+thumbnail.size());
 
-        for(Long i : commentId) {
+        for(Long i : comment.keySet()) {
             Comment commentInfo = comment.get(i);
             Long curBoardId = commentToBoardMap.get(i);
             
