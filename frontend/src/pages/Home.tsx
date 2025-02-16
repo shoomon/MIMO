@@ -1,6 +1,6 @@
 import { CardMeeting } from '@/components/molecules';
 import CategoryList from '@/components/molecules/CategoryList/CategoryList';
-import ListContainer from '@/components/organisms/ListContainer';
+import ListContainer from '@/components/organisms/Carousel/ListContainer';
 import { Area, SimpleTeamResponse } from './../types/Team';
 import { getTeamInfosByArea } from '@/apis/TeamAPI';
 import { useQuery } from '@tanstack/react-query';

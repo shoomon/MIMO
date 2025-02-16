@@ -5,7 +5,7 @@ import useMyTeamProfile from '@/hooks/useMyTeamProfile';
 import { useParams } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { CreateTeamBoard, getTeamBoardList } from '@/apis/TeamBoardAPI';
-import ListContainer from '@/components/organisms/ListContainer';
+import ListContainer from '@/components/organisms/Carousel/ListContainer';
 import { TeamBoardAPIResponse, TeamBoardListResponse } from '@/types/TeamBoard';
 import { CardBoard } from '@/components/molecules';
 import BodyLayout_64 from '../layouts/BodyLayout_64';

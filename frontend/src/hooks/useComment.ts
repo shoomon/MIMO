@@ -41,8 +41,8 @@ export const useComment = (props: UseCommentProps) => {
             // 게시판 댓글이면 postId가 존재하는지 확인
             else if (props.postId) {
                 await createBoardComment(
-                    props.teamUserId.toString(),
-                    props.postId,
+                    props.postId.toString(),
+                    props.teamUserId,
                     value,
                     ...(props.parentId !== undefined ? [props.parentId] : []),
                 );

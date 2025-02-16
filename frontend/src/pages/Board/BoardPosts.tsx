@@ -41,7 +41,7 @@ const BoardPosts = () => {
             </ButtonLayout>
             <BodyLayout_64>
                 <div className="w-full">
-                    <Title label={boardData.boardName}></Title>
+                    <Title label={boardData.teamBoardName}></Title>
                 </div>
             </BodyLayout_64>
         </BaseLayout>

@@ -81,10 +81,10 @@ const CardBoardView: React.FC<CardBoardViewProps> = ({
                 </div>
                 <span className="text-sm font-light">{createdAt}</span>
 
-                <div className="flex gap-4 text-sm font-medium">
+                <div className="flex gap-3 text-sm font-medium">
                     <span>조회수 {viewCount}</span>
                     <span>댓글수 {commentCount}</span>
-                    <span>좋아요{likeCount}개</span>
+                    <span>좋아요 {likeCount}개</span>
                 </div>
             </div>
         </Link>

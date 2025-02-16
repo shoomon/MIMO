@@ -96,3 +96,52 @@ export const getBoardDetail = async (
         throw error;
     }
 };
+
+export const DeleteBoardComment = async (postId: string): Promise<void> => {
+    try {
+        const params = {
+            id: postId,
+        };
+        await customFetch('/comment', {
+            method: 'DELETE',
+            params,
+        });
+    } catch (error) {
+        console.error('Error 댓글 삭제:', error);
+        throw error;
+    }
+};
+
+export const updateBoardComment = async (
+    commentId: string,
+    content: string,
+): Promise<void> => {
+    try {
+        const body = JSON.stringify({
+            commentId,
+            content,
+        });
+        await customFetch('/comment', {
+            method: 'PUT',
+            body,
+        });
+    } catch (error) {
+        console.error('Error updating comment:', error);
+        throw error;
+    }
+};
+
+export const deletePost = async (postId: string): Promise<void> => {
+    try {
+        const params = {
+            post: postId,
+        };
+        await customFetch('/board', {
+            method: 'DELETE',
+            params,
+        });
+    } catch (error) {
+        console.error('Error leaving schedule:', error);
+        throw error;
+    }
+};

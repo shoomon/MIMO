@@ -220,7 +220,7 @@ const TeamScheduleDetail = () => {
                         </span>
                         <span>{comments.length}</span>
                     </div>
-                    <div className="xl:grid-ros-4 grid grid-rows-1 gap-2 md:grid-rows-2 lg:grid-rows-1">
+                    <div className="xl:grid-ros-4 grid grid-rows-1 gap-2 pr-4 md:grid-rows-2 lg:grid-rows-1">
                         {comments.length > 0 ? (
                             comments.map((item) => (
                                 <Comment

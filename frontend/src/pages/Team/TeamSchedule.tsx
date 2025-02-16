@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import BodyLayout_64 from '../layouts/BodyLayout_64';
-import ListContainer from '@/components/organisms/ListContainer';
+import ListContainer from '@/components/organisms/Carousel/ListContainer';
 import {
     getAdhocSchedules,
     getRegularSchedules,
