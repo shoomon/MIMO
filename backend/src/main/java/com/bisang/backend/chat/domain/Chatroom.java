@@ -33,6 +33,7 @@ public class Chatroom {
     @Column(name = "chatroom_user_id", nullable = false)
     private Long userId;
 
+    @Setter
     @Column(length = 40, name = "chatroom_title", nullable = false)
     private String title;
 

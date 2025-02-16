@@ -1,7 +1,9 @@
 package com.bisang.backend.chat.service;
 
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -28,6 +30,10 @@ public class ChatRedisService {
     private static final String MESSAGE_ID_KEY    = "chat:message:id"; // 메시지 ID 증가용
     private static final String USER_CHATROOM_KEY = "userChatroom:";   // userChatroom:<userId>
     private static final String TEAM_MESSAGE_KEY  = "teamMessage:";    // teamMessage:<chatroomId>
+    private static final String teamMemberKey = "teamMember:";
+    private static final String lastReadScoreKey = "lastReadScore:";
+    private static final String lastReadIdKey = "lastReadId:";
+
 
     private static final DefaultRedisScript<Long> SEND_MESSAGE_SCRIPT = new DefaultRedisScript<>(
             // Lua 스크립트 시작
@@ -100,4 +106,38 @@ public class ChatRedisService {
 
         message.setId(result);
     }
+
+    public void afterEnterChatroom(Long chatroomId, Long userId, LocalDateTime lastDateTime, Long lastChatId) {
+        double score = lastDateTime
+                .toInstant(ZoneOffset.ofTotalSeconds(0))
+                .toEpochMilli() + (lastChatId % 1000) / 1000.0;
+
+        // Lua 스크립트 내용
+        String luaScript =
+                "redis.call('SADD', KEYS[1], ARGV[1]);" +
+                        "redis.call('SET', KEYS[2], ARGV[2]);" +
+                        "redis.call('SET', KEYS[3], ARGV[3]);" +
+                        "return 1;";
+
+        // 실행할 RedisScript 객체 생성 (반환 타입은 Long 예시)
+        DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>();
+        redisScript.setScriptText(luaScript);
+        redisScript.setResultType(Long.class);
+
+        // 실제 Redis에 넘길 key 목록
+        String teamMemberSetKey = teamMemberKey + chatroomId;
+        String readScoreKey = lastReadScoreKey + chatroomId + ":" + userId;
+        String readIdKey = lastReadIdKey + chatroomId + ":" + userId;
+
+        Long result = stringRedisTemplate.execute(
+                redisScript,
+                Arrays.asList(teamMemberSetKey, readScoreKey, readIdKey), // KEYS
+                userId, String.valueOf(score), String.valueOf(lastChatId) // ARGV
+        );
+
+        if (result == null || result != 1L) {
+            throw new RuntimeException("Failed to save teamMember");
+        }
+    }
+
 }

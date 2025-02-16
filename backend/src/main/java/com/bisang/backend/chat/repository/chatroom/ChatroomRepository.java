@@ -83,6 +83,21 @@ public class ChatroomRepository {
         }
     }
 
+    public void updateChatroomTitle(Long chatroomId, String chatroomTitle) {
+        String originalChatroomTitle = redisCacheRepository.getChatroomTitle(chatroomId);
+        redisCacheRepository.updateChatroomTitle(chatroomId, chatroomTitle);
+
+        try {
+            Chatroom chatroom = chatroomJpaRepository
+                    .findById(chatroomId)
+                    .orElseThrow(() -> new ChatroomException(NOT_FOUND_TEAM));
+            chatroom.setTitle(chatroomTitle);
+        } catch (ChatroomException e) {
+            redisCacheRepository.updateChatroomTitle(chatroomId, originalChatroomTitle);
+            throw e;
+        }
+    }
+
     public Long getChatroomIdByteamId(Long teamId) {
         return chatroomJpaRepository.findIdByTeamId(teamId);
     }
