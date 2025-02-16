@@ -11,9 +11,7 @@ public record CommentDto(
         String userNickname,
         String userProfileImage,
         String content,
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yy.MM.dd HH:mm")
         LocalDateTime createdAt,
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yy.MM.dd HH:mm")
         LocalDateTime updatedAt
 ) {
 }

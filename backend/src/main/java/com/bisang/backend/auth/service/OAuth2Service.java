@@ -50,7 +50,7 @@ public class OAuth2Service {
 
     public UserTokens loginYame(String email, String name) {
         Optional<User> findUser = userJpaRepository.findByEmail(email);
-        String account = randomAlphaNumeric(13);
+        String account = accountService.createUserAccount();
         if (findUser.isPresent()) {
             UserTokens userTokens = jwtUtil.createLoginToken(findUser.get().getId().toString());
             RefreshToken refreshToken = new RefreshToken(findUser.get().getId(), userTokens.getRefreshToken());

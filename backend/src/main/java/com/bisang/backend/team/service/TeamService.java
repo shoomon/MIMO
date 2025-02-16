@@ -1,5 +1,6 @@
 package com.bisang.backend.team.service;
 
+import static com.bisang.backend.chat.domain.ChatroomStatus.GROUP;
 import static com.bisang.backend.common.exception.ExceptionCode.*;
 import static com.bisang.backend.common.utils.PageUtils.SHORT_PAGE_SIZE;
 import static com.bisang.backend.s3.domain.ImageType.TEAM;
@@ -19,6 +20,9 @@ import com.bisang.backend.common.exception.TeamException;
 import com.bisang.backend.s3.domain.ProfileImage;
 import com.bisang.backend.s3.repository.ProfileImageRepository;
 import com.bisang.backend.s3.service.S3Service;
+import com.bisang.backend.account.service.AccountService;
+import com.bisang.backend.chat.service.ChatroomUserService;
+import com.bisang.backend.chat.service.ChatroomService;
 import com.bisang.backend.team.annotation.EveryOne;
 import com.bisang.backend.team.annotation.TeamLeader;
 import com.bisang.backend.team.controller.dto.SimpleTeamDto;
@@ -46,6 +50,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class TeamService {
+    private final AccountService accountService;
     private final TagJpaRepository tagJpaRepository;
     private final TeamDescriptionJpaRepository teamDescriptionJpaRepository;
     private final TeamJpaRepository teamJpaRepository;
@@ -55,6 +60,8 @@ public class TeamService {
     private final S3Service s3Service;
     private final ProfileImageRepository profileImageRepository;
     private final TeamBoardJpaRepository teamBoardJpaRepository;
+    private final ChatroomService chatroomService;
+    private final ChatroomUserService chatroomUserService;
 
     @EveryOne
     public Boolean existsTeamByName(String name) {
@@ -80,7 +87,6 @@ public class TeamService {
         TeamDescription teamDescription = new TeamDescription(description);
         teamDescriptionJpaRepository.save(teamDescription);
 
-        // TODO: 채팅 룸 관련 생성 기능 추가
         // TODO: 계좌 관련 생성 기능 추가
 
         // 팀 생성
@@ -109,7 +115,7 @@ public class TeamService {
         Tag categoryTag = findTagByName(teamCategory.getName());
         TeamTag categoryTeamTag = new TeamTag(newTeam.getId(), categoryTag.getId());
         teamTagJpaRepository.save(categoryTeamTag);
-        
+
         //기본 게시판 생성
         teamBoardJpaRepository.save(TeamBoard.builder()
                 .teamId(newTeam.getId())
@@ -120,6 +126,17 @@ public class TeamService {
         // 팀 유저 저장
         var teamUser = TeamUser.createTeamLeader(leaderId, newTeam.getId(), nickname, notificationStatus);
         teamUserJpaRepository.save(teamUser);
+
+        // 채팅 룸 생성
+        chatroomService.createChatroom(
+                leaderId,
+                newTeam.getId(),
+                nickname,
+                name + "모임의 채팅방",
+                teamProfileUri,
+                GROUP
+        );
+
         return newTeam.getId();
     }
 
@@ -171,10 +188,13 @@ public class TeamService {
             TeamRecruitStatus recruitStatus,
             TeamPrivateStatus privateStatus,
             MultipartFile profile,
-            Area areaCode
+            Area areaCode,
+            TeamCategory category
     ) {
         Team team = findTeamById(teamId);
         team.updateTeamName(name);
+        // 채팅방 이름 변경
+        chatroomService.updateChatroomTitle(teamId, name + "모임의 채팅방");
 
         var teamDescription = team.getDescription();
         teamDescription.updateDescription(description);
@@ -183,10 +203,23 @@ public class TeamService {
 
         team.updateRecruitStatus(recruitStatus);
         team.updatePrivateStatus(privateStatus);
-        team.updateAreaCode(areaCode);
+
+        if (category != team.getCategory()) {
+            deleteOldCategoryTeamTag(team);
+            saveNewCategoryTeamTag(teamId, category);
+            team.updateCategory(category);
+        }
+
+        if (areaCode != team.getAreaCode()) {
+            deleteOldAreaTeamTag(team);
+            saveNewAreaTeamTag(teamId, areaCode);
+            team.updateAreaCode(areaCode);
+        }
 
         String profileUri = getProfileUri(teamId, profile);
         team.updateTeamProfileUri(profileUri);
+        // 채팅방 프로필 변경
+        chatroomService.updateChatroomProfileUri(teamId, profileUri);
 
         teamJpaRepository.save(team);
     }
@@ -240,5 +273,41 @@ public class TeamService {
     private Tag findTagByName(String name) {
         return tagJpaRepository.findByName(name)
             .orElseThrow(() -> new TeamException(NOT_FOUND));
+    }
+
+    private void saveNewCategoryTeamTag(Long teamId, TeamCategory category) {
+        Tag categoryTag = findTagByName(category.getName());
+        TeamTag categoryTeamTag = new TeamTag(teamId, categoryTag.getId());
+        teamTagJpaRepository.save(categoryTeamTag);
+    }
+
+    private void saveNewAreaTeamTag(Long teamId, Area areaCode) {
+        Tag areaTag = findTagByName(areaCode.getName());
+        TeamTag areaTeamTag = new TeamTag(teamId, areaTag.getId());
+        teamTagJpaRepository.save(areaTeamTag);
+    }
+
+    private void deleteOldCategoryTeamTag(Team team) {
+        TeamCategory oldCategory = team.getCategory();
+        Tag oldCategoryTag = getOldTagByName(oldCategory.getName());
+        TeamTag savedCategoryTeamTag = getSavedTeamTagByTag(team.getId(), oldCategoryTag);
+        teamTagJpaRepository.delete(savedCategoryTeamTag);
+    }
+
+    private void deleteOldAreaTeamTag(Team team) {
+        Area oldArea = team.getAreaCode();
+        Tag oldAreaTag = getOldTagByName(oldArea.getName());
+        TeamTag savedAreaTeamTag = getSavedTeamTagByTag(team.getId(), oldAreaTag);
+        teamTagJpaRepository.delete(savedAreaTeamTag);
+    }
+
+    private Tag getOldTagByName(String name) {
+        return tagJpaRepository.findByName(name)
+                .orElseThrow(() -> new TeamException(NOT_FOUND));
+    }
+
+    private TeamTag getSavedTeamTagByTag(Long teamId, Tag oldTag) {
+        return teamTagJpaRepository.findByTeamIdAndTagId(teamId, oldTag.getId())
+                .orElseThrow(() -> new TeamException(NOT_FOUND));
     }
 }

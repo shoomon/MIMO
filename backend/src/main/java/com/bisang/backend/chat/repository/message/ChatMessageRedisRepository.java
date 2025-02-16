@@ -42,7 +42,7 @@ public class ChatMessageRedisRepository {
             return getRedisChatMessages(result);
         }
 
-        LocalDateTime datetime = DateUtils.DateToLocalDateTime(timestamp);
+        LocalDateTime datetime = DateUtils.dateToLocalDateTime(timestamp);
         double score = datetime.toInstant(ZoneOffset.ofTotalSeconds(0)).toEpochMilli() + (messageId % 1000) / 1000.0;
         result = redisTemplate.opsForZSet()
                 .reverseRangeByScoreWithScores(key, Double.NEGATIVE_INFINITY, score, 1, 30);

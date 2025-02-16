@@ -43,8 +43,33 @@ public class RedisCacheRepository {
         return redisTemplate.opsForHash().entries(key);
     }
 
-    public void updateChatroomProfileUri(Long teamId, String profileUri) {
-        String key = CHATROOM_KEY + teamId;
+    public String getChatroomProfileUri(Long chatroomId) {
+        String key = CHATROOM_KEY + chatroomId;
+        return (String) redisTemplate.opsForHash().get(key, "profileUri");
+    }
+
+    public String getChatroomTitle(Long chatroomId) {
+        String key = CHATROOM_KEY + chatroomId;
+        return (String) redisTemplate.opsForHash().get(key, "title");
+    }
+
+    public void updateChatroomProfileUri(Long chatroomId, String profileUri) {
+        String key = CHATROOM_KEY + chatroomId;
+
+        if (profileUri == null) {
+            redisTemplate.opsForHash().delete(key, "profileUri");
+            return;
+        }
         redisTemplate.opsForHash().put(key, "profileUri", profileUri);
+    }
+
+    public void updateChatroomTitle(Long chatroomId, String chatroomTitle) {
+        String key = CHATROOM_KEY + chatroomId;
+
+        if (chatroomTitle == null) {
+            redisTemplate.opsForHash().delete(key, "chatroomTitle");
+            return;
+        }
+        redisTemplate.opsForHash().put(key, "title", chatroomTitle);
     }
 }

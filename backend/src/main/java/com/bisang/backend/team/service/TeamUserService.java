@@ -13,6 +13,7 @@ import static java.lang.Boolean.TRUE;
 import java.util.List;
 import java.util.Optional;
 
+import com.bisang.backend.chat.service.ChatroomUserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,6 +46,7 @@ public class TeamUserService {
     private final TeamInviteJpaRepository teamInviteJpaRepository;
     private final TeamInviteQuerydslRepository teamInviteQuerydslRepository;
     private final TeamUserQuerydslRepository teamUserQuerydslRepository;
+    private final ChatroomUserService chatroomUserService;
 
     @Transactional(readOnly = true)
     public TeamInfosResponse getMyTeamInfos(Long userId, Long teamId) {
@@ -81,6 +83,9 @@ public class TeamUserService {
             if (team.getRecruitStatus() == ACTIVE_PUBLIC) {
                 TeamUser newTeamMember = createTeamMember(userId, teamId, nickname, status);
                 teamUserJpaRepository.save(newTeamMember);
+
+                // 채팅 방 가입 추가
+                chatroomUserService.enterChatroom(teamId, userId, nickname);
                 return;
             } else if (team.getRecruitStatus() == ACTIVE_PRIVATE) {
                 throw new TeamException(NOT_PUBLIC_TEAM);
@@ -117,6 +122,9 @@ public class TeamUserService {
         TeamUser teamUser = findTeamUserByTeamIdAndUserId(teamId, userId);
         teamUser.updateNickname(nickname);
         teamUserJpaRepository.save(teamUser);
+
+        // 채팅방 내의 닉네임 변경
+        chatroomUserService.updateNickname(userId, teamId, nickname);
     }
 
     @EveryOne
@@ -165,6 +173,9 @@ public class TeamUserService {
         TeamUser teamUser = findTeamUserByTeamIdAndUserId(teamId, userId);
         leaderValidation(team, teamUser);
         teamUserJpaRepository.delete(teamUser);
+
+        // 채팅방 탈퇴 부분 추가
+        chatroomUserService.leaveChatroom(teamId, userId);
     }
 
     private static void leaderValidation(Team team, TeamUser teamUser) {

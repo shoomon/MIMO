@@ -5,8 +5,6 @@ import static com.bisang.backend.common.exception.ExceptionCode.*;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.transaction.Transactional;
-
 import org.springframework.stereotype.Repository;
 
 import com.bisang.backend.chat.domain.Chatroom;
@@ -41,7 +39,6 @@ public class ChatroomRepository {
     }
 
     public void insertJpaChatroom(Chatroom chatroom) {
-        System.out.println("insertChatroom");
         chatroomJpaRepository.save(chatroom);
     }
 
@@ -67,17 +64,38 @@ public class ChatroomRepository {
         return chatroomInfo;
     }
 
-    @Transactional
-    public void updateChatroomProfileUri(Long teamId, String profileUri) {
-        redisCacheRepository.updateChatroomProfileUri(teamId, profileUri);
+    public void updateChatroomProfileUri(Long chatroomId, String profileUri) {
 
-        Chatroom chatroom = chatroomJpaRepository
-                .findById(teamId)
-                .orElseThrow(() -> new ChatroomException(NOT_FOUND_TEAM));
-        chatroom.setProfileUri(profileUri);
+        String originalProfileUri = redisCacheRepository.getChatroomProfileUri(chatroomId);
+        redisCacheRepository.updateChatroomProfileUri(chatroomId, profileUri);
+
+        try {
+            Chatroom chatroom = chatroomJpaRepository
+                    .findById(chatroomId)
+                    .orElseThrow(() -> new ChatroomException(NOT_FOUND_TEAM));
+            chatroom.setProfileUri(profileUri);
+        } catch (ChatroomException e) {
+            redisCacheRepository.updateChatroomProfileUri(chatroomId, originalProfileUri);
+            throw e;
+        }
+    }
+
+    public void updateChatroomTitle(Long chatroomId, String chatroomTitle) {
+        String originalChatroomTitle = redisCacheRepository.getChatroomTitle(chatroomId);
+        redisCacheRepository.updateChatroomTitle(chatroomId, chatroomTitle);
+
+        try {
+            Chatroom chatroom = chatroomJpaRepository
+                    .findById(chatroomId)
+                    .orElseThrow(() -> new ChatroomException(NOT_FOUND_TEAM));
+            chatroom.setTitle(chatroomTitle);
+        } catch (ChatroomException e) {
+            redisCacheRepository.updateChatroomTitle(chatroomId, originalChatroomTitle);
+            throw e;
+        }
     }
 
     public Long getChatroomIdByteamId(Long teamId) {
-        return chatroomJpaRepository.findIdByTeamId(teamId);
+        return chatroomJpaRepository.findIdByTeamId(teamId).orElseThrow(() -> new ChatroomException(NOT_FOUND_TEAM));
     }
 }
