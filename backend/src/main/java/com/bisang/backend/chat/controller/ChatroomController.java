@@ -45,8 +45,11 @@ public class ChatroomController {
     }
 
     @PostMapping("/last-read")
-    public ResponseEntity<String> updateLastRead(@AuthUser User user, @RequestBody LastReadRequest lastReadRequest) {
-        LocalDateTime lastReadDateTime = DateUtils.DateToLocalDateTime(lastReadRequest.lastReadDateTime());
+    public ResponseEntity<String> updateLastRead(
+            @AuthUser User user,
+            @RequestBody LastReadRequest lastReadRequest
+    ) {
+        LocalDateTime lastReadDateTime = DateUtils.dateToLocalDateTime(lastReadRequest.lastReadDateTime());
 
         chatroomUserService.updateLastRead(
                 user.getId(),

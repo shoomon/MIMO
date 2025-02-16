@@ -1,11 +1,14 @@
 package com.bisang.backend.transaction.converter;
 
+import com.bisang.backend.transaction.domain.Transaction;
+import com.bisang.backend.user.domain.User;
+import com.bisang.backend.user.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import com.bisang.backend.transaction.controller.request.ChargeRequest;
 import com.bisang.backend.transaction.controller.request.PaymentRequest;
 import com.bisang.backend.transaction.controller.request.TransferRequest;
-import com.bisang.backend.transaction.domain.Transaction;
 import com.bisang.backend.transaction.domain.TransactionCategory;
 import com.bisang.backend.transaction.domain.TransactionStatus;
 
@@ -45,12 +48,12 @@ public class TransactionConverter {
     }
 
     // 잔액 결제 트랜잭션
-    public static Transaction paymentRequestToTransaction(PaymentRequest paymentRequest) {
+    public static Transaction paymentRequestToTransaction(PaymentRequest paymentRequest, User user) {
         return Transaction.builder()
                 .balance(paymentRequest.getPaidAmount())
-                .senderAccountNumber(paymentRequest.getSenderAccountNumber())
+                .senderAccountNumber(user.getAccountNumber())
                 .receiverAccountNumber(null)
-                .senderName(paymentRequest.getSenderName())
+                .senderName(user.getName())
                 .receiverName(paymentRequest.getReceiverName())
                 .impUid(null)
                 .merchantUid(null)
@@ -59,4 +62,5 @@ public class TransactionConverter {
                 .transactionStatus(TransactionStatus.PENDING)
                 .build();
     }
+
 }

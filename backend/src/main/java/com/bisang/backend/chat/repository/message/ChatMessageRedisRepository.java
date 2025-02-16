@@ -34,7 +34,6 @@ public class ChatMessageRedisRepository {
 
         String key = teamMessageKey + teamId;
         Set<TypedTuple<String>> result;
-        List<String> list;
 
         if (messageId < 0) {
             result = redisTemplate.opsForZSet()
@@ -43,7 +42,7 @@ public class ChatMessageRedisRepository {
             return getRedisChatMessages(result);
         }
 
-        LocalDateTime datetime = DateUtils.DateToLocalDateTime(timestamp);
+        LocalDateTime datetime = DateUtils.dateToLocalDateTime(timestamp);
         double score = datetime.toInstant(ZoneOffset.ofTotalSeconds(0)).toEpochMilli() + (messageId % 1000) / 1000.0;
         result = redisTemplate.opsForZSet()
                 .reverseRangeByScoreWithScores(key, Double.NEGATIVE_INFINITY, score, 1, 30);
@@ -59,7 +58,7 @@ public class ChatMessageRedisRepository {
 
         List<String> list = result.stream()
                 .map(TypedTuple::getValue)
-                .collect(Collectors.toList());
+                .toList();
 
         return list.stream()
                 .map(json -> {

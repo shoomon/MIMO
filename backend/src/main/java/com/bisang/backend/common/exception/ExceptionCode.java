@@ -24,7 +24,7 @@ public enum ExceptionCode {
     BALANCE_CHARGE_FAIL(4001, "충전에 실패했습니다."),
     BALANCE_TRANSFER_FAIL(4002, "송금에 실패했습니다."),
     BALANCE_PAY_FAIL(4003, "결제에 실패했습니다."),
-    EXPIRE_QR_CODE(4004, "만료된 QRCODE 입니다"),
+    NOT_VALID_QRCODE(4004, "유효하지 않은 QRCODE 입니다"),
 
     NOT_FOUND_TEAM(5000, "팀을 찾을 수가 없습니다."),
     ALREADY_JOINED_MEMBER(5001, "이미 가입된 회원입니다."),

@@ -51,8 +51,9 @@ public class ChatroomUserService {
                 ChatType.ENTER
         );
 
+        //TODO: 루아스크립트로 묶어줘야하는데 어떻게 하지
         chatroomUserRepository.insertRedisMemberUser(chatroomId, userId);
-        chatroomUserRepository.updateLastRead(userId, message.getTimestamp(), chatroomId, userId);
+        chatroomUserRepository.updateLastRead(userId, message.getTimestamp(), chatroomId, 0L);
         chatMessageService.broadcastMessage(chatroomId, message);
     }
 

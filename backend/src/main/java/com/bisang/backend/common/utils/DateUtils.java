@@ -4,6 +4,8 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
 import java.util.Date;
 
 public class DateUtils {
@@ -12,7 +14,7 @@ public class DateUtils {
      * @param localDateTime
      * @return Date
      */
-    public static Date LocalDateTimeToDate(LocalDateTime localDateTime) {
+    public static Date localDateTimeToDate(LocalDateTime localDateTime) {
         Instant instant = localDateTime.atZone(ZoneId.systemDefault()).toInstant();
         return Date.from(instant);
     }
@@ -22,9 +24,15 @@ public class DateUtils {
      * @param date
      * @return LocalDateTime
      */
-    public static LocalDateTime DateToLocalDateTime(String date) {
+    public static LocalDateTime dateToLocalDateTime(String date) {
+        DateTimeFormatter formatter =
+                new DateTimeFormatterBuilder()
+                        .appendPattern("yyyy-MM-dd'T'HH:mm:ss")
+                        .optionalStart()
+                        .appendFraction(ChronoField.NANO_OF_SECOND, 0, 9, true)
+                        .optionalEnd()
+                        .toFormatter();
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSS");
         return LocalDateTime.parse(date, formatter);
     }
 }
