@@ -86,4 +86,9 @@ public class ChatroomService {
         Long chatroomId = chatroomRepository.getChatroomIdByteamId(teamId);
         chatroomRepository.updateChatroomProfileUri(chatroomId, profileUri);
     }
+
+    public void updateChatroomTitle(Long teamId, String chatroomTitle) {
+        Long chatroomId = chatroomRepository.getChatroomIdByteamId(teamId);
+        chatroomRepository.updateChatroomTitle(chatroomId, chatroomTitle);
+    }
 }
