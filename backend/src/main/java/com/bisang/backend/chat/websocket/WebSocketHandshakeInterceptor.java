@@ -31,16 +31,13 @@ public class WebSocketHandshakeInterceptor implements HandshakeInterceptor {
             Map<String, Object> attributes
     ) throws Exception {
         if (request instanceof ServletServerHttpRequest servletRequest) {
-            String token = servletRequest.getServletRequest().getHeader("Authorization");
+            String query = servletRequest.getServletRequest().getQueryString();
+            String token = extractTokenFromQuery(query);
 
-            if (token == null) {
+            if (token == null || !jwtUtil.isAccessTokenValid(token)) {
                 throw new AccountException(ExceptionCode.UNAUTHORIZED_ACCESS);
             }
-
-            if (!jwtUtil.isAccessTokenValid(token)) {
-                throw new AccountException(ExceptionCode.UNAUTHORIZED_ACCESS);
-            }
-
+            // OK
             return true;
         }
         return false;
@@ -57,4 +54,17 @@ public class WebSocketHandshakeInterceptor implements HandshakeInterceptor {
             log.error("WebSocket Handshake failed: {}", exception.getMessage());
         }
     }
+
+    private String extractTokenFromQuery(String query) {
+        if (query == null) {
+            return null;
+        }
+
+        if (!query.startsWith("token=")) {
+            return null;
+        }
+
+        return query.substring("token=".length());
+    }
+
 }
