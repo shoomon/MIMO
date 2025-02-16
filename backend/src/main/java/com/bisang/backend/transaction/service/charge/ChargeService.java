@@ -2,15 +2,15 @@ package com.bisang.backend.transaction.service.charge;
 
 import static com.bisang.backend.transaction.service.TransactionService.ADMIN_ACCOUNT_NUMBER;
 
+import com.bisang.backend.transaction.domain.Transaction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bisang.backend.account.domain.Account;
 import com.bisang.backend.account.repository.AccountJpaRepository;
-import com.bisang.backend.transaction.domain.AccountDetails;
-import com.bisang.backend.transaction.domain.Transaction;
+import com.bisang.backend.account.domain.AccountDetails;
 import com.bisang.backend.transaction.domain.TransactionCategory;
-import com.bisang.backend.transaction.service.AccountDetailsService;
+import com.bisang.backend.account.service.AccountDetailsService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,14 +19,12 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 public class ChargeService {
-
-
     private final AccountDetailsService accountDetailsService;
     private final AccountJpaRepository accountJpaRepository;
 
     @Transactional
     public void charge(Transaction transaction) {
-        String receiverAccountNumber = transaction.getSenderAccountNumber();
+        String receiverAccountNumber = transaction.getReceiverAccountNumber();
         Long balance = transaction.getBalance();
 
         updateAccountBalance(ADMIN_ACCOUNT_NUMBER, balance);

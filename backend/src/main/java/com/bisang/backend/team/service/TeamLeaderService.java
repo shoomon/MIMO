@@ -7,11 +7,12 @@ import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bisang.backend.chat.service.ChatroomService;
+import com.bisang.backend.chat.service.ChatroomUserService;
 import com.bisang.backend.common.exception.TeamException;
 import com.bisang.backend.common.utils.StringUtils;
 import com.bisang.backend.invite.domain.TeamInvite;
@@ -37,20 +38,21 @@ public class TeamLeaderService {
     private final TeamUserJpaRepository teamUserJpaRepository;
     private final TeamUserQuerydslRepository teamUserQuerydslRepository;
     private final TeamInviteJpaRepository teamInviteJpaRepository;
-    private final ChatroomService chatroomService;
+    private final ChatroomUserService chatroomUserService;
 
     @TeamCoLeader
     @Transactional
     public void approveInviteRequest(Long userId, Long teamId, Long inviteId) {
         TeamInvite teamInvite = findTeamInviteById(inviteId);
         teamInvite.approveInvitation();
-        // TEAM_MEMBER 만들어서 넣어야되는데 안 넣음.
-        // CHATTING 방에 넣기. 여기는 닉네임 어떻게 되는거지?
         teamInviteJpaRepository.save(teamInvite);
 
         String tmpNickname = StringUtils.randomAlphaNumeric(10);
         TeamUser teamUser = TeamUser.createTeamMember(teamInvite.getUserId(), teamId, tmpNickname, ACTIVE);
         teamUserJpaRepository.save(teamUser);
+
+        // CHATTING 방에 참여.
+        chatroomUserService.enterChatroom(teamId, userId, tmpNickname);
     }
 
     @TeamCoLeader
@@ -88,11 +90,12 @@ public class TeamLeaderService {
         TeamUser teamUser = findTeamUserById(teamUserId);
         leaderCannotDeleteValidation(team, teamUser);
         teamUserJpaRepository.delete(teamUser);
-    }
 
-    private void leaderCannotDeleteValidation(Team team, TeamUser teamUser) {
-        if (team.getTeamLeaderId().equals(teamUser.getUserId())) {
-            throw new TeamException(NOT_DELETE_LEADER);
+        // 채팅방 유저 강퇴
+        chatroomUserService.forceLeave(teamId, teamUser.getUserId());
+        Optional<TeamInvite> teamInvite = teamInviteJpaRepository.findByTeamIdAndUserId(teamId, userId);
+        if (teamInvite.isEmpty()) {
+            teamInviteJpaRepository.delete(teamInvite.get());
         }
     }
 
@@ -126,6 +129,12 @@ public class TeamLeaderService {
     @Transactional(readOnly = true)
     public List<TeamInviteDto> findTeamInviteRequest(Long userId, Long teamId) {
         return teamUserQuerydslRepository.getTeamInviteInfo(teamId);
+    }
+
+    private void leaderCannotDeleteValidation(Team team, TeamUser teamUser) {
+        if (team.getTeamLeaderId().equals(teamUser.getUserId())) {
+            throw new TeamException(NOT_DELETE_LEADER);
+        }
     }
 
     private Team findTeamById(Long teamId) {
