@@ -7,8 +7,6 @@ import { dateParsing } from '@/utils';
  * 게시판 카드(CardBoard) 컴포넌트의 props 타입 정의
  */
 export interface CardBoardProps {
-    postId: number;
-    boardId: number;
     userProfileUri: string;
     userNickname: string;
     postTitle: string;
@@ -19,6 +17,7 @@ export interface CardBoardProps {
     updatedAt: string;
     commentCount: number;
     layoutType: layoutType;
+    linkto: string;
 }
 
 /**
@@ -36,8 +35,6 @@ export interface CardBoardProps {
  * @returns {JSX.Element} 게시글 정보를 표시하는 카드 UI
  */
 const CardBoard: React.FC<CardBoardProps> = ({
-    postId,
-    boardId,
     userProfileUri,
     userNickname,
     postTitle,
@@ -48,14 +45,14 @@ const CardBoard: React.FC<CardBoardProps> = ({
     updatedAt,
     commentCount,
     layoutType,
+    linkto,
 }) => {
     /** 날짜를 Date 객체로 변환 후 포맷팅 */
     const parsedDate = dateParsing(new Date(createdAt));
 
     return (
         <CardBoardView
-            postId={postId}
-            boardId={boardId}
+            linkto={linkto}
             userProfileUri={userProfileUri}
             userNickname={userNickname}
             postTitle={postTitle}

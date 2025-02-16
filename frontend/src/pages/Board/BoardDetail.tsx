@@ -14,16 +14,21 @@ import {
     updateBoardComment,
 } from '@/apis/TeamBoardAPI';
 import { BoardDetailResponse, CommentThread } from '@/types/TeamBoard';
+import BaseLayout from '../layouts/BaseLayout';
 
 const BoardDetail = () => {
-    const { postId, teamId, teamBoardId } = useParams<{
+    const { postId, teamId } = useParams<{
         postId: string;
         teamId: string;
         teamBoardId: string;
     }>();
+
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const { data: { teamUserId } = {} } = useMyTeamProfile(teamId);
+
+    // 댓글 작성 대상 (답글을 작성할 부모 댓글 ID)
+    const [replyTarget, setReplyTarget] = useState<number | null>(null);
 
     // 게시글 상세 정보 가져오기
     const { data: postDetail, isLoading } = useQuery<BoardDetailResponse>({
@@ -35,10 +40,10 @@ const BoardDetail = () => {
         enabled: Boolean(postId),
     });
 
-    // API에서 받아온 댓글들을 로컬 state로 관리 (TeamScheduleDetail과 동일한 패턴)
-    const [comments, setComments] = useState(postDetail?.comments || []);
-
-    console.log(comments);
+    // API에서 받아온 댓글들을 로컬 state로 관리
+    const [comments, setComments] = useState<CommentThread[]>(
+        postDetail?.comments || [],
+    );
 
     useEffect(() => {
         if (postDetail?.comments) {
@@ -50,12 +55,9 @@ const BoardDetail = () => {
     const deleteBoardMutation = useMutation({
         mutationFn: () => deletePost(postId!),
         onSuccess: () => {
-            // 상세 쿼리 취소 및 제거
             queryClient.cancelQueries({ queryKey: ['boardDetail', postId] });
             queryClient.removeQueries({ queryKey: ['boardDetail', postId] });
-            // 목록 쿼리 invalidation으로 최신 목록을 반영
             queryClient.invalidateQueries({ queryKey: ['boardList'] });
-            // 리스트 페이지로 이동
             navigate(`../`);
         },
         onError: (error) => {
@@ -64,21 +66,18 @@ const BoardDetail = () => {
         },
     });
 
-    // 댓글 삭제 mutation (UI에서 바로 삭제 반영)
+    // 댓글 삭제 mutation (옵티미스틱 업데이트 생략)
     const deleteCommentMutation = useMutation({
         mutationFn: (commentId: number) =>
             DeleteBoardComment(commentId.toString()),
         onMutate: async (commentId) => {
             setComments(
                 (prevThreads) =>
-                    // 각 댓글 스레드에 대해 삭제 대상 댓글을 제거합니다.
                     prevThreads
                         .map((thread) => {
-                            // 만약 루트 댓글이 삭제 대상이면, 스레드 전체를 제거
                             if (thread.rootComment.commentId === commentId) {
                                 return null;
                             }
-                            // 그렇지 않으면, 자식 댓글 배열에서 삭제 대상 댓글 제거
                             const updatedChildComments = thread.comments.filter(
                                 (child) => child.commentId !== commentId,
                             );
@@ -96,7 +95,7 @@ const BoardDetail = () => {
         },
     });
 
-    // 댓글 수정 mutation (UI에서 바로 수정 반영)
+    // 댓글 수정 mutation
     const updateCommentMutation = useMutation({
         mutationFn: ({
             teamId,
@@ -106,14 +105,30 @@ const BoardDetail = () => {
             teamId: string;
             teamScheduleCommentId: number;
             content: string;
-        }) => updateBoardComment(teamScheduleCommentId.toString(), content),
+        }) =>
+            updateBoardComment(
+                teamId,
+                teamScheduleCommentId.toString(),
+                content,
+            ),
         onMutate: async ({ teamScheduleCommentId, content }) => {
             setComments((prevComments) =>
-                prevComments.map((comment) =>
-                    comment.teamScheduleCommentId === teamScheduleCommentId
-                        ? { ...comment, content }
-                        : comment,
-                ),
+                prevComments.map((thread) => {
+                    if (
+                        thread.rootComment.commentId === teamScheduleCommentId
+                    ) {
+                        return {
+                            ...thread,
+                            rootComment: { ...thread.rootComment, content },
+                        };
+                    }
+                    const updatedChildComments = thread.comments.map((child) =>
+                        child.commentId === teamScheduleCommentId
+                            ? { ...child, content }
+                            : child,
+                    );
+                    return { ...thread, comments: updatedChildComments };
+                }),
             );
         },
         onError: (error) => {
@@ -124,11 +139,10 @@ const BoardDetail = () => {
 
     if (isLoading) return <p>로딩 중...</p>;
 
-    const parsedDate = dateParsing(new Date(postDetail?.board.createdAt));
     const imageUrls = postDetail?.files.map((file) => file.fileUri) || [];
 
     return (
-        <section className="flex flex-col gap-2">
+        <BaseLayout>
             <div className="flex justify-end gap-2">
                 <ButtonDefault
                     content="글 수정"
@@ -143,7 +157,7 @@ const BoardDetail = () => {
                 />
             </div>
             <BodyLayout_64>
-                <div className="flex flex-col gap-4">
+                <div className="flex w-full flex-col gap-2">
                     <Title
                         label={postDetail?.board.boardName || '게시판'}
                         to={`../`}
@@ -158,54 +172,140 @@ const BoardDetail = () => {
                             className="h-[18px] w-[18px] rounded-sm object-cover"
                         />
                         <span>{postDetail?.board.userNickname}</span>
-                        <span>{parsedDate}</span>
+                        <span>
+                            {postDetail?.board.createdAt
+                                ? dateParsing(
+                                      new Date(postDetail?.board.createdAt),
+                                  )
+                                : '날짜 정보 없음'}
+                        </span>
                     </div>
-                    <div>{postDetail?.board.description}</div>
+                    <div className="py-10">{postDetail?.board.description}</div>
                     <div>
                         <ImageCarousel images={imageUrls} />
                     </div>
                 </div>
-                <hr className="bg-gray-200" />
-                <div className="flex flex-col gap-2">
-                    <div className="flex gap-2">
+                <div className="flex w-full flex-col gap-2 pr-4">
+                    <div className="flex items-center gap-2">
                         <span className="text-dark flex text-xl font-bold">
                             댓글
                         </span>
                         <span>{comments.length}</span>
                     </div>
-                    <div className="grid gap-2">
+                    <hr className="border-gray-200" />
+
+                    <div className="gap-2">
                         {comments.length > 0 ? (
-                            comments.map((item) => (
-                                <Comment
-                                    key={item.commentSortId}
-                                    commentId={item.commentSortId}
-                                    teamScheduleCommentId={
-                                        item.teamScheduleCommentId
-                                    }
-                                    content={item.content}
-                                    isReply={item.hasParent}
-                                    writedate={item.time}
-                                    profileImage={{
-                                        nickname: item.name,
-                                        profileUri: item.profileUri,
-                                    }}
-                                    name={item.name}
-                                    onDelete={() =>
-                                        deleteCommentMutation.mutate(
-                                            item.rootComment.commentId,
-                                        )
-                                    }
-                                    onUpdate={(
-                                        teamScheduleCommentId,
-                                        content,
-                                    ) =>
-                                        updateCommentMutation.mutate({
-                                            teamId: teamId!,
+                            comments.map((thread) => (
+                                <div
+                                    key={thread.rootComment.commentId}
+                                    className="flex flex-col gap-2 pt-3 pb-2"
+                                >
+                                    {/* 루트 댓글 렌더링 */}
+                                    <Comment
+                                        commentId={thread.rootComment.commentId}
+                                        someCommentId={
+                                            thread.rootComment.commentId
+                                        }
+                                        profileImage={{
+                                            userId: thread.rootComment.userId.toString(),
+                                            profileUri:
+                                                thread.rootComment
+                                                    .userProfileImage,
+                                            nickname:
+                                                thread.rootComment
+                                                    .userNickname || '익명',
+                                        }}
+                                        name={
+                                            thread.rootComment.userNickname ||
+                                            '익명'
+                                        }
+                                        writedate={thread.rootComment.createdAt}
+                                        content={thread.rootComment.content}
+                                        isReply={false}
+                                        onDelete={() =>
+                                            deleteCommentMutation.mutate(
+                                                thread.rootComment.commentId,
+                                            )
+                                        }
+                                        onUpdate={(
                                             teamScheduleCommentId,
                                             content,
-                                        })
-                                    }
-                                />
+                                        ) =>
+                                            updateCommentMutation.mutate({
+                                                teamId: teamId!,
+                                                teamScheduleCommentId,
+                                                content,
+                                            })
+                                        }
+                                        onReply={(parentId) =>
+                                            setReplyTarget(parentId)
+                                        }
+                                    />
+
+                                    {/* 대댓글 작성 폼: 만약 현재 답글 대상이 이 댓글이면 표시 */}
+                                    {replyTarget ===
+                                        thread.rootComment.commentId && (
+                                        <div className="ml-8">
+                                            <CommentWrite
+                                                teamId={teamId!}
+                                                teamUserId={teamUserId!}
+                                                postId={Number(postId)}
+                                                parentId={
+                                                    thread.rootComment.commentId
+                                                }
+                                                onCommentCreated={() => {
+                                                    queryClient.invalidateQueries(
+                                                        {
+                                                            queryKey: [
+                                                                'boardDetail',
+                                                                postId,
+                                                            ],
+                                                        },
+                                                    );
+                                                    setReplyTarget(null); // 답글 폼 숨김
+                                                }}
+                                            />
+                                        </div>
+                                    )}
+
+                                    {/* 자식 댓글(대댓글) 렌더링 */}
+                                    {thread.comments.map((child) => (
+                                        <Comment
+                                            key={child.commentId}
+                                            commentId={child.commentId}
+                                            someCommentId={child.commentId}
+                                            profileImage={{
+                                                userId: child.userId.toString(),
+                                                profileUri:
+                                                    child.userProfileImage,
+                                                nickname:
+                                                    child.userNickname ||
+                                                    '익명',
+                                            }}
+                                            name={child.userNickname || '익명'}
+                                            writedate={child.createdAt}
+                                            content={child.content}
+                                            isReply={true}
+                                            onDelete={() =>
+                                                deleteCommentMutation.mutate(
+                                                    child.commentId,
+                                                )
+                                            }
+                                            onUpdate={(
+                                                teamScheduleCommentId,
+                                                content,
+                                            ) =>
+                                                updateCommentMutation.mutate({
+                                                    teamId: teamId!,
+                                                    teamScheduleCommentId,
+                                                    content,
+                                                })
+                                            }
+                                        />
+                                    ))}
+                                    <hr className="border-gray-200" />
+                                </div>
                             ))
                         ) : (
                             <span>댓글이 없습니다.</span>
@@ -213,12 +313,17 @@ const BoardDetail = () => {
                     </div>
                 </div>
                 <CommentWrite
-                    teamId={teamId}
-                    teamUserId={teamUserId}
+                    teamId={teamId!}
+                    teamUserId={teamUserId!}
                     postId={Number(postId)}
+                    onCommentCreated={() =>
+                        queryClient.invalidateQueries({
+                            queryKey: ['boardDetail', postId],
+                        })
+                    }
                 />
             </BodyLayout_64>
-        </section>
+        </BaseLayout>
     );
 };
 

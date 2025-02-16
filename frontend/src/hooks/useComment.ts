@@ -15,7 +15,13 @@ interface UseCommentProps {
     parentId?: number;
 }
 
-export const useComment = (props: UseCommentProps) => {
+// 댓글 작성 성공 후 호출할 콜백 타입
+type OnCommentCreated = () => void;
+
+export const useComment = (
+    props: UseCommentProps,
+    onCommentCreated?: OnCommentCreated,
+) => {
     const [value, setValue] = useState<string>('');
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,7 +32,7 @@ export const useComment = (props: UseCommentProps) => {
         e.preventDefault();
 
         try {
-            // 스케줄 댓글이면 teamScheduleId가 존재하는지 확인
+            // 스케줄 댓글인 경우
             if (props.teamScheduleId) {
                 await createScheduleComment(
                     props.teamId!,
@@ -38,7 +44,7 @@ export const useComment = (props: UseCommentProps) => {
                         : []),
                 );
             }
-            // 게시판 댓글이면 postId가 존재하는지 확인
+            // 게시판 댓글인 경우
             else if (props.postId) {
                 await createBoardComment(
                     props.postId.toString(),
@@ -51,6 +57,10 @@ export const useComment = (props: UseCommentProps) => {
             }
 
             setValue('');
+            // 댓글 작성 성공 후 콜백 실행 (예: 쿼리 무효화)
+            if (onCommentCreated) {
+                onCommentCreated();
+            }
             alert('댓글이 등록되었습니다!');
         } catch (error) {
             console.error('댓글 등록 중 문제 발생:', error);

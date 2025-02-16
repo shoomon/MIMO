@@ -7,6 +7,7 @@ import MemberList, {
 import BodyLayout_24 from '../layouts/BodyLayout_24';
 import { Title } from '@/components/atoms';
 import useMyTeamProfile from '@/hooks/useMyTeamProfile';
+import BaseLayout from '../layouts/BaseLayout';
 
 const TeamMember = () => {
     const { teamId } = useParams() as { teamId: string };
@@ -64,7 +65,7 @@ const TeamMember = () => {
     console.log(displayedMembers);
 
     return (
-        <>
+        <BaseLayout>
             <div className="h-[51px]"></div>
             <BodyLayout_24>
                 <section className="flex w-full flex-col gap-6">
@@ -99,7 +100,7 @@ const TeamMember = () => {
                     </section>
                 )}
             </BodyLayout_24>
-        </>
+        </BaseLayout>
     );
 };
 

@@ -4,8 +4,6 @@ import Thumbnail from '../Thumbnail/Thumbnail';
 import { layoutType } from '@/types/TeamBoard';
 
 export interface CardBoardViewProps {
-    postId: number;
-    boardId: number;
     userProfileUri: string;
     userNickname: string;
     postTitle: string;
@@ -16,11 +14,10 @@ export interface CardBoardViewProps {
     updatedAt: string;
     commentCount: number;
     layoutType: layoutType;
+    linkto: string;
 }
 
 const CardBoardView: React.FC<CardBoardViewProps> = ({
-    postId,
-    boardId,
     userProfileUri,
     userNickname,
     postTitle,
@@ -30,9 +27,8 @@ const CardBoardView: React.FC<CardBoardViewProps> = ({
     createdAt,
     commentCount,
     layoutType,
+    linkto,
 }) => {
-    const linkto = `${boardId}/post/${postId}`;
-
     return (
         <Link
             to={linkto}

@@ -113,11 +113,13 @@ export const DeleteBoardComment = async (postId: string): Promise<void> => {
 };
 
 export const updateBoardComment = async (
+    teamId: string,
     commentId: string,
     content: string,
 ): Promise<void> => {
     try {
         const body = JSON.stringify({
+            teamId,
             commentId,
             content,
         });

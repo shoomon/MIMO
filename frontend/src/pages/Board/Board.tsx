@@ -28,8 +28,6 @@ const Board = () => {
         },
     });
 
-    console.log(data);
-
     // teamBoardList를 순회하면서 각 게시판의 ListContainer를 생성합니다.
     const boardList = data?.teamBoardList.map(
         (board: TeamBoardListResponse) => {
@@ -38,8 +36,6 @@ const Board = () => {
                 board.postList?.map((post) => (
                     <CardBoard
                         key={post.postId}
-                        postId={post.postId}
-                        boardId={board.teamBoardId!}
                         userProfileUri={post.userProfileUri}
                         userNickname={post.userNickname}
                         postTitle={post.postTitle}
@@ -50,6 +46,7 @@ const Board = () => {
                         updatedAt={post.updatedAt}
                         commentCount={post.commentCount}
                         layoutType="Card"
+                        linkto={`${board.teamBoardId}/post/${post.postId}`}
                     />
                 )) || [];
 
