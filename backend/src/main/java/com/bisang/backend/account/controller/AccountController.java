@@ -2,13 +2,14 @@ package com.bisang.backend.account.controller;
 
 import java.util.List;
 
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bisang.backend.account.domain.AccountDetails;
+import com.bisang.backend.account.controller.response.AccountDetailsResponse;
 import com.bisang.backend.account.service.AccountDetailsService;
 import com.bisang.backend.auth.annotation.AuthUser;
 import com.bisang.backend.user.domain.User;
@@ -22,7 +23,7 @@ public class AccountController {
     private final AccountDetailsService accountDetailsService;
 
     @GetMapping("/user/deposit/details")
-    public ResponseEntity<List<AccountDetails>> getUserDepositAccountDetails(
+    public ResponseEntity<List<AccountDetailsResponse>> getUserDepositAccountDetails(
             @AuthUser User user
     ) {
         return ResponseEntity
@@ -31,7 +32,7 @@ public class AccountController {
     }
 
     @GetMapping("/user/charge/details")
-    public ResponseEntity<List<AccountDetails>> getUserChargeAccountDetails(
+    public ResponseEntity<List<AccountDetailsResponse>> getUserChargeAccountDetails(
             @AuthUser User user
     ) {
         return ResponseEntity
@@ -40,7 +41,7 @@ public class AccountController {
     }
 
     @GetMapping("/user/transfer/details")
-    public ResponseEntity<List<AccountDetails>> getUserTransferAccountDetails(
+    public ResponseEntity<List<AccountDetailsResponse>> getUserTransferAccountDetails(
             @AuthUser User user
     ) {
         return ResponseEntity
@@ -49,7 +50,7 @@ public class AccountController {
     }
 
     @GetMapping("/user/pay/details")
-    public ResponseEntity<List<AccountDetails>> getUserPayAccountDetails(
+    public ResponseEntity<List<AccountDetailsResponse>> getUserPayAccountDetails(
             @AuthUser User user
     ) {
         return ResponseEntity
@@ -58,7 +59,7 @@ public class AccountController {
     }
 
     @GetMapping("/user/all/details")
-    public ResponseEntity<List<AccountDetails>> getUserAllAccountDetails(
+    public ResponseEntity<List<AccountDetailsResponse>> getUserAllAccountDetails(
             @AuthUser User user
     ) {
         return ResponseEntity
