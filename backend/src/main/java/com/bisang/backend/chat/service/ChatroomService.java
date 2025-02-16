@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,7 @@ public class ChatroomService {
     private final ChatroomRepository chatroomRepository;
     private final ChatroomUserService chatroomUserService;
 
+    @Transactional
     public void createChatroom(
             Long userId,
             Long teamId,
@@ -38,7 +40,6 @@ public class ChatroomService {
         Chatroom chatroom = Chatroom.createTeamChatroom(userId, teamId, title, profileUri, status);
 
         chatroomRepository.insertJpaChatroom(chatroom);
-
         chatroomUserService.enterChatroom(chatroom.getId(), userId, nickname);
     }
 
