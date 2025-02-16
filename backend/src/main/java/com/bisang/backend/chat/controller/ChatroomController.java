@@ -49,7 +49,7 @@ public class ChatroomController {
             @AuthUser User user,
             @RequestBody LastReadRequest lastReadRequest
     ) {
-        LocalDateTime lastReadDateTime = DateUtils.DateToLocalDateTime(lastReadRequest.lastReadDateTime());
+        LocalDateTime lastReadDateTime = DateUtils.dateToLocalDateTime(lastReadRequest.lastReadDateTime());
 
         chatroomUserService.updateLastRead(
                 user.getId(),

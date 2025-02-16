@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import jakarta.transaction.Transactional;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 
 import com.bisang.backend.chat.controller.response.ChatroomResponse;
@@ -17,6 +17,7 @@ import com.bisang.backend.chat.repository.chatroomuser.ChatroomUserRepository;
 import com.bisang.backend.chat.repository.message.ChatMessageRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
