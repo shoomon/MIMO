@@ -1,5 +1,7 @@
 package com.bisang.backend.chat.service;
 
+import static com.bisang.backend.common.exception.ExceptionCode.NOT_FOUND_TEAM;
+
 import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
@@ -10,6 +12,7 @@ import com.bisang.backend.chat.domain.redis.RedisChatMessage;
 import com.bisang.backend.chat.repository.chatroom.ChatroomJpaRepository;
 import com.bisang.backend.chat.repository.chatroom.ChatroomRepository;
 import com.bisang.backend.chat.repository.chatroomuser.ChatroomUserRepository;
+import com.bisang.backend.common.exception.ChatroomException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,7 +31,9 @@ public class ChatroomUserService {
 
     //TODO: 팀쪽에서 변경되면 호출해줘야함
     public void updateNickname(Long userId, Long teamId, String nickname) {
-        Long chatroomId = chatroomJpaRepository.findIdByTeamId(teamId);
+        Long chatroomId = chatroomJpaRepository
+                .findIdByTeamId(teamId)
+                .orElseThrow(() -> new ChatroomException(NOT_FOUND_TEAM));
         chatroomUserRepository.updateNickname(userId, chatroomId, nickname);
     }
 
@@ -38,7 +43,9 @@ public class ChatroomUserService {
 
 
     public void enterChatroom(Long teamId, Long userId, String nickname) {
-        Long chatroomId = chatroomJpaRepository.findIdByTeamId(teamId);
+        Long chatroomId = chatroomJpaRepository
+                .findIdByTeamId(teamId)
+                .orElseThrow(() -> new ChatroomException(NOT_FOUND_TEAM));
 
         ChatroomUser chatroomUser = ChatroomUser.createChatroomUser(chatroomId, userId, nickname, LocalDateTime.now());
         chatroomUserRepository.insertJpaMemberUser(chatroomUser);
@@ -59,7 +66,9 @@ public class ChatroomUserService {
     }
 
     public boolean leaveChatroom(Long userId, Long teamId) {
-        Long chatroomId = chatroomJpaRepository.findIdByTeamId(teamId);
+        Long chatroomId = chatroomJpaRepository
+                .findIdByTeamId(teamId)
+                .orElseThrow(() -> new ChatroomException(NOT_FOUND_TEAM));
 
         RedisChatMessage message = new RedisChatMessage(
                 chatroomId,
@@ -76,7 +85,9 @@ public class ChatroomUserService {
     }
 
     public void forceLeave(Long teamId, Long userId) {
-        Long chatroomId = chatroomJpaRepository.findIdByTeamId(teamId);
+        Long chatroomId = chatroomJpaRepository
+                .findIdByTeamId(teamId)
+                .orElseThrow(() -> new ChatroomException(NOT_FOUND_TEAM));
 
         RedisChatMessage redisChatMessage = new RedisChatMessage(
                 chatroomId,
