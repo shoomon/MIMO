@@ -22,5 +22,5 @@ public interface ChatroomJpaRepository extends JpaRepository<Chatroom, Long> {
     List<Long> findAllIdsByUserId(Long userId);
 
     @Query("SELECT c.id FROM Chatroom c WHERE c.teamId = :teamId")
-    Long findIdByTeamId(Long teamId);
+    Optional<Long> findIdByTeamId(Long teamId);
 }
