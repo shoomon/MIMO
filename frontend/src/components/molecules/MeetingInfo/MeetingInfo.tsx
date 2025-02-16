@@ -36,10 +36,7 @@ const MeetingInfo = ({
 }: MeetingInfoProps) => {
     const displayedTags = getDisplayedTags(tag);
 
-    const handleUpdateInfo = () => {
-        console.log('Update Info button clicked');
-        // 정보 수정 로직 구현 가능
-    };
+    const handleUpdateInfo = () => {};
 
     const handleJoinRequest = () => {
         if (recruitStatus === 'ACTIVE_PUBLIC') {

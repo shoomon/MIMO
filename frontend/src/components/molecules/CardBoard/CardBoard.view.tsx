@@ -45,7 +45,7 @@ const CardBoardView: React.FC<CardBoardViewProps> = ({
                     showMember={false}
                 />
             ) : (
-                <div className="flex h-[84px] w-[84px] flex-shrink-0 items-center justify-center overflow-hidden rounded-2xl">
+                <div className="flex h-[100px] w-[100px] flex-shrink-0 items-center justify-center overflow-hidden rounded-lg">
                     <img
                         src={imageUri}
                         alt="게시글썸네일"

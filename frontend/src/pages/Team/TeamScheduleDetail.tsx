@@ -22,7 +22,7 @@ const TeamScheduleDetail = () => {
     const navigate = useNavigate();
     const { teamId, scheduleId } = useParams();
     const [isJoined, setIsJoined] = useState(false);
-    const { data: { teamUserId } = {} } = useMyTeamProfile(teamId);
+    const { data: profileData } = useMyTeamProfile(teamId);
     const queryClient = useQueryClient();
 
     // 답글 작성 대상 댓글 ID (어떤 댓글에 대한 답글을 작성할지 결정)
@@ -120,7 +120,8 @@ const TeamScheduleDetail = () => {
     return (
         <section className="flex flex-col gap-2">
             <div className="py- flex min-h-[43px] items-end justify-end gap-2 self-stretch">
-                {!scheduleDetail?.isMyTeamSchedule &&
+                {profileData?.role != 'GUEST' &&
+                    !scheduleDetail?.isMyTeamSchedule &&
                     (isJoined ? (
                         <ButtonDefault
                             content="참여 취소"
@@ -135,25 +136,26 @@ const TeamScheduleDetail = () => {
                             onClick={() => joinMutation.mutate()}
                         />
                     ))}
-                {scheduleDetail?.isMyTeamSchedule && (
-                    <>
-                        <ButtonDefault
-                            content="일정 수정"
-                            iconId="PlusCalendar"
-                            iconType="svg"
-                            onClick={() =>
-                                navigate(
-                                    `/team/${teamId}/schedule/edit/${scheduleId}`,
-                                )
-                            }
-                        />
-                        <ButtonDefault
-                            content="글 삭제"
-                            type="fail"
-                            onClick={() => deleteMutation.mutate()}
-                        />
-                    </>
-                )}
+                {scheduleDetail?.isMyTeamSchedule ||
+                    (profileData?.role == 'LEADER' && (
+                        <>
+                            <ButtonDefault
+                                content="일정 수정"
+                                iconId="PlusCalendar"
+                                iconType="svg"
+                                onClick={() =>
+                                    navigate(
+                                        `/team/${teamId}/schedule/edit/${scheduleId}`,
+                                    )
+                                }
+                            />
+                            <ButtonDefault
+                                content="글 삭제"
+                                type="fail"
+                                onClick={() => deleteMutation.mutate()}
+                            />
+                        </>
+                    ))}
             </div>
             <BodyLayout_24>
                 <div className="text-dark flex h-fit w-full flex-col gap-4 border-b-1 border-gray-200">
@@ -201,11 +203,13 @@ const TeamScheduleDetail = () => {
                 <hr className="border-t border-gray-700" />
                 {/* 댓글 영역 */}
                 <div className="flex w-full flex-col gap-2 pr-1">
-                    <div className="flex gap-2">
-                        <span className="text-dark flex text-xl font-bold">
+                    <div className="flex items-center gap-2">
+                        <span className="text-dark text-xl font-bold">
                             댓글
                         </span>
-                        <span>{comments.length}</span>
+                        <span className="text-dark text-xl font-bold">
+                            {comments.length}
+                        </span>
                     </div>
 
                     <div className="gap-2">
@@ -255,7 +259,9 @@ const TeamScheduleDetail = () => {
                                                 <CommentWrite
                                                     teamId={teamId!}
                                                     teamScheduleId={scheduleId}
-                                                    teamUserId={teamUserId!}
+                                                    teamUserId={Number(
+                                                        profileData?.teamUserId,
+                                                    )}
                                                     parentCommentId={
                                                         item.commentSortId
                                                     }
@@ -281,16 +287,18 @@ const TeamScheduleDetail = () => {
                     </div>
                 </div>
                 {/* 최상위 댓글 작성 폼 */}
-                <CommentWrite
-                    teamId={teamId!}
-                    teamScheduleId={scheduleId}
-                    teamUserId={teamUserId!}
-                    onCommentCreated={() =>
-                        queryClient.invalidateQueries({
-                            queryKey: ['scheduleDetail', scheduleId],
-                        })
-                    }
-                />
+                {profileData?.role != 'GUEST' && (
+                    <CommentWrite
+                        teamId={teamId!}
+                        teamScheduleId={scheduleId}
+                        teamUserId={Number(profileData?.teamUserId)}
+                        onCommentCreated={() =>
+                            queryClient.invalidateQueries({
+                                queryKey: ['scheduleDetail', scheduleId],
+                            })
+                        }
+                    />
+                )}
             </BodyLayout_24>
         </section>
     );

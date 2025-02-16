@@ -98,7 +98,7 @@ export interface teamInvites {
     status: InviteStatus;
     name: string;
     memo: string;
-    ProfileImage: string;
+    profileUri: string;
 }
 
 export interface TeamInfosResponse {

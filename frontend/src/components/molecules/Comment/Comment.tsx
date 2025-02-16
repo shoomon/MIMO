@@ -4,6 +4,8 @@ import { dateParsing } from '@/utils';
 import ProfileImage, {
     ProfileImageProps,
 } from './../../atoms/ProfileImage/ProfileImage';
+import { useParams } from 'react-router-dom';
+import useMyTeamProfile from '@/hooks/useMyTeamProfile';
 
 interface CommentProps {
     commentId: number;
@@ -48,6 +50,8 @@ const Comment = ({
     const [isEditing, setIsEditing] = useState(false);
     const parsedDate = dateParsing(new Date(writedate));
 
+    const { teamId } = useParams();
+    const { data: profileData } = useMyTeamProfile(teamId);
     useEffect(() => {
         if (isEditing) {
             setFocus('commentContent');
@@ -97,19 +101,24 @@ const Comment = ({
                         </>
                     ) : (
                         <>
-                            <button
-                                type="button"
-                                onClick={() => setIsEditing(true)}
-                            >
-                                수정
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => onDelete(commentId)}
-                            >
-                                삭제
-                            </button>
-                            {onReply && (
+                            {profileData?.nickname == 'name' && (
+                                <button
+                                    type="button"
+                                    onClick={() => setIsEditing(true)}
+                                >
+                                    수정
+                                </button>
+                            )}
+                            {(profileData?.nickname == 'name' ||
+                                profileData?.role == 'LEADER') && (
+                                <button
+                                    type="button"
+                                    onClick={() => onDelete(commentId)}
+                                >
+                                    삭제
+                                </button>
+                            )}
+                            {onReply && profileData?.role != 'GUEST' && (
                                 <button
                                     type="button"
                                     onClick={() => onReply(commentId)}

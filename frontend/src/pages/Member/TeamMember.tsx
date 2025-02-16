@@ -49,7 +49,7 @@ const TeamMember = () => {
             userInfo: {
                 userId: String(user.userId),
                 nickname: user.name,
-                profileUri: user.ProfileImage, // 프로필 이미지 정보 없음
+                profileUri: user.profileUri, // 프로필 이미지 정보 없음
             },
             bio: user.memo,
             teamInviteId: user.teamInviteId,
@@ -62,7 +62,6 @@ const TeamMember = () => {
     const displayedMembers = isLeader ? members.slice(0, 3) : members;
 
     const displayedinvites = invites.slice(0, 3);
-    console.log(displayedMembers);
 
     return (
         <BaseLayout>

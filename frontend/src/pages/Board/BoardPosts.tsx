@@ -7,10 +7,14 @@ import ButtonLayout from '../layouts/ButtonLayout';
 import BaseLayout from '../layouts/BaseLayout';
 import BodyLayout_64 from '../layouts/BodyLayout_64';
 import { CardBoard } from '@/components/molecules';
+import useMyTeamProfile from '@/hooks/useMyTeamProfile';
 
 const BoardPosts = () => {
     const navigate = useNavigate();
-    const { teamBoardId } = useParams<{ teamBoardId: string }>();
+    const { teamBoardId, teamId } = useParams<{
+        teamBoardId: string;
+        teamId: string;
+    }>();
 
     const { data: boardData } = useQuery<TeamBoardListResponse>({
         queryKey: ['boardList', teamBoardId],
@@ -22,6 +26,8 @@ const BoardPosts = () => {
         },
         enabled: Boolean(teamBoardId),
     });
+
+    const { data: myProfileData } = useMyTeamProfile(teamId);
 
     if (!boardData) {
         return <div>잘못된 응답값이다.</div>;
@@ -49,21 +55,25 @@ const BoardPosts = () => {
     return (
         <BaseLayout>
             <ButtonLayout>
-                <ButtonDefault
-                    content="글쓰기"
-                    iconId="Add"
-                    iconType="svg"
-                    type="default"
-                    onClick={() => {
-                        navigate('create');
-                    }}
-                />
+                {myProfileData?.role != 'GUEST' && (
+                    <ButtonDefault
+                        content="글쓰기"
+                        iconId="Add"
+                        iconType="svg"
+                        type="default"
+                        onClick={() => {
+                            navigate('create');
+                        }}
+                    />
+                )}
             </ButtonLayout>
             <BodyLayout_64>
                 <div className="w-full">
                     <Title label={boardData.teamBoardName}></Title>
                 </div>
-                <div className="flex w-full flex-col gap-4">{boardList}</div>
+                <div className="flex w-full flex-col gap-4">
+                    {boardList.length > 0 ? boardList : '게시글이 없습니다.'}
+                </div>
             </BodyLayout_64>
         </BaseLayout>
     );

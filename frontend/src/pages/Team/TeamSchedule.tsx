@@ -12,10 +12,13 @@ import { TeamSimpleScheduleDto } from '@/types/Team';
 import { ButtonDefault } from '@/components/atoms';
 import BaseLayout from '../layouts/BaseLayout';
 import ButtonLayout from '../layouts/ButtonLayout';
+import useMyTeamProfile from '@/hooks/useMyTeamProfile';
 
 const TeamSchedule = () => {
     const { teamId } = useParams<{ teamId: string }>();
-    const hasPermission = true;
+
+    const { data: myProfileData } = useMyTeamProfile(teamId);
+
     const navigate = useNavigate();
     const { data: regularRes, isLoading: isLoadingRegular } = useQuery({
         queryKey: ['regularSchedules', teamId],
@@ -67,7 +70,7 @@ const TeamSchedule = () => {
     return (
         <BaseLayout>
             <ButtonLayout>
-                {hasPermission && (
+                {myProfileData?.role != 'GUEST' && (
                     <ButtonDefault
                         content="일정 생성"
                         iconId="PlusCalendar"

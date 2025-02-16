@@ -45,7 +45,7 @@ export function renderMemberProfiles(
                 ))}
                 <Link
                     to="/member-list" // 멤버 목록 페이지 링크
-                    className="text-md flex h-[48px] w-[48px] items-center justify-center rounded-lg bg-gray-700 font-semibold text-white"
+                    className="text-md flex h-[100px] w-[48px] items-center justify-center rounded-lg bg-gray-700 font-semibold text-white"
                 >
                     +{remainingCount}
                 </Link>

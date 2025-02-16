@@ -25,7 +25,7 @@ const BoardDetail = () => {
 
     const navigate = useNavigate();
     const queryClient = useQueryClient();
-    const { data: { teamUserId } = {} } = useMyTeamProfile(teamId);
+    const { data: myProfileData } = useMyTeamProfile(teamId);
 
     // 댓글 작성 대상 (답글을 작성할 부모 댓글 ID)
     const [replyTarget, setReplyTarget] = useState<number | null>(null);
@@ -144,17 +144,26 @@ const BoardDetail = () => {
     return (
         <BaseLayout>
             <div className="flex justify-end gap-2">
-                <ButtonDefault
-                    content="글 수정"
-                    iconId="PlusCalendar"
-                    iconType="svg"
-                    onClick={() => navigate(`../edit/${postId}`)}
-                />
-                <ButtonDefault
-                    content="글 삭제"
-                    type="fail"
-                    onClick={() => deleteBoardMutation.mutate()}
-                />
+                {(myProfileData?.role == 'LEADER' ||
+                    myProfileData?.nickname ==
+                        postDetail?.board.userNickname) && (
+                    <ButtonDefault
+                        content="글 수정"
+                        iconId="PlusCalendar"
+                        iconType="svg"
+                        onClick={() => navigate(`../edit/${postId}`)}
+                    />
+                )}
+
+                {(myProfileData?.role == 'LEADER' ||
+                    myProfileData?.nickname ==
+                        postDetail?.board.userNickname) && (
+                    <ButtonDefault
+                        content="글 삭제"
+                        type="fail"
+                        onClick={() => deleteBoardMutation.mutate()}
+                    />
+                )}
             </div>
             <BodyLayout_64>
                 <div className="flex w-full flex-col gap-2">
@@ -249,7 +258,10 @@ const BoardDetail = () => {
                                         <div className="ml-8">
                                             <CommentWrite
                                                 teamId={teamId!}
-                                                teamUserId={teamUserId!}
+                                                teamUserId={
+                                                    myProfileData?.teamUserId ||
+                                                    0
+                                                }
                                                 postId={Number(postId)}
                                                 parentId={
                                                     thread.rootComment.commentId
@@ -312,16 +324,18 @@ const BoardDetail = () => {
                         )}
                     </div>
                 </div>
-                <CommentWrite
-                    teamId={teamId!}
-                    teamUserId={teamUserId!}
-                    postId={Number(postId)}
-                    onCommentCreated={() =>
-                        queryClient.invalidateQueries({
-                            queryKey: ['boardDetail', postId],
-                        })
-                    }
-                />
+                {myProfileData?.role != 'GUEST' && (
+                    <CommentWrite
+                        teamId={teamId!}
+                        teamUserId={myProfileData?.teamUserId || 0}
+                        postId={Number(postId)}
+                        onCommentCreated={() =>
+                            queryClient.invalidateQueries({
+                                queryKey: ['boardDetail', postId],
+                            })
+                        }
+                    />
+                )}
             </BodyLayout_64>
         </BaseLayout>
     );
