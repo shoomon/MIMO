@@ -1,5 +1,7 @@
 package com.bisang.backend.chat.controller;
 
+import static com.bisang.backend.common.exception.ExceptionCode.*;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -31,8 +33,6 @@ import com.bisang.backend.common.exception.UnauthorizedChatException;
 import com.bisang.backend.user.domain.User;
 
 import lombok.RequiredArgsConstructor;
-
-import static com.bisang.backend.common.exception.ExceptionCode.*;
 
 @Controller
 @RequestMapping("/chat-message")
