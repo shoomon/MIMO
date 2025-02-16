@@ -28,8 +28,8 @@ public class ChatroomUserRepository {
     private final UserJpaRepository userJpaRepository;
     private final RedisCacheRepository redisCacheRepository;
 
-    public void insertRedisMemberUser(Long teamId, Long userId) {
-        chatroomUserRedisRepository.insertMember(teamId, userId);
+    public void insertRedisMemberUser(Long chatroomId, Long userId) {
+        chatroomUserRedisRepository.insertMember(chatroomId, userId);
     }
 
     public void insertJpaMemberUser(ChatroomUser chatroomUser) {
