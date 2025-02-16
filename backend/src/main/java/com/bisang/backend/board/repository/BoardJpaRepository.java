@@ -33,4 +33,6 @@ public interface BoardJpaRepository extends JpaRepository<Board, Long> {
     List<Long> findTeamBoardIdByTeamBoardId(@Param(value = "teamBoardId") Long teamBoardId);
 
     long countBoardsByTeamBoardId(Long teamBoardId);
+
+    List<Board> getBoardByUserId(Long userId);
 }

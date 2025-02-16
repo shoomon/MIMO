@@ -121,11 +121,11 @@ public class BoardService {
 
     //    @TeamMember
     public BoardListResponse getPostListResponse(Long teamBoardId, Long offset, Integer pageSize){
-        String teamBoardName = teamBoardJpaRepository.getTeamBoardNameById(teamBoardId);
+        String boardName = teamBoardJpaRepository.getTeamBoardNameById(teamBoardId);
 
         List<SimpleBoardListDto> list = getPostList(teamBoardId, offset, pageSize);
 
-        return new BoardListResponse(teamBoardName, list);
+        return new BoardListResponse(boardName, list);
     }
 
     @Transactional

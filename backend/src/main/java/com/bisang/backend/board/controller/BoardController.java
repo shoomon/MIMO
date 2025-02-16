@@ -4,6 +4,7 @@ import static com.bisang.backend.common.exception.ExceptionCode.PAGE_LIMIT;
 import static com.bisang.backend.common.utils.PageUtils.SHORT_PAGE_SIZE;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
+import com.bisang.backend.board.domain.Board;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
@@ -33,6 +34,8 @@ import com.bisang.backend.user.domain.User;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
 
 //todo: 권한 체크
 @RestController
@@ -78,10 +81,10 @@ public class BoardController {
     }
 
 //todo: 아래 테스트용 메소드 지우기
-//    @GetMapping("/listAll")
-//    public ResponseEntity<List<Board>> getPostListAll(@AuthUser User user) {
-//        return ResponseEntity.ok(boardJpaRepository.findAll());
-//    }
+    @GetMapping("/listAll")
+    public ResponseEntity<List<Board>> getPostListAll(@AuthUser User user) {
+        return ResponseEntity.ok(boardJpaRepository.findAll());
+    }
 
     @GetMapping("/detail")
     public ResponseEntity<BoardDetailResponse> getPostDetail(

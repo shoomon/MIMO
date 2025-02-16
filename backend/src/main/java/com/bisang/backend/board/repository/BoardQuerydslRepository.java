@@ -5,20 +5,16 @@ import static com.bisang.backend.board.domain.QBoardDescription.boardDescription
 import static com.bisang.backend.board.domain.QBoardImage.boardImage;
 import static com.bisang.backend.board.domain.QComment.comment;
 import static com.bisang.backend.board.domain.QTeamBoard.teamBoard;
+import static com.bisang.backend.team.domain.QTeam.team;
 import static com.bisang.backend.team.domain.QTeamUser.teamUser;
 import static com.bisang.backend.user.domain.QUser.user;
-import static com.querydsl.core.group.GroupBy.groupBy;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.bisang.backend.board.controller.dto.BoardInfoDto;
-import com.bisang.backend.board.controller.dto.BoardThumbnailDto;
-import com.bisang.backend.board.controller.dto.CommentCountDto;
-import com.bisang.backend.board.controller.dto.ProfileNicknameDto;
-import com.bisang.backend.board.controller.dto.SimpleBoardListDto;
+import com.bisang.backend.board.controller.dto.*;
 import com.bisang.backend.board.domain.QBoardImage;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
@@ -68,6 +64,14 @@ public class BoardQuerydslRepository {
                         .and(board.id.lt(lastReadId)))
                 .orderBy(board.id.desc())
                 .limit(limit)
+                .fetch();
+    }
+
+    public List<Long> getBoardIdListByUserId(Long userId) {
+        return queryFactory
+                .select(board.id)
+                .from(board)
+                .where(board.userId.eq(userId))
                 .fetch();
     }
 
@@ -155,5 +159,45 @@ public class BoardQuerydslRepository {
 
         return users.stream()
                 .collect(Collectors.toMap(ProfileNicknameDto::getBoardId, dto -> dto));
+    }
+
+    public Map<Long, BoardTeamDto> getBoardTeamListByUserId(Long userId) {
+        List<BoardTeamDto> boardTeam = queryFactory
+                .select(Projections.constructor(BoardTeamDto.class,
+                        board.id,
+                        board.teamBoardId,
+                        board.title,
+                        board.createdAt,
+                        team.id,
+                        team.name
+                        ))
+                .from(board)
+                .join(teamBoard).on(teamBoard.id.eq(board.teamBoardId))
+                .join(team).on(team.id.eq(teamBoard.teamId))
+                .where(board.userId.eq(userId))
+                .fetch();
+
+        return boardTeam.stream()
+                .collect(Collectors.toMap(BoardTeamDto::getBoardId, dto -> dto));
+    }
+
+    public Map<Long, BoardTeamDto> getBoardTeamListByCommentId(List<Long> commentId) {
+        List<BoardTeamDto> boardTeam = queryFactory
+                .select(Projections.constructor(BoardTeamDto.class,
+                        board.id,
+                        board.teamBoardId,
+                        board.title,
+                        board.createdAt,
+                        team.id,
+                        team.name
+                ))
+                .from(board)
+                .join(teamBoard).on(teamBoard.id.eq(board.teamBoardId))
+                .join(team).on(team.id.eq(teamBoard.teamId))
+                .where(board.id.in(commentId))
+                .fetch();
+
+        return boardTeam.stream()
+                .collect(Collectors.toMap(BoardTeamDto::getBoardId, dto -> dto));
     }
 }
