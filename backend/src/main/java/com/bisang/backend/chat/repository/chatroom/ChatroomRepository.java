@@ -5,8 +5,6 @@ import static com.bisang.backend.common.exception.ExceptionCode.*;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.transaction.Transactional;
-
 import org.springframework.stereotype.Repository;
 
 import com.bisang.backend.chat.domain.Chatroom;
@@ -99,6 +97,6 @@ public class ChatroomRepository {
     }
 
     public Long getChatroomIdByteamId(Long teamId) {
-        return chatroomJpaRepository.findIdByTeamId(teamId);
+        return chatroomJpaRepository.findIdByTeamId(teamId).orElseThrow(() -> new ChatroomException(NOT_FOUND_TEAM));
     }
 }
