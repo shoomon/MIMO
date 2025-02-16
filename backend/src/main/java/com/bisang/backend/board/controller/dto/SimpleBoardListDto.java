@@ -13,11 +13,9 @@ public record SimpleBoardListDto(
         String imageUri,
         Long likeCount,
         Long viewCount,
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yy.MM.dd HH:mm")
-        LocalDateTime createdAt, //board
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yy.MM.dd HH:mm")
-        LocalDateTime updatedAt, //board
-        Long commentCount //comment
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt,
+        Long commentCount
 ) {
     @JsonIgnore
     public Long getId() {
