@@ -178,7 +178,8 @@ public class TeamService {
             TeamRecruitStatus recruitStatus,
             TeamPrivateStatus privateStatus,
             MultipartFile profile,
-            Area areaCode
+            Area areaCode,
+            TeamCategory category
     ) {
         Team team = findTeamById(teamId);
         team.updateTeamName(name);
@@ -192,7 +193,18 @@ public class TeamService {
 
         team.updateRecruitStatus(recruitStatus);
         team.updatePrivateStatus(privateStatus);
-        team.updateAreaCode(areaCode);
+
+        if (category != team.getCategory()) {
+            deleteOldCategoryTeamTag(team);
+            saveNewCategoryTeamTag(teamId, category);
+            team.updateCategory(category);
+        }
+
+        if (areaCode != team.getAreaCode()) {
+            deleteOldAreaTeamTag(team);
+            saveNewAreaTeamTag(teamId, areaCode);
+            team.updateAreaCode(areaCode);
+        }
 
         String profileUri = getProfileUri(teamId, profile);
         team.updateTeamProfileUri(profileUri);
@@ -251,5 +263,41 @@ public class TeamService {
     private Tag findTagByName(String name) {
         return tagJpaRepository.findByName(name)
             .orElseThrow(() -> new TeamException(NOT_FOUND));
+    }
+
+    private void saveNewCategoryTeamTag(Long teamId, TeamCategory category) {
+        Tag categoryTag = findTagByName(category.getName());
+        TeamTag categoryTeamTag = new TeamTag(teamId, categoryTag.getId());
+        teamTagJpaRepository.save(categoryTeamTag);
+    }
+
+    private void saveNewAreaTeamTag(Long teamId, Area areaCode) {
+        Tag areaTag = findTagByName(areaCode.getName());
+        TeamTag areaTeamTag = new TeamTag(teamId, areaTag.getId());
+        teamTagJpaRepository.save(areaTeamTag);
+    }
+
+    private void deleteOldCategoryTeamTag(Team team) {
+        TeamCategory oldCategory = team.getCategory();
+        Tag oldCategoryTag = getOldTagByName(oldCategory.getName());
+        TeamTag savedCategoryTeamTag = getSavedTeamTagByTag(team.getId(), oldCategoryTag);
+        teamTagJpaRepository.delete(savedCategoryTeamTag);
+    }
+
+    private void deleteOldAreaTeamTag(Team team) {
+        Area oldArea = team.getAreaCode();
+        Tag oldAreaTag = getOldTagByName(oldArea.getName());
+        TeamTag savedAreaTeamTag = getSavedTeamTagByTag(team.getId(), oldAreaTag);
+        teamTagJpaRepository.delete(savedAreaTeamTag);
+    }
+
+    private Tag getOldTagByName(String name) {
+        return tagJpaRepository.findByName(name)
+                .orElseThrow(() -> new TeamException(NOT_FOUND));
+    }
+
+    private TeamTag getSavedTeamTagByTag(Long teamId, Tag oldTag) {
+        return teamTagJpaRepository.findByTeamIdAndTagId(teamId, oldTag.getId())
+                .orElseThrow(() -> new TeamException(NOT_FOUND));
     }
 }

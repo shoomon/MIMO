@@ -41,7 +41,6 @@ public class ChatroomUserService {
         chatroomUserRepository.updateLastRead(id, lastDateTime, roomId, lastChatId);
     }
 
-
     public void enterChatroom(Long teamId, Long userId, String nickname) {
         Long chatroomId = chatroomJpaRepository
                 .findIdByTeamId(teamId)
