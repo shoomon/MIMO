@@ -94,7 +94,8 @@ public class TeamController {
                 req.recruitStatus(),
                 req.privateStatus(),
                 req.profile(),
-                req.area()
+                req.area(),
+                req.category()
         );
         return ResponseEntity.ok().build();
     }

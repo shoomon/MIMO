@@ -14,7 +14,7 @@ public class DateUtils {
      * @param localDateTime
      * @return Date
      */
-    public static Date LocalDateTimeToDate(LocalDateTime localDateTime) {
+    public static Date localDateTimeToDate(LocalDateTime localDateTime) {
         Instant instant = localDateTime.atZone(ZoneId.systemDefault()).toInstant();
         return Date.from(instant);
     }
@@ -24,7 +24,7 @@ public class DateUtils {
      * @param date
      * @return LocalDateTime
      */
-    public static LocalDateTime DateToLocalDateTime(String date) {
+    public static LocalDateTime dateToLocalDateTime(String date) {
         DateTimeFormatter formatter =
                 new DateTimeFormatterBuilder()
                         .appendPattern("yyyy-MM-dd'T'HH:mm:ss")

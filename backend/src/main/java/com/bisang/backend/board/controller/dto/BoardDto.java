@@ -15,9 +15,7 @@ public record BoardDto(
         String description,
         Long likeCount,
         Long viewCount,
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yy.MM.dd HH:mm")
         LocalDateTime createdAt,
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yy.MM.dd HH:mm")
         LocalDateTime updatedAt
 ) {
 }

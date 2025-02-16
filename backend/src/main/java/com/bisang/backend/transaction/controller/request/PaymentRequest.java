@@ -8,8 +8,6 @@ import lombok.NoArgsConstructor;
 public class PaymentRequest {
     private String uuid;
     private Long paidAmount;
-    private String senderAccountNumber;
-    private String senderName;
     private String receiverName;
     private String memo;
 }

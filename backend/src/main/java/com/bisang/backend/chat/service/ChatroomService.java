@@ -5,7 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import lombok.extern.slf4j.Slf4j;
+import jakarta.transaction.Transactional;
+
 import org.springframework.stereotype.Service;
 
 import com.bisang.backend.chat.controller.response.ChatroomResponse;
@@ -16,6 +17,7 @@ import com.bisang.backend.chat.repository.chatroomuser.ChatroomUserRepository;
 import com.bisang.backend.chat.repository.message.ChatMessageRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +29,7 @@ public class ChatroomService {
     private final ChatroomRepository chatroomRepository;
     private final ChatroomUserService chatroomUserService;
 
+    @Transactional
     public void createChatroom(
             Long userId,
             Long teamId,
@@ -38,8 +41,7 @@ public class ChatroomService {
         Chatroom chatroom = Chatroom.createTeamChatroom(userId, teamId, title, profileUri, status);
 
         chatroomRepository.insertJpaChatroom(chatroom);
-
-        chatroomUserService.enterChatroom(chatroom.getId(), userId, nickname);
+        chatroomUserService.enterChatroom(teamId, userId, nickname);
     }
 
     public List<ChatroomResponse> getChatroom(Long userId) {
@@ -83,5 +85,10 @@ public class ChatroomService {
     public void updateChatroomProfileUri(Long teamId, String profileUri) {
         Long chatroomId = chatroomRepository.getChatroomIdByteamId(teamId);
         chatroomRepository.updateChatroomProfileUri(chatroomId, profileUri);
+    }
+
+    public void updateChatroomTitle(Long teamId, String chatroomTitle) {
+        Long chatroomId = chatroomRepository.getChatroomIdByteamId(teamId);
+        chatroomRepository.updateChatroomTitle(chatroomId, chatroomTitle);
     }
 }

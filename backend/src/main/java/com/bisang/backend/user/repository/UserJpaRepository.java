@@ -15,4 +15,6 @@ public interface UserJpaRepository extends JpaRepository<User, Long> {
     String getUserProfileUri(@Param("userId") Long userId);
 
     Optional<User> findByIdAndAccountNumber(Long id, String accountNumber);
+
+    User findByAccountNumber(String accountNumber);
 }

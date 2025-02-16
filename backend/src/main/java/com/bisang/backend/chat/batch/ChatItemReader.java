@@ -3,27 +3,34 @@ package com.bisang.backend.chat.batch;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemReader;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 import org.springframework.stereotype.Component;
 
 import com.bisang.backend.chat.domain.redis.RedisChatMessage;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
 @StepScope
 public class ChatItemReader implements ItemReader<RedisChatMessage> {
 
-    private final RedisTemplate<String, RedisChatMessage> redisChatMessageTemplate;
-    private int index = 0;
-    private List<RedisChatMessage> oldMessages = new ArrayList<>();
+    private final StringRedisTemplate redisTemplate;
 
-    public ChatItemReader(RedisTemplate<String, RedisChatMessage> redisTemplate) {
-        this.redisChatMessageTemplate = redisTemplate;
+    private List<RedisChatMessage> oldMessages = new ArrayList<>();
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    private int index = 0;
+
+    public ChatItemReader(StringRedisTemplate redisTemplate) {
+        this.redisTemplate = redisTemplate;
     }
 
     @Override
@@ -40,7 +47,7 @@ public class ChatItemReader implements ItemReader<RedisChatMessage> {
 
     private List<RedisChatMessage> fetchOldChatMessages() {
         List<RedisChatMessage> result = new ArrayList<>();
-        Set<String> chatRooms = redisChatMessageTemplate.keys("teamMessage:*");
+        Set<String> chatRooms = redisTemplate.keys("teamMessage:*");
 
         //7일 전 구하기
         LocalDateTime now = LocalDateTime.now();
@@ -48,26 +55,34 @@ public class ChatItemReader implements ItemReader<RedisChatMessage> {
         double epochMilli = sevenDaysAgo.toInstant(ZoneOffset.ofTotalSeconds(0)).toEpochMilli();
 
         for (String roomKey : chatRooms) {
-            Set<TypedTuple<RedisChatMessage>> messages = redisChatMessageTemplate
+            Set<TypedTuple<String>> messages = redisTemplate
                     .opsForZSet()
                     .rangeByScoreWithScores(roomKey, 0, epochMilli);
 
-            getResult(messages, result);
+            result = getRedisChatMessages(messages);
         }
         return result;
     }
 
-    private static void getResult(
-            Set<TypedTuple<RedisChatMessage>> messages,
-            List<RedisChatMessage> result
+    private List<RedisChatMessage> getRedisChatMessages(
+            Set<TypedTuple<String>> result
     ) {
-        if (messages == null) {
-            return;
+        if (result == null) {
+            return Collections.emptyList();
         }
 
-        for (TypedTuple<RedisChatMessage> message : messages) {
-            RedisChatMessage parts = message.getValue();
-            result.add(parts);
-        }
+        List<String> list = result.stream()
+                .map(TypedTuple::getValue)
+                .toList();
+
+        return list.stream()
+                .map(json -> {
+                    try {
+                        return objectMapper.readValue(json, RedisChatMessage.class);
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException("Failed to deserialize message", e);
+                    }
+                })
+                .collect(Collectors.toList());
     }
 }

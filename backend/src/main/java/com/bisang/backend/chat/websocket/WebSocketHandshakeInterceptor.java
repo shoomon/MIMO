@@ -2,7 +2,6 @@ package com.bisang.backend.chat.websocket;
 
 import java.util.Map;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpRequest;
@@ -15,8 +14,7 @@ import com.bisang.backend.common.exception.AccountException;
 import com.bisang.backend.common.exception.ExceptionCode;
 
 import lombok.RequiredArgsConstructor;
-
-import static java.rmi.server.LogStream.log;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
 @RequiredArgsConstructor
