@@ -78,6 +78,30 @@ public class TeamScheduleCommentService {
     ) {
         TeamScheduleComment comment = findCommentById(teamScheduleCommentId);
         hasComment(comment, userId);
+        if (comment.getParentCommentId() == null) {
+            Long childCommentCnt = teamScheduleCommentJpaRepository.countByParentCommentId(comment.getId());
+            if (childCommentCnt > 0) {
+                comment.deleteScheduleCommentContent();
+                teamScheduleCommentJpaRepository.save(comment);
+                return;
+            }
+            teamScheduleCommentJpaRepository.delete(comment);
+            return;
+        }
+
+        TeamScheduleComment parentComment = findCommentById(comment.getParentCommentId());
+        if (parentComment.getContent().equals("(삭제된 댓글입니다.)")) {
+            Long childCommentCnt
+                    = teamScheduleCommentJpaRepository.countByParentCommentId(comment.getParentCommentId());
+            if (childCommentCnt == 1) {
+                teamScheduleCommentJpaRepository.delete(comment);
+                teamScheduleCommentJpaRepository.delete(parentComment);
+                return;
+            }
+            teamScheduleCommentJpaRepository.delete(comment);
+            return;
+        }
+
         teamScheduleCommentJpaRepository.delete(comment);
     }
 

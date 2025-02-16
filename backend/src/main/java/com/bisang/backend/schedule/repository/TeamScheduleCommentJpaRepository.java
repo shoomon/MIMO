@@ -11,4 +11,8 @@ public interface TeamScheduleCommentJpaRepository extends JpaRepository<TeamSche
     Optional<TeamScheduleComment> findByTeamScheduleIdAndId(Long scheduleId, Long id);
 
     List<TeamScheduleComment> findByTeamScheduleId(Long teamScheduleId);
+
+    Long countById(Long id);
+
+    Long countByParentCommentId(Long parentCommentId);
 }
