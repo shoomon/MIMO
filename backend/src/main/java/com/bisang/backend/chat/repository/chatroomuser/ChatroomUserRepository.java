@@ -38,9 +38,9 @@ public class ChatroomUserRepository {
 
     @Transactional
     @Modifying
-    public void removeMember(Long teamId, Long userId) {
-        chatroomUserRedisRepository.deleteMember(teamId, userId);
-        chatroomUserJpaRepository.deleteByChatroomIdAndUserId(teamId, userId);
+    public void removeMember(Long chatroomId, Long userId) {
+        chatroomUserRedisRepository.deleteMember(chatroomId, userId);
+        chatroomUserJpaRepository.deleteByChatroomIdAndUserId(chatroomId, userId);
     }
 
     public Set<Long> getTeamMembers(long teamId) {

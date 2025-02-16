@@ -37,7 +37,6 @@ public class ChatroomController {
         List<ChatroomResponse> list = chatroomService.getChatroom(userId);
 
         if (list == null) {
-            //TODO: 여기 뭐 exception 만들어서 보내줘야하나?
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
 
