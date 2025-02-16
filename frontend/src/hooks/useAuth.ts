@@ -1,11 +1,14 @@
 import { getTokenAPI, getUserInfoAPI, oauthAPI } from '@/apis/AuthAPI';
+import useSocketStore from '@/stores/socketStore';
 import { useTokenStore } from '@/stores/tokenStore';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 
 export const useAuth = () => {
+
     const [isLogin, setLogin] = useState<boolean>(false);
     const { accessToken } = useTokenStore();
+    const { connect } = useSocketStore(); 
 
     const { data, isSuccess, isError } = useQuery({
         queryKey: ['userInfo'],
@@ -19,6 +22,7 @@ export const useAuth = () => {
     useEffect(() => {
         if (isSuccess) {
             setLogin(true);
+            connect();
         }
     }, [isSuccess]);
 

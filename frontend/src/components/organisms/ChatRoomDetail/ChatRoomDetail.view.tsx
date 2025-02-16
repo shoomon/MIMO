@@ -1,16 +1,19 @@
 import { Icon } from '@/components/atoms';
+import ChatInput from '@/components/atoms/ChatInput/ChatInput';
 import ChatItemView, {
     ChatItemProps,
 } from '@/components/atoms/ChatItem/ChatItem.view';
 import { Link } from 'react-router-dom';
 
 export interface ChatRoomDetailProps {
+    chatroomId: number;
     chatroomName: string;
     chatroomImage: string;
     chatData: ChatItemProps[];
 }
 
 const ChatRoomDetailView = ({
+    chatroomId,
     chatroomName,
     chatroomImage,
     chatData,
@@ -29,7 +32,7 @@ const ChatRoomDetailView = ({
                     <span className="text-2xl font-bold">{chatroomName}</span>
                 </div>
                 <Link
-                    to="/영상통화"
+                    to="/video"
                     className="border-dark flex items-center gap-2 rounded-sm border px-2 py-1 hover:bg-gray-100"
                 >
                     <Icon type="svg" id="VideoCall" size={20} />
@@ -41,21 +44,7 @@ const ChatRoomDetailView = ({
                     return <ChatItemView {...data} key={data.item.id} />;
                 })}
             </div>
-            <form onSubmit={() => {}} className="relative mt-auto p-6">
-                <label htmlFor="chatInput"></label>
-                <textarea
-                    placeholder="메시지 입력"
-                    id="chatInput"
-                    name="chatInput"
-                    className="w-full resize-none rounded border border-gray-300 py-3 pr-[3.25rem] pl-4"
-                />
-                <button
-                    type="submit"
-                    className="absolute top-[3.125rem] right-10"
-                >
-                    <Icon type="svg" id="SendBlue" />
-                </button>
-            </form>
+            <ChatInput chatroomId={chatroomId} />
         </section>
     );
 };
