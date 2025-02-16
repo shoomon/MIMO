@@ -23,7 +23,7 @@ const Home = () => {
                     content={item.description}
                     rating={item.reviewScore}
                     tagList={formattedTags}
-                    reviewCount={item.reviewScore}
+                    reviewCount={item.reviewCount}
                     image={{
                         memberCount: item.currentCapacity,
                         memberLimit: item.maxCapacity,

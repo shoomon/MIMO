@@ -12,7 +12,6 @@ const CommentWrite = ({
     teamScheduleId = '',
     teamUserId = 0,
 }: CommentWriteProps) => {
-    // 필요한 값들을 useComment 훅에 props로 전달
     const { value, handleChange, handleSubmit } = useComment({
         teamId,
         teamScheduleId,

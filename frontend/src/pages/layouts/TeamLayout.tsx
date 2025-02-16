@@ -31,7 +31,7 @@ const TeamLayout = () => {
                     className="h-[22.5rem] w-full object-cover"
                 />
             </section>
-            <section className="flex py-8">
+            <section className="flex w-full py-8">
                 <section className="flex w-[29rem] flex-col gap-12 pl-4">
                     <MeetingInfo
                         teamId={teamId}
@@ -61,7 +61,7 @@ const TeamLayout = () => {
                     />
                     <Album id={teamId ?? ''} items={album.items} />
                 </section>
-                <section className="flex w-full flex-col gap-2 pr-4 pl-12">
+                <section className="flex w-full flex-col gap-2 overflow-hidden pl-12">
                     <DetailNav />
                     <Outlet />
                 </section>

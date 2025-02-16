@@ -13,16 +13,17 @@ import { useEffect, useState } from 'react';
 import { ScheduleStatus, ScheduleStatusName } from '@/types/Team';
 import { TeamScheduleCommentDto } from './../../types/Team';
 import { Comment, CommentWrite } from '@/components/molecules';
-import { ProfileImageProps } from '@/components/atoms/ProfileImage/ProfileImage';
 import BodyLayout_24 from '../layouts/BodyLayout_24';
 import { dateParsing } from '@/utils';
 import { renderMemberProfiles } from '@/utils/memberParsing';
+import useMyTeamProfile from '@/hooks/useMyTeamProfile';
 
 const TeamScheduleDetail = () => {
     const navigate = useNavigate();
 
     const { teamId, scheduleId } = useParams();
     const [isJoined, setIsJoined] = useState(false);
+    const { data: { teamUserId } = {} } = useMyTeamProfile(teamId);
 
     // 일정 상세 정보 가져오기
     const { data: scheduleDetail, isLoading: detailLoading } = useQuery({
@@ -73,7 +74,7 @@ const TeamScheduleDetail = () => {
 
     // 댓글 삭제 (UI에서 바로 제거)
     const deleteCommentMutation = useMutation({
-        mutationFn: (commentId: number) => deleteComment(commentId),
+        mutationFn: (commentId: number) => deleteComment(teamId!, commentId),
         onMutate: async (commentId) => {
             // UI에서 바로 삭제 반영
             setComments((prevComments) =>
@@ -120,12 +121,6 @@ const TeamScheduleDetail = () => {
     const statusText =
         ScheduleStatusName[scheduleDetail?.status as ScheduleStatus] ||
         '알 수 없음';
-
-    const sampleProfile: ProfileImageProps = {
-        userId: 'user123',
-        nickname: 'Jane Doe',
-        profileUri: 'https://randomuser.me/api/portraits/men/5.jpg',
-    };
 
     const safeMemberList = scheduleDetail?.profileUris ?? [];
 
@@ -225,7 +220,7 @@ const TeamScheduleDetail = () => {
                         </span>
                         <span>{comments.length}</span>
                     </div>
-                    <div className="xl:grid-ros-4 grid grid-rows-1 gap-2 md:grid-rows-2 lg:grid-rows-3">
+                    <div className="xl:grid-ros-4 grid grid-rows-1 gap-2 md:grid-rows-2 lg:grid-rows-1">
                         {comments.length > 0 ? (
                             comments.map((item) => (
                                 <Comment
@@ -237,7 +232,10 @@ const TeamScheduleDetail = () => {
                                     content={item.content}
                                     isReply={item.hasParent}
                                     writedate={item.time}
-                                    profileImage={sampleProfile}
+                                    profileImage={{
+                                        nickname: item.name,
+                                        profileUri: item.profileUri,
+                                    }}
                                     name={item.name}
                                     onDelete={() =>
                                         deleteCommentMutation.mutate(
@@ -264,7 +262,7 @@ const TeamScheduleDetail = () => {
                 <CommentWrite
                     teamId={teamId}
                     teamScheduleId={scheduleId}
-                    teamUserId={22}
+                    teamUserId={teamUserId}
                 />
             </BodyLayout_24>
         </section>
