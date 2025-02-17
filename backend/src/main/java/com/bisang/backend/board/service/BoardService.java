@@ -11,6 +11,8 @@ import com.bisang.backend.user.repository.UserJpaRepository;
 import jakarta.persistence.EntityNotFoundException;
 
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,6 +28,8 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class BoardService {
+    private static final Logger logger = LoggerFactory.getLogger(BoardService.class);
+
     private final TeamUserJpaRepository teamUserJpaRepository;
     private final BoardJpaRepository boardJpaRepository;
     private final BoardImageJpaRepository boardImageJpaRepository;
@@ -122,11 +126,11 @@ public class BoardService {
 
     //    @TeamMember
     public BoardListResponse getPostListResponse(Long teamBoardId, Long offset, Integer pageSize){
-        String teamBoardName = teamBoardJpaRepository.getTeamBoardNameById(teamBoardId);
+        String boardName = teamBoardJpaRepository.getTeamBoardNameById(teamBoardId);
 
         List<SimpleBoardListDto> list = getPostList(teamBoardId, offset, pageSize);
 
-        return new BoardListResponse(teamBoardName, list);
+        return new BoardListResponse(boardName, list);
     }
 
     @Transactional
@@ -222,26 +226,21 @@ public class BoardService {
 
     @Transactional
     //    @TeamMember
-    public void deletePost(Long userId, Long postId) {
-        Board post = boardJpaRepository.findById(postId)
+    public void deletePost(Long userId, Long boardId) {
+        Board post = boardJpaRepository.findById(boardId)
                 .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
 
         if(!post.getUserId().equals(userId)) throw new BoardException(ExceptionCode.NOT_AUTHOR);
 
-        boardLikeRepository.deleteByBoardId(postId);
+        boardLikeRepository.deleteByBoardId(boardId);
 
-        List<BoardFileDto> boardFiles = boardImageJpaRepository.findByBoardId(postId);
-        for (BoardFileDto file : boardFiles) {
-            s3Service.deleteFile(file.fileUri()); // S3에서 이미지 삭제
-        }
-
-        boardImageJpaRepository.deleteByBoardId(postId);
+        deleteImage(boardId);
 
         boardDescriptionJpaRepository.deleteById(post.getDescription().getId());
 
         boardJpaRepository.delete(post);
 
-        commentJpaRepository.deleteByBoardId(postId);
+        commentJpaRepository.deleteByBoardId(boardId);
     }
 
     @Transactional
@@ -284,5 +283,22 @@ public class BoardService {
             }
         }
         return result;
+    }
+
+    private void deleteImage(Long boardId) {
+        List<BoardFileDto> deletedImage = new ArrayList<>();
+        List<BoardFileDto> boardFiles = boardImageJpaRepository.findByBoardId(boardId);
+        for(BoardFileDto image : boardFiles){
+            try{
+                s3Service.deleteFile(image.fileUri());
+                deletedImage.add(image);
+            }catch(Exception e){
+                logger.error(e.getMessage());
+                for(BoardFileDto deleted : deletedImage) {
+                    boardImageJpaRepository.deleteById(deleted.fileId());
+                }
+            }
+        }
+        boardImageJpaRepository.deleteByBoardId(boardId);
     }
 }
