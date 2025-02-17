@@ -164,4 +164,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.badRequest()
                 .body(new ExceptionResponse(exception.getCode(), exception.getMessage()));
     }
+
+    @ExceptionHandler(ChatroomException.class)
+    public ResponseEntity<ExceptionResponse> handleTransactionException(ChatroomException exception) {
+        log.warn(exception.getMessage(), exception);
+        return ResponseEntity.internalServerError()
+                .body(new ExceptionResponse(exception.getCode(), exception.getMessage()));
+    }
 }

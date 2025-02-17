@@ -27,7 +27,6 @@ import com.bisang.backend.chat.domain.ChatType;
 import com.bisang.backend.chat.domain.redis.RedisChatMessage;
 import com.bisang.backend.chat.service.ChatMessageService;
 import com.bisang.backend.chat.service.ChatroomUserService;
-import com.bisang.backend.common.exception.AccountException;
 import com.bisang.backend.common.exception.ChatAccessInvalidException;
 import com.bisang.backend.common.exception.UnauthorizedChatException;
 import com.bisang.backend.user.domain.User;
@@ -64,15 +63,16 @@ public class ChatMessageController {
             );
 
             chatMessageService.broadcastMessage(roomId, redisMessage);
+            return;
         }
 
         throw new UnauthorizedChatException(NOT_FOUND_TEAM_USER);
     }
 
-    @MessageExceptionHandler(AccountException.class)
+    @MessageExceptionHandler(UnauthorizedChatException.class)
     @SendToUser("/queue/errors")
-    private AccountException handleInvalidTokenException() {
-        return new AccountException(UNAUTHORIZED_ACCESS);
+    private UnauthorizedChatException handleInvalidTokenException() {
+        return new UnauthorizedChatException(UNAUTHORIZED_ACCESS);
     }
 
     @GetMapping("/messages/{roomId}")
@@ -87,7 +87,6 @@ public class ChatMessageController {
 
             return ResponseEntity.ok().body(list);
         }
-
         throw new ChatAccessInvalidException(UNAUTHORIZED_ACCESS);
     }
 
