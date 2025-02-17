@@ -26,9 +26,9 @@ public record CreateTeamRequest(
         TeamPrivateStatus teamPrivateStatus,
         MultipartFile teamProfile,
         @NotNull(message = "지역 값은 필수입니다.")
-        Area area,
+        String area,
         @NotNull(message = "모임 카테고리 값은 필수입니다.")
-        TeamCategory category,
+        String category,
         @NotNull(message = "모임 최대 인원 값은 필수입니다.")
         Long maxCapacity
 ) {
