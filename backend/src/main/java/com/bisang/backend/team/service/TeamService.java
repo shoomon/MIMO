@@ -82,8 +82,8 @@ public class TeamService {
             TeamRecruitStatus teamRecruitStatus,
             TeamPrivateStatus teamPrivateStatus,
             MultipartFile teamProfile,
-            Area area,
-            TeamCategory teamCategory,
+            String area,
+            String teamCategory,
             Long maxCapacity
     ) {
         String teamProfileUri = profileUriValidation(leaderId, teamProfile);
@@ -117,8 +117,8 @@ public class TeamService {
             TeamRecruitStatus teamRecruitStatus,
             TeamPrivateStatus teamPrivateStatus,
             String teamProfileUri,
-            Area area,
-            TeamCategory teamCategory,
+            String area,
+            String teamCategory,
             Long maxCapacity
     ) {
         // 팀 설명 생성
@@ -137,19 +137,19 @@ public class TeamService {
                             .recruitStatus(teamRecruitStatus)
                             .privateStatus(teamPrivateStatus)
                             .teamProfileUri(teamProfileUri)
-                            .areaCode(area)
-                            .category(teamCategory)
+                            .areaCode(Area.fromName(area))
+                            .category(TeamCategory.fromName(teamCategory))
                             .maxCapacity(maxCapacity).build();
         teamJpaRepository.save(newTeam);
         // 프로필 이미지 저장, 기본 고양이, profile 있을 시 S3에 업로드 된 해당 프로필 이미지 경로
         profileImageRepository.save(createTeamProfile(newTeam.getId(), teamProfileUri));
 
         // 기본 태그 저장
-        Tag areaTag = findTagByName(area.getName());
+        Tag areaTag = findTagByName(area);
         TeamTag areaTeamTag = new TeamTag(newTeam.getId(), areaTag.getId());
         teamTagJpaRepository.save(areaTeamTag);
 
-        Tag categoryTag = findTagByName(teamCategory.getName());
+        Tag categoryTag = findTagByName(teamCategory);
         TeamTag categoryTeamTag = new TeamTag(newTeam.getId(), categoryTag.getId());
         teamTagJpaRepository.save(categoryTeamTag);
 
