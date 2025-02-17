@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { getTeamInfo } from '@/apis/TeamAPI';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
-import { TeamInfoResponse } from '@/types/TeamInfoResponse';
+import { TeamInfoResponse } from '@/types/Team';
 
 const TeamEdit = () => {
     const { teamId } = useParams<{ teamId: string }>();

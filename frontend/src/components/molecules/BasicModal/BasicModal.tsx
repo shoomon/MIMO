@@ -37,6 +37,7 @@ const BasicModal = ({
                 <section className="flex space-x-2">
                     {onConfirmClick && (
                         <ButtonPrimary
+                            label="확인"
                             action="confirm"
                             onClick={onConfirmClick}
                         />
@@ -44,12 +45,14 @@ const BasicModal = ({
 
                     {onCancelClick && (
                         <ButtonPrimary
+                            label="취소"
                             action="cancel"
                             onClick={onCancelClick}
                         />
                     )}
                     {onDeleteClick && (
                         <ButtonPrimary
+                            label="삭제"
                             action="delete"
                             onClick={onDeleteClick}
                         />
