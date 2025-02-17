@@ -6,6 +6,7 @@ import MeetingInfoView from './MeetingInfo.view';
 import { joinTeamForPrivate, joinTeamForPublic } from '@/apis/TeamAPI';
 import { TeamNotificationStatus, TeamRecruitStatus } from '@/types/Team';
 import useMyTeamProfile from '@/hooks/useMyTeamProfile';
+import { useNavigate } from 'react-router-dom';
 
 export interface MeetingInfoProps {
     teamId: string;
@@ -36,7 +37,11 @@ const MeetingInfo = ({
 }: MeetingInfoProps) => {
     const displayedTags = getDisplayedTags(tag);
 
-    const handleUpdateInfo = () => {};
+    const navigate = useNavigate();
+
+    const handleUpdateInfo = () => {
+        navigate(`/team/${teamId}/edit`);
+    };
 
     const handleJoinRequest = () => {
         if (recruitStatus === 'ACTIVE_PUBLIC') {

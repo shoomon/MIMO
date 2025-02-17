@@ -117,7 +117,7 @@ const MemberList = ({
 
     // 회원 신청인 경우 role 정보가 없으므로 버튼 위쪽에는 "회원 신청" 텍스트 표시
     const userRoleElement = teamInviteId ? (
-        <span className="text-lg font-extrabold"></span>
+        <span className="text-lg font-extrabold">회원 신청</span>
     ) : (
         renderUserRoleElement(role || 'MEMBER')
     );

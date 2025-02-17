@@ -1,7 +1,7 @@
-import { getBoardList } from '@/apis/TeamBoardAPI';
+import { deleteTeamBoard, getBoardList } from '@/apis/TeamBoardAPI';
 import { ButtonDefault, Title } from '@/components/atoms';
 import { Post, TeamBoardListResponse } from '@/types/TeamBoard';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import ButtonLayout from '../layouts/ButtonLayout';
 import BaseLayout from '../layouts/BaseLayout';
@@ -11,6 +11,8 @@ import useMyTeamProfile from '@/hooks/useMyTeamProfile';
 
 const BoardPosts = () => {
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
+
     const { teamBoardId, teamId } = useParams<{
         teamBoardId: string;
         teamId: string;
@@ -27,6 +29,21 @@ const BoardPosts = () => {
         enabled: Boolean(teamBoardId),
     });
 
+    const deleteTeamBoardMutation = useMutation({
+        mutationFn: (teamBoardId: string) => deleteTeamBoard(teamBoardId),
+        onSuccess: () => {
+            // 삭제 성공 시 캐시 정리 (필요하다면)
+            queryClient.invalidateQueries({
+                queryKey: ['teamboardList', teamId],
+            });
+            // 삭제 성공 후 이전 페이지 또는 원하는 페이지로 이동
+            navigate('../');
+        },
+        onError: (error) => {
+            console.error('게시판 삭제 실패:', error);
+            alert('게시판 삭제에 실패했습니다.');
+        },
+    });
     const { data: myProfileData } = useMyTeamProfile(teamId);
 
     if (!boardData) {
@@ -52,16 +69,26 @@ const BoardPosts = () => {
             <hr className="border-gray-200" />
         </div>
     ));
+
     return (
         <BaseLayout>
             <ButtonLayout>
+                {myProfileData?.role == 'LEADER' && (
+                    <ButtonDefault
+                        content="게시판 삭제"
+                        type="fail"
+                        onClick={() => {
+                            deleteTeamBoardMutation.mutate(teamBoardId!);
+                        }}
+                    />
+                )}
                 {myProfileData?.role != 'GUEST' && (
                     <ButtonDefault
                         content="글쓰기"
                         iconId="Add"
                         iconType="svg"
                         type="default"
-                        onClick={() => {
+                        onClick={async () => {
                             navigate('create');
                         }}
                     />

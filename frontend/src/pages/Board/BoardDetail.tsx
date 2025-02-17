@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ButtonDefault, Title } from '@/components/atoms';
+import { ButtonDefault, Icon, Title } from '@/components/atoms';
 import { Comment, CommentWrite } from '@/components/molecules';
 import BodyLayout_64 from '../layouts/BodyLayout_64';
 import ImageCarousel from '@/components/organisms/Carousel/ImageCarousel';
@@ -12,6 +12,7 @@ import {
     deletePost,
     DeleteBoardComment,
     updateBoardComment,
+    likeBoard,
 } from '@/apis/TeamBoardAPI';
 import { BoardDetailResponse, CommentThread } from '@/types/TeamBoard';
 import BaseLayout from '../layouts/BaseLayout';
@@ -30,7 +31,7 @@ const BoardDetail = () => {
     // 댓글 작성 대상 (답글을 작성할 부모 댓글 ID)
     const [replyTarget, setReplyTarget] = useState<number | null>(null);
 
-    // 게시글 상세 정보 가져오기
+    // 게시글 상세 정보 가져오기 (postDetail)
     const { data: postDetail, isLoading } = useQuery<BoardDetailResponse>({
         queryKey: ['boardDetail', postId],
         queryFn: () => {
@@ -40,10 +41,47 @@ const BoardDetail = () => {
         enabled: Boolean(postId),
     });
 
-    // API에서 받아온 댓글들을 로컬 state로 관리
-    const [comments, setComments] = useState<CommentThread[]>(
-        postDetail?.comments || [],
+    // 좋아요 상태와 좋아요 개수를 별도로 관리 (초기값은 postDetail에서 받아오지만, 로딩 전에는 기본값 사용)
+    const [liked, setLiked] = useState<boolean>(postDetail?.userLiked ?? false);
+    const [likeCount, setLikeCount] = useState<number>(
+        postDetail?.board.likeCount ?? 0,
     );
+
+    // postDetail 업데이트 시 좋아요 관련 로컬 상태 동기화
+    useEffect(() => {
+        if (postDetail) {
+            setLiked(postDetail.userLiked);
+            setLikeCount(postDetail.board.likeCount);
+        }
+    }, [postDetail]);
+
+    const likeHandler = () => {
+        if (!liked) {
+            setLiked(true);
+            // API 호출: 좋아요 처리 (API가 같은 함수라면 이를 호출)
+            likeBoard(
+                myProfileData?.teamUserId.toString() || '0',
+                postDetail?.board.postId.toString() || '0',
+            );
+            // 좋아요 개수 1 증가
+            setLikeCount((prev) => prev + 1);
+        }
+    };
+
+    const disLikeHandler = () => {
+        if (liked) {
+            setLiked(false);
+            // API 호출: 좋아요 취소 처리 (API가 동일하다면 이를 호출)
+            likeBoard(
+                myProfileData?.teamUserId.toString() || '0',
+                postDetail?.board.postId.toString() || '0',
+            );
+            // 좋아요 개수 1 감소
+            setLikeCount((prev) => prev - 1);
+        }
+    };
+    // API에서 받아온 댓글들을 로컬 state로 관리
+    const [comments, setComments] = useState<CommentThread[]>([]);
 
     useEffect(() => {
         if (postDetail?.comments) {
@@ -55,8 +93,12 @@ const BoardDetail = () => {
     const deleteBoardMutation = useMutation({
         mutationFn: () => deletePost(postId!),
         onSuccess: () => {
-            queryClient.cancelQueries({ queryKey: ['boardDetail', postId] });
-            queryClient.removeQueries({ queryKey: ['boardDetail', postId] });
+            queryClient.cancelQueries({
+                queryKey: ['boardDetail', postId],
+            });
+            queryClient.removeQueries({
+                queryKey: ['boardDetail', postId],
+            });
             queryClient.invalidateQueries({ queryKey: ['boardList'] });
             navigate(`../`);
         },
@@ -140,7 +182,6 @@ const BoardDetail = () => {
     if (isLoading) return <p>로딩 중...</p>;
 
     const imageUrls = postDetail?.files.map((file) => file.fileUri) || [];
-
     return (
         <BaseLayout>
             <div className="flex justify-end gap-2">
@@ -180,7 +221,7 @@ const BoardDetail = () => {
                             alt={teamId}
                             className="h-[18px] w-[18px] rounded-sm object-cover"
                         />
-                        <span>{postDetail?.board.userNickname}</span>
+                        <span>{postDetail?.board.userNickname}</span>|
                         <span>
                             {postDetail?.board.createdAt
                                 ? dateParsing(
@@ -188,11 +229,34 @@ const BoardDetail = () => {
                                   )
                                 : '날짜 정보 없음'}
                         </span>
+                        | 조회수
+                        <span className="text-brand-primary-400 font-semibold">
+                            {' '}
+                            {postDetail?.board.viewCount}
+                        </span>{' '}
+                        | 좋아요
+                        <span className="text-brand-primary-400 font-semibold">
+                            {likeCount}
+                        </span>
                     </div>
                     <div className="py-10">{postDetail?.board.description}</div>
                     <div>
                         <ImageCarousel images={imageUrls} />
                     </div>
+                </div>
+                <div className="flex gap-5">
+                    <div>{likeCount}</div>
+                    <button onClick={liked ? disLikeHandler : likeHandler}>
+                        {liked ? (
+                            // 좋아요 상태: 채워진 하트 아이콘 (내 아이콘)
+                            <Icon id="fullheart" type="svg" size={100} />
+                        ) : (
+                            // 좋아요 취소 상태: 외곽선 하트 아이콘 (내 아이콘)
+                            <Icon id="emptyheart" type="svg" size={100} />
+                        )}
+                    </button>
+
+                    <div>현재 상태: {liked ? '좋아요' : '싫어요'}</div>
                 </div>
                 <div className="flex w-full flex-col gap-2 pr-4">
                     <div className="flex items-center gap-2">

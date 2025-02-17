@@ -32,7 +32,7 @@ export const CreateTeamBoard = async (
             method: 'POST',
             body, // params는 객체여야 함
         });
-        return response.json();
+        return response.status == 200;
     } catch (error) {
         console.error('Error validTeamName teamName:', error);
         throw error;
@@ -144,6 +144,82 @@ export const deletePost = async (postId: string): Promise<void> => {
         });
     } catch (error) {
         console.error('Error leaving schedule:', error);
+        throw error;
+    }
+};
+
+export const likeBoard = async (
+    teamUserId: string,
+    boardId: string,
+): Promise<void> => {
+    try {
+        const body = JSON.stringify({
+            teamUserId,
+            boardId,
+        });
+        console.log(body);
+
+        await customFetch('/board/like', {
+            method: 'POST',
+            body,
+        });
+    } catch (error) {
+        console.error('Error updating comment:', error);
+        throw error;
+    }
+};
+
+export const deleteTeamBoard = async (
+    teamBoardId: string,
+): Promise<boolean> => {
+    try {
+        const params = {
+            board: teamBoardId,
+        };
+        const response = await customFetch('/team-board', {
+            method: 'DELETE',
+            params,
+        });
+        return response.status == 200;
+    } catch (error) {
+        console.error('Error 보드삭제:', error);
+        throw error;
+    }
+};
+
+export const updateBoard = async (
+    postId: string,
+    title: string,
+    description: string,
+    filesToDelete: string,
+    newFiles: File[],
+): Promise<void> => {
+    try {
+        // 1) FormData 생성
+        const formData = new FormData();
+
+        // 2) 텍스트 필드
+        formData.append('post', postId);
+        formData.append('title', title);
+        formData.append('description', description);
+        formData.append('filesToDelete', filesToDelete);
+        // filesToDelete는 예: '[{"fileId":3,"fileExtension":"jpg","fileUri":"..."}]'
+
+        // 3) 새 파일들 (binary)
+        newFiles.forEach((file) => {
+            // 서버가 'filesToAdd'라는 키로 여러 파일을 받도록 설정
+            formData.append('filesToAdd', file);
+        });
+
+        // 4) PUT 요청 (multipart/form-data)
+        await customFetch('/board', {
+            method: 'PUT',
+            // 필요하다면 params: { post: postId } 등 붙이세요
+            body: formData,
+            // Content-Type은 직접 설정하지 말고 FormData로 넘기면 자동 설정됩니다.
+        });
+    } catch (error) {
+        console.error('Error updating board:', error);
         throw error;
     }
 };

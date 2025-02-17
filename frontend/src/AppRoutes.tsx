@@ -30,8 +30,11 @@ import {
     TeamScheduleEdit,
     VideoChat,
 } from '@/pages';
-import TeamScheduleDetail from './pages/Team/TeamScheduleDetail';
+import TeamScheduleDetail from './pages/TeamSchedule/TeamScheduleDetail';
 import BoardPosts from './pages/Board/BoardPosts';
+import TeamSchedulesAdHoc from './pages/TeamSchedule/TeamSchedulesAdHoc';
+import TeamSchedulesRegular from './pages/TeamSchedule/TeamSchedulesRegular';
+import TeamSchedulesClosed from './pages/TeamSchedule/TeamSchedulesClosed';
 
 const AppRoutes = () => {
     return (
@@ -56,7 +59,7 @@ const AppRoutes = () => {
                 <Route path="/team">
                     <Route index element={<Navigate to="/" replace />} />
                     {/* 팀 생성 */}
-                    <Route path="create" element={<TeamCreate />} />h
+                    <Route path="create" element={<TeamCreate />} />
                     <Route path=":teamId" element={<TeamLayout />}>
                         {/* 팀 메인 */}
                         <Route index element={<TeamDetail />} />
@@ -64,21 +67,36 @@ const AppRoutes = () => {
                         <Route path="edit" element={<TeamEdit />} />
                         {/* 팀 일정 */}
                         <Route path="schedule">
-                            {/*   일정 메인 */}
+                            {/* 일정 메인 */}
                             <Route index element={<TeamSchedule />} />
-                            {/*   일정 작성 */}
+                            {/* 일정 작성 */}
                             <Route
                                 path="create"
                                 element={<TeamScheduleCreate />}
                             />
-                            {/*   일정 수정 */}
+                            {/* 일정 수정 */}
                             <Route
                                 path="edit/:scheduleId"
                                 element={<TeamScheduleEdit />}
                             />
+                            {/* 기존 동적 라우트 (필요시 유지) */}
                             <Route
                                 path=":scheduleId"
                                 element={<TeamScheduleDetail />}
+                            />
+
+                            {/* 새로 추가된 경로들 */}
+                            <Route
+                                path="ad-hoc"
+                                element={<TeamSchedulesAdHoc />}
+                            />
+                            <Route
+                                path="regular"
+                                element={<TeamSchedulesRegular />}
+                            />
+                            <Route
+                                path="closed"
+                                element={<TeamSchedulesClosed />}
                             />
                         </Route>
                         {/* 게시판 관련 라우트 */}

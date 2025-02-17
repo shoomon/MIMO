@@ -6,7 +6,7 @@ export interface TeamBoardAPIResponse {
 export interface TeamBoardListResponse {
     teamBoardId?: number;
     teamBoardName: string;
-    postList: Post[];
+    boardList: Post[];
 }
 
 export interface Post {
@@ -74,5 +74,6 @@ export interface CommentThread {
 export interface BoardDetailResponse {
     board: PostDetail;
     files: BoardFile[];
+    userLiked: boolean;
     comments: CommentThread[];
 }

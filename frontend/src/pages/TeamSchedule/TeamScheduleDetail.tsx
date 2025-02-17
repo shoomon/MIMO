@@ -16,7 +16,7 @@ import {
     deleteSchedule,
 } from '@/apis/TeamAPI';
 import { ScheduleStatus, ScheduleStatusName } from '@/types/Team';
-import { TeamScheduleCommentDto } from './../../types/Team';
+import { TeamScheduleCommentDto } from '../../types/Team';
 
 const TeamScheduleDetail = () => {
     const navigate = useNavigate();
