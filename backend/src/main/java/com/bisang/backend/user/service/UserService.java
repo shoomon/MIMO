@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-<<<<<<< HEAD
 import com.bisang.backend.board.controller.dto.BoardTeamDto;
 import com.bisang.backend.board.controller.dto.BoardThumbnailDto;
 import com.bisang.backend.board.controller.dto.SimpleBoardDto;
@@ -20,11 +19,6 @@ import com.bisang.backend.board.repository.BoardJpaRepository;
 import com.bisang.backend.board.repository.BoardQuerydslRepository;
 import com.bisang.backend.board.repository.CommentJpaRepository;
 import com.bisang.backend.common.exception.UserException;
-=======
-import com.bisang.backend.common.exception.UserException;
-import com.bisang.backend.board.controller.dto.SimpleBoardDto;
-import com.bisang.backend.board.controller.dto.SimpleCommentDto;
->>>>>>> ca52919f72ed41bcee62dae849a36d370f1f7a42
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -105,7 +99,6 @@ public class UserService {
         Map<Long, BoardTeamDto> boardTeam = boardQuerydslRepository.getBoardTeamListByUserId(userId);
         System.out.println("게시글+게시판+팀: "+boardTeam.size());
 
-<<<<<<< HEAD
         if(boardTeam.isEmpty()){
             return result;
         }
@@ -170,8 +163,6 @@ public class UserService {
         return result;
     }
 
-=======
->>>>>>> ca52919f72ed41bcee62dae849a36d370f1f7a42
     private String updateUserProfile(User user, MultipartFile profile) {
         if (profile != null) {
             String profileUri = s3Service.saveFile(user.getId(), profile);
