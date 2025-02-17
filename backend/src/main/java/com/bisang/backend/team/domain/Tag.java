@@ -30,5 +30,4 @@ public class Tag {
         this.name = name;
         this.status = EXTRA;
     }
-
 }

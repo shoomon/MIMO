@@ -4,6 +4,7 @@ import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 import com.bisang.backend.user.controller.response.UserBoardResponse;
 import com.bisang.backend.user.controller.response.UserCommentResponse;
+import com.bisang.backend.user.service.UserFileFacadeService;
 import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
@@ -26,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+    private final UserFileFacadeService userFileFacadeService;
 
     @GetMapping
     public ResponseEntity<UserMyResponse> getMyData(
@@ -55,7 +57,7 @@ public class UserController {
         @AuthUser User user,
         @Valid @ModelAttribute UpdateUserInfoRequest request
     ) {
-        userService.updateUserInfo(user, request.nickname(), request.name(), request.profile());
+        userFileFacadeService.updateUserInfo(user, request.nickname(), request.name(), request.profile());
         return ResponseEntity.ok().build();
     }
 }
