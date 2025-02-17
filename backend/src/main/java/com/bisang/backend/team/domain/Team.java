@@ -147,4 +147,8 @@ public class Team {
         int shortDescriptionLength = min(this.description.getDescription().length(), 97);
         this.shortDescription = this.description.getDescription().substring(0, shortDescriptionLength) + "...";
     }
+
+    public void updateCategory(TeamCategory category) {
+        this.category = category;
+    }
 }

@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bisang.backend.team.domain.Area;
+import com.bisang.backend.team.domain.TeamCategory;
 import com.bisang.backend.team.domain.TeamPrivateStatus;
 import com.bisang.backend.team.domain.TeamRecruitStatus;
 
@@ -22,6 +23,8 @@ public record UpdateTeamRequest(
         TeamPrivateStatus privateStatus,
         MultipartFile profile,
         @NotNull(message = "활동 지역 값은 필수입니다.")
-        Area area
+        Area area,
+        @NotNull(message = "모임 카테고리 값은 필수입니다.")
+        TeamCategory category
 ) {
 }
