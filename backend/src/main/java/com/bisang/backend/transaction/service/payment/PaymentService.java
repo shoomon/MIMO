@@ -12,8 +12,6 @@ import com.bisang.backend.account.repository.AccountJpaRepository;
 import com.bisang.backend.account.service.AccountDetailsService;
 import com.bisang.backend.common.exception.AccountException;
 import com.bisang.backend.common.exception.ExceptionCode;
-import com.bisang.backend.user.domain.User;
-import com.bisang.backend.transaction.controller.request.QrCodeRequest;
 import com.bisang.backend.transaction.domain.Transaction;
 import com.bisang.backend.transaction.domain.TransactionCategory;
 
@@ -23,35 +21,36 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PaymentService {
     private final AccountDetailsService accountDetailsService;
+
     private final AccountJpaRepository accountJpaRepository;
 
     @Transactional
     public void pay(Transaction transaction) {
         String senderAccountNumber = transaction.getSenderAccountNumber();
-        Long balance = transaction.getBalance();
+        Long amount = transaction.getAmount();
 
-        validateAccountBalance(ADMIN_ACCOUNT_NUMBER, balance);
-        validateAccountBalance(senderAccountNumber, balance);
+        validateAccountBalance(ADMIN_ACCOUNT_NUMBER, amount);
+        validateAccountBalance(senderAccountNumber, amount);
 
-        updateAccountBalance(ADMIN_ACCOUNT_NUMBER, balance);
-        updateAccountBalance(senderAccountNumber, balance);
+        updateAccountBalance(ADMIN_ACCOUNT_NUMBER, amount);
+        updateAccountBalance(senderAccountNumber, amount);
 
         AccountDetails payerAccountDetails
                 = accountDetailsService.createAccountDetails(transaction, TransactionCategory.PAYMENT, "결제");
         accountDetailsService.saveAccountDetails(payerAccountDetails);
     }
 
-    private void validateAccountBalance(String senderAccountNumber, Long balance) {
-        Account account = accountJpaRepository.findByAccountNumber(senderAccountNumber);
+    private void validateAccountBalance(String senderAccountNumber, Long amount) {
+        Account account = accountJpaRepository.findByAccountNumberWithLockingReads(senderAccountNumber);
 
-        if (!account.validateBalance(balance)) {
+        if (!account.validateBalance(amount)) {
             throw new AccountException(ExceptionCode.NOT_ENOUGH_MONEY);
         }
     }
 
-    private void updateAccountBalance(String accountNumber, Long balance) {
-        Account account = accountJpaRepository.findByAccountNumber(accountNumber);
-        account.decreaseBalance(balance);
+    private void updateAccountBalance(String accountNumber, Long amount) {
+        Account account = accountJpaRepository.findByAccountNumberWithLockingReads(accountNumber);
+        account.decreaseBalance(amount);
         accountJpaRepository.save(account);
     }
 }
