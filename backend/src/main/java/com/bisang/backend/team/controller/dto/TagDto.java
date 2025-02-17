@@ -1,7 +1,9 @@
 package com.bisang.backend.team.controller.dto;
 
+import java.util.List;
+
 public record TagDto(
-    Long tagId,
-    String name
+        Integer size,
+        List<String> tags
 ) {
 }

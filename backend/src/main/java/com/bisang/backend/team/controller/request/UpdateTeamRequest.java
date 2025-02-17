@@ -5,8 +5,6 @@ import jakarta.validation.constraints.NotNull;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import com.bisang.backend.team.domain.Area;
-import com.bisang.backend.team.domain.TeamCategory;
 import com.bisang.backend.team.domain.TeamPrivateStatus;
 import com.bisang.backend.team.domain.TeamRecruitStatus;
 
