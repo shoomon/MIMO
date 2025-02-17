@@ -1,9 +1,6 @@
 package com.bisang.backend.chat.repository.message;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.springframework.stereotype.Repository;
 
@@ -26,8 +23,10 @@ public class ChatMessageRepository {
         if (size < 30) {
             List<RedisChatMessage> newMessageList = getMessagesFromDB(30 - size, roomId, messageId);
             newMessageList.addAll(messageList);
+            Collections.reverse(newMessageList);
             return newMessageList;
         }
+        Collections.reverse(messageList);
         return messageList;
     }
 
