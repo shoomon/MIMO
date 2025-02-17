@@ -27,10 +27,10 @@ import lombok.ToString;
 @Table(
         name = "account_details",
         indexes = {
-                @Index(name = "idx_sender_tx_status",
-                        columnList = "sender_account_number, transaction_status"),
-                @Index(name = "idx_receiver_tx_status",
-                        columnList = "receiver_account_number, transaction_status")
+                @Index(name = "idx_sender_tx_category",
+                        columnList = "sender_account_number, transaction_category"),
+                @Index(name = "idx_receiver_tx_category",
+                        columnList = "receiver_account_number, transaction_category")
         }
 )
 public class AccountDetails {

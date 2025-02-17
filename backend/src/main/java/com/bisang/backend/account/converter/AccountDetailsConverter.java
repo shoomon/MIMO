@@ -10,17 +10,13 @@ public class AccountDetailsConverter {
         return accountDetails.stream()
                         .map(it -> {
                             return AccountDetailsResponse.builder()
-                                    .balance(it.getBalance())
+                                    .amount(it.getAmount())
                                     .senderAccountNumber(it.getSenderAccountNumber())
                                     .receiverAccountNumber(it.getReceiverAccountNumber())
-                                    .senderName(it.getSenderName())
-                                    .receiverName(it.getReceiverName())
                                     .memo(it.getMemo())
                                     .transactionCategory(it.getTransactionCategory())
                                     .createdAt(it.getCreatedAt())
                                     .build();
                         }).toList();
-
-
     }
 }

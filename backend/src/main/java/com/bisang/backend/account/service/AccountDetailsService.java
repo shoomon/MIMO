@@ -34,7 +34,7 @@ public class AccountDetailsService {
     ) {
         return AccountDetails.builder()
                 .transactionId(transaction)
-                .balance(transaction.getAmount())
+                .amount(transaction.getAmount())
                 .senderAccountNumber(transaction.getSenderAccountNumber())
                 .receiverAccountNumber(transaction.getReceiverAccountNumber())
                 .memo(memo)
