@@ -4,9 +4,12 @@ import static com.bisang.backend.common.exception.ExceptionCode.INVALID_REQUEST;
 import static com.bisang.backend.s3.domain.ImageType.USER;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import com.bisang.backend.common.exception.UserException;
+import com.bisang.backend.board.controller.dto.SimpleBoardDto;
+import com.bisang.backend.board.controller.dto.SimpleCommentDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;

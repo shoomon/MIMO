@@ -64,7 +64,6 @@ public class S3Service {
     }
 
     // 단일 파일 저장 S3 서버에
-    @S3Limiter
     public String saveFile(Long userId, MultipartFile file) {
         String randomFilename = generateRandomFilename(file);
         ObjectMetadata metadata = new ObjectMetadata();
