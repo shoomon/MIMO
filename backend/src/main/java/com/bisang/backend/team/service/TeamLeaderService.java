@@ -147,7 +147,7 @@ public class TeamLeaderService {
         // 채팅방 유저 강퇴
         chatroomUserService.forceLeave(teamId, teamUser.getUserId());
         Optional<TeamInvite> teamInvite = teamInviteJpaRepository.findByTeamIdAndUserId(teamId, userId);
-        if (teamInvite.isEmpty()) {
+        if (teamInvite.isPresent()) {
             teamInviteJpaRepository.delete(teamInvite.get());
         }
     }
