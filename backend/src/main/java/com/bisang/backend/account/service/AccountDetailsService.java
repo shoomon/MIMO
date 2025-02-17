@@ -1,24 +1,24 @@
 package com.bisang.backend.account.service;
 
+import static com.bisang.backend.transaction.domain.TransactionCategory.*;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import com.bisang.backend.account.controller.response.AccountDetailsResponse;
-import com.bisang.backend.account.converter.AccountDetailsConverter;
 import jakarta.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
 import com.bisang.backend.account.domain.AccountDetails;
+import com.bisang.backend.account.controller.response.AccountDetailsResponse;
+import com.bisang.backend.account.converter.AccountDetailsConverter;
 import com.bisang.backend.user.domain.User;
 import com.bisang.backend.transaction.domain.Transaction;
 import com.bisang.backend.transaction.domain.TransactionCategory;
 import com.bisang.backend.transaction.repository.AccountDetailsJpaRepository;
 
 import lombok.RequiredArgsConstructor;
-
-import static com.bisang.backend.transaction.domain.TransactionCategory.*;
 
 @Service
 @RequiredArgsConstructor
@@ -34,11 +34,9 @@ public class AccountDetailsService {
     ) {
         return AccountDetails.builder()
                 .transactionId(transaction)
-                .balance(transaction.getBalance())
+                .amount(transaction.getAmount())
                 .senderAccountNumber(transaction.getSenderAccountNumber())
                 .receiverAccountNumber(transaction.getReceiverAccountNumber())
-                .senderName(transaction.getSenderName())
-                .receiverName(transaction.getReceiverName())
                 .memo(memo)
                 .transactionCategory(transactionCategory)
                 .build();
@@ -54,7 +52,8 @@ public class AccountDetailsService {
 
         accountService.validateUserAccount(userId, accountNumber);
 
-        List<AccountDetails> accountDetails = accountDetailsJpaRepository.findByReceiverAccountNumberAndTransactionCategory(accountNumber, DEPOSIT);
+        List<AccountDetails> accountDetails
+                = accountDetailsJpaRepository.findByReceiverAccountNumberAndTransactionCategory(accountNumber, DEPOSIT);
         return AccountDetailsConverter.accountDetailsToAccountDetailsResponses(accountDetails);
     }
     
@@ -64,7 +63,8 @@ public class AccountDetailsService {
 
         accountService.validateUserAccount(userId, accountNumber);
 
-        List<AccountDetails> accountDetails = accountDetailsJpaRepository.findByReceiverAccountNumberAndTransactionCategory(accountNumber, CHARGE);
+        List<AccountDetails> accountDetails
+                = accountDetailsJpaRepository.findByReceiverAccountNumberAndTransactionCategory(accountNumber, CHARGE);
         return AccountDetailsConverter.accountDetailsToAccountDetailsResponses(accountDetails);
     }
 
@@ -74,7 +74,8 @@ public class AccountDetailsService {
 
         accountService.validateUserAccount(userId, accountNumber);
 
-        List<AccountDetails> accountDetails = accountDetailsJpaRepository.findBySenderAccountNumberAndTransactionCategory(accountNumber, TRANSFER);
+        List<AccountDetails> accountDetails
+                = accountDetailsJpaRepository.findBySenderAccountNumberAndTransactionCategory(accountNumber, TRANSFER);
         return AccountDetailsConverter.accountDetailsToAccountDetailsResponses(accountDetails);
     }
 
@@ -84,7 +85,8 @@ public class AccountDetailsService {
 
         accountService.validateUserAccount(userId, accountNumber);
 
-        List<AccountDetails> accountDetails = accountDetailsJpaRepository.findBySenderAccountNumberAndTransactionCategory(accountNumber, PAYMENT);
+        List<AccountDetails> accountDetails
+                = accountDetailsJpaRepository.findBySenderAccountNumberAndTransactionCategory(accountNumber, PAYMENT);
         return AccountDetailsConverter.accountDetailsToAccountDetailsResponses(accountDetails);
     }
 
@@ -106,5 +108,4 @@ public class AccountDetailsService {
 
         return allAccountDetails;
     }
-
 }

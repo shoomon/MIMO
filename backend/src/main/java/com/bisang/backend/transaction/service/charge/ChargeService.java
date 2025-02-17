@@ -25,10 +25,12 @@ public class ChargeService {
     @Transactional
     public void charge(Transaction transaction) {
         String receiverAccountNumber = transaction.getReceiverAccountNumber();
-        Long balance = transaction.getBalance();
+        Long amount = transaction.getAmount();
 
-        updateAccountBalance(ADMIN_ACCOUNT_NUMBER, balance);
-        updateAccountBalance(receiverAccountNumber, balance);
+        System.out.println(receiverAccountNumber);
+
+        updateAccountBalance(ADMIN_ACCOUNT_NUMBER, amount);
+        updateAccountBalance(receiverAccountNumber, amount);
 
         AccountDetails receiverAccountDetails
                 = accountDetailsService.createAccountDetails(transaction, TransactionCategory.CHARGE, "충전");
@@ -36,7 +38,7 @@ public class ChargeService {
     }
 
     private void updateAccountBalance(String accountNumber, Long balance) {
-        Account account = accountJpaRepository.findByAccountNumber(accountNumber);
+        Account account = accountJpaRepository.findByAccountNumberWithLockingReads(accountNumber);
         account.increaseBalance(balance);
         accountJpaRepository.save(account);
     }

@@ -1,28 +1,26 @@
 package com.bisang.backend.transaction.service;
 
-import com.bisang.backend.installment.controller.request.InstallmentRequest;
-import com.bisang.backend.transaction.domain.Transaction;
-import com.bisang.backend.qrcode.service.QrCodeService;
-import com.bisang.backend.user.domain.User;
-import com.bisang.backend.user.service.UserService;
 import org.springframework.stereotype.Service;
 
 import com.bisang.backend.common.annotation.DistributedLock;
 import com.bisang.backend.common.exception.ExceptionCode;
 import com.bisang.backend.common.exception.TransactionException;
+import com.bisang.backend.installment.controller.request.InstallmentRequest;
+import com.bisang.backend.qrcode.service.QrCodeService;
 import com.bisang.backend.transaction.controller.request.ChargeRequest;
 import com.bisang.backend.transaction.controller.request.PaymentRequest;
 import com.bisang.backend.transaction.controller.request.TransferRequest;
 import com.bisang.backend.transaction.converter.TransactionConverter;
+import com.bisang.backend.transaction.domain.Transaction;
 import com.bisang.backend.transaction.domain.TransactionStatus;
 import com.bisang.backend.transaction.repository.TransactionLogJpaRepository;
 import com.bisang.backend.transaction.service.charge.ChargeService;
 import com.bisang.backend.transaction.service.payment.PaymentService;
 import com.bisang.backend.transaction.service.transfer.TransferService;
+import com.bisang.backend.user.domain.User;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -31,17 +29,16 @@ public class TransactionService {
     public static final String ADMIN_ACCOUNT_NUMBER = "1000123456789";
 
     private final ChargeService chargeService;
-    private final TransferService transferService;
     private final PaymentService paymentService;
     private final QrCodeService qrCodeService;
+    private final TransferService transferService;
 
     private final TransactionLogJpaRepository transactionLogJpaRepository;
 
-    @DistributedLock(name = "관리자 계좌번호", waitTime = 3, leaseTime = 3)
-    public void chargeBalance(String key, ChargeRequest chargeRequest) {
+    @DistributedLock(name = "관리자 계좌번호", waitTime = 10, leaseTime = 3)
+    public void chargeBalance(String key, ChargeRequest chargeRequest, User user) {
         Transaction transaction
-                = TransactionConverter.chargeRequestToTransaction(chargeRequest);
-
+                = TransactionConverter.chargeRequestToTransaction(chargeRequest, user);
         transaction = saveTransactionLog(transaction);
 
         try {
@@ -56,10 +53,9 @@ public class TransactionService {
         }
     }
 
-    public void transferBalance(TransferRequest transferRequest) {
+    public void transferBalance(TransferRequest transferRequest, User user) {
         Transaction transaction
-                = TransactionConverter.transferRequestToTransaction(transferRequest);
-
+                = TransactionConverter.transferRequestToTransaction(transferRequest, user);
         transaction = saveTransactionLog(transaction);
 
         try {
@@ -74,10 +70,9 @@ public class TransactionService {
         }
     }
 
-    public void installmentBalance(InstallmentRequest installmentRequest) {
+    public void installmentBalance(InstallmentRequest installmentRequest, User user) {
         Transaction transaction
-                = TransactionConverter.transferRequestToTransaction(installmentRequest.getTransferRequest());
-
+                = TransactionConverter.transferRequestToTransaction(installmentRequest.getTransferRequest(), user);
         transaction = saveTransactionLog(transaction);
 
         try {
@@ -95,12 +90,10 @@ public class TransactionService {
 
     @DistributedLock(name = "관리자 계좌번호", waitTime = 3, leaseTime = 3)
     public void pay(String key, PaymentRequest paymentRequest) {
-        qrCodeService.validateQrCode(paymentRequest.getUuid());
-        User user = qrCodeService.findUserByQrCode(paymentRequest.getUuid());
+        String senderAccountNumber = qrCodeService.getSenderAccountNumber(paymentRequest.getUuid());
 
         Transaction transaction
-                = TransactionConverter.paymentRequestToTransaction(paymentRequest, user);
-
+                = TransactionConverter.paymentRequestToTransaction(paymentRequest, senderAccountNumber);
         transaction = saveTransactionLog(transaction);
 
         try {
