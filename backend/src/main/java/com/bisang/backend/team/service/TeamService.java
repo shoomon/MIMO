@@ -176,7 +176,9 @@ public class TeamService {
         Integer size = hasNext ? SHORT_PAGE_SIZE : teams.size();
         Long lastTeamId = hasNext ? teams.get(size - 1).teamId() : null;
         if (hasNext) {
-            teams.remove(size - 1);
+            teams = teams.stream()
+                .limit(size)
+                .toList();
         }
         return new TeamInfosResponse(size, hasNext, lastTeamId, teams);
     }
@@ -189,7 +191,9 @@ public class TeamService {
         Integer size = hasNext ? SHORT_PAGE_SIZE : teams.size();
         Long lastTeamId = hasNext ? teams.get(size - 1).teamId() : null;
         if (hasNext) {
-            teams.remove(size - 1);
+            teams = teams.stream()
+                .limit(size)
+                .toList();
         }
         return new TeamInfosResponse(size, hasNext, lastTeamId, teams);
     }
