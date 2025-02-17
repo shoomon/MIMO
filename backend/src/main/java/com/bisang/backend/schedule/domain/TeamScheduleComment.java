@@ -64,4 +64,8 @@ public class TeamScheduleComment extends BaseTimeEntity {
     public void updateScheduleCommentContent(String content) {
         this.content = content;
     }
+
+    public void deleteScheduleCommentContent() {
+        this.content = "(삭제된 댓글입니다.)";
+    }
 }

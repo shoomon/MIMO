@@ -1,11 +1,13 @@
 package com.bisang.backend.user.service;
 
+import static com.bisang.backend.common.exception.ExceptionCode.INVALID_REQUEST;
 import static com.bisang.backend.s3.domain.ImageType.USER;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.bisang.backend.common.exception.UserException;
 import com.bisang.backend.board.controller.dto.SimpleBoardDto;
 import com.bisang.backend.board.controller.dto.SimpleCommentDto;
 import org.springframework.stereotype.Service;
@@ -33,11 +35,30 @@ public class UserService {
         userJpaRepository.save(user);
     }
 
-    @Transactional
     public void updateUserInfo(User user, String nickname, String name, MultipartFile profile) {
+        String profileUri = updateUserProfile(user, profile);
+        try {
+            updateUserInfo(user, nickname, name, profileUri);
+        } catch (UserException e) {
+            if (profileUri != null) {
+                s3Service.deleteFile(profileUri);
+            }
+           throw new UserException(e.getCode(), e.getMessage());
+        } catch (Exception e) {
+            if (profileUri != null) {
+                s3Service.deleteFile(profileUri);
+            }
+            throw new UserException(INVALID_REQUEST);
+        }
+    }
+
+    @Transactional
+    public void updateUserInfo(User user, String nickname, String name, String profileUri) {
         user.updateNickname(nickname);
         user.updateName(name);
-        updateUserProfile(user, profile);
+        if (profileUri != null) {
+            user.updateProfileUri(profileUri);
+        }
         userJpaRepository.save(user);
     }
 
@@ -60,22 +81,16 @@ public class UserService {
                 .build();
     }
 
-//    public List<SimpleBoardDto> getUserBoardList(Long userId) {
-//
-//    }
-//
-//    public List<SimpleCommentDto> getUserCommentList(Long userId) {
-//
-//    }
-
-    private void updateUserProfile(User user, MultipartFile profile) {
+    private String updateUserProfile(User user, MultipartFile profile) {
         if (profile != null) {
             String profileUri = s3Service.saveFile(user.getId(), profile);
             profileImageRepository.findUserImageByImageTypeAndUserId(USER, user.getId())
                     .ifPresent(profileImageRepository::delete);
             profileImageRepository.save(ProfileImage.createUserProfile(user.getId(), profileUri));
             user.updateProfileUri(profileUri);
+            return profileUri;
         }
+        return null;
     }
 
     public Optional<User> findUserByEmail(String email) {
