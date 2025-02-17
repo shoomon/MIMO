@@ -59,8 +59,7 @@ public class TeamLeaderService {
     @Transactional
     public void rejectInviteRequest(Long userId, Long teamId, Long inviteId) {
         TeamInvite teamInvite = findTeamInviteById(inviteId);
-        teamInvite.rejectInvitation();
-        teamInviteJpaRepository.save(teamInvite);
+        teamInviteJpaRepository.delete(teamInvite);
     }
 
     @TeamLeader
