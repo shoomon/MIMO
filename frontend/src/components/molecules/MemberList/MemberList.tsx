@@ -86,16 +86,11 @@ const MemberList = ({
     let onKickMember: (() => void) | undefined;
     let onAcceptMember: (() => void) | undefined;
     let onRejectMember: (() => void) | undefined;
-    console.log(teamUserId);
 
     if (teamUserId) {
         mode = 'member';
         if (isLeader) {
-            console.log('1233333');
-
             onEditRole = () => {
-                console.log(role);
-
                 // 대상 멤버의 역할에 따라 권한 수정: CO_LEADER는 다운그레이드, MEMBER는 업그레이드
                 if (role === 'CO_LEADER') {
                     downgradeRole(teamId, teamUserId);
@@ -122,7 +117,7 @@ const MemberList = ({
 
     // 회원 신청인 경우 role 정보가 없으므로 버튼 위쪽에는 "회원 신청" 텍스트 표시
     const userRoleElement = teamInviteId ? (
-        <span className="text-lg font-extrabold">회원 신청</span>
+        <span className="text-lg font-extrabold"></span>
     ) : (
         renderUserRoleElement(role || 'MEMBER')
     );

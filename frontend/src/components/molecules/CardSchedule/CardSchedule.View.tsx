@@ -29,42 +29,42 @@ const CardScheduleView: React.FC<CardScheduleViewProps> = ({
     isClosed,
 }) => {
     return (
-        <Link
-            to={detailLink}
-            className={`pb-3{isClosed&&} flex h-[300px] w-[344px] flex-col justify-between overflow-hidden rounded-lg ${isClosed ? 'bg-gray-100 opacity-70' : 'bg-white'}`}
-        >
-            <div
-                className={`text-display-xs flex w-full justify-center gap-1 px-4 py-3 font-bold ${isClosed ? 'text-dark bg-gray-200' : 'bg-gray-700 text-white'}`}
+        <div className="h-fit pb-4">
+            <Link
+                to={detailLink}
+                className={`flex w-[344px] flex-col justify-between overflow-hidden rounded-lg pb-3 ${isClosed ? 'bg-gray-100 opacity-70' : 'bg-white'}`}
             >
-                {isClosed ? (
-                    '신청마감'
-                ) : (
-                    <>
-                        <span className="text-display-xs font-semibold">
-                            신청 마감까지
+                <div
+                    className={`text-display-xs flex w-full justify-center gap-1 px-4 py-3 font-bold ${isClosed ? 'text-dark bg-gray-200' : 'bg-gray-700 text-white'}`}
+                >
+                    {isClosed ? (
+                        '신청마감'
+                    ) : (
+                        <>
+                            <span className="text-display-xs font-semibold">
+                                신청 마감까지
+                            </span>
+                            {timeLeftStr}
+                        </>
+                    )}
+                </div>
+                <div className="flex h-full w-full flex-col gap-4 px-4 py-3">
+                    <div className="flex h-[118px] flex-col gap-2">
+                        <span className="text-dark h-full text-xl font-bold">
+                            {label}
                         </span>
-                        {timeLeftStr}
-                    </>
-                )}
-            </div>
-            <div className="flex h-full w-full flex-col gap-4 px-4 py-3">
-                <div className="flex h-[118px] flex-col gap-2">
-                    <span className="text-dark h-full text-xl font-bold">
-                        {label}
-                    </span>
-                    <div className="text-md text-text flex h-fit flex-col gap-[2px] font-semibold">
-                        <span>{formattedDate}</span>
-                        <span>{feeText}</span>
+                        <div className="text-md text-text flex h-fit flex-col gap-[2px] font-semibold">
+                            <span>{formattedDate}</span>
+                            <span>{feeText}</span>
+                        </div>
                     </div>
                 </div>
-                <div className="flex flex-col gap-1">
-                    <span className="text-md text-dark font-medium">
-                        참가 멤버
-                    </span>
-                    <div className="flex gap-[18px]">{memberProfiles}</div>
-                </div>
+            </Link>
+            <div className="flex flex-col gap-1 px-4">
+                <span className="text-md text-dark font-medium">참가 멤버</span>
+                <div className="flex gap-[18px]">{memberProfiles}</div>
             </div>
-        </Link>
+        </div>
     );
 };
 

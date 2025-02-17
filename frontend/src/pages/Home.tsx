@@ -1,6 +1,6 @@
 import { CardMeeting } from '@/components/molecules';
 import CategoryList from '@/components/molecules/CategoryList/CategoryList';
-import ListContainer from '@/components/organisms/ListContainer';
+import ListContainer from '@/components/organisms/Carousel/ListContainer';
 import { Area, SimpleTeamResponse } from './../types/Team';
 import { getTeamInfosByArea } from '@/apis/TeamAPI';
 import { useQuery } from '@tanstack/react-query';
@@ -23,7 +23,7 @@ const Home = () => {
                     content={item.description}
                     rating={item.reviewScore}
                     tagList={formattedTags}
-                    reviewCount={item.reviewScore}
+                    reviewCount={item.reviewCount}
                     image={{
                         memberCount: item.currentCapacity,
                         memberLimit: item.maxCapacity,

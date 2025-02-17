@@ -26,7 +26,7 @@ const ProfileImageView = ({
             <img
                 src={profileUri}
                 alt={`${nickname} 프로필`}
-                className="object-contain"
+                className="object-cover"
                 style={{ width: `${size}px`, height: `${size}px` }}
             />
         </Component>

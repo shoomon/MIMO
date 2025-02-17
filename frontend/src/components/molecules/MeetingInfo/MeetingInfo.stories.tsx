@@ -49,5 +49,6 @@ export const Default: Story = {
         teamUserId: 2,
         nickName: 'jump',
         recruitStatus: 'ACTIVE_PUBLIC',
+        notificationStatus: 'ACTIVE',
     },
 };
