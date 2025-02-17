@@ -2,11 +2,13 @@ package com.bisang.backend.chat.repository.message;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeParseException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.bisang.backend.common.exception.ChatroomException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
@@ -18,9 +20,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+import static com.bisang.backend.common.exception.ExceptionCode.INVALID_REQUEST;
 
 @Repository
 @RequiredArgsConstructor
+@Slf4j
 public class ChatMessageRedisRepository {
 
     private final RedisTemplate<String, RedisChatMessage> redisChatMessageTemplate;
@@ -42,7 +48,13 @@ public class ChatMessageRedisRepository {
             return getRedisChatMessages(result);
         }
 
-        LocalDateTime datetime = DateUtils.dateToLocalDateTime(timestamp);
+        LocalDateTime datetime;
+        try {
+            datetime = DateUtils.dateToLocalDateTime(timestamp);
+        } catch (DateTimeParseException e) {
+            throw new ChatroomException(INVALID_REQUEST);
+        }
+
         double score = datetime.toInstant(ZoneOffset.ofTotalSeconds(0)).toEpochMilli() + (messageId % 1000) / 1000.0;
         result = redisTemplate.opsForZSet()
                 .reverseRangeByScoreWithScores(key, teamEnterScore, score, 1, 30);
@@ -80,17 +92,13 @@ public class ChatMessageRedisRepository {
             return null;
         }
 
-        List<RedisChatMessage> messages = result.stream()
-            .map(json -> {
-                try {
-                    return objectMapper.readValue(json, RedisChatMessage.class);
-                } catch (JsonProcessingException e) {
-                    throw new RuntimeException(e);
-                }
-            })
-            .toList();
-
-        return messages.isEmpty() ? null : messages.get(0);
+        String json = result.iterator().next();
+        try {
+            return objectMapper.readValue(json, RedisChatMessage.class);
+        } catch (JsonProcessingException e) {
+            log.error("Json 파싱 실패: {}", e.getMessage());
+            return null;
+        }
     }
 
     public Long unreadCount(Long chatroomId, Double lastReadScore) {

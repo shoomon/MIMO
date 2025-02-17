@@ -10,6 +10,7 @@ import java.util.Set;
 import com.bisang.backend.common.exception.ChatroomException;
 import jakarta.transaction.Transactional;
 
+import org.hibernate.NonUniqueResultException;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 
@@ -20,9 +21,11 @@ import com.bisang.backend.user.domain.User;
 import com.bisang.backend.user.repository.UserJpaRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Repository
 @RequiredArgsConstructor
+@Slf4j
 public class ChatroomUserRepository {
 
     private final ChatroomUserRedisRepository chatroomUserRedisRepository;
@@ -50,10 +53,10 @@ public class ChatroomUserRepository {
         chatroomUserJpaRepository.deleteByChatroomIdAndUserId(chatroomId, userId);
     }
 
-    public Set<Long> getTeamMembers(long teamId) {
-        Set<Long> teamMembers = chatroomUserRedisRepository.getTeamMembers(teamId);
+    public Set<Long> getTeamMembers(long chatroomId) {
+        Set<Long> teamMembers = chatroomUserRedisRepository.getTeamMembers(chatroomId);
         if (teamMembers.isEmpty()) {
-            teamMembers = chatroomUserJpaRepository.findUserIdsByTeamId(teamId);
+            teamMembers = chatroomUserJpaRepository.findUserIdsByTeamId(chatroomId);
         }
         return teamMembers;
     }
@@ -80,8 +83,14 @@ public class ChatroomUserRepository {
     public Map<Object, Object> getUserInfo(Long chatroomId, Long userId) {
         Map<Object, Object> userInfo = redisCacheRepository.getUserProfile(chatroomId, userId);
 
+        String nickname;
         if (userInfo.isEmpty()) {
-            String nickname = chatroomUserJpaRepository.findNicknameByTeamIdAndUserId(chatroomId, userId);
+            try {
+                nickname = chatroomUserJpaRepository.findNicknameByChatroomIdAndUserId(chatroomId, userId);
+            } catch (NonUniqueResultException e) {
+                log.error("채팅룸 중복 입장");
+                nickname = "중복처리 필요합니다";
+            }
 
             User user = userJpaRepository.findById(userId).orElseThrow(() -> new AccountException(NOT_FOUND));
             String profileImage = user.getProfileUri();
@@ -107,7 +116,6 @@ public class ChatroomUserRepository {
     }
 
     public void updateLastRead(Long userId, LocalDateTime lastDateTime, Long roomId, Long lastChatId) {
-        //TODO: db에 어떻게 저장할지 생각해봐야함. 저장 해야하나..? 어차피 실시간이 아닌데?
         chatroomUserRedisRepository.insertLastReadScore(roomId, userId, lastDateTime, lastChatId);
     }
 

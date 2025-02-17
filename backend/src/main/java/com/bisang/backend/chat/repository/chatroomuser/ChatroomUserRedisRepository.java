@@ -37,8 +37,8 @@ public class ChatroomUserRedisRepository {
         redisLongTemplate.opsForValue().set(teamEnterChatId + chatroomId + ":" + userId, enterChatId);
     }
 
-    public void deleteMember(Long teamId, Long userId) {
-        redisLongTemplate.opsForSet().remove(teamMemberKey + teamId, userId);
+    public void deleteMember(Long chatroomId, Long userId) {
+        redisLongTemplate.opsForSet().remove(teamMemberKey + chatroomId, userId);
     }
 
     public Double getTeamEnterScore(Long chatroomId, Long userId) {
@@ -49,12 +49,12 @@ public class ChatroomUserRedisRepository {
         return redisLongTemplate.opsForValue().get(teamEnterChatId + chatroomId + ":" + userId);
     }
 
-    public boolean isMember(Long teamId, Long userId) {
-        return Boolean.TRUE.equals(redisLongTemplate.opsForSet().isMember(teamMemberKey + teamId, userId));
+    public boolean isMember(Long chatroomId, Long userId) {
+        return Boolean.TRUE.equals(redisLongTemplate.opsForSet().isMember(teamMemberKey + chatroomId, userId));
     }
 
-    public Set<Long> getTeamMembers(long teamId) {
-        return redisLongTemplate.opsForSet().members(teamMemberKey + teamId);
+    public Set<Long> getTeamMembers(long chatroomId) {
+        return redisLongTemplate.opsForSet().members(teamMemberKey + chatroomId);
     }
 
     public void insertLastReadScore(Long chatroomId, Long userId, LocalDateTime lastDateTime, Long lastChatId) {

@@ -2,6 +2,8 @@ package com.bisang.backend.user.controller;
 
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
+import com.bisang.backend.user.controller.response.UserBoardResponse;
+import com.bisang.backend.user.controller.response.UserCommentResponse;
 import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
@@ -30,6 +32,22 @@ public class UserController {
             @AuthUser User user
     ) {
         return ResponseEntity.ok(userService.getMyInfo(user));
+    }
+
+    @GetMapping("/board")
+    public ResponseEntity<UserBoardResponse> getMyBoardList(@AuthUser User user) {
+        System.out.println(user.getId());
+        return ResponseEntity.ok(new UserBoardResponse(
+                userService.getUserBoardList(user.getId())
+        ));
+    }
+
+    @GetMapping("/comment")
+    public ResponseEntity<UserCommentResponse> getMyComentList(@AuthUser User user) {
+        System.out.println(user.getId());
+        return ResponseEntity.ok(new UserCommentResponse(
+                userService.getUserCommentList(user.getId())
+        ));
     }
 
     @PutMapping(consumes = {MULTIPART_FORM_DATA_VALUE})
