@@ -6,6 +6,7 @@ import static com.bisang.backend.team.domain.TeamUserRole.GUEST;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import com.bisang.backend.invite.domain.TeamInvite;
 import com.bisang.backend.team.domain.Team;
 import com.bisang.backend.team.domain.TeamNotificationStatus;
 import com.bisang.backend.team.domain.TeamUser;
@@ -17,30 +18,38 @@ import lombok.Builder;
 public record MyTeamUserInfoDto(
         Long teamId,
         Long teamUserId,
+        Boolean isInvited,
         String nickname,
         TeamUserRole role,
         TeamNotificationStatus notificationStatus,
         LocalDateTime joinDate
 ) {
-    public static MyTeamUserInfoDto teamUserToDto(Optional<TeamUser> optionalTeamUser, Team team) {
+    public static MyTeamUserInfoDto teamUserToDto(
+            Optional<TeamUser> optionalTeamUser,
+            Team team,
+            Optional<TeamInvite> optionalTeamInvite) {
         if (optionalTeamUser.isPresent()) {
             TeamUser teamUser = optionalTeamUser.get();
             return MyTeamUserInfoDto.builder()
-                .teamId(teamUser.getTeamId())
-                .teamUserId(teamUser.getId())
-                .nickname(teamUser.getNickname())
-                .role(teamUser.getRole())
-                .notificationStatus(teamUser.getStatus())
-                .joinDate(teamUser.getCreatedAt()).build();
+                    .teamId(teamUser.getTeamId())
+                    .teamUserId(teamUser.getId())
+                    .isInvited(true)
+                    .nickname(teamUser.getNickname())
+                    .role(teamUser.getRole())
+                    .notificationStatus(teamUser.getStatus())
+                    .joinDate(teamUser.getCreatedAt()).build();
         }
 
+        Boolean isInvited = optionalTeamInvite.isPresent();
+
         return MyTeamUserInfoDto.builder()
-            .teamId(team.getId())
-            .teamUserId(0L)
-            .nickname("GUEST" + randomAlphaNumeric(10))
-            .role(GUEST)
-            .notificationStatus(null)
-            .joinDate(LocalDateTime.now())
-            .build();
+                .teamId(team.getId())
+                .teamUserId(0L)
+                .isInvited(isInvited)
+                .nickname("GUEST" + randomAlphaNumeric(10))
+                .role(GUEST)
+                .notificationStatus(null)
+                .joinDate(LocalDateTime.now())
+                .build();
     }
 }
