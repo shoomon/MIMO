@@ -44,7 +44,7 @@ public class ChatMessageRepository {
             Long enterMessageId
     ) {
         List<ChatMessage> messages = chatMessageJpaRepository
-                .findByChatroomIdAndIdLessThanAndIdGreaterThanOrderByIdDesc(roomId, messageId, enterMessageId);
+                .findByChatroomIdAndIdLessThanAndIdGreaterThanEqualOrderByIdDesc(roomId, messageId, enterMessageId);
         List<RedisChatMessage> result = new LinkedList<>();
 
         int limit = Math.min(size, messages.size());

@@ -47,10 +47,13 @@ public class ChatroomUser {
     @Column(name = "nickname", nullable = false)
     private String nickname;
 
-    @Getter
     @LastModifiedDate
     @Column(name = "last_modified_at")
     private LocalDateTime lastModifiedAt;
+
+    @Getter
+    @Column(name = "enter_date")
+    private LocalDateTime enterDate;
 
     @Getter
     @Column(name = "enter_chat_id")
@@ -60,13 +63,13 @@ public class ChatroomUser {
             Long chatroomId,
             Long userId,
             String nickname,
-            LocalDateTime lastModifiedAt,
+            LocalDateTime enterDate,
             Long enterChatId
     ) {
         this.chatroomId = chatroomId;
         this.userId = userId;
         this.nickname = nickname;
-        this.lastModifiedAt = lastModifiedAt;
+        this.enterDate = enterDate;
         this.enterChatId = enterChatId;
     }
 
@@ -74,10 +77,10 @@ public class ChatroomUser {
             Long chatroomId,
             Long userId,
             String nickname,
-            LocalDateTime lastModifiedAt,
+            LocalDateTime enterDate,
             Long enterChatId
     ) {
-        return new ChatroomUser(chatroomId, userId, nickname, lastModifiedAt, enterChatId);
+        return new ChatroomUser(chatroomId, userId, nickname, enterDate, enterChatId);
     }
 
 }

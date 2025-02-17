@@ -8,7 +8,7 @@ import com.bisang.backend.chat.domain.ChatMessage;
 
 public interface ChatMessageJpaRepository extends JpaRepository<ChatMessage, Long> {
 
-    List<ChatMessage> findByChatroomIdAndIdLessThanAndIdGreaterThanOrderByIdDesc(Long chatroomId, Long givenId, Long enterChatId);
+    List<ChatMessage> findByChatroomIdAndIdLessThanAndIdGreaterThanEqualOrderByIdDesc(Long chatroomId, Long givenId, Long enterChatId);
 
     ChatMessage findTopByChatroomIdOrderByIdDesc(Long chatroomId);
 

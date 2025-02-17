@@ -73,7 +73,7 @@ public class ChatroomUserRepository {
             ChatroomUser user = chatroomUserJpaRepository
                     .findByChatroomIdAndUserId(chatroomId, userId)
                     .orElseThrow(() -> new ChatroomException(NOT_FOUND));
-            insertRedisMemberUser(chatroomId, userId, user.getLastModifiedAt(), 0L);
+            insertRedisMemberUser(chatroomId, userId, user.getEnterDate(), user.getEnterChatId());
             return true;
         }
 
@@ -135,7 +135,7 @@ public class ChatroomUserRepository {
                     .findByChatroomIdAndUserId(roomId, userId)
                     .orElseThrow(() -> new ChatroomException(NOT_FOUND));
 
-            LocalDateTime enterDate = user.getLastModifiedAt();
+            LocalDateTime enterDate = user.getEnterDate();
             teamEnterScore = enterDate
                     .toInstant(ZoneOffset.ofTotalSeconds(0))
                     .toEpochMilli() + (user.getEnterChatId() % 1000) / 1000.0;
