@@ -6,10 +6,10 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public record SimpleBoardListDto(
-        Long postId,
+        Long boardId,
         String userProfileUri,
         String userNickname,
-        String postTitle,
+        String boardTitle,
         String imageUri,
         Long likeCount,
         Long viewCount,
@@ -19,6 +19,6 @@ public record SimpleBoardListDto(
 ) {
     @JsonIgnore
     public Long getId() {
-        return postId;
+        return boardId;
     }
 }
