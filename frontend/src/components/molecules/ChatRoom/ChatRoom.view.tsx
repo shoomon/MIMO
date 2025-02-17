@@ -10,7 +10,7 @@ const ChatRoomView = ({ item, onClick }: ChatRoomViewProps) => {
         <button
             onClick={onClick}
             data-id={item.chatroomId}
-            className="hover:border-brand-primary-100 hover:bg-brand-primary-50 relative flex max-w-[28.5rem] gap-2 rounded-lg border-0 p-4 pr-[3.5rem] hover:border-2"
+            className="hover:border-brand-primary-100 hover:bg-brand-primary-50 relative flex w-[28.5rem] gap-2 rounded-lg border-0 p-4 pr-[3.5rem] hover:border-2"
         >
             <img
                 src={item.chatroomImage}

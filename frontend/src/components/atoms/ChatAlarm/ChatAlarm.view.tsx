@@ -12,9 +12,11 @@ const ChatAlarmView = ({ alarmActive, unreadCount }: ChatAlarmViewProps) => {
             <Link to="/chat">
                 <Icon type="png" id="Chat" size={44} />
             </Link>
-            {alarmActive && (
-                <div className="absolute right-0 bottom-0 z-1 block h-6 w-6 translate-x-2 translate-y-1 rounded-full bg-red-500">
-                    <span>{unreadCount}</span>
+            {alarmActive && unreadCount > 0 && (
+                <div className="absolute right-0 bottom-0 z-1 flex h-6 w-6 translate-x-2 translate-y-1 items-center justify-center rounded-full bg-red-500">
+                    <span className="text-md font-semibold text-white">
+                        {unreadCount}
+                    </span>
                 </div>
             )}
         </div>

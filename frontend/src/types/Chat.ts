@@ -1,5 +1,5 @@
 export interface ChatRoomResponse{
-  chatroomId: number;
+  chatroomId: string;
   chatroomImage: string;
   chatroomName: string;
   lastChat: string;
@@ -13,5 +13,17 @@ export interface ChatMessageResponse{
   profileImageUri: string;
   chat: string;
   timestamp: string;
-  chatType: "MESSAGE";
+  chatType: "MESSAGE" | "ENTER" | "LEAVE";
+}
+
+export interface ChatMessageRequest{
+  chatroomId: number;
+  messageId: number;
+  timestamp: number;
+}
+
+export interface LastReadChatRequest{
+  lastReadDateTime: string;
+  lastReadChatId: string;
+  chatroomId: number;
 }
