@@ -24,6 +24,7 @@ public class ChatroomUserService {
     private final ChatroomJpaRepository chatroomJpaRepository;
     private final ChatMessageService chatMessageService;
     private final ChatroomRepository chatroomRepository;
+    private final ChatRedisService chatRedisService;
 
     public boolean isMember(Long chatroomId, Long userId) {
         return chatroomUserRepository.isMember(chatroomId, userId);
@@ -45,8 +46,6 @@ public class ChatroomUserService {
                 .findIdByTeamId(teamId)
                 .orElseThrow(() -> new ChatroomException(NOT_FOUND_TEAM));
 
-        ChatroomUser chatroomUser = ChatroomUser.createChatroomUser(chatroomId, userId, nickname, LocalDateTime.now());
-        chatroomUserRepository.insertJpaMemberUser(chatroomUser);
 
         RedisChatMessage message = new RedisChatMessage(
                 chatroomId,
@@ -55,10 +54,14 @@ public class ChatroomUserService {
                 LocalDateTime.now(),
                 ChatType.ENTER
         );
+        chatRedisService.afterSendMessage(chatroomId, message);
+
+        ChatroomUser chatroomUser = ChatroomUser.createChatroomUser(chatroomId, userId, nickname, LocalDateTime.now(), message.getId());
+        chatroomUserRepository.insertJpaMemberUser(chatroomUser);
 
         //chatRedisService.afterEnterChatroom(chatroomId, userId, message.getTimestamp(), 0L);   //루아 스크립트 사용
-        chatroomUserRepository.insertRedisMemberUser(chatroomId, userId);
-        chatroomUserRepository.updateLastRead(userId, message.getTimestamp(), chatroomId, 0L);
+        chatroomUserRepository.insertRedisMemberUser(chatroomId, userId, message.getTimestamp(), message.getId());
+        chatroomUserRepository.updateLastRead(userId, message.getTimestamp(), chatroomId, message.getId());
 
         chatMessageService.broadcastMessage(chatroomId, message);
     }
@@ -77,6 +80,8 @@ public class ChatroomUserService {
         );
 
         removeMember(userId, chatroomId);
+
+        chatRedisService.afterSendMessage(chatroomId, message);
         chatMessageService.broadcastMessage(chatroomId, message);
 
         return true;
@@ -95,6 +100,7 @@ public class ChatroomUserService {
                 ChatType.FORCE
         );
 
+        chatRedisService.afterSendMessage(chatroomId, redisChatMessage);
         chatMessageService.broadcastMessage(chatroomId, redisChatMessage);
         removeMember(userId, chatroomId);
     }

@@ -26,6 +26,7 @@ import com.bisang.backend.chat.controller.response.ChatMessageResponse;
 import com.bisang.backend.chat.domain.ChatType;
 import com.bisang.backend.chat.domain.redis.RedisChatMessage;
 import com.bisang.backend.chat.service.ChatMessageService;
+import com.bisang.backend.chat.service.ChatRedisService;
 import com.bisang.backend.chat.service.ChatroomUserService;
 import com.bisang.backend.common.exception.ChatAccessInvalidException;
 import com.bisang.backend.common.exception.UnauthorizedChatException;
@@ -41,6 +42,7 @@ public class ChatMessageController {
     private final ChatMessageService chatMessageService;
     private final ChatroomUserService chatroomUserService;
     private final JwtUtil jwtUtil;
+    private final ChatRedisService chatRedisService;
 
     @MessageMapping("/chat-message/{roomId}")
     public void sendMessage(
@@ -53,6 +55,7 @@ public class ChatMessageController {
         }
 
         Long userId = Long.valueOf(jwtUtil.getSubject(token));
+        System.out.println(userId);
         if (chatroomUserService.isMember(roomId, userId)) {
             RedisChatMessage redisMessage = new RedisChatMessage(
                     roomId,
@@ -61,11 +64,11 @@ public class ChatMessageController {
                     LocalDateTime.now(),
                     ChatType.MESSAGE
             );
-
+            chatRedisService.afterSendMessage(roomId, redisMessage);
             chatMessageService.broadcastMessage(roomId, redisMessage);
+
             return;
         }
-
         throw new UnauthorizedChatException(NOT_FOUND_TEAM_USER);
     }
 
@@ -83,7 +86,7 @@ public class ChatMessageController {
             @RequestParam("timestamp") String timestamp
     ) {
         if (chatroomUserService.isMember(roomId, user.getId())) {
-            List<ChatMessageResponse> list = chatMessageService.getMessages(roomId, messageId, timestamp);
+            List<ChatMessageResponse> list = chatMessageService.getMessages(user.getId(), roomId, messageId, timestamp);
 
             return ResponseEntity.ok().body(list);
         }
@@ -107,10 +110,10 @@ public class ChatMessageController {
                     ChatType.MESSAGE
             );
 
+            chatRedisService.afterSendMessage(roomId, redisMessage);
             chatMessageService.broadcastMessage(roomId, redisMessage);
             return ResponseEntity.ok().body("전송 성공");
         }
-
         return ResponseEntity.badRequest().body("전송 실패");
     }
 }
