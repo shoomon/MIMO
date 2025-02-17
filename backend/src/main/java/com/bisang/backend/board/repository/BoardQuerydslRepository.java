@@ -20,6 +20,7 @@ import com.bisang.backend.board.controller.dto.CommentCountDto;
 import com.bisang.backend.board.controller.dto.ProfileNicknameDto;
 import com.bisang.backend.board.controller.dto.SimpleBoardListDto;
 import com.bisang.backend.board.domain.QBoardImage;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import jakarta.persistence.EntityNotFoundException;
@@ -61,11 +62,13 @@ public class BoardQuerydslRepository {
             Long lastReadId,
             int limit
     ) {
+        BooleanExpression lastReadIdCondition = (lastReadId != null) ? board.id.lt(lastReadId) : null;
+
         return queryFactory
                 .select(board.id)
                 .from(board)
                 .where(board.teamBoardId.in(teamBoardId)
-                        .and(board.id.lt(lastReadId)))
+                        , lastReadIdCondition)
                 .orderBy(board.id.desc())
                 .limit(limit)
                 .fetch();

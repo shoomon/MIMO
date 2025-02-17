@@ -29,7 +29,8 @@ public class BoardImageService {
         // 읽은 id 다음 부분부터 읽어도 되는지 order by를 해야하는지
         // 게시글 기본키가 있으니까 정렬 안해도 되나
         // 일단 정렬함
-        List<Long> boardIdList = boardQuerydslRepository.getBoardIdListByTeamBoardId(teamBoardId, lastReadImageId, limit+1);
+        List<Long> boardIdList = boardQuerydslRepository
+                .getBoardIdListByTeamBoardId(teamBoardId, lastReadImageId, limit+1);
 
         List<BoardThumbnailDto> imageList = boardQuerydslRepository
                 .getImageThumbnailList(boardIdList)
