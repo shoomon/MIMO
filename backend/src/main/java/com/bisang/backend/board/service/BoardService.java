@@ -131,32 +131,34 @@ public class BoardService {
 
     @Transactional
     //    @TeamMember
-    public BoardDetailResponse getPostDetail(Long postId) {
+    public BoardDetailResponse getPostDetail(Long boardId) {
         BoardDetailResponse postDetail = null;
-        boardJpaRepository.increaseViewCount(postId);
+        boardJpaRepository.increaseViewCount(boardId);
 
-        BoardInfoDto postInfo = boardQuerydslRepository.getBoardInfo(postId);
-        String userProfileUri = userJpaRepository.getUserProfileUri(postInfo.userId());
-        String userNickname = teamUserJpaRepository.getTeamUserNickname(postInfo.teamUserId());
+        BoardInfoDto boardInfo = boardQuerydslRepository.getBoardInfo(boardId);
+        String userProfileUri = userJpaRepository.getUserProfileUri(boardInfo.userId());
+        String userNickname = teamUserJpaRepository.getTeamUserNickname(boardInfo.teamUserId());
+        BoardLike userLike = boardLikeRepository
+                .findByTeamUserIdAndBoardId(boardInfo.teamUserId(), boardId).orElse(null);
         BoardDto post = new BoardDto(
-                postId,
-                postInfo.userId(),
-                postInfo.teamUserId(),
+                boardId,
+                boardInfo.userId(),
+                boardInfo.teamUserId(),
                 userProfileUri,
                 userNickname,
-                postInfo.boardName(),
-                postInfo.postTitle(),
-                postInfo.description(),
-                postInfo.likeCount(),
-                postInfo.viewCount(),
-                postInfo.createdAt(),
-                postInfo.updatedAt()
+                boardInfo.boardName(),
+                boardInfo.postTitle(),
+                boardInfo.description(),
+                boardInfo.likeCount(),
+                boardInfo.viewCount(),
+                boardInfo.createdAt(),
+                boardInfo.updatedAt()
         );
 
-        List<CommentListDto> comments = getCommentList(postId);
-        List<BoardFileDto> files = boardImageJpaRepository.findByBoardId(postId);
+        List<CommentListDto> comments = getCommentList(boardId);
+        List<BoardFileDto> files = boardImageJpaRepository.findByBoardId(boardId);
 
-        postDetail = new BoardDetailResponse(post, files, comments);
+        postDetail = new BoardDetailResponse(post, files, userLike != null, comments);
         return postDetail;
     }
 
