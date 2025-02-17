@@ -25,8 +25,8 @@ public class ChatroomUserService {
     private final ChatMessageService chatMessageService;
     private final ChatroomRepository chatroomRepository;
 
-    public boolean isMember(Long teamId, Long userId) {
-        return chatroomUserRepository.isMember(teamId, userId);
+    public boolean isMember(Long chatroomId, Long userId) {
+        return chatroomUserRepository.isMember(chatroomId, userId);
     }
 
     public void updateNickname(Long userId, Long teamId, String nickname) {

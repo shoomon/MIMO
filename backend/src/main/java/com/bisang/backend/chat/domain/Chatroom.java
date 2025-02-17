@@ -30,7 +30,7 @@ public class Chatroom {
     @Column(name = "team_id")
     private Long teamId;
 
-    @Column(name = "chatroom_user_id", nullable = false)
+    @Column(name = "user_id", nullable = false)
     private Long userId;
 
     @Setter

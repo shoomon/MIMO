@@ -1,8 +1,12 @@
 package com.bisang.backend.chat.controller;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
+import com.bisang.backend.common.exception.ChatAccessInvalidException;
+import com.bisang.backend.common.exception.ChatroomException;
+import com.bisang.backend.common.exception.ExceptionCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -22,6 +26,8 @@ import com.bisang.backend.common.utils.DateUtils;
 import com.bisang.backend.user.domain.User;
 
 import lombok.RequiredArgsConstructor;
+
+import static com.bisang.backend.common.exception.ExceptionCode.*;
 
 @Controller
 @RequestMapping("/chatroom")
@@ -48,8 +54,17 @@ public class ChatroomController {
             @AuthUser User user,
             @RequestBody LastReadRequest lastReadRequest
     ) {
-        LocalDateTime lastReadDateTime = DateUtils.dateToLocalDateTime(lastReadRequest.lastReadDateTime());
 
+        LocalDateTime lastReadDateTime;
+        try {
+            lastReadDateTime = DateUtils.dateToLocalDateTime(lastReadRequest.lastReadDateTime());
+        } catch (NullPointerException | DateTimeParseException e) {
+            throw new ChatroomException(INVALID_REQUEST);
+        }
+
+        if (!chatroomUserService.isMember(lastReadRequest.chatroomId(), user.getId())) {
+            throw new ChatAccessInvalidException(UNAUTHORIZED_USER);
+        }
         chatroomUserService.updateLastRead(
                 user.getId(),
                 lastReadDateTime,

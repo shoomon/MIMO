@@ -46,24 +46,24 @@ public class ChatroomUserRepository {
         chatroomUserJpaRepository.deleteByChatroomIdAndUserId(chatroomId, userId);
     }
 
-    public Set<Long> getTeamMembers(long teamId) {
-        Set<Long> teamMembers = chatroomUserRedisRepository.getTeamMembers(teamId);
+    public Set<Long> getTeamMembers(long chatroomId) {
+        Set<Long> teamMembers = chatroomUserRedisRepository.getTeamMembers(chatroomId);
         if (teamMembers.isEmpty()) {
-            teamMembers = chatroomUserJpaRepository.findUserIdsByTeamId(teamId);
+            teamMembers = chatroomUserJpaRepository.findUserIdsByTeamId(chatroomId);
         }
         return teamMembers;
     }
 
-    public boolean isMember(Long teamId, Long userId) {
-        if (chatroomUserRedisRepository.isMember(teamId, userId)) {
+    public boolean isMember(Long chatroomId, Long userId) {
+        if (chatroomUserRedisRepository.isMember(chatroomId, userId)) {
             return true;
         }
 
         if (chatroomUserJpaRepository.existsByUserIdAndChatroomId(
                 userId,
-                teamId
+                chatroomId
         )) {
-            chatroomUserRedisRepository.insertMember(teamId, userId);
+            chatroomUserRedisRepository.insertMember(chatroomId, userId);
             return true;
         }
 

@@ -2,11 +2,13 @@ package com.bisang.backend.chat.repository.message;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeParseException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.bisang.backend.common.exception.ChatroomException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
@@ -19,6 +21,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import static com.bisang.backend.common.exception.ExceptionCode.INVALID_REQUEST;
 
 @Repository
 @RequiredArgsConstructor
@@ -44,7 +48,13 @@ public class ChatMessageRedisRepository {
             return getRedisChatMessages(result);
         }
 
-        LocalDateTime datetime = DateUtils.dateToLocalDateTime(timestamp);
+        LocalDateTime datetime;
+        try {
+            datetime = DateUtils.dateToLocalDateTime(timestamp);
+        } catch (DateTimeParseException e) {
+            throw new ChatroomException(INVALID_REQUEST);
+        }
+
         double score = datetime.toInstant(ZoneOffset.ofTotalSeconds(0)).toEpochMilli() + (messageId % 1000) / 1000.0;
         result = redisTemplate.opsForZSet()
                 .reverseRangeByScoreWithScores(key, Double.NEGATIVE_INFINITY, score, 1, 30);
