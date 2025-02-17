@@ -5,6 +5,7 @@ import static com.bisang.backend.board.domain.QBoardDescription.boardDescription
 import static com.bisang.backend.board.domain.QBoardImage.boardImage;
 import static com.bisang.backend.board.domain.QComment.comment;
 import static com.bisang.backend.board.domain.QTeamBoard.teamBoard;
+import static com.bisang.backend.common.exception.ExceptionCode.BOARD_NOT_FOUNT;
 import static com.bisang.backend.team.domain.QTeamUser.teamUser;
 import static com.bisang.backend.user.domain.QUser.user;
 import static com.querydsl.core.group.GroupBy.groupBy;
@@ -20,6 +21,7 @@ import com.bisang.backend.board.controller.dto.CommentCountDto;
 import com.bisang.backend.board.controller.dto.ProfileNicknameDto;
 import com.bisang.backend.board.controller.dto.SimpleBoardListDto;
 import com.bisang.backend.board.domain.QBoardImage;
+import com.bisang.backend.common.exception.BoardException;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
@@ -54,7 +56,7 @@ public class BoardQuerydslRepository {
                 .leftJoin(teamBoard).on(board.teamBoardId.eq(teamBoard.id)) // 게시판 종류 조인
                 .leftJoin(boardDescription).on(board.description.id.eq(boardDescription.id)) // 게시글 설명 조인
                 .where(board.id.eq(postId))
-                .fetchOne()).orElseThrow(() -> new EntityNotFoundException("게시글 정보를 찾을 수 없습니다."));
+                .fetchOne()).orElseThrow(() -> new BoardException(BOARD_NOT_FOUNT));
     }
 
     public List<Long> getBoardIdListByTeamBoardId(
@@ -68,7 +70,7 @@ public class BoardQuerydslRepository {
                 .select(board.id)
                 .from(board)
                 .where(board.teamBoardId.in(teamBoardId)
-                        , lastReadIdCondition)
+                        .and(lastReadIdCondition))
                 .orderBy(board.id.desc())
                 .limit(limit)
                 .fetch();
@@ -133,6 +135,7 @@ public class BoardQuerydslRepository {
                                 .where(i2.boardId.eq(i.boardId))
                         )
                         .and(i.boardId.in(boardId)))
+                .orderBy(i.boardId.desc())
                 .fetch();
 
         return images.stream()
