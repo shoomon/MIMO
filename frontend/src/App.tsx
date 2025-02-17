@@ -7,6 +7,7 @@ function App() {
     const queryClient = new QueryClient();
     const { isOpen, modalProps } = useModalStore();
 
+
     return (
         <QueryClientProvider client={queryClient}>
             <BasicModal

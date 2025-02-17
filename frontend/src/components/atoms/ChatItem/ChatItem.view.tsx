@@ -13,6 +13,18 @@ const ChatItemView = ({ type, item, hasReceivedMessage }: ChatItemProps) => {
             ? 'text-black bg-gray-200'
             : 'text-white bg-brand-primary-400';
 
+    const isNotice = item.chatType !== 'MESSAGE';
+
+    if (isNotice) {
+        return (
+            <li className="flex list-none items-center justify-center gap-4 px-20 py-2 opacity-50">
+                <div className="h-[1px] flex-grow bg-gray-300"></div>
+                <span>{item.chat}</span>
+                <div className="h-[1px] flex-grow bg-gray-300"></div>
+            </li>
+        );
+    }
+
     return (
         <li className={`flex list-none gap-4`}>
             {type === 'sender' && !hasReceivedMessage && (
