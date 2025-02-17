@@ -3,9 +3,11 @@ package com.bisang.backend.chat.repository.chatroomuser;
 import static com.bisang.backend.common.exception.ExceptionCode.NOT_FOUND;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Map;
 import java.util.Set;
 
+import com.bisang.backend.common.exception.ChatroomException;
 import jakarta.transaction.Transactional;
 
 import org.hibernate.NonUniqueResultException;
@@ -31,8 +33,13 @@ public class ChatroomUserRepository {
     private final UserJpaRepository userJpaRepository;
     private final RedisCacheRepository redisCacheRepository;
 
-    public void insertRedisMemberUser(Long chatroomId, Long userId) {
+    public void insertRedisMemberUser(Long chatroomId, Long userId, LocalDateTime enterDate, Long chatId) {
         chatroomUserRedisRepository.insertMember(chatroomId, userId);
+
+        double score = enterDate
+                .toInstant(ZoneOffset.ofTotalSeconds(0))
+                .toEpochMilli() + (chatId % 1000) / 1000.0;
+        chatroomUserRedisRepository.insertTeamEnterScore(chatroomId, userId, score, chatId);
     }
 
     public void insertJpaMemberUser(ChatroomUser chatroomUser) {
@@ -63,7 +70,10 @@ public class ChatroomUserRepository {
                 userId,
                 chatroomId
         )) {
-            chatroomUserRedisRepository.insertMember(chatroomId, userId);
+            ChatroomUser user = chatroomUserJpaRepository
+                    .findByChatroomIdAndUserId(chatroomId, userId)
+                    .orElseThrow(() -> new ChatroomException(NOT_FOUND));
+            insertRedisMemberUser(chatroomId, userId, user.getEnterDate(), user.getEnterChatId());
             return true;
         }
 
@@ -115,5 +125,38 @@ public class ChatroomUserRepository {
 
     public Long getLastReadChatId(Long chatroomId, Long userId) {
         return chatroomUserRedisRepository.getLastReadChatId(chatroomId, userId);
+    }
+
+    public Double getTeamEnterScore(Long roomId, Long userId) {
+        Double teamEnterScore = chatroomUserRedisRepository.getTeamEnterScore(roomId, userId);
+
+        if (teamEnterScore == null) {
+            ChatroomUser user = chatroomUserJpaRepository
+                    .findByChatroomIdAndUserId(roomId, userId)
+                    .orElseThrow(() -> new ChatroomException(NOT_FOUND));
+
+            LocalDateTime enterDate = user.getEnterDate();
+            teamEnterScore = enterDate
+                    .toInstant(ZoneOffset.ofTotalSeconds(0))
+                    .toEpochMilli() + (user.getEnterChatId() % 1000) / 1000.0;
+
+            chatroomUserRedisRepository.insertTeamEnterScore(roomId, userId, teamEnterScore, user.getEnterChatId());
+        }
+
+        return teamEnterScore;
+    }
+
+    public Long getTeamEnterChatId(Long roomId, Long userId) {
+        Long teamEnterChatId = chatroomUserRedisRepository.getTeamEnterChatId(roomId, userId);
+
+        if (teamEnterChatId == null) {
+            ChatroomUser user = chatroomUserJpaRepository
+                    .findByChatroomIdAndUserId(roomId, userId)
+                    .orElseThrow(() -> new ChatroomException(NOT_FOUND));
+
+            chatroomUserRedisRepository.insertTeamEnterChatId(roomId, userId, user.getEnterChatId());
+        }
+
+        return teamEnterChatId;
     }
 }
