@@ -1,13 +1,13 @@
 import { create } from "zustand";
 import { OpenVidu, Session, Publisher, Subscriber, StreamManager, Device} from "openvidu-browser";
-import { createSessionAPI, createViduTokenAPI } from "@/apis/ViduApi";
+import { customFetch } from "@/apis/customFetch";
 
 interface OpenViduState {
   // session 관련
   OV: OpenVidu | null;
   session: Session | null;
   mySessionId: string;
-  myUserName: string;
+  myUserName: string | null;
 
   // stream 관련
   mainStreamManager: StreamManager | undefined;
@@ -20,11 +20,11 @@ interface OpenViduState {
   screenSharing: boolean;
 
   // action
-  initializeSession: () => Promise<void>;
-  leaveSession: () => void;
-  updateSessionId: (sessionId: string) => void;
-  updateUserName: (userName: string) => void;
+  handleChangeSessionId: (sessionId: string) => void;
+  handleChangeUserName: (userName: string) => void;
   handleMainVideoStream: (stream: StreamManager) => void;
+  joinSession: () => Promise<void>;
+  leaveSession: () => void;
   switchCamera: () => Promise<void>;
   toggleVideo: () => void;
   toggleScreenShare: () => Promise<void>;
@@ -32,10 +32,11 @@ interface OpenViduState {
 
 const useOpenViduStore = create<OpenViduState>((set, get) => ({
 
+  // 초기 상태
   OV: null,
   session: null,
-  mySessionId: "",
-  myUserName: "",
+  mySessionId: "SessionA",
+  myUserName: null,
   mainStreamManager: undefined,
   publisher: undefined,
   subscribers: [],
@@ -43,38 +44,51 @@ const useOpenViduStore = create<OpenViduState>((set, get) => ({
   videoEnabled: true,
   screenSharing: false,
 
-  initializeSession: async () => {
-    const OV = new OpenVidu();
-    const session = OV.initSession();
+  handleChangeSessionId: (sessionId: string) => {
+    set({mySessionId: sessionId});
+  },
 
-    session.on("streamCreated", (e) => {
-      const subscriber = session.subscribe(e.stream, undefined);
-      set((state) => ({
-        subscribers: [...state.subscribers, subscriber]
-      }))
-    })
+  handleChangeUserName: (userName: string) => {
+    set({myUserName: userName});
+  },
 
-    session.on("streamDestroyed", (e) => {
-      set(state => ({
-        subscribers: state.subscribers.filter(sub => sub !== e.stream.streamManager)
-      }))
-    })
+  handleMainVideoStream: (stream: StreamManager) => {
+    set({mainStreamManager: stream});
+  },
 
-    session.on("exception", (exception) => {
-      console.warn(exception);
-    })
+  // Session 관련 메서드
+  joinSession: async () => {
+    try {
+      const OV = new OpenVidu();
+      const session = OV.initSession();
 
-    set({OV, session});
+      // Stream 이벤트 핸들러
+      session.on("streamCreated", (event) => {
+        const subscriber = session.subscribe(event.stream, undefined);
+        set((state) => ({
+          subscribers: [...state.subscribers, subscriber],
+        }));
+      });
 
-    const { mySessionId } = get();
+      session.on("streamDestroyed", (event) => {
+        set((state) => ({
+          subscribers: state.subscribers.filter(
+            (sub) => sub !== event.stream.streamManager
+          ),
+        }));
+      });
 
-    try{
+      session.on("exception", (exception) => {
+        console.warn(exception);
+      });
 
-      const sessionId = await createSessionAPI(mySessionId);
-      const token = await createViduTokenAPI(sessionId);
+      set({ OV, session });
 
-      await session.connect(token, {clientData: get().myUserName});
+      // Token 발급 및 세션 연결
+      const token = await getToken(get().mySessionId);
+      await session.connect(token, { clientData: get().myUserName });
 
+      // Publisher 초기화
       const publisher = await OV.initPublisherAsync(undefined, {
         audioSource: undefined,
         videoSource: undefined,
@@ -84,65 +98,66 @@ const useOpenViduStore = create<OpenViduState>((set, get) => ({
         frameRate: 30,
         insertMode: "APPEND",
         mirror: false,
-      })
+      });
 
       await session.publish(publisher);
 
+      // 비디오 디바이스 설정
       const devices = await OV.getDevices();
-      const videoDevices = devices.filter(device => device.kind === "videoinput");
+      const videoDevices = devices.filter(
+        (device) => device.kind === "videoinput"
+      );
       const currentVideoDeviceId = publisher.stream
         .getMediaStream()
         .getVideoTracks()[0]
         .getSettings().deviceId;
-      
-      const currentVideoDevice = videoDevices.find(device => device.deviceId === currentVideoDeviceId);
-    
-      set({ currentVideoDevice, mainStreamManager:publisher, publisher})
-    }catch(error){
-      console.error("error in initializerSession: ", error);
+      const currentVideoDevice = videoDevices.find(
+        (device) => device.deviceId === currentVideoDeviceId
+      );
+
+      set({
+        currentVideoDevice,
+        mainStreamManager: publisher,
+        publisher,
+      });
+    } catch (error) {
+      console.error("Error in joinSession:", error);
     }
   },
 
   leaveSession: () => {
     const { session } = get();
-    if(session){
+    if (session) {
       session.disconnect();
     }
 
     set({
       OV: null,
-      session: undefined,
+      session: null,
       subscribers: [],
-      mySessionId: 'SessionA',
-      myUserName: `undefined`,
+      mySessionId: "SessionA",
+      myUserName: `Participant${Math.floor(Math.random() * 100)}`,
       mainStreamManager: undefined,
       publisher: undefined,
       screenSharing: false,
-      videoEnabled: true
-    })
+      videoEnabled: true,
+    });
   },
 
-  updateSessionId: (sessionId: string) => {
-    set({mySessionId: sessionId});
-  },
-
-  updateUserName: (userName: string) => {
-    set({myUserName: userName});
-  },
-  handleMainVideoStream: (stream: StreamManager) => {
-    set({mainStreamManager: stream});
-  },
+  // 카메라 제어
   switchCamera: async () => {
     const { OV, session, currentVideoDevice } = get();
     if (!OV || !session) return;
 
     try {
       const devices = await OV.getDevices();
-      const videoDevices = devices.filter(device => device.kind === 'videoinput');
+      const videoDevices = devices.filter(
+        (device) => device.kind === "videoinput"
+      );
 
       if (videoDevices.length > 1) {
         const newVideoDevice = videoDevices.find(
-          device => device.deviceId !== currentVideoDevice?.deviceId
+          (device) => device.deviceId !== currentVideoDevice?.deviceId
         );
 
         if (newVideoDevice) {
@@ -150,7 +165,7 @@ const useOpenViduStore = create<OpenViduState>((set, get) => ({
             videoSource: newVideoDevice.deviceId,
             publishAudio: true,
             publishVideo: true,
-            mirror: true
+            mirror: true,
           });
 
           await session.unpublish(get().mainStreamManager as Publisher);
@@ -159,14 +174,15 @@ const useOpenViduStore = create<OpenViduState>((set, get) => ({
           set({
             currentVideoDevice: newVideoDevice,
             mainStreamManager: newPublisher,
-            publisher: newPublisher
+            publisher: newPublisher,
           });
         }
       }
     } catch (error) {
-      console.error('Error switching camera:', error);
+      console.error("Error switching camera:", error);
     }
   },
+
   toggleVideo: () => {
     const { publisher } = get();
     if (publisher) {
@@ -175,6 +191,7 @@ const useOpenViduStore = create<OpenViduState>((set, get) => ({
       set({ videoEnabled });
     }
   },
+
   toggleScreenShare: async () => {
     const { OV, session, screenSharing } = get();
     if (!OV || !session) return;
@@ -182,10 +199,10 @@ const useOpenViduStore = create<OpenViduState>((set, get) => ({
     try {
       if (!screenSharing) {
         const screenPublisher = await OV.initPublisherAsync(undefined, {
-          videoSource: 'screen',
+          videoSource: "screen",
           publishAudio: true,
           publishVideo: true,
-          mirror: false
+          mirror: false,
         });
 
         await session.unpublish(get().publisher as Publisher);
@@ -194,14 +211,14 @@ const useOpenViduStore = create<OpenViduState>((set, get) => ({
         set({
           screenSharing: true,
           mainStreamManager: screenPublisher,
-          publisher: screenPublisher
+          publisher: screenPublisher,
         });
       } else {
         const cameraPublisher = await OV.initPublisherAsync(undefined, {
           videoSource: undefined,
           publishAudio: true,
           publishVideo: true,
-          mirror: true
+          mirror: true,
         });
 
         await session.unpublish(get().publisher as Publisher);
@@ -210,13 +227,48 @@ const useOpenViduStore = create<OpenViduState>((set, get) => ({
         set({
           screenSharing: false,
           mainStreamManager: cameraPublisher,
-          publisher: cameraPublisher
+          publisher: cameraPublisher,
         });
       }
     } catch (error) {
-      console.error('Error toggling screen share:', error);
+      console.error("Error toggling screen share:", error);
     }
+  },
+  
+}));
+
+async function getToken(sessionID: string){
+  const session = await createSession(sessionID);
+
+  return await createToken(session);
+}
+
+async function createSession(sessionId: string){
+
+  const response = await customFetch("/openvidu/sessions", {
+    method: "POST",
+    body: JSON.stringify({customSessionId: sessionId}),
+  });
+
+  if(!response.ok){
+    throw new Error("Error creating session ");
   }
-}))
+
+  return await response.json();
+
+}
+
+async function createToken(sessionId: string){
+  const response = await customFetch(`/openvidu/sessions/${sessionId}/connections`, {
+    method: "POST",
+    body: JSON.stringify({}),
+  })
+
+  if(!response.ok){
+    throw new Error("Error creating token ");
+  }
+
+  return await response.json();
+}
 
 export default useOpenViduStore;
