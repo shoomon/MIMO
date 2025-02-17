@@ -1,4 +1,4 @@
-import { OAuthResponse, UserResponse } from '@/types/Auth';
+import { OAuthResponse, UserMyResponse, UserResponse } from '@/types/Auth';
 import { customFetch } from './customFetch';
 
 export const oauthAPI = () => {
@@ -58,6 +58,22 @@ export const getUserInfoAPI = async (
         return filteredData;
     } catch (error) {
         console.log('getUserInfo 에러: ', error);
+
+        throw error;
+    }
+};
+
+export const getMyAllInfoAPI = async (): Promise<UserMyResponse> => {
+    try {
+        const response = await customFetch('/user', {
+            method: 'GET',
+        });
+
+        const data = await response.json();
+
+        return data;
+    } catch (error) {
+        console.log('get my info data 에러 : ', error);
 
         throw error;
     }
