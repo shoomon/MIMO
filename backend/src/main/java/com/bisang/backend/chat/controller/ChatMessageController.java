@@ -51,15 +51,12 @@ public class ChatMessageController {
             ChatMessageRequest chat
     ) {
         if (!jwtUtil.isAccessTokenValid(token)) {
-            System.out.println(token);
-            System.out.println("unauthorized");
             throw new UnauthorizedChatException(UNAUTHORIZED_USER);
         }
 
         Long userId = Long.valueOf(jwtUtil.getSubject(token));
         System.out.println(userId);
         if (chatroomUserService.isMember(roomId, userId)) {
-            System.out.println("isMember");
             RedisChatMessage redisMessage = new RedisChatMessage(
                     roomId,
                     userId,
@@ -67,13 +64,11 @@ public class ChatMessageController {
                     LocalDateTime.now(),
                     ChatType.MESSAGE
             );
-
             chatRedisService.afterSendMessage(roomId, redisMessage);
             chatMessageService.broadcastMessage(roomId, redisMessage);
 
             return;
         }
-
         throw new UnauthorizedChatException(NOT_FOUND_TEAM_USER);
     }
 
@@ -119,7 +114,6 @@ public class ChatMessageController {
             chatMessageService.broadcastMessage(roomId, redisMessage);
             return ResponseEntity.ok().body("전송 성공");
         }
-
         return ResponseEntity.badRequest().body("전송 실패");
     }
 }
