@@ -21,3 +21,9 @@ export interface ChatMessageRequest{
   messageId: number;
   timestamp: number;
 }
+
+export interface LastReadChatRequest{
+  lastReadDateTime: string;
+  lastReadChatId: string;
+  chatroomId: number;
+}

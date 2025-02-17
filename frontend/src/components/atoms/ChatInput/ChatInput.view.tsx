@@ -4,9 +4,10 @@ interface ChatInputViewProps {
     value: string;
     onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
     onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+    onKeyDown: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void;
 }
 
-const ChatInputView = ({ value, onChange, onSubmit }: ChatInputViewProps) => {
+const ChatInputView = ({ value, onChange, onSubmit, onKeyDown }: ChatInputViewProps) => {
     return (
         <form onSubmit={onSubmit} className="relative mt-auto p-6">
             <label htmlFor="chatInput"></label>
@@ -14,6 +15,7 @@ const ChatInputView = ({ value, onChange, onSubmit }: ChatInputViewProps) => {
                 placeholder="메시지 입력"
                 value={value}
                 onChange={onChange}
+                onKeyDown={onKeyDown}
                 id="chatInput"
                 name="chatInput"
                 className="w-full resize-none rounded border border-gray-300 py-3 pr-[3.25rem] pl-4"

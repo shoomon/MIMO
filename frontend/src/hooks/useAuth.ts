@@ -8,7 +8,7 @@ export const useAuth = () => {
 
     const [isLogin, setLogin] = useState<boolean>(false);
     const { accessToken } = useTokenStore();
-    const { connect } = useSocketStore(); 
+    const connect = useSocketStore((state) => state.connect);
 
     const { data, isSuccess, isError } = useQuery({
         queryKey: ['userInfo'],
@@ -20,9 +20,9 @@ export const useAuth = () => {
     });
 
     useEffect(() => {
-        if (isSuccess) {
+        if (accessToken && isSuccess) {
             setLogin(true);
-            connect();
+            connect(accessToken);
         }
     }, [isSuccess]);
 

@@ -10,25 +10,24 @@ const ChatAlarm = () => {
         queryKey: ['userInfo'],
     });
 
-    const { subscribeRoom } = useSocketStore();
     const [unreadCount, setUnreadCount] = useState<number>(0);
+    const subscribeRoom = useSocketStore((state) => state.subscribeRoom);
 
     const { data } = useQuery<ChatRoomResponse[]>({
         queryKey: ['chatRoomList'],
         queryFn: getChatListAPI,
-        staleTime: 1000 * 15,
+        refetchInterval: 1000 * 10,
         enabled: isSuccess,
     });
 
     useEffect(() => {
         if (!data) return;
-        console.log('채팅방 기록', data);
-        // unreadCount 만들어지면 연결 필요
-        // unreadCount 개수로 alarmActive도 설정
+
         let count = 0;
         data.forEach((item) => {
-            subscribeRoom(item.chatroomId);
+
             count += item.unreadCount;
+            subscribeRoom(item.chatroomId);
         });
 
         setUnreadCount(count);

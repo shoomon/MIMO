@@ -5,6 +5,8 @@ const transformChatData = (data: ChatMessageResponse[], userImageUri: string):Ch
   
     let lastUserImageUri:string = "";
 
+    if(!data) return [];
+
     const newChatData = data.map((item):ChatItemProps => {
       
       const type = item.profileImageUri === userImageUri ? "receiver"  : "sender";
