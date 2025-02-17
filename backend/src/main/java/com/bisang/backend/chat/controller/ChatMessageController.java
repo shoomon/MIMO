@@ -43,7 +43,7 @@ public class ChatMessageController {
     private final ChatroomUserService chatroomUserService;
     private final JwtUtil jwtUtil;
 
-    @MessageMapping("/{roomId}")
+    @MessageMapping("/chat-message/{roomId}")
     public void sendMessage(
             @DestinationVariable Long roomId,
             @Header("Authorization") String token,

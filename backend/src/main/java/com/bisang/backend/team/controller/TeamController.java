@@ -3,6 +3,7 @@ package com.bisang.backend.team.controller;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
+import com.bisang.backend.team.controller.response.TeamTitleDescSearchResponse;
 import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
@@ -79,6 +80,14 @@ public class TeamController {
             req.maxCapacity()
         );
         return ResponseEntity.status(CREATED).body(new TeamIdResponse(teamId));
+    }
+
+    @GetMapping("/title-description")
+    public ResponseEntity<TeamTitleDescSearchResponse> getTitleDescription(
+        @RequestParam String searchKeyword,
+        @RequestParam Integer pageNumber
+    )  {
+        return ResponseEntity.ok(teamService.getTeamsByTitleOrDescription(searchKeyword, pageNumber));
     }
 
     @PutMapping(consumes = {MULTIPART_FORM_DATA_VALUE})

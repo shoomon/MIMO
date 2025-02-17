@@ -27,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class S3Service {
     public static final String CAT_IMAGE_URI = "https://bisang-mimo-bucket.s3.ap-northeast-2.amazonaws.com/"
-        + "1a05c3f9-2638-4349-8a89-e90c5e584b89.jpg";
+        + "a09365ab-3291-49a9-ad93-0aa41301166a.jpg";
 
     private final AmazonS3 amazonS3;
 
@@ -96,7 +96,7 @@ public class S3Service {
     // 파일 확장자 체크
     private String validateFileExtension(String originalFilename) {
         String fileExtension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1).toLowerCase();
-        List<String> allowedExtensions = Arrays.asList("jpg", "png", "gif", "jpeg");
+        List<String> allowedExtensions = Arrays.asList("jpg", "png", "gif", "jpeg", "webp");
 
         if (!allowedExtensions.contains(fileExtension)) {
             throw new S3Exception(UNSUPPORTED_EXTENSIONS);

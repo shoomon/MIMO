@@ -12,6 +12,7 @@ import java.util.Optional;
 
 import com.bisang.backend.board.domain.TeamBoard;
 import com.bisang.backend.board.repository.TeamBoardJpaRepository;
+import com.bisang.backend.team.controller.response.TeamTitleDescSearchResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -69,7 +70,6 @@ public class TeamService {
     }
 
     @EveryOne
-    @Transactional
     public Long createTeam(
             Long leaderId,
             String nickname,
@@ -83,15 +83,48 @@ public class TeamService {
             TeamCategory teamCategory,
             Long maxCapacity
     ) {
+        String teamProfileUri = profileUriValidation(leaderId, teamProfile);
+        Long createdTeamId = null;
+        try {
+            createdTeamId = createTeam(
+                    leaderId, nickname, notificationStatus,
+                    name, description, teamRecruitStatus, teamPrivateStatus,
+                    teamProfileUri, area, teamCategory, maxCapacity);
+        } catch (TeamException e) {
+            if (!teamProfileUri.equals(CAT_IMAGE_URI)) {
+                s3Service.deleteFile(teamProfileUri);
+            }
+            throw new TeamException(e.getCode(), e.getMessage());
+        } catch (Exception e) {
+            if (!teamProfileUri.equals(CAT_IMAGE_URI)) {
+                s3Service.deleteFile(teamProfileUri);
+            }
+            throw new TeamException(DUPLICATED_SOURCE);
+        }
+        return createdTeamId;
+    }
+
+    @Transactional
+    public Long createTeam(
+            Long leaderId,
+            String nickname,
+            TeamNotificationStatus notificationStatus,
+            String name,
+            String description,
+            TeamRecruitStatus teamRecruitStatus,
+            TeamPrivateStatus teamPrivateStatus,
+            String teamProfileUri,
+            Area area,
+            TeamCategory teamCategory,
+            Long maxCapacity
+    ) {
         // 팀 설명 생성
         TeamDescription teamDescription = new TeamDescription(description);
         teamDescriptionJpaRepository.save(teamDescription);
 
-        // TODO: 채팅 룸 관련 생성 기능 추가
         // TODO: 계좌 관련 생성 기능 추가
 
         // 팀 생성
-        String teamProfileUri = profileUriValidation(leaderId, teamProfile);
         Team newTeam = Team.builder()
                             .teamLeaderId(leaderId)
                             .teamChatroomId(0L) // 추후 추가 필요, 챗룸 구현 이후
@@ -179,8 +212,15 @@ public class TeamService {
         return teamQuerydslRepository.getSimpleTeamInfo(userId, teamId);
     }
 
+    @EveryOne
+    @Transactional(readOnly = true)
+    public TeamTitleDescSearchResponse getTeamsByTitleOrDescription(String searchKeyword, Integer pageNumber) {
+        List<SimpleTeamDto> teams = teamQuerydslRepository.searchTeams(searchKeyword, pageNumber);
+        Long numberOfTeams = teamQuerydslRepository.searchTeamsCount(searchKeyword);
+        return new TeamTitleDescSearchResponse(numberOfTeams.intValue(), pageNumber, teams.size(), teams);
+    }
+
     @TeamLeader
-    @Transactional
     public void updateTeam(
             Long userId,
             Long teamId,
@@ -192,6 +232,38 @@ public class TeamService {
             Area areaCode,
             TeamCategory category
     ) {
+        String profileUri = getProfileUri(teamId, profile);
+        try {
+            updateTeam(
+                    userId, teamId, name, description,
+                    recruitStatus, privateStatus, profileUri, areaCode, category);
+        } catch (TeamException e) {
+            if (!profileUri.equals(CAT_IMAGE_URI)) {
+                s3Service.deleteFile(profileUri);
+            }
+            throw new TeamException(e.getCode(), e.getMessage());
+        } catch (Exception e) {
+            if (!profileUri.equals(CAT_IMAGE_URI)) {
+                s3Service.deleteFile(profileUri);
+            }
+            throw new TeamException(INVALID_REQUEST);
+        }
+    }
+
+    @Transactional
+    public void updateTeam(
+            Long userId,
+            Long teamId,
+            String name,
+            String description,
+            TeamRecruitStatus recruitStatus,
+            TeamPrivateStatus privateStatus,
+            String profileUri,
+            Area areaCode,
+            TeamCategory category
+    ) {
+        profileImageRepository.save(createTeamProfile(teamId, profileUri));
+
         Team team = findTeamById(teamId);
         team.updateTeamName(name);
         // 채팅방 이름 변경
@@ -217,7 +289,6 @@ public class TeamService {
             team.updateAreaCode(areaCode);
         }
 
-        String profileUri = getProfileUri(teamId, profile);
         team.updateTeamProfileUri(profileUri);
         // 채팅방 프로필 변경
         chatroomService.updateChatroomProfileUri(teamId, profileUri);
@@ -250,13 +321,13 @@ public class TeamService {
         if (profileImage.isPresent()) {
             profileImageRepository.delete(profileImage.get());
             try {
-                s3Service.deleteFile(profileImage.get().getProfileUri());
+                if (!profileImage.get().getProfileUri().equals(CAT_IMAGE_URI)) {
+                    s3Service.deleteFile(profileImage.get().getProfileUri());
+                }
             } catch (Exception e) { // S3 서버에 없는 구글 파일이라 생긴 모든 삭제 실패는 무시.
             }
         }
-        String profileUri = s3Service.saveFile(teamId, profile);
-        profileImageRepository.save(createTeamProfile(teamId, profileUri));
-        return profileUri;
+        return s3Service.saveFile(teamId, profile);
     }
 
     private String profileUriValidation(Long userId, MultipartFile teamProfile) {
