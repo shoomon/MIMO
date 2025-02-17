@@ -24,11 +24,10 @@ public class BoardImageController {
     @GetMapping
     public ResponseEntity<TeamAlbumResponse> getAlbumImageList(
             @RequestParam(name = "team", required = true) Long teamId,
-            @RequestParam(name = "last") Long lastReadImageId
+            @RequestParam(name = "last", required = false) Long lastReadImageId
     ) {
         return ResponseEntity.ok(
                 boardImageService.getAlbumImages(teamId, lastReadImageId, PAGE_SIZE)
         );
-
     }
 }
