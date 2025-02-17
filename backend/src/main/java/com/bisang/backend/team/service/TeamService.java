@@ -305,6 +305,7 @@ public class TeamService {
             profileImageRepository.deleteTeamImageByImageTypeAndTeamId(TEAM, teamId);
             teamUserJpaRepository.delete(teamUsers.get(0));
             teamJpaRepository.delete(team);
+            chatroomUserService.leaveChatroom(userId, teamId);
             return;
         }
         throw new TeamException(EXTRA_USER);

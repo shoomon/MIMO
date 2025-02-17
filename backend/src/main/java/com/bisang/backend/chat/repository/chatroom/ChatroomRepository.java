@@ -14,9 +14,11 @@ import com.bisang.backend.chat.repository.chatroom.dto.ChatroomTitleProfileDto;
 import com.bisang.backend.common.exception.ChatroomException;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Repository
 @RequiredArgsConstructor
+@Slf4j
 public class ChatroomRepository {
 
     private final ChatroomRedisRepository chatroomRedisRepository;
@@ -31,8 +33,7 @@ public class ChatroomRepository {
         List<Long> userChatroom = chatroomRedisRepository.getUserChatroom(userId);
 
         if (userChatroom == null || userChatroom.isEmpty()) {
-            //TODO: 배치로 메시지 db저장하는거 하고 나면 마지막 메시지 가져와서 그 기준으로 sort 할 수 있을듯..?
-            //TODO: 하고나면 레디스에 업데이트 해줘야함, 근데 꼭 해줘야하나?
+            log.error("채팅방 실시간 순서가 유실되었습니다.");
             userChatroom = chatroomJpaRepository.findAllIdsByUserId(userId);
         }
         return userChatroom;
