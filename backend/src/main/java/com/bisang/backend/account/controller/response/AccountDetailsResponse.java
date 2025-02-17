@@ -14,21 +14,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AccountDetailsResponse {
-    private Long accountDetailsId;
-
-    private Long balance;
-
+    private Long amount;
     private String senderAccountNumber;
-
     private String receiverAccountNumber;
-
-    private String senderName;
-
-    private String receiverName;
-
     private String memo;
-
     private TransactionCategory transactionCategory;
-
     private LocalDateTime createdAt;
 }

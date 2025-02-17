@@ -28,7 +28,7 @@ public class TransactionController {
             @AuthUser User user,
             @RequestBody ChargeRequest chargeRequest
     ) {
-        transactionService.chargeBalance(TransactionService.ADMIN_ACCOUNT_NUMBER, chargeRequest);
+        transactionService.chargeBalance(TransactionService.ADMIN_ACCOUNT_NUMBER, chargeRequest, user);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -40,7 +40,7 @@ public class TransactionController {
             @AuthUser User user,
             @RequestBody TransferRequest transferRequest
     ) {
-        transactionService.transferBalance(transferRequest);
+        transactionService.transferBalance(transferRequest, user);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -52,7 +52,7 @@ public class TransactionController {
             @AuthUser User user,
             @RequestBody InstallmentRequest installmentRequest
     ) {
-        transactionService.installmentBalance(installmentRequest);
+        transactionService.installmentBalance(installmentRequest, user);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
