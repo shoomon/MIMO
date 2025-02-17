@@ -49,18 +49,18 @@ public class TeamController {
 
     @GetMapping("/area")
     public ResponseEntity<TeamInfosResponse> getTeamsByArea(
-        @RequestParam("area") Area area,
+        @RequestParam("area") String area,
         @RequestParam(required = false) Long teamId
     ) {
-        return ResponseEntity.ok(teamService.getTeamInfosByArea(area, teamId));
+        return ResponseEntity.ok(teamService.getTeamInfosByArea(Area.fromName(area), teamId));
     }
 
     @GetMapping("/category")
     public ResponseEntity<TeamInfosResponse> getTeamsByCategory(
-        @RequestParam("category") TeamCategory category,
+        @RequestParam("category") String category,
         @RequestParam(required = false) Long teamId
     ) {
-        return ResponseEntity.ok(teamService.getTeamInfosByCategory(category, teamId));
+        return ResponseEntity.ok(teamService.getTeamInfosByCategory(TeamCategory.fromName(category), teamId));
     }
 
     @PostMapping(consumes = {MULTIPART_FORM_DATA_VALUE})
