@@ -55,7 +55,9 @@ public class TeamUserService {
         Integer size = hasNext ? SHORT_PAGE_SIZE : teamInfos.size();
         Long lastTeamId = hasNext ? teamInfos.get(size - 1).teamId() : null;
         if (hasNext) {
-            teamInfos.remove(size - 1);
+            teamInfos = teamInfos.stream()
+                .limit(size)
+                .toList();
         }
         return new TeamInfosResponse(size, hasNext, lastTeamId, teamInfos);
     }

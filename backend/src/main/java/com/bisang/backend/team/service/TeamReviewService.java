@@ -33,7 +33,9 @@ public class TeamReviewService {
         Integer size = hasNext ? PAGE_SIZE : reviews.size();
         Long nextLastTeamReviewId = hasNext ? reviews.get(size - 1).teamReviewId() : null;
         if (hasNext) {
-            reviews.remove(size - 1);
+            reviews = reviews.stream()
+                .limit(size)
+                .toList();
         }
 
         return new TeamReviewResponse(size, hasNext, nextLastTeamReviewId, reviews);
