@@ -158,6 +158,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .body(new ExceptionResponse(exception.getCode(), exception.getMessage()));
     }
 
+    @ExceptionHandler(BoardException.class)
+    public ResponseEntity<ExceptionResponse> handleBoardException(BoardException exception) {
+        log.warn(exception.getMessage(), exception);
+        return ResponseEntity.badRequest()
+                .body(new ExceptionResponse(exception.getCode(), exception.getMessage()));
+    }
+
     @ExceptionHandler(ChatroomException.class)
     public ResponseEntity<ExceptionResponse> handleTransactionException(ChatroomException exception) {
         log.warn(exception.getMessage(), exception);
