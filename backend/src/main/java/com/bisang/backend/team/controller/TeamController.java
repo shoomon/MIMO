@@ -4,6 +4,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 import com.bisang.backend.team.controller.response.TeamTitleDescSearchResponse;
+import com.bisang.backend.team.service.TeamFileFacadeService;
 import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
@@ -36,6 +37,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/team")
 public class TeamController {
     private final TeamService teamService;
+    private final TeamFileFacadeService teamFileFacadeService;
 
     @GetMapping("/exist-name")
     public ResponseEntity<Boolean> existTeamName(
@@ -66,7 +68,7 @@ public class TeamController {
         @AuthUser User user,
         @Valid @ModelAttribute CreateTeamRequest req
     ) {
-        Long teamId = teamService.createTeam(
+        Long teamId = teamFileFacadeService.createTeam(
             user.getId(),
             req.nickname(),
             req.notificationStatus(),
@@ -95,7 +97,7 @@ public class TeamController {
             @AuthUser User user,
             @Valid @ModelAttribute UpdateTeamRequest req
     ) {
-        teamService.updateTeam(
+        teamFileFacadeService.updateTeam(
                 user.getId(),
                 req.teamId(),
                 req.name(),
