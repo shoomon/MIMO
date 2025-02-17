@@ -23,8 +23,8 @@ public record UpdateTeamRequest(
         TeamPrivateStatus privateStatus,
         MultipartFile profile,
         @NotNull(message = "활동 지역 값은 필수입니다.")
-        Area area,
+        String area,
         @NotNull(message = "모임 카테고리 값은 필수입니다.")
-        TeamCategory category
+        String category
 ) {
 }

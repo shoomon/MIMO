@@ -55,7 +55,9 @@ public class TeamUserService {
         Integer size = hasNext ? SHORT_PAGE_SIZE : teamInfos.size();
         Long lastTeamId = hasNext ? teamInfos.get(size - 1).teamId() : null;
         if (hasNext) {
-            teamInfos.remove(size - 1);
+            teamInfos = teamInfos.stream()
+                .limit(size)
+                .toList();
         }
         return new TeamInfosResponse(size, hasNext, lastTeamId, teamInfos);
     }
@@ -175,7 +177,7 @@ public class TeamUserService {
         teamUserJpaRepository.delete(teamUser);
 
         // 채팅방 탈퇴 부분 추가
-        chatroomUserService.leaveChatroom(teamId, userId);
+        chatroomUserService.leaveChatroom(userId, teamId);
     }
 
     private static void leaderValidation(Team team, TeamUser teamUser) {

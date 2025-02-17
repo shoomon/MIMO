@@ -26,8 +26,8 @@ import com.bisang.backend.chat.controller.response.ChatMessageResponse;
 import com.bisang.backend.chat.domain.ChatType;
 import com.bisang.backend.chat.domain.redis.RedisChatMessage;
 import com.bisang.backend.chat.service.ChatMessageService;
+import com.bisang.backend.chat.service.ChatRedisService;
 import com.bisang.backend.chat.service.ChatroomUserService;
-import com.bisang.backend.common.exception.AccountException;
 import com.bisang.backend.common.exception.ChatAccessInvalidException;
 import com.bisang.backend.common.exception.UnauthorizedChatException;
 import com.bisang.backend.user.domain.User;
@@ -42,6 +42,7 @@ public class ChatMessageController {
     private final ChatMessageService chatMessageService;
     private final ChatroomUserService chatroomUserService;
     private final JwtUtil jwtUtil;
+    private final ChatRedisService chatRedisService;
 
     @MessageMapping("/chat-message/{roomId}")
     public void sendMessage(
@@ -54,6 +55,7 @@ public class ChatMessageController {
         }
 
         Long userId = Long.valueOf(jwtUtil.getSubject(token));
+        System.out.println(userId);
         if (chatroomUserService.isMember(roomId, userId)) {
             RedisChatMessage redisMessage = new RedisChatMessage(
                     roomId,
@@ -62,17 +64,18 @@ public class ChatMessageController {
                     LocalDateTime.now(),
                     ChatType.MESSAGE
             );
-
+            chatRedisService.afterSendMessage(roomId, redisMessage);
             chatMessageService.broadcastMessage(roomId, redisMessage);
-        }
 
+            return;
+        }
         throw new UnauthorizedChatException(NOT_FOUND_TEAM_USER);
     }
 
-    @MessageExceptionHandler(AccountException.class)
+    @MessageExceptionHandler(UnauthorizedChatException.class)
     @SendToUser("/queue/errors")
-    private AccountException handleInvalidTokenException() {
-        return new AccountException(UNAUTHORIZED_ACCESS);
+    private UnauthorizedChatException handleInvalidTokenException() {
+        return new UnauthorizedChatException(UNAUTHORIZED_ACCESS);
     }
 
     @GetMapping("/messages/{roomId}")
@@ -83,11 +86,10 @@ public class ChatMessageController {
             @RequestParam("timestamp") String timestamp
     ) {
         if (chatroomUserService.isMember(roomId, user.getId())) {
-            List<ChatMessageResponse> list = chatMessageService.getMessages(roomId, messageId, timestamp);
+            List<ChatMessageResponse> list = chatMessageService.getMessages(user.getId(), roomId, messageId, timestamp);
 
             return ResponseEntity.ok().body(list);
         }
-
         throw new ChatAccessInvalidException(UNAUTHORIZED_ACCESS);
     }
 
@@ -99,19 +101,19 @@ public class ChatMessageController {
             @PathVariable Long roomId,
             @RequestBody ChatMessageRequest chat
     ) {
-        if (chatroomUserService.isMember(roomId, 11L)) {
+        if (chatroomUserService.isMember(roomId, 1L)) {
             RedisChatMessage redisMessage = new RedisChatMessage(
                     roomId,
-                    11L,
+                    1L,
                     chat.message(),
                     LocalDateTime.now(),
                     ChatType.MESSAGE
             );
 
+            chatRedisService.afterSendMessage(roomId, redisMessage);
             chatMessageService.broadcastMessage(roomId, redisMessage);
             return ResponseEntity.ok().body("전송 성공");
         }
-
         return ResponseEntity.badRequest().body("전송 실패");
     }
 }

@@ -4,6 +4,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.bisang.backend.chat.repository.chatroomuser.ChatroomUserJpaRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -16,17 +18,15 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ChatMessageService {
 
     private final ChatMessageRepository chatMessageRepository;
     private final ChatroomUserRepository chatroomUserRepository;
 
     private final SimpMessagingTemplate template;
-    private final ChatRedisService chatRedisService;
 
     public void broadcastMessage(Long chatroomId, RedisChatMessage message) {
-
-        chatRedisService.afterSendMessage(chatroomId, message);
 
         Map<Object, Object> userInfo = chatroomUserRepository.getUserInfo(chatroomId, message.getUserId());
         ChatMessageResponse messageResponse = new ChatMessageResponse(
@@ -39,11 +39,14 @@ public class ChatMessageService {
                 message.getType()
         );
 
-        template.convertAndSend("/sub/chat/" + chatroomId, messageResponse);
+        template.convertAndSend("/sub/chat" + chatroomId, messageResponse);
     }
 
-    public List<ChatMessageResponse> getMessages(Long roomId, Long messageId, String timestamp) {
-        List<RedisChatMessage> messageList = chatMessageRepository.getMessages(roomId, messageId, timestamp);
+    public List<ChatMessageResponse> getMessages(Long userId, Long roomId, Long messageId, String timestamp) {
+        Double teamEnterScore = chatroomUserRepository.getTeamEnterScore(roomId, userId);
+        Long teamEnterChatId = chatroomUserRepository.getTeamEnterChatId(roomId, userId);
+
+        List<RedisChatMessage> messageList = chatMessageRepository.getMessages(roomId, messageId, timestamp, teamEnterScore, teamEnterChatId);
         List<ChatMessageResponse> responseList = new LinkedList<>();
 
         for (RedisChatMessage message : messageList) {

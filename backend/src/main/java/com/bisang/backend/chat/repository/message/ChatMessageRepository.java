@@ -1,5 +1,7 @@
 package com.bisang.backend.chat.repository.message;
 
+import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,33 +13,38 @@ import com.bisang.backend.chat.domain.ChatMessage;
 import com.bisang.backend.chat.domain.redis.RedisChatMessage;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Repository
 @RequiredArgsConstructor
+@Slf4j
 public class ChatMessageRepository {
 
     private final ChatMessageRedisRepository chatMessageRedisRepository;
     private final ChatMessageJpaRepository chatMessageJpaRepository;
 
-    public List<RedisChatMessage> getMessages(Long roomId, Long messageId, String timestamp) {
-        List<RedisChatMessage> messageList = chatMessageRedisRepository.getMessages(roomId, messageId, timestamp);
+    public List<RedisChatMessage> getMessages(Long roomId, Long messageId, String timestamp, Double teamEnterScore, Long teamEnterChatId) {
+        List<RedisChatMessage> messageList = chatMessageRedisRepository.getMessages(roomId, messageId, timestamp, teamEnterScore);
         int size = messageList.size();
-        System.out.println(size);
+
         if (size < 30) {
-            List<RedisChatMessage> newMessageList = getMessagesFromDB(30 - size, roomId, messageId);
+            List<RedisChatMessage> newMessageList = getMessagesFromDB(30 - size, roomId, messageId, teamEnterChatId);
             newMessageList.addAll(messageList);
+            Collections.reverse(newMessageList);
             return newMessageList;
         }
+        Collections.reverse(messageList);
         return messageList;
     }
 
     private List<RedisChatMessage> getMessagesFromDB(
             int size,
             Long roomId,
-            Long messageId
+            Long messageId,
+            Long enterMessageId
     ) {
         List<ChatMessage> messages = chatMessageJpaRepository
-                .findByChatroomIdAndIdLessThanOrderByIdDesc(roomId, messageId);
+                .findByChatroomIdAndIdLessThanAndIdGreaterThanEqualOrderByIdDesc(roomId, messageId, enterMessageId);
         List<RedisChatMessage> result = new LinkedList<>();
 
         int limit = Math.min(size, messages.size());
@@ -79,7 +86,9 @@ public class ChatMessageRepository {
 
     private static void getResult(Map<String, Object> result, ChatMessage chatMessage) {
         if (chatMessage == null) {
-            //TODO: 이거 없으면 문제 있는거임. 무조건 입장 메시지라도 있어야하는데 exception 날려야함
+            log.error("메시지가 하나도 존재하지 않습니다. db 문제");
+            result.put("lastChat", "임시 채팅");
+            result.put("lastDatetime", LocalDateTime.now());
             return;
         }
         result.put("lastChat", chatMessage.getMessage());

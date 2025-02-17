@@ -3,11 +3,14 @@ package com.bisang.backend.chat.repository.chatroomuser;
 import static com.bisang.backend.common.exception.ExceptionCode.NOT_FOUND;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Map;
 import java.util.Set;
 
+import com.bisang.backend.common.exception.ChatroomException;
 import jakarta.transaction.Transactional;
 
+import org.hibernate.NonUniqueResultException;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 
@@ -18,9 +21,11 @@ import com.bisang.backend.user.domain.User;
 import com.bisang.backend.user.repository.UserJpaRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Repository
 @RequiredArgsConstructor
+@Slf4j
 public class ChatroomUserRepository {
 
     private final ChatroomUserRedisRepository chatroomUserRedisRepository;
@@ -28,8 +33,13 @@ public class ChatroomUserRepository {
     private final UserJpaRepository userJpaRepository;
     private final RedisCacheRepository redisCacheRepository;
 
-    public void insertRedisMemberUser(Long chatroomId, Long userId) {
+    public void insertRedisMemberUser(Long chatroomId, Long userId, LocalDateTime enterDate, Long chatId) {
         chatroomUserRedisRepository.insertMember(chatroomId, userId);
+
+        double score = enterDate
+                .toInstant(ZoneOffset.ofTotalSeconds(0))
+                .toEpochMilli() + (chatId % 1000) / 1000.0;
+        chatroomUserRedisRepository.insertTeamEnterScore(chatroomId, userId, score, chatId);
     }
 
     public void insertJpaMemberUser(ChatroomUser chatroomUser) {
@@ -43,24 +53,27 @@ public class ChatroomUserRepository {
         chatroomUserJpaRepository.deleteByChatroomIdAndUserId(chatroomId, userId);
     }
 
-    public Set<Long> getTeamMembers(long teamId) {
-        Set<Long> teamMembers = chatroomUserRedisRepository.getTeamMembers(teamId);
+    public Set<Long> getTeamMembers(long chatroomId) {
+        Set<Long> teamMembers = chatroomUserRedisRepository.getTeamMembers(chatroomId);
         if (teamMembers.isEmpty()) {
-            teamMembers = chatroomUserJpaRepository.findUserIdsByTeamId(teamId);
+            teamMembers = chatroomUserJpaRepository.findUserIdsByTeamId(chatroomId);
         }
         return teamMembers;
     }
 
-    public boolean isMember(Long teamId, Long userId) {
-        if (chatroomUserRedisRepository.isMember(teamId, userId)) {
+    public boolean isMember(Long chatroomId, Long userId) {
+        if (chatroomUserRedisRepository.isMember(chatroomId, userId)) {
             return true;
         }
 
         if (chatroomUserJpaRepository.existsByUserIdAndChatroomId(
                 userId,
-                teamId
+                chatroomId
         )) {
-            chatroomUserRedisRepository.insertMember(teamId, userId);
+            ChatroomUser user = chatroomUserJpaRepository
+                    .findByChatroomIdAndUserId(chatroomId, userId)
+                    .orElseThrow(() -> new ChatroomException(NOT_FOUND));
+            insertRedisMemberUser(chatroomId, userId, user.getEnterDate(), user.getEnterChatId());
             return true;
         }
 
@@ -70,8 +83,14 @@ public class ChatroomUserRepository {
     public Map<Object, Object> getUserInfo(Long chatroomId, Long userId) {
         Map<Object, Object> userInfo = redisCacheRepository.getUserProfile(chatroomId, userId);
 
+        String nickname;
         if (userInfo.isEmpty()) {
-            String nickname = chatroomUserJpaRepository.findNicknameByTeamIdAndUserId(chatroomId, userId);
+            try {
+                nickname = chatroomUserJpaRepository.findNicknameByChatroomIdAndUserId(chatroomId, userId);
+            } catch (NonUniqueResultException e) {
+                log.error("채팅룸 중복 입장");
+                nickname = "중복처리 필요합니다";
+            }
 
             User user = userJpaRepository.findById(userId).orElseThrow(() -> new AccountException(NOT_FOUND));
             String profileImage = user.getProfileUri();
@@ -97,7 +116,6 @@ public class ChatroomUserRepository {
     }
 
     public void updateLastRead(Long userId, LocalDateTime lastDateTime, Long roomId, Long lastChatId) {
-        //TODO: db에 어떻게 저장할지 생각해봐야함. 저장 해야하나..? 어차피 실시간이 아닌데?
         chatroomUserRedisRepository.insertLastReadScore(roomId, userId, lastDateTime, lastChatId);
     }
 
@@ -107,5 +125,38 @@ public class ChatroomUserRepository {
 
     public Long getLastReadChatId(Long chatroomId, Long userId) {
         return chatroomUserRedisRepository.getLastReadChatId(chatroomId, userId);
+    }
+
+    public Double getTeamEnterScore(Long roomId, Long userId) {
+        Double teamEnterScore = chatroomUserRedisRepository.getTeamEnterScore(roomId, userId);
+
+        if (teamEnterScore == null) {
+            ChatroomUser user = chatroomUserJpaRepository
+                    .findByChatroomIdAndUserId(roomId, userId)
+                    .orElseThrow(() -> new ChatroomException(NOT_FOUND));
+
+            LocalDateTime enterDate = user.getEnterDate();
+            teamEnterScore = enterDate
+                    .toInstant(ZoneOffset.ofTotalSeconds(0))
+                    .toEpochMilli() + (user.getEnterChatId() % 1000) / 1000.0;
+
+            chatroomUserRedisRepository.insertTeamEnterScore(roomId, userId, teamEnterScore, user.getEnterChatId());
+        }
+
+        return teamEnterScore;
+    }
+
+    public Long getTeamEnterChatId(Long roomId, Long userId) {
+        Long teamEnterChatId = chatroomUserRedisRepository.getTeamEnterChatId(roomId, userId);
+
+        if (teamEnterChatId == null) {
+            ChatroomUser user = chatroomUserJpaRepository
+                    .findByChatroomIdAndUserId(roomId, userId)
+                    .orElseThrow(() -> new ChatroomException(NOT_FOUND));
+
+            chatroomUserRedisRepository.insertTeamEnterChatId(roomId, userId, user.getEnterChatId());
+        }
+
+        return teamEnterChatId;
     }
 }

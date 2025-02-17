@@ -5,6 +5,7 @@ import static com.bisang.backend.common.exception.ExceptionCode.*;
 import java.util.List;
 import java.util.Map;
 
+import com.bisang.backend.chat.repository.chatroomuser.ChatroomUserJpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.bisang.backend.chat.domain.Chatroom;
@@ -14,14 +15,17 @@ import com.bisang.backend.chat.repository.chatroom.dto.ChatroomTitleProfileDto;
 import com.bisang.backend.common.exception.ChatroomException;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Repository
 @RequiredArgsConstructor
+@Slf4j
 public class ChatroomRepository {
 
     private final ChatroomRedisRepository chatroomRedisRepository;
     private final ChatroomJpaRepository chatroomJpaRepository;
     private final RedisCacheRepository redisCacheRepository;
+    private final ChatroomUserJpaRepository chatroomUserJpaRepository;
 
     public void redisDeleteUserChatroom(long userId, long chatroomId) {
         chatroomRedisRepository.deleteUserChatroom(userId, chatroomId);
@@ -31,9 +35,8 @@ public class ChatroomRepository {
         List<Long> userChatroom = chatroomRedisRepository.getUserChatroom(userId);
 
         if (userChatroom == null || userChatroom.isEmpty()) {
-            //TODO: 배치로 메시지 db저장하는거 하고 나면 마지막 메시지 가져와서 그 기준으로 sort 할 수 있을듯..?
-            //TODO: 하고나면 레디스에 업데이트 해줘야함, 근데 꼭 해줘야하나?
-            userChatroom = chatroomJpaRepository.findAllIdsByUserId(userId);
+            log.warn("채팅방 실시간 순서가 유실되었을 수 있습니다.");
+            userChatroom = chatroomUserJpaRepository.findAllIdsByUserId(userId);
         }
         return userChatroom;
     }
@@ -43,7 +46,6 @@ public class ChatroomRepository {
     }
 
     public Map<Object, Object> getChatroomInfo(Long chatroomId) {
-        System.out.println("chatroomId:" + chatroomId);
         Map<Object, Object> chatroomInfo = redisCacheRepository.getChatroomInfo(chatroomId);
         if (chatroomInfo.isEmpty()) {
             ChatroomTitleProfileDto info = chatroomJpaRepository

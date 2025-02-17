@@ -7,7 +7,6 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Objects;
 
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -70,6 +69,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<ExceptionResponse> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
         ExceptionResponse error = new ExceptionResponse(1000, "입력 양식이 올바르지 않습니다. 다시 확인해주세요.");
         return ResponseEntity.status(BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(UserException.class)
+    public ResponseEntity<ExceptionResponse> handleUserException(UserException exception) {
+        log.warn(exception.getMessage(), exception);
+        return ResponseEntity.badRequest()
+            .body(new ExceptionResponse(exception.getCode(), exception.getMessage()));
     }
 
     @ExceptionHandler(SocialLoginException.class)
@@ -155,6 +161,20 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(TransactionException.class)
     public ResponseEntity<ExceptionResponse> handleTransactionException(TransactionException exception) {
+        log.warn(exception.getMessage(), exception);
+        return ResponseEntity.internalServerError()
+                .body(new ExceptionResponse(exception.getCode(), exception.getMessage()));
+    }
+
+    @ExceptionHandler(BoardException.class)
+    public ResponseEntity<ExceptionResponse> handleBoardException(BoardException exception) {
+        log.warn(exception.getMessage(), exception);
+        return ResponseEntity.badRequest()
+                .body(new ExceptionResponse(exception.getCode(), exception.getMessage()));
+    }
+
+    @ExceptionHandler(ChatroomException.class)
+    public ResponseEntity<ExceptionResponse> handleTransactionException(ChatroomException exception) {
         log.warn(exception.getMessage(), exception);
         return ResponseEntity.internalServerError()
                 .body(new ExceptionResponse(exception.getCode(), exception.getMessage()));
