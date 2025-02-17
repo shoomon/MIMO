@@ -98,10 +98,10 @@ public class ChatMessageController {
             @PathVariable Long roomId,
             @RequestBody ChatMessageRequest chat
     ) {
-        if (chatroomUserService.isMember(roomId, 11L)) {
+        if (chatroomUserService.isMember(roomId, 1L)) {
             RedisChatMessage redisMessage = new RedisChatMessage(
                     roomId,
-                    11L,
+                    1L,
                     chat.message(),
                     LocalDateTime.now(),
                     ChatType.MESSAGE

@@ -23,20 +23,20 @@ public class ChatroomUserRedisRepository {
     private static final String lastReadScoreKey = "lastReadScore:";
     private static final String lastReadIdKey = "lastReadId:";
 
-    public void insertMember(Long teamId, Long userId) {
-        redisLongTemplate.opsForSet().add(teamMemberKey + teamId, userId);
+    public void insertMember(Long chatroomId, Long userId) {
+        redisLongTemplate.opsForSet().add(teamMemberKey + chatroomId, userId);
     }
 
-    public void deleteMember(Long teamId, Long userId) {
-        redisLongTemplate.opsForSet().remove(teamMemberKey + teamId, userId);
+    public void deleteMember(Long chatroomId, Long userId) {
+        redisLongTemplate.opsForSet().remove(teamMemberKey + chatroomId, userId);
     }
 
-    public boolean isMember(Long teamId, Long userId) {
-        return Boolean.TRUE.equals(redisLongTemplate.opsForSet().isMember(teamMemberKey + teamId, userId));
+    public boolean isMember(Long chatroomId, Long userId) {
+        return Boolean.TRUE.equals(redisLongTemplate.opsForSet().isMember(teamMemberKey + chatroomId, userId));
     }
 
-    public Set<Long> getTeamMembers(long teamId) {
-        return redisLongTemplate.opsForSet().members(teamMemberKey + teamId);
+    public Set<Long> getTeamMembers(long chatroomId) {
+        return redisLongTemplate.opsForSet().members(teamMemberKey + chatroomId);
     }
 
     public void insertLastReadScore(Long chatroomId, Long userId, LocalDateTime lastDateTime, Long lastChatId) {
