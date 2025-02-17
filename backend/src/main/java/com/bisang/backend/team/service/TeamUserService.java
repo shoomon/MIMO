@@ -65,8 +65,9 @@ public class TeamUserService {
     @Transactional(readOnly = true)
     public MyTeamUserInfoDto getMyTeamUserInfo(Long teamId, Long userId) {
         Optional<TeamUser> teamUser = teamUserJpaRepository.findByTeamIdAndUserId(teamId, userId);
+        Optional<TeamInvite> teamInvite = teamInviteJpaRepository.findByTeamIdAndUserIdAndStatus(teamId, userId);
         Team team = findTeamById(teamId);
-        return MyTeamUserInfoDto.teamUserToDto(teamUser, team);
+        return MyTeamUserInfoDto.teamUserToDto(teamUser, team, teamInvite);
     }
 
     @EveryOne
