@@ -10,6 +10,8 @@ import com.bisang.backend.s3.service.S3Service;
 import com.bisang.backend.team.annotation.TeamLeader;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,6 +20,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class TeamBoardService {
+    private static final Logger logger = LoggerFactory.getLogger(TeamBoardService.class);
+
     private final TeamBoardJpaRepository teamBoardJpaRepository;
     private final BoardJpaRepository boardJpaRepository;
     private final BoardService boardService;
@@ -56,18 +60,32 @@ public class TeamBoardService {
 
         boardJpaRepository.deleteAllByTeamBoardId(teamBoardId);
 
+
         for(Long boardId : boardIdList){
             commentJpaRepository.deleteByBoardId(boardId);
 
-            List<BoardFileDto> imageUri = boardImageJpaRepository.findByBoardId(boardId);
-            for(BoardFileDto image : imageUri){
-                s3Service.deleteFile(image.fileUri());
-            }
+            deleteImage(boardId);
 
-            boardImageJpaRepository.deleteByBoardId(boardId);
             boardLikeRepository.deleteByBoardId(boardId);
         }
 
         teamBoardJpaRepository.deleteById(teamBoardId);
+    }
+
+    private void deleteImage(Long boardId) {
+        List<BoardFileDto> deletedImage = new ArrayList<>();
+        List<BoardFileDto> boardFiles = boardImageJpaRepository.findByBoardId(boardId);
+        for(BoardFileDto image : boardFiles){
+            try{
+                s3Service.deleteFile(image.fileUri());
+                deletedImage.add(image);
+            }catch(Exception e){
+                logger.error(e.getMessage());
+                for(BoardFileDto deleted : deletedImage) {
+                    boardImageJpaRepository.deleteById(deleted.fileId());
+                }
+            }
+        }
+        boardImageJpaRepository.deleteByBoardId(boardId);
     }
 }
