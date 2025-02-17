@@ -2,9 +2,7 @@ package com.bisang.backend.board.controller.dto;
 
 import java.time.LocalDateTime;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-public record BoardDto(
+public record BoardDto (
         Long postId,
         Long userId,
         Long teamUserId,
@@ -17,5 +15,5 @@ public record BoardDto(
         Long viewCount,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
-) {
+){
 }

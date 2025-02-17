@@ -58,7 +58,6 @@ The following rules in the Naver coding convention cannot be checked by this con
                      value="[package-lowercase] Package name ''{0}'' must match pattern ''{1}''."/>
         </module>
 
-
         <!-- [class-interface-lower-camelcase] -->
         <module name="TypeName">
             <message key="name.invalidPattern"
@@ -101,13 +100,6 @@ The following rules in the Naver coding convention cannot be checked by this con
         <module name="OneTopLevelClass"/>
         <message key="name.invalidPattern"
                  value="[1-top-level-class] one.top.level.class=Top-level class {0} has to reside in its own source file."/>
-
-        <!-- [avoid-star-import] -->
-        <module name="AvoidStarImport">
-            <property name="allowStaticMemberImports" value="true"/>
-            <message key="import.avoidStar"
-                     value="[avoid-star-import] Using the ''.*'' form of import should be avoided - {0}."/>
-        </module>
 
         <!-- [modifier-order] -->
         <module name="ModifierOrder">
@@ -268,8 +260,8 @@ The following rules in the Naver coding convention cannot be checked by this con
                 value="[blankline-after-package] ''{0}'' should be separated from previous statement."/>
         </module>
         -->
-
-        <!-- [import-grouping] -->
+        <!--
+        [import-grouping]
         <module name="ImportOrder">
             <property name="groups" value="java., jakarta., org., net., /com\.(?!nhncorp|navercorp|naver)/, /(?!java\.|jakarta\.|com\.|org\.|net\.)/, com.nhncorp., com.navercorp., com.naver."/>
             <property name="ordered" value="true"/>
@@ -283,6 +275,7 @@ The following rules in the Naver coding convention cannot be checked by this con
             <message key="import.separation"
                      value="[import-grouping] ''{0}'' should be separated from previous imports."/>
         </module>
+        -->
 
         <!-- [blankline-between-methods] -->
         <module name="EmptyLineSeparator">

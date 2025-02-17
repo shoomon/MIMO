@@ -6,12 +6,14 @@ import static com.bisang.backend.common.utils.PageUtils.SHORT_PAGE_SIZE;
 import static com.bisang.backend.s3.domain.ImageType.TEAM;
 import static com.bisang.backend.s3.domain.ProfileImage.createTeamProfile;
 import static com.bisang.backend.s3.service.S3Service.CAT_IMAGE_URI;
+import static com.bisang.backend.team.domain.Area.fromName;
 
 import java.util.List;
 import java.util.Optional;
 
-import com.bisang.backend.board.domain.TeamBoard;
-import com.bisang.backend.board.repository.TeamBoardJpaRepository;
+import com.bisang.backend.team.controller.dto.TagDto;
+import com.bisang.backend.team.controller.response.TeamTagResponse;
+import com.bisang.backend.team.controller.response.TeamTagSearchResponse;
 import com.bisang.backend.team.controller.response.TeamTitleDescSearchResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,7 +62,6 @@ public class TeamService {
     private final TeamUserJpaRepository teamUserJpaRepository;
     private final S3Service s3Service;
     private final ProfileImageRepository profileImageRepository;
-    private final TeamBoardJpaRepository teamBoardJpaRepository;
     private final ChatroomService chatroomService;
     private final ChatroomUserService chatroomUserService;
 
@@ -79,8 +80,8 @@ public class TeamService {
             TeamRecruitStatus teamRecruitStatus,
             TeamPrivateStatus teamPrivateStatus,
             MultipartFile teamProfile,
-            Area area,
-            TeamCategory teamCategory,
+            String area,
+            String teamCategory,
             Long maxCapacity
     ) {
         String teamProfileUri = profileUriValidation(leaderId, teamProfile);
@@ -114,8 +115,8 @@ public class TeamService {
             TeamRecruitStatus teamRecruitStatus,
             TeamPrivateStatus teamPrivateStatus,
             String teamProfileUri,
-            Area area,
-            TeamCategory teamCategory,
+            String area,
+            String teamCategory,
             Long maxCapacity
     ) {
         // 팀 설명 생성
@@ -134,28 +135,21 @@ public class TeamService {
                             .recruitStatus(teamRecruitStatus)
                             .privateStatus(teamPrivateStatus)
                             .teamProfileUri(teamProfileUri)
-                            .areaCode(area)
-                            .category(teamCategory)
+                            .areaCode(Area.fromName(area))
+                            .category(TeamCategory.fromName(teamCategory))
                             .maxCapacity(maxCapacity).build();
         teamJpaRepository.save(newTeam);
         // 프로필 이미지 저장, 기본 고양이, profile 있을 시 S3에 업로드 된 해당 프로필 이미지 경로
         profileImageRepository.save(createTeamProfile(newTeam.getId(), teamProfileUri));
 
         // 기본 태그 저장
-        Tag areaTag = findTagByName(area.getName());
+        Tag areaTag = findTagByName(area);
         TeamTag areaTeamTag = new TeamTag(newTeam.getId(), areaTag.getId());
         teamTagJpaRepository.save(areaTeamTag);
 
-        Tag categoryTag = findTagByName(teamCategory.getName());
+        Tag categoryTag = findTagByName(teamCategory);
         TeamTag categoryTeamTag = new TeamTag(newTeam.getId(), categoryTag.getId());
         teamTagJpaRepository.save(categoryTeamTag);
-
-        //기본 게시판 생성
-        teamBoardJpaRepository.save(TeamBoard.builder()
-                .teamId(newTeam.getId())
-                .boardName("자유게시판")
-                .build()
-        );
 
         // 팀 유저 저장
         var teamUser = TeamUser.createTeamLeader(leaderId, newTeam.getId(), nickname, notificationStatus);
@@ -182,7 +176,9 @@ public class TeamService {
         Integer size = hasNext ? SHORT_PAGE_SIZE : teams.size();
         Long lastTeamId = hasNext ? teams.get(size - 1).teamId() : null;
         if (hasNext) {
-            teams.remove(size - 1);
+            teams = teams.stream()
+                .limit(size)
+                .toList();
         }
         return new TeamInfosResponse(size, hasNext, lastTeamId, teams);
     }
@@ -195,7 +191,9 @@ public class TeamService {
         Integer size = hasNext ? SHORT_PAGE_SIZE : teams.size();
         Long lastTeamId = hasNext ? teams.get(size - 1).teamId() : null;
         if (hasNext) {
-            teams.remove(size - 1);
+            teams = teams.stream()
+                .limit(size)
+                .toList();
         }
         return new TeamInfosResponse(size, hasNext, lastTeamId, teams);
     }
@@ -218,6 +216,22 @@ public class TeamService {
         List<SimpleTeamDto> teams = teamQuerydslRepository.searchTeams(searchKeyword, pageNumber);
         Long numberOfTeams = teamQuerydslRepository.searchTeamsCount(searchKeyword);
         return new TeamTitleDescSearchResponse(numberOfTeams.intValue(), pageNumber, teams.size(), teams);
+    }
+
+    @EveryOne
+    @Transactional(readOnly = true)
+    public TeamTagSearchResponse getTeamsByTag(Long tagId, Integer pageNumber) {
+        List<SimpleTeamDto> teams = teamQuerydslRepository.searchTeams(tagId, pageNumber);
+        Long teamsCount = teamQuerydslRepository.searchTeamsCount(tagId);
+        return new TeamTagSearchResponse(teamsCount.intValue(), pageNumber, teams.size(), teams);
+    }
+
+    @EveryOne
+    @Transactional(readOnly = true)
+    public TeamTagResponse getTagBySearchKeyword(String searchKeyword, Integer pageNumber) {
+        List<TagDto> tags = teamQuerydslRepository.searchTags(searchKeyword, pageNumber);
+        Long numberOfTags = teamQuerydslRepository.searchTagsCount(searchKeyword);
+        return new TeamTagResponse(numberOfTags.intValue(), pageNumber, tags.size(), tags);
     }
 
     @TeamLeader

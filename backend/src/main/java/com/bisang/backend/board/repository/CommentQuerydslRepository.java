@@ -41,7 +41,6 @@ public class CommentQuerydslRepository {
         List<CommentDto> comments = queryFactory
                 .select(Projections.constructor(CommentDto.class,
                         comment.id.as("commentId"),
-                        comment.parentCommentId,
                         comment.userId,
                         teamUser.nickname.as("userNickname"),
                         user.profileUri.as("userProfileImage"),
@@ -60,4 +59,5 @@ public class CommentQuerydslRepository {
 //        }
         return comments;
     }
+
 }
