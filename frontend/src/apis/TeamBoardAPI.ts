@@ -5,7 +5,7 @@ import {
     TeamBoardListResponse,
 } from '@/types/TeamBoard';
 import { customFetch } from './customFetch';
-import { AlbumItemProps } from '@/components/molecules/Album/Album.view';
+import { AlbumProps } from '@/components/molecules/Album/Album.view';
 
 export const getTeamBoardList = async (
     team: string,
@@ -227,14 +227,14 @@ export const updateBoard = async (
 
 export const getAlbumImageList = async (
     teamId: string,
-): Promise<AlbumItemProps[]> => {
+): Promise<AlbumProps> => {
     try {
         const params = { team: teamId };
         const response = await customFetch('/team-image', {
             method: 'GET',
             params,
         });
-        return await response.json(); //
+        return await response.json();
     } catch (error) {
         console.error('Error 보드삭제:', error);
         throw error;

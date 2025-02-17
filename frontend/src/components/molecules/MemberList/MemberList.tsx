@@ -12,6 +12,7 @@ import {
 } from '@/apis/TeamAPI';
 import { useParams } from 'react-router-dom';
 import useMyTeamProfile from '@/hooks/useMyTeamProfile';
+import { useQueryClient } from '@tanstack/react-query';
 
 /**
  * 멤버 목록 컴포넌트의 props 타입 정의
@@ -46,6 +47,7 @@ const MemberList = ({
 
     const { teamId } = useParams<{ teamId: string }>();
     const { data: myProfileData } = useMyTeamProfile(teamId);
+    const queryClient = useQueryClient();
 
     if (!teamId) {
         return <div>teamId가 없습니다.</div>;
@@ -94,13 +96,22 @@ const MemberList = ({
                 // 대상 멤버의 역할에 따라 권한 수정: CO_LEADER는 다운그레이드, MEMBER는 업그레이드
                 if (role === 'CO_LEADER') {
                     downgradeRole(teamId, teamUserId);
+                    queryClient.invalidateQueries({
+                        queryKey: ['teamUsers', teamId],
+                    });
                 } else if (role === 'MEMBER') {
                     upgradeRole(teamId, teamUserId);
+                    queryClient.invalidateQueries({
+                        queryKey: ['teamUsers', teamId],
+                    });
                 }
             };
             onKickMember = () => {
                 if (!userInfo.userId) return;
                 deleteUsers(teamId, teamUserId);
+                queryClient.invalidateQueries({
+                    queryKey: ['teamUsers', teamId],
+                });
             };
         }
     } else if (teamInviteId) {
@@ -111,6 +122,9 @@ const MemberList = ({
             };
             onRejectMember = () => {
                 rejectMember(teamId, teamInviteId);
+                queryClient.invalidateQueries({
+                    queryKey: ['Invites', teamId],
+                });
             };
         }
     }

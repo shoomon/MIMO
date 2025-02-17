@@ -2,19 +2,17 @@ import { Title } from '@/components/atoms';
 import { Link } from 'react-router-dom';
 
 export interface AlbumItemProps {
-    imgId: string;
-    imgSrc: string;
+    boardId: string;
+    imageUri: string;
 }
 
 export interface AlbumProps {
     id: string;
-    items: AlbumItemProps[];
+    images: AlbumItemProps[];
 }
 
-const AlbumView = ({ items = [], id }: AlbumProps) => {
-    console.log('AlbumView items:', items);
-
-    if (!Array.isArray(items) || items.length === 0) {
+const AlbumView = ({ images = [], id }: AlbumProps) => {
+    if (!Array.isArray(images) || images.length === 0) {
         return <p>앨범에 아무것도 없어요</p>;
     }
 
@@ -22,11 +20,11 @@ const AlbumView = ({ items = [], id }: AlbumProps) => {
         <div className="flex w-[28rem] flex-col gap-4">
             <Title label="앨범" to={`/album/${id}`} />
             <ul className="grid w-full grid-cols-3 gap-2">
-                {items.images.map((item) => (
-                    <li key={item.imgId}>
-                        <Link to={item.imgId} className="inline-block">
+                {images.map((item) => (
+                    <li key={item.boardId}>
+                        <Link to={item.boardId} className="inline-block">
                             <img
-                                src={item.imgSrc}
+                                src={item.imageUri}
                                 alt=""
                                 className="h-36 w-36 rounded-lg object-cover"
                             />

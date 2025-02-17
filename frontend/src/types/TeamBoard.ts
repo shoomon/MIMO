@@ -10,7 +10,7 @@ export interface TeamBoardListResponse {
 }
 
 export interface Post {
-    postId: number;
+    boardId: number;
     userProfileUri: string;
     userNickname: string;
     postTitle: string;

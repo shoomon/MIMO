@@ -3,6 +3,7 @@ import { ButtonDefault, Title } from '@/components/atoms';
 import { InputForm } from '@/components/molecules';
 import { createTeam, validTeamName } from '@/apis/TeamAPI';
 import { TeamCreateRequest } from '@/types/Team';
+import { useNavigate } from 'react-router-dom';
 
 interface Step {
     field: keyof TeamCreateRequest;
@@ -32,7 +33,7 @@ const steps: Step[] = [
         label: '지역',
         inputType: 'select',
         options: [
-            { value: 'SEOUL', label: '서울' },
+            { value: '서울', label: '서울' },
             { value: 'GYEONGGI', label: '경기도' },
             { value: 'GANGWON', label: '강원도' },
             { value: 'CHUNGCHEONG_NORTH', label: '충청북도' },
@@ -55,7 +56,7 @@ const steps: Step[] = [
             { value: 'BOOK', label: '독서' },
             { value: 'CAR', label: '자동차' },
             { value: 'COOK', label: '요리' },
-            { value: 'PET', label: '반려동물' },
+            { value: '반려동물', label: '반려동물' },
             { value: 'SPORTS', label: '스포츠' },
             { value: 'GAME', label: '게임' },
             { value: 'HEALTH', label: '헬스' },
@@ -125,13 +126,14 @@ const TeamCreate: React.FC = () => {
         notificationStatus: 'ACTIVE',
         teamRecruitStatus: 'ACTIVE_PUBLIC',
         teamPrivateStatus: 'PUBLIC',
-        maxCapacity: '',
+        maxCapacity: '10',
         teamProfile: null,
     });
     const [error, setError] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
 
     const currentField = steps[currentStep];
+    const navigate = useNavigate(); // navigate 훅 선언
 
     // 파일 및 select 입력용 핸들러
     const handleChange = (
@@ -214,6 +216,7 @@ const TeamCreate: React.FC = () => {
             // plain object를 전달하고, API 내부에서 FormData로 변환
             await createTeam(teamData);
             alert('팀 생성이 완료되었습니다.');
+            navigate('/');
         } catch (err) {
             console.log(err);
 
@@ -254,7 +257,7 @@ const TeamCreate: React.FC = () => {
                     <input
                         type="file"
                         id={currentField.field}
-                        accept="image/jpeg"
+                        accept="image/jpeg, image/png, image/webp"
                         onChange={handleChange}
                     />
                 </div>

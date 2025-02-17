@@ -5,21 +5,15 @@ import { Outlet, useParams } from 'react-router-dom';
 import tagFormatter from '@/utils/tagFormatter';
 import useMyTeamProfile from '@/hooks/useMyTeamProfile';
 import { getAlbumImageList } from '@/apis/TeamBoardAPI';
-import { useEffect, useState } from 'react';
-import { AlbumItemProps } from '@/components/molecules/Album/Album.view';
 
 const TeamLayout = () => {
     const { teamId } = useParams() as { teamId: string };
 
-    const [items, setItems] = useState<AlbumItemProps[]>([]);
-    const [loading, setLoading] = useState(true);
+    const { data: albumData } = useQuery({
+        queryKey: ['albumdata', teamId],
+        queryFn: () => getAlbumImageList(teamId),
+    });
 
-    useEffect(() => {
-        getAlbumImageList(teamId)
-            .then(setItems) // ✅ items가 배열이므로 그대로 전달 가능
-            .catch((error) => console.error(error))
-            .finally(() => setLoading(false));
-    }, [teamId]);
     const { data: teamData } = useQuery({
         queryKey: ['teamInfo', teamId],
         queryFn: () => getTeamInfo(teamId),
@@ -28,7 +22,6 @@ const TeamLayout = () => {
     const { data: myProfileData } = useMyTeamProfile(teamId);
 
     const formattedTags = tagFormatter(teamData?.tags || []);
-    if (loading) return <p>Loading...</p>;
     return (
         <main className="w-full">
             <section className="w-full">
@@ -64,7 +57,7 @@ const TeamLayout = () => {
                             myProfileData?.notificationStatus || 'ACTIVE'
                         }
                     />
-                    <Album id={teamId ?? ''} items={items} />
+                    <Album id={teamId ?? ''} images={albumData?.images ?? []} />
                 </section>
                 <section className="flex w-full flex-col gap-2 overflow-hidden pl-12">
                     <DetailNav />

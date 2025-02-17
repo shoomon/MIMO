@@ -8,6 +8,7 @@ import { TeamInfosResponse } from '@/types/Team';
 
 const Category = () => {
     const { categoryId } = useParams<{ categoryId?: string }>();
+
     //isLoading, error
     const { data } = useQuery<TeamInfosResponse, Error>({
         queryKey: ['category', categoryId],

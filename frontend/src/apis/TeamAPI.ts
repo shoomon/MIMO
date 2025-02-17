@@ -166,7 +166,7 @@ export const rejectMember = async (
             inviteId,
         });
 
-        await customFetch('team-leader/invite-reject', {
+        await customFetch('/team-leader/invite-reject', {
             method: 'PATCH',
             body,
         });
