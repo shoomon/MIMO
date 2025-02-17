@@ -29,7 +29,6 @@ public class ChatroomUserService {
         return chatroomUserRepository.isMember(teamId, userId);
     }
 
-    //TODO: 팀쪽에서 변경되면 호출해줘야함
     public void updateNickname(Long userId, Long teamId, String nickname) {
         Long chatroomId = chatroomJpaRepository
                 .findIdByTeamId(teamId)

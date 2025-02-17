@@ -18,9 +18,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Repository
 @RequiredArgsConstructor
+@Slf4j
 public class ChatMessageRedisRepository {
 
     private final RedisTemplate<String, RedisChatMessage> redisChatMessageTemplate;
@@ -80,17 +82,13 @@ public class ChatMessageRedisRepository {
             return null;
         }
 
-        List<RedisChatMessage> messages = result.stream()
-            .map(json -> {
-                try {
-                    return objectMapper.readValue(json, RedisChatMessage.class);
-                } catch (JsonProcessingException e) {
-                    throw new RuntimeException(e);
-                }
-            })
-            .toList();
-
-        return messages.isEmpty() ? null : messages.get(0);
+        String json = result.iterator().next();
+        try {
+            return objectMapper.readValue(json, RedisChatMessage.class);
+        } catch (JsonProcessingException e) {
+            log.error("Json 파싱 실패: {}", e.getMessage());
+            return null;
+        }
     }
 
     public Long unreadCount(Long chatroomId, Double lastReadScore) {
