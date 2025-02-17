@@ -9,6 +9,8 @@ import static java.lang.Boolean.TRUE;
 import java.util.List;
 import java.util.Optional;
 
+import com.bisang.backend.team.controller.dto.MyTeamSpecificDto;
+import com.bisang.backend.team.repository.TeamQuerydslRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,11 +36,18 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class TeamLeaderService {
+    private final TeamQuerydslRepository teamQuerydslRepository;
     private final TeamJpaRepository teamJpaRepository;
     private final TeamUserJpaRepository teamUserJpaRepository;
     private final TeamUserQuerydslRepository teamUserQuerydslRepository;
     private final TeamInviteJpaRepository teamInviteJpaRepository;
     private final ChatroomUserService chatroomUserService;
+
+    @TeamLeader
+    @Transactional(readOnly = true)
+    public MyTeamSpecificDto getMyTeamSpecificDto(Long userId, Long teamId) {
+        return teamQuerydslRepository.getMyTeamSpecificInfo(teamId);
+    }
 
     @TeamCoLeader
     @Transactional
@@ -122,12 +131,6 @@ public class TeamLeaderService {
             null,
             teamUserInfos
         );
-    }
-
-    @TeamCoLeader
-    @Transactional(readOnly = true)
-    public List<TeamInviteDto> findTeamInviteRequest(Long userId, Long teamId) {
-        return teamUserQuerydslRepository.getTeamInviteInfo(teamId);
     }
 
     private void leaderCannotDeleteValidation(Team team, TeamUser teamUser) {

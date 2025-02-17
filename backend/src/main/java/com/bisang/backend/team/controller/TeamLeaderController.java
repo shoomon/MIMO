@@ -1,11 +1,13 @@
 package com.bisang.backend.team.controller;
 
+import com.bisang.backend.team.controller.dto.MyTeamSpecificDto;
 import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -32,6 +34,15 @@ import lombok.RequiredArgsConstructor;
 public class TeamLeaderController {
     private final TeamLeaderService teamLeaderService;
     private final TeamInviteService teamInviteService;
+
+    @GetMapping("/specific-info")
+    public ResponseEntity<MyTeamSpecificDto> getSpecificTeamDto(
+            @AuthUser User user,
+            @RequestParam("teamId") Long teamId
+    ) {
+        var response = teamLeaderService.getMyTeamSpecificDto(user.getId(), teamId);
+        return ResponseEntity.ok(response);
+    }
 
     @GetMapping("/users")
     public ResponseEntity<TeamUserResponse> getTeamUser(

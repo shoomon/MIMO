@@ -17,7 +17,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.bisang.backend.team.controller.dto.MyTeamSpecificDto;
 import com.bisang.backend.team.controller.dto.TagDto;
+import com.bisang.backend.team.domain.Team;
+import com.bisang.backend.team.domain.TeamPrivateStatus;
+import com.bisang.backend.team.domain.TeamRecruitStatus;
 import org.springframework.stereotype.Repository;
 
 import com.bisang.backend.common.exception.TeamException;
@@ -180,6 +184,43 @@ public class TeamQuerydslRepository {
                 .toList();
     }
 
+    public MyTeamSpecificDto getMyTeamSpecificInfo(Long teamId) {
+        Team findTeam = isTeamExistValidation(teamId);
+        SimpleTeamReviewDto simpleTeamReview = getSimpleTeamReview(teamId);
+        Long currentMemberCount = teamUserJpaRepository.countTeamUserByTeamId(teamId);
+        List<String> tags = getTags(teamId);
+
+        tags = removeAreaCategory(tags, findTeam);
+        return Optional.ofNullable(
+                queryFactory
+                        .select(Projections.constructor(MyTeamSpecificDto.class,
+                                team.id,
+                                team.teamProfileUri,
+                                team.name,
+                                teamDescription.description,
+                                team.recruitStatus,
+                                team.privateStatus,
+                                Expressions.constant(findTeam.getAreaCode().getName()),
+                                Expressions.constant(findTeam.getCategory().getName()),
+                                team.maxCapacity,
+                                Expressions.numberTemplate(Long.class, "{0}", currentMemberCount),
+                                Expressions.constant(simpleTeamReview == null ? 0D : simpleTeamReview.reviewScore()),
+                                Expressions.constant(simpleTeamReview == null ? 0L : simpleTeamReview.reviewCount()),
+                                Expressions.constant(tags)
+                        ))
+                        .from(team).join(teamDescription).on(team.description.id.eq(teamDescription.id))
+                        .where(team.id.eq(teamId))
+                        .fetchOne()).orElseThrow(() -> new TeamException(NOT_FOUND));
+    }
+
+    private List<String> removeAreaCategory(List<String> tags, Team findTeam) {
+        tags = tags.stream()
+                .filter(t -> !(t.equals(findTeam.getAreaCode().getName())
+                        || t.equals(findTeam.getCategory().getName())))
+                .toList();
+        return tags;
+    }
+
     public TeamDto getTeamInfo(Long userId, Long teamId) {
         isTeamExistValidation(teamId);
 
@@ -319,8 +360,8 @@ public class TeamQuerydslRepository {
             .toList();
     }
 
-    private void isTeamExistValidation(Long teamId) {
-        teamJpaRepository.findTeamById(teamId)
+    private Team isTeamExistValidation(Long teamId) {
+        return teamJpaRepository.findTeamById(teamId)
             .orElseThrow(() -> new TeamException(NOT_FOUND));
     }
 
