@@ -52,6 +52,21 @@ public class TeamLeaderService {
 
     @TeamLeader
     @Transactional
+    public void deleteTag(Long userId, Long teamId, String tag) {
+        Optional<TeamTag> optionalTeamTag = teamQuerydslRepository.findByName(teamId, tag);
+        if (optionalTeamTag.isPresent()) {
+            if (tagJpaRepository.findByName(tag).get().getStatus().equals(NORMAL)) {
+                throw new TeamException(INVALID_REQUEST);
+            }
+            TeamTag findTeamTag = optionalTeamTag.get();
+            teamTagJpaRepository.delete(optionalTeamTag.get());
+            return;
+        }
+        throw new TeamException(NOT_FOUND);
+    }
+
+    @TeamLeader
+    @Transactional
     public void addTag(Long userId, Long teamId, String tag) {
         Optional<TeamTag> optionalTeamTag = teamQuerydslRepository.findByName(teamId, tag);
         if (optionalTeamTag.isPresent()) {

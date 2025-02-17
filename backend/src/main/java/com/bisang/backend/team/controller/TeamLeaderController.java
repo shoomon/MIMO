@@ -44,13 +44,23 @@ public class TeamLeaderController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/add-tag")
+    @PostMapping("/tag")
     public ResponseEntity<Void> addTag(
             @AuthUser User user,
             @RequestParam("teamId") Long teamId,
             @RequestParam("tag") String tag
     ) {
         teamLeaderService.addTag(user.getId(), teamId, tag);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/tag")
+    public ResponseEntity<Void> deleteTag(
+            @AuthUser User user,
+            @RequestParam("teamId") Long teamId,
+            @RequestParam("tag") String tag
+    ) {
+        teamLeaderService.deleteTag(user.getId(), teamId, tag);
         return ResponseEntity.ok().build();
     }
 
