@@ -535,9 +535,12 @@ export const deleteSchedule = async (
     }
 };
 
-export const deleteComment = async (commentId: number): Promise<void> => {
+export const deleteComment = async (
+    teamId: string,
+    teamScheduleCommentId: number,
+): Promise<void> => {
     try {
-        const body = JSON.stringify({ commentId });
+        const body = JSON.stringify({ teamId, teamScheduleCommentId });
         await customFetch('/schedule-comment', {
             method: 'DELETE',
             body,
@@ -569,11 +572,12 @@ export const updateComment = async (
     }
 };
 
-export const createComment = async (
+export const createScheduleComment = async (
     teamId: string,
     teamScheduleId: string,
     teamUserId: number,
     content: string,
+    parentCommentId?: number,
 ): Promise<void> => {
     try {
         const body = JSON.stringify({
@@ -581,13 +585,39 @@ export const createComment = async (
             teamScheduleId,
             teamUserId,
             content,
+            ...(parentCommentId !== undefined && { parentCommentId }),
         });
+
         await customFetch('/schedule-comment', {
             method: 'POST',
             body,
         });
     } catch (error) {
-        console.error('Error creating comment:', error);
+        console.error('Error creating schedule comment:', error);
+        throw error;
+    }
+};
+
+export const createBoardComment = async (
+    postId: string,
+    teamUserId: number,
+    content: string,
+    parentId?: number,
+): Promise<void> => {
+    try {
+        const body = JSON.stringify({
+            postId,
+            teamUserId,
+            content,
+            ...(parentId !== undefined && { parentId }),
+        });
+
+        await customFetch('/comment', {
+            method: 'POST',
+            body,
+        });
+    } catch (error) {
+        console.error('Error creating board comment:', error);
         throw error;
     }
 };

@@ -7,6 +7,7 @@ import MemberList, {
 import BodyLayout_24 from '../layouts/BodyLayout_24';
 import { Title } from '@/components/atoms';
 import useMyTeamProfile from '@/hooks/useMyTeamProfile';
+import BaseLayout from '../layouts/BaseLayout';
 
 const TeamMember = () => {
     const { teamId } = useParams() as { teamId: string };
@@ -48,7 +49,7 @@ const TeamMember = () => {
             userInfo: {
                 userId: String(user.userId),
                 nickname: user.name,
-                profileUri: user.ProfileImage, // 프로필 이미지 정보 없음
+                profileUri: user.profileUri, // 프로필 이미지 정보 없음
             },
             bio: user.memo,
             teamInviteId: user.teamInviteId,
@@ -61,10 +62,9 @@ const TeamMember = () => {
     const displayedMembers = isLeader ? members.slice(0, 3) : members;
 
     const displayedinvites = invites.slice(0, 3);
-    console.log(displayedMembers);
 
     return (
-        <>
+        <BaseLayout>
             <div className="h-[51px]"></div>
             <BodyLayout_24>
                 <section className="flex w-full flex-col gap-6">
@@ -99,7 +99,7 @@ const TeamMember = () => {
                     </section>
                 )}
             </BodyLayout_24>
-        </>
+        </BaseLayout>
     );
 };
 

@@ -5,6 +5,7 @@ interface ButtonPrimaryProps {
     action: 'delete' | 'confirm' | 'cancel';
     onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
     disabled?: boolean;
+    label: string; // 또는 children: React.ReactNode;
 }
 
 /**
@@ -22,10 +23,8 @@ const ButtonPrimary = ({
     action,
     onClick,
     disabled = false,
+    label,
 }: ButtonPrimaryProps) => {
-    const content =
-        action === 'delete' ? '삭제' : action === 'confirm' ? '확인' : '취소';
-
     const BUTTON_STYLES: Record<typeof action, string> = {
         delete: 'bg-fail text-white hover:bg-red-700',
         confirm: 'bg-brand-primary-400 text-white hover:bg-brand-primary-500',
@@ -47,9 +46,8 @@ const ButtonPrimary = ({
             onClick={onClick}
             disabled={disabled}
             className={className}
-        >
-            {content}
-        </ButtonPrimaryView>
+            label={label}
+        ></ButtonPrimaryView>
     );
 };
 

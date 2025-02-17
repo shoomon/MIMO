@@ -1,58 +1,86 @@
 // CardBoardView.tsx
 import { Link } from 'react-router-dom';
-import { ThumbnailProps } from '../Thumbnail/Thumbnail.view';
 import Thumbnail from '../Thumbnail/Thumbnail';
+import { layoutType } from '@/types/TeamBoard';
 
 export interface CardBoardViewProps {
-    image: ThumbnailProps;
-    label: string;
-    author: string;
-    parsedDate: string;
+    userProfileUri: string;
+    userNickname: string;
+    postTitle: string;
+    imageUri: string;
+    likeCount: number;
     viewCount: number;
-    layoutType: 'List' | 'Card';
-    linkTo: string;
+    createdAt: string;
+    updatedAt: string;
+    commentCount: number;
+    layoutType: layoutType;
+    linkto: string;
 }
 
 const CardBoardView: React.FC<CardBoardViewProps> = ({
-    image,
-    label,
-    author,
-    parsedDate,
+    userProfileUri,
+    userNickname,
+    postTitle,
+    imageUri,
+    likeCount,
     viewCount,
+    createdAt,
+    commentCount,
     layoutType,
-    linkTo,
+    linkto,
 }) => {
     return (
         <Link
-            to={linkTo}
+            to={linkto}
             className={`${
                 layoutType === 'Card'
-                    ? 'flex h-[275px] w-[344px] flex-col overflow-hidden rounded-t-2xl'
+                    ? 'flex h-fit w-[344px] flex-col overflow-hidden rounded-t-2xl'
                     : 'flex items-center'
-            } gap-3 bg-white`}
+            } gap-3`}
         >
             {layoutType === 'Card' ? (
                 <Thumbnail
-                    imgSrc={image.imgSrc}
+                    imgSrc={imageUri}
                     imgAlt="게시글썸네일"
                     showMember={false}
                 />
             ) : (
-                <div className="flex h-[84px] w-[84px] flex-shrink-0 items-center justify-center overflow-hidden rounded-2xl">
+                <div className="flex h-[100px] w-[100px] flex-shrink-0 items-center justify-center overflow-hidden rounded-lg">
                     <img
-                        src={image.imgSrc}
+                        src={imageUri}
                         alt="게시글썸네일"
                         className="h-full w-full object-cover"
                     />
                 </div>
             )}
 
-            <div className="flex h-fit w-full flex-col gap-1">
-                <span className="truncate text-lg font-bold">{label}</span>
-                <span className="text-md font-medium">{author}</span>
-                <div className="text-md flex gap-4 font-medium">
-                    <span>{parsedDate}</span>
+            <div className="flex h-fit w-full flex-col gap-1 px-1 pb-1">
+                <div className="flex items-center">
+                    <span className="flex-1 truncate text-lg font-extrabold">
+                        {postTitle}
+                    </span>
+                    <span className="flex-shrink-0 font-extrabold whitespace-nowrap">
+                        [{commentCount}]
+                    </span>
+                </div>
+                <div>
+                    <div className="flex items-center">
+                        <img
+                            src={userProfileUri}
+                            alt="User Profile"
+                            className="h-5 w-5 rounded-md"
+                        />
+                        <span className="text-md font-semibold">
+                            {userNickname}
+                        </span>
+                    </div>
+                </div>
+                <span className="text-sm font-light">{createdAt}</span>
+
+                <div className="flex gap-3 text-sm font-medium">
                     <span>조회수 {viewCount}</span>
+                    <span>댓글수 {commentCount}</span>
+                    <span>좋아요 {likeCount}개</span>
                 </div>
             </div>
         </Link>

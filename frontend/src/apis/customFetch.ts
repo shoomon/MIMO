@@ -53,7 +53,7 @@ export const customFetch = async (
     // Bearer 토큰 가져오기 (예시: localStorage)
     const accessToken = useTokenStore.getState().accessToken;
     if (accessToken) {
-        console.log("데이터 요청!", endpoint);
+        console.log('데이터 요청!', endpoint);
         defaultHeaders['Authorization'] = `Bearer ${accessToken}`;
     }
 
