@@ -21,7 +21,7 @@ interface BaseInputProps {
     ) => void;
     ariaLabel?: string;
     maxLength?: number;
-    className: string;
+    className?: string;
 }
 
 /**

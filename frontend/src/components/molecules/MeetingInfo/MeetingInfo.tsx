@@ -6,6 +6,7 @@ import MeetingInfoView from './MeetingInfo.view';
 import { joinTeamForPrivate, joinTeamForPublic } from '@/apis/TeamAPI';
 import { TeamNotificationStatus, TeamRecruitStatus } from '@/types/Team';
 import useMyTeamProfile from '@/hooks/useMyTeamProfile';
+import { useNavigate } from 'react-router-dom';
 
 export interface MeetingInfoProps {
     teamId: string;
@@ -36,9 +37,10 @@ const MeetingInfo = ({
 }: MeetingInfoProps) => {
     const displayedTags = getDisplayedTags(tag);
 
+    const navigate = useNavigate();
+
     const handleUpdateInfo = () => {
-        console.log('Update Info button clicked');
-        // 정보 수정 로직 구현 가능
+        navigate(`/team/${teamId}/edit`);
     };
 
     const handleJoinRequest = () => {

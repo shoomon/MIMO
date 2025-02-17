@@ -22,10 +22,10 @@ const TeamCurrentMember = () => {
             userInfo: {
                 userId: String(user.teamUserId), // 현재 값이 없으므로 빈 문자열
                 nickname: user.nickname,
-                profileUri: '', // 프로필 이미지 정보 없음
+                profileUri: user.profileUri, // 프로필 이미지 정보 없음
             },
             bio: '', // 한 줄 소개 정보 없음
-            joinDate: '', // 가입 날짜 정보 없음
+            joinDate: user.joinTime, // 가입 날짜 정보 없음
         })) || [];
 
     const member = members.map((item: MemberListProps) => (

@@ -1,7 +1,7 @@
 import CategoryItem, {
     CategoryItemProps,
 } from '@/components/atoms/CategoryItem/CategoryItem';
-import ListContainer from '@/components/organisms/ListContainer';
+import ListContainer from '@/components/organisms/Carousel/ListContainer';
 
 interface CategoryListViewProps {
     to?: string;

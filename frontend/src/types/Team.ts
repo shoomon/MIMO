@@ -6,10 +6,11 @@ export interface SimpleTeamResponse {
     description: string;
     teamProfileUri: string;
     reviewScore: number;
-    tags: string[];
+    reviewCount: number;
     memberCount: number;
     maxCapacity: number;
     currentCapacity: number;
+    tags: string[];
 }
 
 export interface TeamInfoResponse {
@@ -97,7 +98,7 @@ export interface teamInvites {
     status: InviteStatus;
     name: string;
     memo: string;
-    ProfileImage: string;
+    profileUri: string;
 }
 
 export interface TeamInfosResponse {

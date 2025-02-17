@@ -57,7 +57,7 @@ const MemberListView = ({
                     </div>
                     <span className="text-md font-medium">{bio}</span>
                     <span className="text-md font-normal">
-                        가입일 {parsedDate}
+                        {mode === 'member' && `가입일 ${parsedDate}`}
                     </span>
                 </div>
             </div>
