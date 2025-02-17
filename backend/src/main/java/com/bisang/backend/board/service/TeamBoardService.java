@@ -29,6 +29,8 @@ public class TeamBoardService {
     public TeamBoardListResponse getTeamBoardList(Long teamId) {
         List<TeamBoardDto> list = new ArrayList<>();
         List<TeamBoard> teamBoardList = teamBoardJpaRepository.findAllByTeamId(teamId);
+        for(TeamBoard b : teamBoardList) System.out.print(b.getId()+" ");
+        System.out.println();
 
         for(TeamBoard teamBoard : teamBoardList) {
             List<SimpleBoardListDto> boardList = boardService
