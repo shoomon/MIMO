@@ -40,7 +40,9 @@ public class TeamScheduleEveryOneService {
         Long lastTeamScheduleId = size > 0 ? schedules.get(size - 1).teamScheduleId() : null;
 
         if (hasNext) {
-            schedules.remove(size - 1);
+            schedules = schedules.stream()
+                .limit(size)
+                .toList();
         }
 
         return new TeamSchedulesResponse(size, hasNext, lastTeamScheduleId, schedules);

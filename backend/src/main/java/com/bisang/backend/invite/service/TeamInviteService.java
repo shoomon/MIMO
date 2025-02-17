@@ -29,7 +29,9 @@ public class TeamInviteService {
         Integer size = hasNext ? SHORT_PAGE_SIZE : invites.size();
         Long nextLastTeamInviteId = hasNext ? invites.get(size - 1).teamInviteId() : null;
         if (hasNext) {
-            invites.remove(size - 1);
+            invites = invites.stream()
+                .limit(size)
+                .toList();
         }
         return new TeamInvitesResponse(size, hasNext, nextLastTeamInviteId, invites);
     }
