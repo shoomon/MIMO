@@ -32,28 +32,15 @@ public class UserService {
         userJpaRepository.save(user);
     }
 
-    public void updateUserInfo(User user, String nickname, String name, MultipartFile profile) {
-        String profileUri = updateUserProfile(user, profile);
-        try {
-            updateUserInfo(user, nickname, name, profileUri);
-        } catch (UserException e) {
-            if (profileUri != null) {
-                s3Service.deleteFile(profileUri);
-            }
-           throw new UserException(e.getCode(), e.getMessage());
-        } catch (Exception e) {
-            if (profileUri != null) {
-                s3Service.deleteFile(profileUri);
-            }
-            throw new UserException(INVALID_REQUEST);
-        }
-    }
-
     @Transactional
     public void updateUserInfo(User user, String nickname, String name, String profileUri) {
         user.updateNickname(nickname);
         user.updateName(name);
         if (profileUri != null) {
+            user.updateProfileUri(profileUri);
+            profileImageRepository.findUserImageByImageTypeAndUserId(USER, user.getId())
+                .ifPresent(profileImageRepository::delete);
+            profileImageRepository.save(ProfileImage.createUserProfile(user.getId(), profileUri));
             user.updateProfileUri(profileUri);
         }
         userJpaRepository.save(user);
@@ -76,18 +63,6 @@ public class UserService {
                 .boards(new ArrayList<>())
                 .comments(new ArrayList<>())
                 .build();
-    }
-
-    private String updateUserProfile(User user, MultipartFile profile) {
-        if (profile != null) {
-            String profileUri = s3Service.saveFile(user.getId(), profile);
-            profileImageRepository.findUserImageByImageTypeAndUserId(USER, user.getId())
-                    .ifPresent(profileImageRepository::delete);
-            profileImageRepository.save(ProfileImage.createUserProfile(user.getId(), profileUri));
-            user.updateProfileUri(profileUri);
-            return profileUri;
-        }
-        return null;
     }
 
     public Optional<User> findUserByEmail(String email) {
