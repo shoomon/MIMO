@@ -260,16 +260,14 @@ public class BoardService {
         }
     }
 
-    //todo:
+    //todo: 로직이 뭔가 이상한디유
     // 방법 1. 자식이 있는 루트 댓글 soft delete -> 나중에 배치로 자식 없는데 안 지워진 댓글 지워줘야함 but 화면에 바로 반영 안됨
-    // 방법 2. 댓글 조립하면서 부모 존재 여부 조회해보기 -> DB 접근 횟수가 댓글 개수에 따라 선형으로 증가
-    //          -> 부모 댓글 id 모두 리스트에 담고 in으로 조회하면 쿼리 1번으로 가능 but 부모댓글 많아지면 비효율
-    //          -> 부모 댓글 있는지 DB 가서 조회하지 말고 ID만 뽑아서 들고있자
+    // 방법 2. 댓글 조립하면서 부모 존재 여부 조회해보기
     private List<CommentListDto> getCommentList(Long postId){
         List<CommentListDto> result = new ArrayList<>();
         Map<Long, List<CommentDto>> commentList = new HashMap<>();
         List<CommentDto> comments = commentQuerydslRepository.getCommentList(postId);
-        List<Long> addedKey;
+        List<Long> addedKey = new ArrayList<>();
 
         for(CommentDto comment : comments) {
             if(comment.parentId() == null){
@@ -284,12 +282,12 @@ public class BoardService {
             }
         }
 
-        while (!comments.isEmpty()) {
-            CommentDto comment = comments.get(0);
-
-            if (comment.parentId() == null && commentList.containsKey(comment.commentId())) { // 최상위 댓글
+        for (CommentDto comment : comments) {
+            if (comment.parentId() == null) { // 최상위 댓글
                 result.add(new CommentListDto(comment, commentList.get(comment.commentId())));
+                addedKey.add(comment.commentId());
             }else{
+//                if(addedKey.contains(comment.parentId())) continue;
                 if(!commentList.containsKey(comment.parentId())){
                     result.add(new CommentListDto(
                                     new CommentDto(
@@ -305,9 +303,9 @@ public class BoardService {
                                     commentList.get(comment.parentId())
                             )
                     );
+                    addedKey.add(comment.parentId());
                 }
             }
-            comments.remove(0);
         }
         return result;
     }
