@@ -40,7 +40,7 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: validate
+      ddl-auto: none
     properties:
       hibernate:
         format_sql: false
@@ -77,3 +77,9 @@ oauth2:
 openvidu:
   url: "https://i12a504.p.ssafy.io:8443"
   secret: "MY_SECRET"
+
+server:
+  servlet:
+    encoding:
+      force-response: true
+      charset: UTF-8
