@@ -81,7 +81,6 @@ public class ChatroomService {
         return chatroomResponse;
     }
 
-    //TODO: 팀 프로필 업데이트 되면 호출해줘야함
     public void updateChatroomProfileUri(Long teamId, String profileUri) {
         Long chatroomId = chatroomRepository.getChatroomIdByteamId(teamId);
         chatroomRepository.updateChatroomProfileUri(chatroomId, profileUri);
