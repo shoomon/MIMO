@@ -2,6 +2,7 @@ package com.bisang.backend.team.service;
 
 import static com.bisang.backend.common.exception.ExceptionCode.*;
 import static com.bisang.backend.common.utils.PageUtils.PAGE_SIZE;
+import static com.bisang.backend.team.domain.TagStatus.NORMAL;
 import static com.bisang.backend.team.domain.TeamNotificationStatus.ACTIVE;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
@@ -10,7 +11,11 @@ import java.util.List;
 import java.util.Optional;
 
 import com.bisang.backend.team.controller.dto.MyTeamSpecificDto;
+import com.bisang.backend.team.domain.Tag;
+import com.bisang.backend.team.domain.TeamTag;
+import com.bisang.backend.team.repository.TagJpaRepository;
 import com.bisang.backend.team.repository.TeamQuerydslRepository;
+import com.bisang.backend.team.repository.TeamTagJpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,6 +47,31 @@ public class TeamLeaderService {
     private final TeamUserQuerydslRepository teamUserQuerydslRepository;
     private final TeamInviteJpaRepository teamInviteJpaRepository;
     private final ChatroomUserService chatroomUserService;
+    private final TagJpaRepository tagJpaRepository;
+    private final TeamTagJpaRepository teamTagJpaRepository;
+
+    @TeamLeader
+    @Transactional
+    public void addTag(Long userId, Long teamId, String tag) {
+        Optional<TeamTag> optionalTeamTag = teamQuerydslRepository.findByName(teamId, tag);
+        if (optionalTeamTag.isPresent()) {
+            throw new TeamException(DUPLICATED_SOURCE);
+        }
+
+        Optional<Tag> optionalTag = tagJpaRepository.findByName(tag);
+        if (optionalTag.isPresent()) {
+            Tag getTag = optionalTag.get();
+            if (getTag.getStatus().equals(NORMAL)) {
+                throw new TeamException(INVALID_REQUEST);
+            }
+            teamTagJpaRepository.save(new TeamTag(teamId, getTag.getId()));
+            return;
+        }
+
+        Tag newTag = new Tag(tag);
+        tagJpaRepository.save(newTag);
+        teamTagJpaRepository.save(new TeamTag(teamId, newTag.getId()));
+    }
 
     @TeamLeader
     @Transactional(readOnly = true)

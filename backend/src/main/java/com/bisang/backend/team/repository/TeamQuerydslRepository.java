@@ -22,6 +22,7 @@ import com.bisang.backend.team.controller.dto.TagDto;
 import com.bisang.backend.team.domain.Team;
 import com.bisang.backend.team.domain.TeamPrivateStatus;
 import com.bisang.backend.team.domain.TeamRecruitStatus;
+import com.bisang.backend.team.domain.TeamTag;
 import org.springframework.stereotype.Repository;
 
 import com.bisang.backend.common.exception.TeamException;
@@ -45,6 +46,13 @@ public class TeamQuerydslRepository {
     private final TeamUserJpaRepository teamUserJpaRepository;
     private final JPAQueryFactory queryFactory;
     private final TeamJpaRepository teamJpaRepository;
+
+    public Optional<TeamTag> findByName(Long teamId, String name) {
+        return Optional.ofNullable(queryFactory
+                .select(teamTag)
+                .from(teamTag).join(tag).on(teamTag.tagId.eq(tag.id))
+                .where(tag.name.eq(name), teamTag.teamId.eq(teamId)).fetchOne());
+    }
 
     public List<TagDto> searchTags(String searchText, Integer pageNumber) {
         if (pageNumber == null) {

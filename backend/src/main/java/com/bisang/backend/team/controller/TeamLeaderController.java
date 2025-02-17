@@ -44,6 +44,16 @@ public class TeamLeaderController {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/add-tag")
+    public ResponseEntity<Void> addTag(
+            @AuthUser User user,
+            @RequestParam("teamId") Long teamId,
+            @RequestParam("tag") String tag
+    ) {
+        teamLeaderService.addTag(user.getId(), teamId, tag);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/users")
     public ResponseEntity<TeamUserResponse> getTeamUser(
         @AuthUser User user,
