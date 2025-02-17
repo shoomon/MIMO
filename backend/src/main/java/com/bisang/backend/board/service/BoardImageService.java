@@ -7,6 +7,7 @@ import com.bisang.backend.board.repository.TeamBoardJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -32,11 +33,14 @@ public class BoardImageService {
         List<Long> boardIdList = boardQuerydslRepository
                 .getBoardIdListByTeamBoardId(teamBoardId, lastReadImageId, limit+1);
 
-        List<BoardThumbnailDto> imageList = boardQuerydslRepository
-                .getImageThumbnailList(boardIdList)
-                .entrySet().stream()
-                .map(entry -> new BoardThumbnailDto(entry.getKey(), entry.getValue()))
-                .collect(Collectors.toList());
+        Map<Long, String> boardImage = boardQuerydslRepository
+                .getImageThumbnailList(boardIdList);
+
+        List<BoardThumbnailDto> imageList = new ArrayList<>();
+
+        for(Long boardId : boardIdList) {
+            imageList.add(new BoardThumbnailDto(boardId, boardImage.get(boardId)));
+        }
 
         Boolean hasNext = imageList.size() > limit ? true : false;
 
