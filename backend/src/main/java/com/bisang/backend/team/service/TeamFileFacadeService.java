@@ -81,7 +81,6 @@ public class TeamFileFacadeService {
             return profileImage.get().getProfileUri();
         }
         if (profileImage.isPresent()) {
-            profileImageRepository.delete(profileImage.get());
             try {
                 if (!profileImage.get().getProfileUri().equals(CAT_IMAGE_URI)) {
                     s3Service.deleteFile(profileImage.get().getProfileUri());
