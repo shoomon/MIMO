@@ -177,7 +177,7 @@ public class TeamUserService {
         teamUserJpaRepository.delete(teamUser);
 
         // 채팅방 탈퇴 부분 추가
-        chatroomUserService.leaveChatroom(teamId, userId);
+        chatroomUserService.leaveChatroom(userId, teamId);
     }
 
     private static void leaderValidation(Team team, TeamUser teamUser) {

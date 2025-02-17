@@ -1,5 +1,6 @@
 package com.bisang.backend.chat.repository.chatroomuser;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -22,4 +23,7 @@ public interface ChatroomUserJpaRepository extends JpaRepository<ChatroomUser, L
     Optional<ChatroomUser> findByChatroomIdAndUserId(Long chatroomId, Long userId);
 
     void deleteByChatroomIdAndUserId(Long teamId, Long userId);
+
+    @Query("SELECT c.id FROM ChatroomUser c WHERE c.userId = :userId")
+    List<Long> findAllIdsByUserId(long userId);
 }
