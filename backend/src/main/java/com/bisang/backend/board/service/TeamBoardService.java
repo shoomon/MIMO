@@ -64,7 +64,9 @@ public class TeamBoardService {
         for(Long boardId : boardIdList){
             commentJpaRepository.deleteByBoardId(boardId);
 
-            deleteImage(boardId);
+            List<BoardFileDto> boardFiles = boardImageJpaRepository.findByBoardId(boardId);
+            deleteImageFromS3(boardFiles);
+            boardImageJpaRepository.deleteByBoardId(boardId);
 
             boardLikeRepository.deleteByBoardId(boardId);
         }
@@ -72,9 +74,9 @@ public class TeamBoardService {
         teamBoardJpaRepository.deleteById(teamBoardId);
     }
 
-    private void deleteImage(Long boardId) {
+    private void deleteImageFromS3(List<BoardFileDto> boardFiles) {
         List<BoardFileDto> deletedImage = new ArrayList<>();
-        List<BoardFileDto> boardFiles = boardImageJpaRepository.findByBoardId(boardId);
+
         for(BoardFileDto image : boardFiles){
             try{
                 s3Service.deleteFile(image.fileUri());
@@ -86,6 +88,5 @@ public class TeamBoardService {
                 }
             }
         }
-        boardImageJpaRepository.deleteByBoardId(boardId);
     }
 }

@@ -170,34 +170,32 @@ public class BoardService {
     //    @TeamMember
     public void updatePost(
             Long userId,
-            Long postId,
+            Long boardId,
             String title,
             String description,
             List<BoardFileDto> filesToDelete,
             MultipartFile[] filesToAdd
     ) {
-        Board post = boardJpaRepository.findById(postId)
-                .orElseThrow(()-> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
+        Board board = boardJpaRepository.findById(boardId)
+                .orElseThrow(()-> new BoardException(ExceptionCode.BOARD_NOT_FOUNT));
 
-        TeamUser teamUser = teamUserJpaRepository.findById(post.getTeamUserId())
+        TeamUser teamUser = teamUserJpaRepository.findById(board.getTeamUserId())
                 .orElseThrow(() -> new EntityNotFoundException("팀유저를 찾을 수 없습니다."));
 
-        if(!post.getUserId().equals(userId)) throw new BoardException(ExceptionCode.NOT_AUTHOR);
+        if(!board.getUserId().equals(userId)) throw new BoardException(ExceptionCode.NOT_AUTHOR);
 
-        post.updateTitle(title);
-        boardJpaRepository.save(post);
+        board.updateTitle(title);
+        boardJpaRepository.save(board);
 
-        BoardDescription boardDescription = boardDescriptionJpaRepository.findById(post.getDescription().getId())
-                .orElseThrow(()-> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
+        BoardDescription boardDescription = boardDescriptionJpaRepository.findById(board.getDescription().getId())
+                .orElseThrow(()-> new BoardException(ExceptionCode.BOARD_NOT_FOUNT));
 
         boardDescription.updateDescription(description);
         boardDescriptionJpaRepository.save(boardDescription);
         System.out.println(filesToDelete.size());
 
         if(filesToDelete != null){
-            for (BoardFileDto file : filesToDelete) {
-                s3Service.deleteFile(file.fileUri()); // S3에서 이미지 삭제
-            }
+            deleteImageFromS3(filesToDelete);
             for(BoardFileDto file : filesToDelete){
                 BoardImage curfile = boardImageJpaRepository.findById(file.fileId())
                         .orElseThrow(()-> new EntityNotFoundException("첨부파일을 찾을 수 없습니다."));
@@ -214,7 +212,7 @@ public class BoardService {
                 String fileExtension = uri.substring(uri.lastIndexOf(".") + 1).toLowerCase();
 
                 boardImageJpaRepository.save(BoardImage.builder()
-                        .boardId(post.getId())
+                        .boardId(board.getId())
                         .teamId(teamUser.getTeamId())
 //                                .teamId(1L)
                         .fileExtension(fileExtension)
@@ -234,7 +232,9 @@ public class BoardService {
 
         boardLikeRepository.deleteByBoardId(boardId);
 
-        deleteImage(boardId);
+        List<BoardFileDto> boardFiles = boardImageJpaRepository.findByBoardId(boardId);
+        deleteImageFromS3(boardFiles);
+        boardImageJpaRepository.deleteByBoardId(boardId);
 
         boardDescriptionJpaRepository.deleteById(post.getDescription().getId());
 
@@ -285,9 +285,9 @@ public class BoardService {
         return result;
     }
 
-    private void deleteImage(Long boardId) {
+    private void deleteImageFromS3(List<BoardFileDto> boardFiles) {
         List<BoardFileDto> deletedImage = new ArrayList<>();
-        List<BoardFileDto> boardFiles = boardImageJpaRepository.findByBoardId(boardId);
+
         for(BoardFileDto image : boardFiles){
             try{
                 s3Service.deleteFile(image.fileUri());
@@ -299,6 +299,5 @@ public class BoardService {
                 }
             }
         }
-        boardImageJpaRepository.deleteByBoardId(boardId);
     }
 }
