@@ -30,14 +30,14 @@ public class ChatMessageRedisRepository {
     // 채팅 메시지를 저장하고 조회할 때 사용할 키
     private static final String teamMessageKey = "teamMessage:";
 
-    public List<RedisChatMessage> getMessages(Long teamId, Long messageId, String timestamp) {
+    public List<RedisChatMessage> getMessages(Long teamId, Long messageId, String timestamp, Double teamEnterScore) {
 
         String key = teamMessageKey + teamId;
         Set<TypedTuple<String>> result;
 
         if (messageId < 0) {
             result = redisTemplate.opsForZSet()
-                    .reverseRangeByScoreWithScores(key, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0, 30);
+                    .reverseRangeByScoreWithScores(key, teamEnterScore, Double.POSITIVE_INFINITY, 0, 30);
 
             return getRedisChatMessages(result);
         }
@@ -45,7 +45,7 @@ public class ChatMessageRedisRepository {
         LocalDateTime datetime = DateUtils.dateToLocalDateTime(timestamp);
         double score = datetime.toInstant(ZoneOffset.ofTotalSeconds(0)).toEpochMilli() + (messageId % 1000) / 1000.0;
         result = redisTemplate.opsForZSet()
-                .reverseRangeByScoreWithScores(key, Double.NEGATIVE_INFINITY, score, 1, 30);
+                .reverseRangeByScoreWithScores(key, teamEnterScore, score, 1, 30);
         return getRedisChatMessages(result);
     }
 

@@ -19,7 +19,7 @@ public interface ChatroomUserJpaRepository extends JpaRepository<ChatroomUser, L
 
     boolean existsByUserIdAndChatroomId(Long userId, Long teamId);
 
-    Optional<ChatroomUser> findByChatroomIdAndUserId(Long teamId, Long userId);
+    Optional<ChatroomUser> findByChatroomIdAndUserId(Long chatroomId, Long userId);
 
     void deleteByChatroomIdAndUserId(Long teamId, Long userId);
 }
