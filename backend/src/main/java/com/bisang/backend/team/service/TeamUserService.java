@@ -77,7 +77,7 @@ public class TeamUserService {
 
     @EveryOne
     @Transactional
-    public void joinTeam(Long userId, Long teamId, String nickname, TeamNotificationStatus status) {
+    public Long joinTeam(Long userId, Long teamId, String nickname, TeamNotificationStatus status) {
         isAlreadyJoinChecker(teamId, userId);
 
         Team team = findTeamById(teamId);
@@ -89,7 +89,7 @@ public class TeamUserService {
 
                 // 채팅 방 가입 추가
                 chatroomUserService.enterChatroom(teamId, userId, nickname);
-                return;
+                return newTeamMember.getId();
             } else if (team.getRecruitStatus() == ACTIVE_PRIVATE) {
                 throw new TeamException(NOT_PUBLIC_TEAM);
             }

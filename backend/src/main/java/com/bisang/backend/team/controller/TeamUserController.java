@@ -1,5 +1,6 @@
 package com.bisang.backend.team.controller;
 
+import com.bisang.backend.team.controller.response.TeamUserCreateResponse;
 import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
@@ -71,12 +72,12 @@ public class TeamUserController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> joinTeam(
+    public ResponseEntity<TeamUserCreateResponse> joinTeam(
         @AuthUser User user,
         @Valid @RequestBody JoinTeamRequest req
     ) {
-        teamUserService.joinTeam(user.getId(), req.teamId(), req.nickname(), req.notificationStatus());
-        return ResponseEntity.ok().build();
+        Long id = teamUserService.joinTeam(user.getId(), req.teamId(), req.nickname(), req.notificationStatus());
+        return ResponseEntity.ok(new TeamUserCreateResponse(id));
     }
 
     @PostMapping("/invite")
