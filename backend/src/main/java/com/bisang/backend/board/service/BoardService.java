@@ -179,8 +179,8 @@ public class BoardService {
         Board board = boardJpaRepository.findById(boardId)
                 .orElseThrow(()-> new BoardException(ExceptionCode.BOARD_NOT_FOUNT));
 
-//        TeamUser teamUser = teamUserJpaRepository.findById(board.getTeamUserId())
-//                .orElseThrow(() -> new EntityNotFoundException("팀유저를 찾을 수 없습니다."));
+        TeamUser teamUser = teamUserJpaRepository.findById(board.getTeamUserId())
+                .orElseThrow(() -> new EntityNotFoundException("팀유저를 찾을 수 없습니다."));
 
         if(!board.getUserId().equals(userId)) throw new BoardException(ExceptionCode.NOT_AUTHOR);
 
@@ -213,8 +213,8 @@ public class BoardService {
 
                 boardImageJpaRepository.save(BoardImage.builder()
                         .boardId(board.getId())
-//                        .teamId(teamUser.getTeamId())
-                                .teamId(1L)
+                        .teamId(teamUser.getTeamId())
+//                                .teamId(1L)
                         .fileExtension(fileExtension)
                         .fileUri(uri)
                         .build());
@@ -300,4 +300,6 @@ public class BoardService {
             }
         }
     }
+
+
 }
