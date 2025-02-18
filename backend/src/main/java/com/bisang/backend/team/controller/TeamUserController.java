@@ -57,17 +57,19 @@ public class TeamUserController {
         @RequestParam(name = "teamId") Long teamId,
         @RequestParam(name = "nickname") String nickname
     ) {
-        return ResponseEntity.ok(teamUserService.existsNicknameByTeamIdAndNickname(teamId, nickname));
+        Long userId = user == null ? null : user.getId();
+        return ResponseEntity.ok(teamUserService.existsNicknameByTeamIdAndNickname(userId, teamId, nickname));
     }
 
     @GetMapping("/users")
     public ResponseEntity<TeamUserResponse> getTeamUser(
-        @AuthUser User user,
+        @Guest User user,
         @RequestParam Long teamId,
         @RequestParam(required = false) TeamUserRole role,
         @RequestParam(required = false) Long teamUserId
     ) {
-        var response = teamUserService.findTeamUsers(user.getId(), teamId, role, teamUserId);
+        Long userId = user == null ? null : user.getId();
+        var response = teamUserService.findTeamUsers(userId, teamId, role, teamUserId);
         return ResponseEntity.ok(response);
     }
 
@@ -91,10 +93,11 @@ public class TeamUserController {
 
     @GetMapping
     public ResponseEntity<SingleTeamUserInfoResponse> getSingleTeamUserInfo(
-        @AuthUser User user,
+        @Guest User user,
         @RequestParam Long teamId
     ) {
-        var singleTeamUserInfo = teamUserService.getSingleTeamUserInfo(user.getId(), teamId);
+        Long userId = user == null ? null : user.getId();
+        var singleTeamUserInfo = teamUserService.getSingleTeamUserInfo(userId, teamId);
         return ResponseEntity.ok(singleTeamUserInfo);
     }
 
