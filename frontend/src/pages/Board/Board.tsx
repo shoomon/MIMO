@@ -105,6 +105,7 @@ const Board = () => {
             </BodyLayout_64>
             {/* 모달 렌더링 */}
             <BasicInputModal
+                confirmLabel="생성"
                 isOpen={isModalOpen}
                 title="게시판 생성"
                 subTitle="게시판 이름을 입력하세요"

@@ -12,6 +12,9 @@ export interface SimpleTeamResponse {
     currentCapacity: number;
     tags: string[];
 }
+export interface TagsResponse {
+    tags: { tagId: number; name: string }[];
+}
 
 export interface TeamInfoResponse {
     teamId: number;
