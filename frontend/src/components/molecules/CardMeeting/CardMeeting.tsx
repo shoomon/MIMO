@@ -31,7 +31,6 @@ export interface CardMeetingProps {
  * @param {TagProps[]} props.tagList - 태그 목록
  * @param {string} props.content - 미팅 카드의 설명 또는 내용
  * @param {string} props.label - 미팅 카드 제목
- * @param {string} props.reviewCount - 리뷰 개수
  * @param {string} [props.to] - 카드 클릭 시 이동할 링크 (기본값: "/")
  *
  * @returns {JSX.Element} 미팅 정보를 표시하는 카드 UI
