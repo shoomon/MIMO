@@ -54,9 +54,9 @@ public class BoardController {
     ) {
         return ResponseEntity.ok(
                 boardService.createPost(
-                        request.teamBoardId(),
-                        request.teamId(),
                         user.getId(),
+                        request.teamId(),
+                        request.teamBoardId(),
                         request.title(),
                         request.description(),
                         request.files()
@@ -90,7 +90,7 @@ public class BoardController {
             @AuthUser User user,
             @RequestParam(value = "post", required = true) Long postId
     ) {
-        return ResponseEntity.ok(boardService.getPostDetail(postId));
+        return ResponseEntity.ok(boardService.getPostDetail(user, postId));
     }
 
     @PutMapping(consumes = MULTIPART_FORM_DATA_VALUE)

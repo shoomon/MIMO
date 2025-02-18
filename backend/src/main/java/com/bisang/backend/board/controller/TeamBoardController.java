@@ -1,5 +1,8 @@
 package com.bisang.backend.board.controller;
 
+import com.bisang.backend.auth.annotation.AuthUser;
+import com.bisang.backend.auth.annotation.Guest;
+import com.bisang.backend.user.domain.User;
 import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
@@ -26,23 +29,31 @@ public class TeamBoardController {
     private final TeamBoardService teamBoardService;
 
     @GetMapping
-    public ResponseEntity<TeamBoardListResponse> getTeamBoardList(@RequestParam(value = "team") Long teamId) {
-        return ResponseEntity.ok(teamBoardService.getTeamBoardList(teamId));
+    public ResponseEntity<TeamBoardListResponse> getTeamBoardList(
+            @Guest User user,
+            @RequestParam(value = "team") Long teamId
+    ) {
+        return ResponseEntity.ok(teamBoardService.getTeamBoardList(user, teamId));
     }
 
     @PostMapping
     public ResponseEntity<String> createTeamBoard(
+            @AuthUser User user,
             @Valid @RequestBody TeamBoardCreateRequest request
     ) {
         String boardName = teamBoardService.createTeamBoard(
-                request.teamId(), request.teamBoardName()
+                user.getId(), request.teamId(), request.teamBoardName()
         );
         return ResponseEntity.ok("게시판 \"" + boardName + "\"이 생성되었습니다.");
     }
 
     @DeleteMapping
-    public ResponseEntity<String> deleteTeamBoard(@RequestParam(value = "board") Long teamBoardId) {
-        teamBoardService.deleteTeamBoard(teamBoardId);
+    public ResponseEntity<String> deleteTeamBoard(
+            @AuthUser User user,
+            @RequestParam (value = "team") Long teamId,
+            @RequestParam(value = "board") Long teamBoardId
+    ) {
+        teamBoardService.deleteTeamBoard(user.getId(), teamId, teamBoardId);
         return ResponseEntity.ok("게시판이 삭제되었습니다.");
     }
 }

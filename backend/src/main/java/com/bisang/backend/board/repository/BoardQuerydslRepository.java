@@ -41,6 +41,7 @@ public class BoardQuerydslRepository {
         return Optional.ofNullable(queryFactory
                 .select(Projections.constructor(BoardInfoDto.class,
                         board.id,
+                        board.teamId,
                         board.userId,
                         board.teamUserId,
                         teamBoard.boardName,

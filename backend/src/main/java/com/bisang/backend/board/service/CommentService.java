@@ -6,6 +6,12 @@ import com.bisang.backend.board.repository.BoardJpaRepository;
 import com.bisang.backend.board.repository.CommentJpaRepository;
 import com.bisang.backend.common.exception.BoardException;
 import com.bisang.backend.common.exception.ExceptionCode;
+import com.bisang.backend.common.exception.TeamException;
+import com.bisang.backend.common.exception.UserException;
+import com.bisang.backend.team.domain.TeamUser;
+import com.bisang.backend.team.repository.TeamUserJpaRepository;
+import com.bisang.backend.user.domain.User;
+import com.bisang.backend.user.repository.UserJpaRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +23,7 @@ public class CommentService {
 
     private final CommentJpaRepository commentJpaRepository;
     private final BoardJpaRepository boardJpaRepository;
+    private final TeamUserJpaRepository teamUserJpaRepository;
 
     public Long createComment(
             Long userId,
@@ -24,6 +31,8 @@ public class CommentService {
             Long boardId,
             Long parentId,
             String content) {
+
+        isTeamMember(userId, teamUserId);
 
         boardJpaRepository.findById(boardId)
                 .orElseThrow(() -> new BoardException(ExceptionCode.BOARD_NOT_FOUND));
@@ -77,6 +86,15 @@ public class CommentService {
     ) {
         if(comment.getUserId().equals(userId)) return true;
         return false;
+    }
+
+    private void isTeamMember(Long userId, Long teamUserId) {
+        TeamUser user = teamUserJpaRepository.findById(teamUserId)
+                .orElseThrow(() -> new TeamException(ExceptionCode.NOT_FOUND_TEAM_USER));
+
+        if(userId.equals(user.getUserId())) {
+            throw new TeamException(ExceptionCode.NOT_FOUND_TEAM_USER);
+        };
     }
 
 }
