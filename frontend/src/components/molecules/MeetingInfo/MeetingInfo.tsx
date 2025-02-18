@@ -17,7 +17,6 @@ export interface MeetingInfoProps {
     maxCapacity: number;
     currentCapacity: number;
     teamUserId: number | null;
-    nickName: string;
     recruitStatus: TeamRecruitStatus;
     notificationStatus: TeamNotificationStatus;
 }
@@ -32,7 +31,6 @@ const MeetingInfo = ({
     teamId,
     teamUserId,
     recruitStatus,
-    nickName,
     notificationStatus,
 }: MeetingInfoProps) => {
     const displayedTags = getDisplayedTags(tag);

@@ -244,19 +244,22 @@ const BoardDetail = () => {
                         <ImageCarousel images={imageUrls} />
                     </div>
                 </div>
-                <div className="flex gap-5">
-                    <div>{likeCount}</div>
+                <div className="flex items-center justify-center gap-3 rounded-2xl border-2 border-gray-200 px-3 pt-2 pb-2">
                     <button onClick={liked ? disLikeHandler : likeHandler}>
                         {liked ? (
                             // 좋아요 상태: 채워진 하트 아이콘 (내 아이콘)
-                            <Icon id="fullheart" type="svg" size={100} />
+                            <Icon id="fullheart" type="svg" size={32} />
                         ) : (
                             // 좋아요 취소 상태: 외곽선 하트 아이콘 (내 아이콘)
-                            <Icon id="emptyheart" type="svg" size={100} />
+                            <Icon id="emptyheart" type="svg" size={32} />
                         )}
                     </button>
-
-                    <div>현재 상태: {liked ? '좋아요' : '싫어요'}</div>
+                    <div className="font-semibold">
+                        좋아요{' '}
+                        <span className="text-brand-primary-400 font-extrabold">
+                            {likeCount}
+                        </span>
+                    </div>
                 </div>
                 <div className="flex w-full flex-col gap-2 pr-4">
                     <div className="flex items-center gap-2">
