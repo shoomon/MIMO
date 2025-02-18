@@ -1,5 +1,7 @@
 package com.bisang.backend.alarm.controller;
 
+import com.bisang.backend.alarm.controller.dto.AlarmDto;
+import com.bisang.backend.alarm.controller.response.AlarmResponse;
 import com.bisang.backend.alarm.controller.response.UserAlarmResponse;
 import com.bisang.backend.alarm.service.AlarmService;
 import com.bisang.backend.auth.annotation.AuthUser;
@@ -21,11 +23,12 @@ public class AlarmController {
         return ResponseEntity.ok(alarmService.getUserAlarmByUserId(user.getId()));
     }
 
-    @DeleteMapping
-    public ResponseEntity<Void> deleteUserAlarm(
+    @GetMapping("/read")
+    public ResponseEntity<AlarmResponse> deleteUserAlarm(
         @AuthUser User user,
         @RequestParam("alarmId") Long alarmId
     ) {
-
+        AlarmDto alarm = alarmService.getAlarmById(user.getId(), alarmId);
+        return ResponseEntity.ok(new AlarmResponse(alarm));
     }
 }
