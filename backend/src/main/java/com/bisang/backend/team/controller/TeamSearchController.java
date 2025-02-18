@@ -1,5 +1,6 @@
 package com.bisang.backend.team.controller;
 
+import com.bisang.backend.team.controller.response.SimpleTagResponse;
 import com.bisang.backend.team.controller.response.TeamTagResponse;
 import com.bisang.backend.team.controller.response.TeamTagSearchResponse;
 import com.bisang.backend.team.controller.response.TeamTitleDescSearchResponse;
@@ -39,6 +40,16 @@ public class TeamSearchController {
         @RequestParam Integer pageNumber
     ) {
         return ResponseEntity.ok(teamSearchService.getTeamsByTag(tagId, pageNumber));
+    }
+
+    @GetMapping("/tag-area")
+    public ResponseEntity<SimpleTagResponse> getAreaTag() {
+        return ResponseEntity.ok(teamSearchService.getAreaTags());
+    }
+
+    @GetMapping("/tag-category")
+    public ResponseEntity<SimpleTagResponse> getCategoryTag() {
+        return ResponseEntity.ok(teamSearchService.getCategoryTags());
     }
 }
 

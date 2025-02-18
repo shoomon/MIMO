@@ -1,6 +1,8 @@
 package com.bisang.backend.team.repository;
 
 import com.bisang.backend.team.controller.dto.*;
+import com.bisang.backend.team.domain.Area;
+import com.bisang.backend.team.domain.TeamCategory;
 import com.bisang.backend.team.domain.TeamTag;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
@@ -32,6 +34,30 @@ public class TeamSearchQuerydslRepository {
     private final TeamUserJpaRepository teamUserJpaRepository;
     private final JPAQueryFactory queryFactory;
     private final TeamJpaRepository teamJpaRepository;
+
+    public List<SimpleTagDto> findAreaTags() {
+        List<String> areaNames = Area.getAreaNames();
+        return queryFactory
+            .select(Projections.constructor(SimpleTagDto.class,
+                tag.id,
+                tag.name
+            ))
+            .from(tag)
+            .where(tag.name.in(areaNames))
+            .fetch();
+    }
+
+    public List<SimpleTagDto> findCategoryTags() {
+        List<String> categoryNames = TeamCategory.getCategoryNames();
+        return queryFactory
+            .select(Projections.constructor(SimpleTagDto.class,
+                tag.id,
+                tag.name
+            ))
+            .from(tag)
+            .where(tag.name.in(categoryNames))
+            .fetch();
+    }
 
     public Optional<TeamTag> findByName(Long teamId, String name) {
         return Optional.ofNullable(queryFactory
