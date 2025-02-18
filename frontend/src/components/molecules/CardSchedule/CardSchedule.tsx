@@ -1,11 +1,9 @@
 // CardSchedule.tsx
 import React from 'react';
-import { Link } from 'react-router-dom';
 import CardScheduleView from './CardSchedule.View';
-import ProfileImage, {
-    ProfileImageProps,
-} from '@/components/atoms/ProfileImage/ProfileImage';
+import { ProfileImageProps } from '@/components/atoms/ProfileImage/ProfileImage';
 import { dateParsing } from '@/utils';
+import { renderMemberProfiles } from '@/utils/memberParsing';
 
 /**
  * CardSchedule 컴포넌트의 props 타입 정의
@@ -18,9 +16,10 @@ export interface CardScheduleProps {
     /** 일정의 제목 또는 라벨 */
     label: string;
     /** 참가비 (문자열, 원 단위) */
-    entryFee: string;
+    entryFee: number;
     /**종료된 일정 */
-    isClosed: boolean;
+    /** 일정 상세 페이지 링크 */
+    detailLink: string;
 }
 
 /**
@@ -39,14 +38,14 @@ const CardSchedule: React.FC<CardScheduleProps> = ({
     label,
     entryFee,
     memberList,
-    isClosed = false,
+    detailLink,
 }) => {
     /** 일정까지 남은 시간을 계산 */
     const targetDate = new Date(scheduledDateTime);
     const now = new Date();
     const diffMs = targetDate.getTime() - now.getTime();
     const oneDayMs = 24 * 60 * 60 * 1000;
-
+    let isClosed = false;
     let timeLeftStr = '';
     if (diffMs < 0) {
         isClosed = true;
@@ -66,50 +65,10 @@ const CardSchedule: React.FC<CardScheduleProps> = ({
     /** 날짜 포맷팅 */
     const formattedDate = dateParsing(targetDate);
 
+    const safeMemberList = memberList ?? [];
+
+    const memberProfiles = renderMemberProfiles(safeMemberList);
     /** 프로필 이미지 렌더링 */
-    const LIMIT_RENDER = 5;
-    let memberProfiles: React.ReactNode;
-
-    if (memberList.length <= LIMIT_RENDER) {
-        // 멤버 수가 5명 이하일 경우 모두 렌더링
-        memberProfiles = memberList.map((member: ProfileImageProps) => (
-            <ProfileImage
-                key={member.userId}
-                userId={member.userId}
-                imgSrc={member.imgSrc}
-                userName={member.userName}
-                size={48}
-                addStyle="rounded-lg"
-            />
-        ));
-    } else {
-        // 5명 초과일 경우, 첫 4명만 렌더링하고 나머지는 숫자로 표시
-        const firstFour = memberList.slice(0, 4);
-        const remainingCount = memberList.length - 4;
-        memberProfiles = (
-            <>
-                {firstFour.map((member: ProfileImageProps) => (
-                    <ProfileImage
-                        key={member.userId}
-                        userId={member.userId}
-                        imgSrc={member.imgSrc}
-                        userName={member.userName}
-                        size={48}
-                        addStyle="rounded-lg"
-                    />
-                ))}
-                <Link
-                    to="/member-list" // 멤버 목록 페이지 링크
-                    className="text-md flex h-[48px] w-[48px] items-center justify-center rounded-lg bg-gray-700 font-semibold text-white"
-                >
-                    +{remainingCount}
-                </Link>
-            </>
-        );
-    }
-
-    /** 일정 상세 페이지 링크 */
-    const detailLink = '/ScheduleDetail';
 
     return (
         <CardScheduleView

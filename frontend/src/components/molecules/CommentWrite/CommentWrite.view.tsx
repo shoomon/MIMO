@@ -1,3 +1,5 @@
+import React from 'react';
+
 interface CommentWriteViewProps {
     value: string;
     handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
@@ -10,20 +12,25 @@ const CommentWriteView = ({
     handleChange,
 }: CommentWriteViewProps) => {
     return (
-        <form action="" onSubmit={handleSubmit} className="flex w-full gap-2">
-            <label htmlFor=""></label>
+        <form
+            onSubmit={handleSubmit}
+            className="flex w-full items-center gap-2"
+        >
+            <label htmlFor="comment" className="hidden">
+                댓글
+            </label>
             <input
                 type="text"
-                placeholder="댓글 기능"
+                placeholder="댓글을 입력하세요."
                 name="comment"
                 id="comment"
                 value={value}
                 onChange={handleChange}
-                className="w-[48.0626rem] rounded-sm border border-gray-300 bg-gray-50 px-4 py-3 leading-normal text-gray-500 placeholder:text-gray-500 focus:outline-none"
+                className="h-fit w-[48.0626rem] rounded-sm border border-gray-300 bg-gray-50 px-4 py-2 leading-normal text-gray-500 placeholder:text-gray-500 focus:outline-none"
             />
             <button
                 type="submit"
-                className="text-text h-fit rounded-sm border border-gray-600 bg-gray-50 px-2 py-1 text-lg font-bold hover:bg-gray-200"
+                className="text-text h-fit rounded-sm border border-gray-600 bg-gray-50 px-2 py-1 text-lg font-bold whitespace-nowrap hover:bg-gray-200"
             >
                 댓글 등록
             </button>

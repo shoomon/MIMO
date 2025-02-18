@@ -1,32 +1,65 @@
-// MemberListView.tsx
+import { TeamUserRole } from '@/types/Team';
 import type { ProfileImageProps } from './../../atoms/ProfileImage/ProfileImage';
 import { ButtonDefault } from '@/components/atoms';
+import { useState } from 'react';
+import BasicModal from '../BasicModal/BasicModal';
+import { useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 
 export interface MemberListViewProps {
-    parsedDate: string;
+    parsedDate?: string;
     userInfo: ProfileImageProps;
     bio: string;
-    // 역할에 따른 아이콘 및 라벨 요소 (ex. 모임장, 운영진, 멤버)
+    // 역할 아이콘 및 라벨 요소 (ex. 모임장, 운영진, 멤버 또는 회원 신청)
     userRoleElement: React.ReactNode;
-    // 멤버 관련 액션 핸들러 (예: 권한 수정, 멤버 추방)
-    onEditRole: () => void;
-    onKickMember: () => void;
+    // 렌더링 모드: 팀원(member) 또는 가입 신청(invite)
+    mode: 'member' | 'invite';
+    // 회원 목록일 때 대상 멤버의 역할
+    targetRole?: TeamUserRole;
+    // 팀원 액션 핸들러 (회원 목록)
+    onEditRole?: () => void;
+    onKickMember?: () => void;
+    // 회원 신청 액션 핸들러 (가입 신청 목록)
+    onAcceptMember?: () => void;
+    onRejectMember?: () => void;
+    // 현재 접속한 사용자의 역할
+    currentUserRole: TeamUserRole;
 }
+
+type ModalType =
+    | 'editRole'
+    | 'kickMember'
+    | 'acceptMember'
+    | 'rejectMember'
+    | null;
 
 const MemberListView = ({
     parsedDate,
     userInfo,
     bio,
     userRoleElement,
+    mode,
+    targetRole,
     onEditRole,
     onKickMember,
+    onAcceptMember,
+    onRejectMember,
+    currentUserRole,
 }: MemberListViewProps) => {
+    // 현재 접속한 사용자가 LEADER일 때만 액션 버튼 렌더링
+    const canPerformActions = currentUserRole === 'LEADER';
+    // 어떤 모달이 열릴지 상태로 관리 (없으면 null)
+    const [activeModal, setActiveModal] = useState<ModalType>(null);
+    const closeModal = () => setActiveModal(null);
+    const Navigate = useNavigate();
+    const queryClient = useQueryClient();
+
     return (
         <div className="flex items-end justify-between">
             <div className="flex items-center gap-3">
                 <div className="flex h-[84px] w-[84px] flex-shrink-0 items-center justify-center overflow-hidden rounded-2xl">
                     <img
-                        src={userInfo.imgSrc}
+                        src={userInfo.profileUri}
                         alt="프로필 이미지"
                         className="h-full w-full object-cover"
                     />
@@ -35,27 +68,124 @@ const MemberListView = ({
                     <div className="flex items-center gap-1">
                         {userRoleElement}
                         <span className="text-lg font-medium">
-                            {userInfo.userName}
+                            {userInfo.nickname}
                         </span>
                     </div>
                     <span className="text-md font-medium">{bio}</span>
                     <span className="text-md font-normal">
-                        가입일 {parsedDate}
+                        {mode === 'member' && `가입일 ${parsedDate}`}
                     </span>
                 </div>
             </div>
-            <div className="flex gap-3">
-                <ButtonDefault
-                    type="default"
-                    content="권한 수정"
-                    onClick={onEditRole}
+
+            {canPerformActions && (
+                <div>
+                    {mode === 'member' && (
+                        <div className="flex gap-3">
+                            {canPerformActions && targetRole !== 'LEADER' && (
+                                <>
+                                    <ButtonDefault
+                                        type="default"
+                                        content="권한 수정"
+                                        onClick={() =>
+                                            setActiveModal('editRole')
+                                        }
+                                    />
+                                    <ButtonDefault
+                                        type="fail"
+                                        content="멤버 추방"
+                                        onClick={() =>
+                                            setActiveModal('kickMember')
+                                        }
+                                    />
+                                </>
+                            )}
+                        </div>
+                    )}
+                    {mode === 'invite' && (
+                        <div className="flex gap-3">
+                            {onAcceptMember && (
+                                <ButtonDefault
+                                    type="default"
+                                    content="승인"
+                                    onClick={() =>
+                                        setActiveModal('acceptMember')
+                                    }
+                                />
+                            )}
+                            {onRejectMember && (
+                                <ButtonDefault
+                                    type="fail"
+                                    content="거절"
+                                    onClick={() =>
+                                        setActiveModal('rejectMember')
+                                    }
+                                />
+                            )}
+                        </div>
+                    )}
+                </div>
+            )}
+
+            {/* 각 액션별 모달 렌더링 */}
+            {activeModal === 'editRole' && (
+                <BasicModal
+                    isOpen={true}
+                    title="권한 수정"
+                    subTitle="멤버의 권한을 수정하시겠습니까?"
+                    onConfirmClick={() => {
+                        onEditRole?.();
+                        closeModal();
+                        Navigate(0);
+                    }}
+                    onCancelClick={closeModal}
                 />
-                <ButtonDefault
-                    type="fail"
-                    content="멤버 추방"
-                    onClick={onKickMember}
+            )}
+            {activeModal === 'kickMember' && (
+                <BasicModal
+                    isOpen={true}
+                    title="멤버 추방"
+                    subTitle="정말 멤버를 추방하시겠습니까?"
+                    onDeleteClick={() => {
+                        onKickMember?.();
+                        closeModal();
+                        queryClient.invalidateQueries({
+                            queryKey: ['teamUsers'],
+                        });
+                    }}
+                    onCancelClick={closeModal}
                 />
-            </div>
+            )}
+            {activeModal === 'acceptMember' && (
+                <BasicModal
+                    isOpen={true}
+                    title="가입 신청 승인"
+                    subTitle="회원 가입 신청을 승인하시겠습니까?"
+                    onConfirmClick={() => {
+                        onAcceptMember?.();
+                        closeModal();
+                        queryClient.invalidateQueries({
+                            queryKey: ['Invites'],
+                        });
+                    }}
+                    onCancelClick={closeModal}
+                />
+            )}
+            {activeModal === 'rejectMember' && (
+                <BasicModal
+                    isOpen={true}
+                    title="가입 신청 거절"
+                    subTitle="회원 가입 신청을 거절하시겠습니까?"
+                    onDeleteClick={() => {
+                        onRejectMember?.();
+                        closeModal();
+                        queryClient.invalidateQueries({
+                            queryKey: ['Invites'],
+                        });
+                    }}
+                    onCancelClick={closeModal}
+                />
+            )}
         </div>
     );
 };

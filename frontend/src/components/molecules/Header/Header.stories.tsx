@@ -32,9 +32,10 @@ export const Default: Story = {
         onChangeSearch: () => {},
         relatedItem: [],
         onClickSearch: () => {},
-        onClickAlarm: () => {},
         onClickInfo: () => {},
         handleLogin: () => {},
+        setLogin: () => {},
+        setActive: () => {},
     },
 };
 
@@ -48,15 +49,16 @@ export const Login: Story = {
         onChangeSearch: () => {},
         relatedItem: [],
         onClickSearch: () => {},
-        onClickAlarm: () => {},
         onClickInfo: () => {},
         handleLogin: () => {},
+        setLogin: () => {},
+        setActive: () => {},
     },
 };
 
 export const NoLogin: Story = {
     args: {
-        isLogin: true,
+        isLogin: false,
         alarmActive: false,
         infoActive: true,
         handleSearch: () => {},
@@ -64,8 +66,9 @@ export const NoLogin: Story = {
         onChangeSearch: () => {},
         relatedItem: [],
         onClickSearch: () => {},
-        onClickAlarm: () => {},
         onClickInfo: () => {},
         handleLogin: () => {},
+        setLogin: () => {},
+        setActive: () => {},
     },
 };

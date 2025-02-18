@@ -18,7 +18,6 @@ const meta = {
         rating: { control: { type: 'number', min: 0, max: 5, step: 0.1 } },
         content: { control: 'text' },
         label: { control: 'text' },
-        reviewCount: { control: 'text' },
     },
 } satisfies Meta<typeof CardMeeting>;
 
@@ -52,6 +51,5 @@ export const Default: Story = {
         content:
             'This is a sample meeting card content which is supposed to be quite long to test the textCutter functionality. It should be trimmed appropriately.',
         label: 'Meeting Title',
-        reviewCount: '10',
     },
 };

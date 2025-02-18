@@ -13,16 +13,16 @@ export interface RatingStarProps {
  *
  * @param {RatingStarProps} props - rating 값을 포함한 props
  * @returns {JSX.Element} 렌더링된 별점 컴포넌트
- *
  */
 const RatingStar: React.FC<RatingStarProps> = ({ rating }) => {
-    const { fullStars, hasHalfStar } = getStarRatingData(rating);
+    const { fullStars, hasHalfStar, emptyStars } = getStarRatingData(rating);
 
     return (
         <RatingStarView
             rating={rating}
             fullStars={fullStars}
             hasHalfStar={hasHalfStar}
+            emptyStars={emptyStars}
         />
     );
 };

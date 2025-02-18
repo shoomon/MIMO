@@ -1,7 +1,6 @@
-logging:
-  level:
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+server:
+  servlet:
+    context-path: /api
 
 spring:
   application:

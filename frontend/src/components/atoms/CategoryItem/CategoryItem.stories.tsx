@@ -17,6 +17,7 @@ export const Default: Story = {
     args: {
         iconId: 'Music',
         content: '음악 / 악기',
+        path: '/',
     },
 };
 
@@ -24,5 +25,6 @@ export const Alternate: Story = {
     args: {
         iconId: 'alternateIcon',
         content: 'Alternate Category',
+        path: '/',
     },
 };
