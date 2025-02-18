@@ -33,7 +33,7 @@ public class AccountDetailsService {
             String memo
     ) {
         return AccountDetails.builder()
-                .transactionId(transaction)
+                .transactionId(transaction.getId())
                 .amount(transaction.getAmount())
                 .senderAccountNumber(transaction.getSenderAccountNumber())
                 .receiverAccountNumber(transaction.getReceiverAccountNumber())
