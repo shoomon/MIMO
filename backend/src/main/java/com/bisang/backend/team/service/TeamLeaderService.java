@@ -24,7 +24,6 @@ import com.bisang.backend.invite.domain.TeamInvite;
 import com.bisang.backend.invite.repository.TeamInviteJpaRepository;
 import com.bisang.backend.team.annotation.TeamCoLeader;
 import com.bisang.backend.team.annotation.TeamLeader;
-import com.bisang.backend.team.controller.dto.TeamInviteDto;
 import com.bisang.backend.team.controller.dto.TeamUserDto;
 import com.bisang.backend.team.controller.response.TeamUserResponse;
 import com.bisang.backend.team.domain.Team;
@@ -137,6 +136,7 @@ public class TeamLeaderService {
     public void deleteUser(Long userId, Long teamId, Long teamUserId) {
         Team team = findTeamById(teamId);
         TeamUser teamUser = findTeamUserById(teamUserId);
+        teamUserInThisTeam(teamId, teamUser);
         leaderCannotDeleteValidation(team, teamUser);
         teamUserJpaRepository.delete(teamUser);
 
@@ -172,6 +172,12 @@ public class TeamLeaderService {
             null,
             teamUserInfos
         );
+    }
+
+    private void teamUserInThisTeam(Long teamId, TeamUser teamUser) {
+        if (!teamUser.getTeamId().equals(teamId)) {
+            throw new TeamException(INVALID_REQUEST);
+        }
     }
 
     private void leaderCannotDeleteValidation(Team team, TeamUser teamUser) {

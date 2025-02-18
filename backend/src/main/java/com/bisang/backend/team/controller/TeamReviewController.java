@@ -32,7 +32,12 @@ public class TeamReviewController {
         @RequestParam(name = "teamId") Long teamId,
         @RequestParam(name = "lastTeamReviewId", required = false) Long lastTeamReviewId
     ) {
-        var reviews = teamReviewService.getTeamReview(teamId, lastTeamReviewId);
+        Long userId = null;
+        if (user != null) {
+            userId = user.getId();
+        }
+
+        var reviews = teamReviewService.getTeamReview(userId, teamId, lastTeamReviewId);
         return ResponseEntity.ok(reviews);
     }
 

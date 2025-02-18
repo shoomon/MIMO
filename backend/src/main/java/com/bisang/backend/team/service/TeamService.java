@@ -6,6 +6,7 @@ import static com.bisang.backend.common.utils.PageUtils.SHORT_PAGE_SIZE;
 import static com.bisang.backend.s3.domain.ImageType.TEAM;
 import static com.bisang.backend.s3.domain.ProfileImage.createTeamProfile;
 import static com.bisang.backend.s3.service.S3Service.CAT_IMAGE_URI;
+import static com.bisang.backend.team.domain.TeamPrivateStatus.PRIVATE;
 
 import java.util.List;
 
@@ -13,7 +14,6 @@ import com.bisang.backend.board.domain.TeamBoard;
 import com.bisang.backend.board.repository.TeamBoardJpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.bisang.backend.common.exception.TeamException;
 import com.bisang.backend.s3.repository.ProfileImageRepository;
@@ -183,12 +183,14 @@ public class TeamService {
     @EveryOne
     @Transactional(readOnly = true)
     public TeamDto getTeamGeneralInfo(Long userId, Long teamId) {
+        privateTeamValidation(userId, teamId);
         return teamQuerydslRepository.getTeamInfo(userId, teamId);
     }
 
     @EveryOne
     @Transactional(readOnly = true)
     public SimpleTeamDto getSimpleTeamInfo(Long userId, Long teamId) {
+        privateTeamValidation(userId, teamId);
         return teamQuerydslRepository.getSimpleTeamInfo(userId, teamId);
     }
 
@@ -265,11 +267,23 @@ public class TeamService {
         throw new TeamException(EXTRA_USER);
     }
 
-    private String profileUriValidation(Long userId, MultipartFile teamProfile) {
-        if (teamProfile == null) {
-            return CAT_IMAGE_URI;
+    private void privateTeamValidation(Long userId, Long teamId) {
+        Team team = findTeamById(teamId);
+        if (team.getPrivateStatus().equals(PRIVATE)) {
+            guestUserValidation(userId);
+            findTeamUser(teamId, userId);
         }
-        return s3Service.saveFile(userId, teamProfile);
+    }
+
+    private void guestUserValidation(Long userId) {
+        if (userId == null) {
+            throw new TeamException(INVALID_REQUEST);
+        }
+    }
+
+    private TeamUser findTeamUser(Long teamId, Long userId) {
+        return teamUserJpaRepository.findByTeamIdAndUserId(teamId, userId)
+            .orElseThrow(() -> new TeamException(INVALID_REQUEST));
     }
 
     private Team findTeamById(Long teamId) {

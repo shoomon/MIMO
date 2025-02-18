@@ -4,6 +4,7 @@ import static com.bisang.backend.common.exception.ExceptionCode.*;
 import static com.bisang.backend.common.utils.PageUtils.PAGE_SIZE;
 import static com.bisang.backend.common.utils.PageUtils.SHORT_PAGE_SIZE;
 import static com.bisang.backend.invite.domain.TeamInvite.createInviteRequest;
+import static com.bisang.backend.team.domain.TeamPrivateStatus.PRIVATE;
 import static com.bisang.backend.team.domain.TeamRecruitStatus.ACTIVE_PRIVATE;
 import static com.bisang.backend.team.domain.TeamRecruitStatus.ACTIVE_PUBLIC;
 import static com.bisang.backend.team.domain.TeamUser.createTeamMember;
@@ -71,7 +72,8 @@ public class TeamUserService {
     }
 
     @EveryOne
-    public Boolean existsNicknameByTeamIdAndNickname(Long teamId, String nickname) {
+    public Boolean existsNicknameByTeamIdAndNickname(Long userId, Long teamId, String nickname) {
+        privateGuestValidation(userId, teamId);
         return teamUserJpaRepository.existsByTeamIdAndNickname(teamId, nickname);
     }
 
@@ -133,6 +135,8 @@ public class TeamUserService {
     @EveryOne
     @Transactional(readOnly = true)
     public TeamUserResponse findTeamUsers(Long userId, Long teamId, TeamUserRole role, Long teamUserId) {
+        privateGuestValidation(userId, teamId);
+
         List<TeamUserDto> teamUserInfos = teamUserQuerydslRepository.getTeamUserInfos(teamId, role, teamUserId);
 
         if (teamUserInfos.size() > PAGE_SIZE) {
@@ -156,6 +160,8 @@ public class TeamUserService {
 
     @Transactional(readOnly = true)
     public SingleTeamUserInfoResponse getSingleTeamUserInfo(Long userId, Long teamId) {
+        privateGuestValidation(userId, teamId);
+
         TeamUser teamUser = findTeamUserByTeamIdAndUserId(teamId, userId);
 
         return SingleTeamUserInfoResponse.builder()
@@ -179,6 +185,16 @@ public class TeamUserService {
 
         // 채팅방 탈퇴 부분 추가
         chatroomUserService.leaveChatroom(userId, teamId);
+    }
+
+    private void privateGuestValidation(Long userId, Long teamId) {
+        Team team = findTeamById(teamId);
+        if (team.getPrivateStatus().equals(PRIVATE)) {
+            if (userId == null) {
+                throw new TeamException(INVALID_REQUEST);
+            }
+            findTeamUserByTeamIdAndUserId(teamId, userId);
+        }
     }
 
     private static void leaderValidation(Team team, TeamUser teamUser) {
