@@ -23,6 +23,8 @@ import static com.bisang.backend.team.domain.QTeamDescription.teamDescription;
 import static com.bisang.backend.team.domain.QTeamReview.teamReview;
 import static com.bisang.backend.team.domain.QTeamTag.teamTag;
 import static com.bisang.backend.team.domain.QTeamUser.teamUser;
+import static com.bisang.backend.team.domain.TeamPrivateStatus.PRIVATE;
+import static com.bisang.backend.team.domain.TeamPrivateStatus.PUBLIC;
 import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparing;
 import static java.util.function.Function.identity;
@@ -94,8 +96,8 @@ public class TeamSearchQuerydslRepository {
     public Long searchTeamsCount(Long tagId) {
         return queryFactory
             .select(teamTag.teamId.count())
-            .from(teamTag)
-            .where(teamTag.tagId.eq(tagId))
+            .from(teamTag).join(team).on(teamTag.teamId.eq(team.id))
+            .where(team.privateStatus.eq(PUBLIC), teamTag.tagId.eq(tagId))
             .fetchOne();
     }
 
@@ -128,7 +130,7 @@ public class TeamSearchQuerydslRepository {
                 Expressions.constant(emptyList())
             ))
             .from(team)
-            .where(team.id.in(teamIds))
+            .where(team.privateStatus.eq(PUBLIC), team.id.in(teamIds))
             .orderBy(team.id.desc())
             .fetch();
 
@@ -153,7 +155,7 @@ public class TeamSearchQuerydslRepository {
                 .select(team.count())
                 .from(team)
                 .leftJoin(teamDescription).on(team.id.eq(teamDescription.id))
-                .where(team.name.contains(searchText)
+                .where(team.privateStatus.eq(PUBLIC), team.name.contains(searchText)
                         .or(teamDescription.description.contains(searchText)))
                 .fetchOne();
     }
@@ -179,7 +181,7 @@ public class TeamSearchQuerydslRepository {
                         ))
                 .from(team)
                 .leftJoin(teamDescription).on(team.id.eq(teamDescription.id))
-                .where(team.name.contains(searchText)
+                .where(team.privateStatus.eq(PUBLIC), team.name.contains(searchText)
                         .or(teamDescription.description.contains(searchText)))
                 .limit(SHORT_PAGE_SIZE)
                 .offset((pageNumber - 1) * SHORT_PAGE_SIZE)

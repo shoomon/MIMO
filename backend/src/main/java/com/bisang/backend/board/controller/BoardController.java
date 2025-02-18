@@ -4,6 +4,7 @@ import static com.bisang.backend.common.exception.ExceptionCode.PAGE_LIMIT;
 import static com.bisang.backend.common.utils.PageUtils.SHORT_PAGE_SIZE;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
+import com.bisang.backend.auth.annotation.Guest;
 import com.bisang.backend.board.domain.Board;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -44,9 +45,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BoardController {
 
-    private final S3Service s3Service;
     private final BoardService boardService;
-    private final BoardJpaRepository boardJpaRepository;
 
     @PostMapping(consumes = MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Long> createPost(
@@ -55,9 +54,9 @@ public class BoardController {
     ) {
         return ResponseEntity.ok(
                 boardService.createPost(
-                        request.teamBoardId(),
-                        request.teamId(),
                         user.getId(),
+                        request.teamId(),
+                        request.teamBoardId(),
                         request.title(),
                         request.description(),
                         request.files()
@@ -67,7 +66,7 @@ public class BoardController {
 
     @GetMapping("/list")
     public ResponseEntity<BoardListResponse> getPostList(
-            @AuthUser User user,
+            @Guest User user,
             @RequestParam(value = "type", required = true) Long teamBoardId,
             @RequestParam(value = "page", required = true, defaultValue = "1") Long page
     ) {
@@ -77,7 +76,7 @@ public class BoardController {
         }
 
         Long offset = (page - 1) * SHORT_PAGE_SIZE;
-        return ResponseEntity.ok(boardService.getPostListResponse(teamBoardId, offset, SHORT_PAGE_SIZE));
+        return ResponseEntity.ok(boardService.getPostListResponse(user, teamBoardId, offset, SHORT_PAGE_SIZE));
     }
 
 //todo: 아래 테스트용 메소드 지우기
@@ -91,7 +90,7 @@ public class BoardController {
             @AuthUser User user,
             @RequestParam(value = "post", required = true) Long postId
     ) {
-        return ResponseEntity.ok(boardService.getPostDetail(postId));
+        return ResponseEntity.ok(boardService.getPostDetail(user, postId));
     }
 
     @PutMapping(consumes = MULTIPART_FORM_DATA_VALUE)

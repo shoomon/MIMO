@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import com.bisang.backend.board.domain.TeamBoard;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface TeamBoardJpaRepository extends JpaRepository<TeamBoard, Long> {
     @Query("SELECT b.boardName FROM TeamBoard b WHERE b.id = :teamBoardId")
@@ -17,4 +18,6 @@ public interface TeamBoardJpaRepository extends JpaRepository<TeamBoard, Long> {
 
     @Query("SELECT b.id FROM TeamBoard b WHERE b.teamId = :teamBoardId")
     List<Long> getTeamBoardIdByTeamId(@Param("teamBoardId") Long teamId);
+
+    Optional<TeamBoard> findTeamBoardById(Long id);
 }

@@ -55,9 +55,6 @@ public class CommentQuerydslRepository {
                 .where(comment.boardId.eq(postId))
                 .fetch();
 
-//        if(comments.isEmpty()){
-//            throw new EntityNotFoundException("댓글 정보를 찾을 수 없습니다.");
-//        }
         return comments;
     }
 }

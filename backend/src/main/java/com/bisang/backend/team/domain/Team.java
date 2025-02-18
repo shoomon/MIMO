@@ -34,14 +34,13 @@ import lombok.NoArgsConstructor;
 @Table(
         name = "team",
         indexes = {
-                @Index(name = "idx_team_area", columnList = "team_area_code, team_id desc"),
-                @Index(name = "idx_team_category", columnList = "team_category, team_id desc"),
-                @Index(name = "idx_team_id_accountNumber", columnList = "team_id, team_account_number")
+            @Index(name = "idx_status_area_team", columnList = "private_status, team_area_code, team_id desc"),
+            @Index(name = "idx_status_category_team", columnList = "private_status, team_category, team_id desc"),
+            @Index(name = "idx_team_id_accountNumber", columnList = "team_id, team_account_number")
         }
 )
 public class Team {
-    @Id
-    @Column(name = "team_id")
+    @Id @Column(name = "team_id")
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
@@ -61,7 +60,7 @@ public class Team {
     @JoinColumn(name = "team_description_id", referencedColumnName = "team_description_id")
     private TeamDescription description;
 
-    @Column(length = 13, name = "team_account_number", unique = true, nullable = false)
+    @Column(length = 13, name = "team_account_number", nullable = false)
     private String accountNumber;
 
     @Enumerated(STRING)

@@ -1,8 +1,12 @@
 package com.bisang.backend.team.service;
 
+import static com.bisang.backend.common.exception.ExceptionCode.INVALID_REQUEST;
 import static com.bisang.backend.common.exception.ExceptionCode.NOT_FOUND;
 import static com.bisang.backend.common.utils.PageUtils.PAGE_SIZE;
+import static com.bisang.backend.team.domain.TeamPrivateStatus.PRIVATE;
 
+import com.bisang.backend.team.domain.Team;
+import com.bisang.backend.team.repository.TeamJpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,14 +24,17 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class TeamReviewService {
+    private final TeamJpaRepository teamJpaRepository;
     private final TeamUserJpaRepository teamUserJpaRepository;
     private final TeamReviewJpaRepository teamReviewJpaRepository;
     private final TeamReviewQuerydslRepository teamReviewQuerydslRepository;
 
     @Transactional(readOnly = true)
     public TeamReviewResponse getTeamReview(
-        Long teamId, Long lastTeamReviewId
+        Long userId, Long teamId, Long lastTeamReviewId
     ) {
+        privateTeamValidation(userId, teamId);
+
         var reviews = teamReviewQuerydslRepository.findTeamReviewByTeamIdAndId(teamId, lastTeamReviewId);
         Boolean hasNext = reviews.size() > PAGE_SIZE;
         Integer size = hasNext ? PAGE_SIZE : reviews.size();
@@ -65,6 +72,19 @@ public class TeamReviewService {
         teamReviewJpaRepository.delete(teamReview);
     }
 
+    private void privateTeamValidation(Long userId, Long teamId) {
+        Team team = findTeamById(teamId);
+        if (team.getPrivateStatus().equals(PRIVATE)) {
+            privateGuestUserValidation(userId);
+            getTeamUser(teamId, userId);
+        }
+    }
+
+    private Team findTeamById(Long teamId) {
+        return teamJpaRepository.findTeamById(teamId)
+            .orElseThrow(() -> new TeamException(NOT_FOUND));
+    }
+
     private void reviewValidation(TeamReview teamReview, TeamUser teamUser) {
         if (!teamReview.getTeamUserId().equals(teamUser.getId())) {
             throw new TeamException(NOT_FOUND);
@@ -79,5 +99,11 @@ public class TeamReviewService {
     private TeamUser getTeamUser(Long teamId, Long userId) {
         return teamUserJpaRepository.findByTeamIdAndUserId(teamId, userId)
             .orElseThrow(() -> new TeamException(NOT_FOUND));
+    }
+
+    private void privateGuestUserValidation(Long userId) {
+        if (userId == null) {
+            throw new TeamException(INVALID_REQUEST);
+        }
     }
 }
