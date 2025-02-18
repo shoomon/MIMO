@@ -55,7 +55,6 @@ public class ChatMessageController {
         }
 
         Long userId = Long.valueOf(jwtUtil.getSubject(token));
-        System.out.println(userId);
         if (chatroomUserService.isMember(roomId, userId)) {
             RedisChatMessage redisMessage = new RedisChatMessage(
                     roomId,
