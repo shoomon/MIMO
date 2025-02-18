@@ -2,11 +2,14 @@ import { ProfileImageProps } from '../ProfileImage/ProfileImage';
 import MyInfoDropDownView from './MyInfoDropDown.view';
 import { useTokenStore } from './../../../stores/tokenStore';
 import { customFetch } from '@/apis/customFetch';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface MyInfoDropDownProps {
     userInfo?: ProfileImageProps;
     active: boolean;
     addStyle: string;
+    setActive: React.Dispatch<React.SetStateAction<boolean>>;
+    setLogin: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const logoutapi = async (): Promise<void> => {
@@ -15,7 +18,7 @@ const logoutapi = async (): Promise<void> => {
             method: 'POST',
             credentials: 'include',
         });
-        alert('로그아웃');
+
         console.log('로그아웃됨');
     } catch (error) {
         console.error('Error fetching area teams:', error);
@@ -23,24 +26,26 @@ const logoutapi = async (): Promise<void> => {
     }
 };
 
-const NoDataView = () => {
-    return <div className="text-text text-sm">유저 정보가 없습니다.</div>;
-};
-
 const MyInfoDropDown = ({
     userInfo,
     active,
     addStyle,
+    setActive,
+    setLogin,
 }: MyInfoDropDownProps) => {
     const { logout } = useTokenStore();
+    const queryClient = useQueryClient();
 
     if (!userInfo) {
-        return <NoDataView />;
+        return;
     }
 
     const handleLogout = () => {
         logout();
         logoutapi();
+        queryClient.removeQueries({ queryKey: ['userInfo'] });
+        setActive(false);
+        setLogin(false);
     };
 
     return (

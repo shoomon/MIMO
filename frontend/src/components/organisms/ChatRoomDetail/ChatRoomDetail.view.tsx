@@ -22,37 +22,41 @@ const ChatRoomDetailView = ({
 }: ChatRoomDetailProps) => {
     const chatContainerRef = useRef<HTMLDivElement>(null);
     const scrollToBottom = () => {
-        if(chatContainerRef.current){
-            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+        if (chatContainerRef.current) {
+            chatContainerRef.current.scrollTop =
+                chatContainerRef.current.scrollHeight;
         }
-    }
+    };
     const handleMessageSent = () => {
         setTimeout(scrollToBottom, 250);
-    }
+    };
 
     useEffect(() => {
-
-        if(!chatData){
+        if (!chatData) {
             return;
         }
 
-        console.log("채팅 데이터 가져오기", chatData[chatData.length - 1]);
+        console.log('채팅 데이터 가져오기', chatData[chatData.length - 1]);
         const lastData = chatData[chatData.length - 1];
 
         const lastRead = async () => {
-            try{
-                await lastReadChatAPI({lastReadChatId: lastData.item.id, chatroomId: chatroomId, lastReadDateTime:lastData.item.timestamp});
-                console.log("읽기 성공");
-            }catch(error){
+            try {
+                await lastReadChatAPI({
+                    lastReadChatId: lastData.item.id,
+                    chatroomId: chatroomId,
+                    lastReadDateTime: lastData.item.timestamp,
+                });
+                console.log('읽기 성공');
+            } catch (error) {
                 console.error(error);
             }
-        }
+        };
 
         lastRead();
         handleMessageSent();
 
         return;
-    },[chatData])
+    }, [chatData]);
 
     return (
         <section className="flex w-full flex-col border border-gray-200 bg-white">
@@ -75,12 +79,23 @@ const ChatRoomDetailView = ({
                     <span>영상 통화</span>
                 </Link>
             </div>
-            <div ref={chatContainerRef} className="flex h-full w-full flex-col gap-2.5 overflow-y-scroll border-t border-gray-200 p-6">
-                {chatData && chatData.map((data) => {
-                    return <ChatItemView {...data} key={data.item.timestamp} />;
-                })}
+            <div
+                ref={chatContainerRef}
+                className="flex h-full w-full flex-col gap-2.5 overflow-y-scroll border-t border-gray-200 p-6"
+            >
+                {chatData &&
+                    chatData.map((data) => {
+                        return (
+                            <ChatItemView {...data} key={data.item.timestamp} />
+                        );
+                    })}
             </div>
-            {chatroomName && <ChatInput chatroomId={chatroomId} onMessageSent={handleMessageSent}/>}
+            {chatroomName && (
+                <ChatInput
+                    chatroomId={chatroomId}
+                    onMessageSent={handleMessageSent}
+                />
+            )}
         </section>
     );
 };

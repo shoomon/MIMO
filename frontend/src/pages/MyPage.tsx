@@ -1,6 +1,7 @@
+import BasicInputModal from '@/components/molecules/BasicInputModal/BasicInputModal';
+import useCharge from '@/hooks/useCharge';
 import { getMyAllInfoAPI } from '@/apis/AuthAPI';
 import { useQuery } from '@tanstack/react-query';
-import { useEffect } from 'react';
 import BaseLayout from './layouts/BaseLayout';
 import BodyLayout_24 from './layouts/BodyLayout_24';
 import { Icon, RatingStar, Title } from '@/components/atoms';
@@ -8,16 +9,14 @@ import { dateParsing } from '@/utils';
 import { Link } from 'react-router-dom';
 
 const MyPage = () => {
+    const { isOpen, handleConfirm, handleCharge, handleCancel } = useCharge();
+
     const { data, isSuccess } = useQuery({
         queryKey: ['myAllData'],
         queryFn: getMyAllInfoAPI,
         staleTime: 1000 * 30,
         gcTime: 1000 * 60,
     });
-
-    useEffect(() => {
-        console.log(data);
-    }, [data, isSuccess]);
 
     const displayedBoard = Array.isArray(data?.userBoard)
         ? data.userBoard.length > 3
@@ -60,7 +59,27 @@ const MyPage = () => {
                     <div>별점 정보가 없습니다.</div>
                 )}
 
-                <div>점프햄이 구현</div>
+                <div>
+                    <div>
+                        <h1>마이페이지</h1>
+                        <button
+                            type="button"
+                            className="bg-brand-primary-300 cursor-pointer p-2 text-white"
+                            onClick={handleCharge}
+                        >
+                            충전하기
+                        </button>
+                        <BasicInputModal
+                            isOpen={isOpen}
+                            title="충전 금액을 입력해주세요."
+                            subTitle="100원 이상부터 충전 가능합니다."
+                            inputPlaceholder="금액을 입력하세요."
+                            confirmLabel="충전하기"
+                            onConfirmClick={handleConfirm}
+                            onCancelClick={handleCancel}
+                        />
+                    </div>
+                </div>
 
                 {/* 🟢 내가 쓴 글 & 댓글을 동등한 크기로 유지하는 컨테이너 */}
                 <div className="flex w-full gap-4">
