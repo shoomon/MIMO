@@ -132,7 +132,7 @@ export const getUserPayBalanceAPI = async (): Promise<BalanceResponse> => {
 }
 
 // teamBalance *
-export const getTeamBalanceAPI = async ({teamId}:{teamId:string}): Promise<BalanceResponse> => {
+export const getTeamBalanceAPI = async (teamId:string): Promise<BalanceResponse> => {
 
     try {
         const response = await customFetch(`/account/team/balance?teamId=${teamId}`, {
@@ -152,7 +152,7 @@ export const getTeamBalanceAPI = async ({teamId}:{teamId:string}): Promise<Balan
 }
 
 // teamPayDetails *
-export const getTeamPayDetailAPI = async ({teamId}:{teamId:string}): Promise<AccountDetailsResponse[]> => {
+export const getTeamPayDetailAPI = async (teamId:string): Promise<AccountDetailsResponse[]> => {
 
     try {
         const response = await customFetch(`/account/team/pay-details?teamId=${teamId}`, {

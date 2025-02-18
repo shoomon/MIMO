@@ -1,5 +1,5 @@
 export interface ChargeRequest {
-  amount: string;
+  amount: number;
   impUid: string;
   merchantUid: string;
 }

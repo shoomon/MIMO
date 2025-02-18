@@ -1,6 +1,8 @@
 import { getUserAllDetailsAPI, getUserChargeDetailAPI, getUserDepositDetailAPI, getUserPayBalanceAPI, getUserPayDetailsAPI, getUserTransferDetailAPI } from "@/apis/AccountAPI";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "./useAuth";
+import { useMemo } from "react";
+import { MileageStatusProps } from "@/components/atoms/MileageStatus/MileageStatus";
 
 // Balance : 잔액
 // Deposit : 입금
@@ -56,7 +58,22 @@ const useMyMileage = () => {
     staleTime: 1000 * 20,
   })
 
-  return {myBalance, myDepositList, myChargeList, myTransferList, myPayList, myAllList}
+  const myMileageData:MileageStatusProps[] = useMemo(() => {
+
+    if(!myBalance || !myDepositList || !myPayList){
+      return [];
+    }
+
+    const balanceData = {type:"balance" as const, amount:myBalance};
+    const incomeData = {type:"income" as const, amount: myDepositList.reduce((acc, cur) => acc + cur.amount, 0)}
+    const expenseData = {type:"expense" as const, amount:myPayList.reduce((acc, cur) => acc + cur.amount, 0)}
+
+    return [balanceData, incomeData, expenseData]
+
+  },[myBalance, myDepositList, myPayList])
+
+
+  return {myBalance, myDepositList, myChargeList, myTransferList, myPayList, myAllList, myMileageData}
 }
 
 export default useMyMileage;
