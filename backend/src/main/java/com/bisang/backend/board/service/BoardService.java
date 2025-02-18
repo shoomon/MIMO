@@ -32,6 +32,7 @@ import com.bisang.backend.board.controller.response.BoardDetailResponse;
 import lombok.RequiredArgsConstructor;
 
 import static com.bisang.backend.common.exception.ExceptionCode.*;
+import static com.bisang.backend.s3.service.S3Service.CAT_IMAGE_URI;
 
 @Service
 @RequiredArgsConstructor
@@ -115,7 +116,7 @@ public class BoardService {
             Long boardId = board.getId();
 
             Long comment = commentCount.getOrDefault(boardId, 0L);
-            String imageUri = imageUriList.getOrDefault(boardId, "defaultImageUri");
+            String imageUri = imageUriList.getOrDefault(boardId, CAT_IMAGE_URI);
             ProfileNicknameDto user = userList.getOrDefault(boardId, new ProfileNicknameDto(0L, "", ""));
 
             list.add(new SimpleBoardListDto(
