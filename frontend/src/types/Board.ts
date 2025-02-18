@@ -1,15 +1,15 @@
 export interface SimpleBoardDTO {
-  boardId: number;
-  title: string;
-  teamName: string;
-  writeDate: string;
+    boardId: number;
+    teamBoardId: number;
+    boardTitle: string;
+    boardCreatedAt: string;
+    teamId: number;
+    teamName: string;
 }
 
 export interface SimpleCommentDTO {
-
-  userId: number;
-  title: string;
-  content: string;
-  writeDate: string;
-
+    boardTeamInfo: SimpleBoardDTO;
+    commentContent: string;
+    createdAt: string;
+    imageUri: string;
 }

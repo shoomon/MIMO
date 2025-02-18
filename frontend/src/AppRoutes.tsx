@@ -35,6 +35,7 @@ import BoardPosts from './pages/Board/BoardPosts';
 import TeamSchedulesAdHoc from './pages/TeamSchedule/TeamSchedulesAdHoc';
 import TeamSchedulesRegular from './pages/TeamSchedule/TeamSchedulesRegular';
 import TeamSchedulesClosed from './pages/TeamSchedule/TeamSchedulesClosed';
+import Profile from './pages/Profile';
 
 const AppRoutes = () => {
     return (
@@ -54,6 +55,12 @@ const AppRoutes = () => {
                 <Route path="/mypage" element={<MyPage />} />
                 {/* 채팅  */}
                 <Route path="/chat" element={<ChatPage />} />
+                {/* 유저 프로필 프로필에 Id가 없으면 마이페이지로 간다잇  */}
+                <Route
+                    path="/profile"
+                    element={<Navigate to="/mypage" replace />}
+                />
+                <Route path="/profile/:userId" element={<Profile />} />
 
                 {/* 팀  */}
                 <Route path="/team">

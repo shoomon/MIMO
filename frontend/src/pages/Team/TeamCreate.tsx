@@ -97,8 +97,8 @@ const steps: Step[] = [
         label: '비공개 여부',
         inputType: 'select',
         options: [
-            { value: 'PRIVATE', label: '공개' },
-            { value: 'PUBLIC', label: '비공개' },
+            { value: 'PUBLIC', label: '공개' },
+            { value: 'PRIVATE', label: '비공개' },
         ],
         validator: (v) => !!v.trim(),
     },

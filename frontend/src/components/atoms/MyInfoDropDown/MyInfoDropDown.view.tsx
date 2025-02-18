@@ -26,10 +26,7 @@ const MyInfoDropDownView = ({
                 <ProfileImage {...userInfo} size={20} />
                 <span className="">{userInfo.nickname}</span>
             </div>
-            <Link
-                to={`/${userInfo.userId}`}
-                className="px-2 py-1.5 hover:bg-gray-100"
-            >
+            <Link to={`/mypage`} className="px-2 py-1.5 hover:bg-gray-100">
                 마이페이지
             </Link>
             <button

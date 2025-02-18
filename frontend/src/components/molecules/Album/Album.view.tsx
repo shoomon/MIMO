@@ -2,6 +2,7 @@ import { Title } from '@/components/atoms';
 import { Link } from 'react-router-dom';
 
 export interface AlbumItemProps {
+    teamBoardId: string;
     boardId: string;
     imageUri: string;
 }
@@ -11,7 +12,7 @@ export interface AlbumProps {
     images: AlbumItemProps[];
 }
 
-const AlbumView = ({ images = [], id }: AlbumProps) => {
+const AlbumView = ({ images = [] }: AlbumProps) => {
     if (!Array.isArray(images) || images.length === 0) {
         return <p>앨범에 아무것도 없어요</p>;
     }
@@ -22,7 +23,10 @@ const AlbumView = ({ images = [], id }: AlbumProps) => {
             <ul className="grid w-full grid-cols-3 gap-2">
                 {images.map((item) => (
                     <li key={item.boardId}>
-                        <Link to={`${item.boardId}`} className="inline-block">
+                        <Link
+                            to={`board/${item.teamBoardId}/post/${item.boardId}`}
+                            className="inline-block"
+                        >
                             <img
                                 src={item.imageUri}
                                 alt=""

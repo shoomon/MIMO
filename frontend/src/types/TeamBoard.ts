@@ -13,7 +13,7 @@ export interface Post {
     boardId: number;
     userProfileUri: string;
     userNickname: string;
-    postTitle: string;
+    boardTitle: string;
     imageUri: string;
     likeCount: number;
     viewCount: number;
