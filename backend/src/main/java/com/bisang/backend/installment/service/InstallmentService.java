@@ -15,7 +15,7 @@ import com.bisang.backend.installment.domain.Installment;
 import com.bisang.backend.installment.repository.InstallmentJpaRepository;
 import com.bisang.backend.team.annotation.TeamLeader;
 import com.bisang.backend.team.annotation.TeamMember;
-import com.bisang.backend.transaction.repository.AccountQuerydslRepository;
+import com.bisang.backend.installment.repository.InstallmentQuerydslRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class InstallmentService {
         private final InstallmentJpaRepository installmentJpaRepository;
-        private final AccountQuerydslRepository accountQuerydslRepository;
+        private final InstallmentQuerydslRepository accountQuerydslRepository;
 
         @TeamLeader
         public void createInstallment(

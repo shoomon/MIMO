@@ -2,10 +2,7 @@ package com.bisang.backend.transaction.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.bisang.backend.auth.annotation.AuthUser;
 import com.bisang.backend.transaction.controller.request.ChargeRequest;
@@ -52,7 +49,12 @@ public class TransactionController {
             @AuthUser User user,
             @RequestBody InstallmentRequest installmentRequest
     ) {
-        transactionService.installmentBalance(installmentRequest, user);
+        transactionService.installmentBalance(
+                user.getId(),
+                installmentRequest.getTeamId(),
+                installmentRequest,
+                user
+        );
 
         return ResponseEntity
                 .status(HttpStatus.OK)
