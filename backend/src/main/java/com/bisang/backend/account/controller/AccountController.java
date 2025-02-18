@@ -34,7 +34,7 @@ public class AccountController {
                 .body(accountService.getUserBalance(user));
     }
 
-    @GetMapping("/user/deposit/details")
+    @GetMapping("/user/deposit-details")
     public ResponseEntity<List<AccountDetailsResponse>> getUserDepositAccountDetails(
             @AuthUser User user
     ) {
@@ -43,7 +43,7 @@ public class AccountController {
                 .body(accountDetailsService.getUserDepositAccountDetails(user));
     }
 
-    @GetMapping("/user/charge/details")
+    @GetMapping("/user/charge-details")
     public ResponseEntity<List<AccountDetailsResponse>> getUserChargeAccountDetails(
             @AuthUser User user
     ) {
@@ -52,7 +52,7 @@ public class AccountController {
                 .body(accountDetailsService.getUserChargeAccountDetails(user));
     }
 
-    @GetMapping("/user/transfer/details")
+    @GetMapping("/user/transfer-details")
     public ResponseEntity<List<AccountDetailsResponse>> getUserTransferAccountDetails(
             @AuthUser User user
     ) {
@@ -61,7 +61,7 @@ public class AccountController {
                 .body(accountDetailsService.getUserTransferAccountDetails(user));
     }
 
-    @GetMapping("/user/pay/details")
+    @GetMapping("/user/pay-details")
     public ResponseEntity<List<AccountDetailsResponse>> getUserPayAccountDetails(
             @AuthUser User user
     ) {
@@ -70,7 +70,7 @@ public class AccountController {
                 .body(accountDetailsService.getUserPayAccountDetails(user));
     }
 
-    @GetMapping("/user/all/details")
+    @GetMapping("/user/all-details")
     public ResponseEntity<List<AccountDetailsResponse>> getUserAllAccountDetails(
             @AuthUser User user
     ) {
@@ -88,16 +88,7 @@ public class AccountController {
                 .body(accountService.getTeamBalance(teamId));
     }
 
-    @GetMapping("/team/deposit/details")
-    public ResponseEntity<List<AccountDetailsResponse>> getTeamDepositAccountDetails(
-            @RequestParam(name = "teamId") Long teamId
-    ) {
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(accountDetailsService.getTeamDepositAccountDetails(teamId));
-    }
-
-    @GetMapping("/team/pay/details")
+    @GetMapping("/team/pay-details")
     public ResponseEntity<List<AccountDetailsResponse>> getTeamPayAccountDetails(
             @RequestParam(name = "teamId") Long teamId
     ) {

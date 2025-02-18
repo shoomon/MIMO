@@ -17,6 +17,8 @@ public class AccountDetailsResponse {
     private Long amount;
     private String senderAccountNumber;
     private String receiverAccountNumber;
+    private String senderNickname;
+    private String receiverNickname;
     private String memo;
     private TransactionCategory transactionCategory;
     private LocalDateTime createdAt;
