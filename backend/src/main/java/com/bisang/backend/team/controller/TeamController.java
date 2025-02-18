@@ -107,10 +107,7 @@ public class TeamController {
             @Guest User user,
             @RequestParam Long teamId
     ) {
-        Long userId = null;
-        if (user != null) {
-            userId = user.getId();
-        }
+        Long userId = user == null ? null : user.getId();
 
         TeamDto teamInfo = teamService.getTeamGeneralInfo(userId, teamId);
         return ResponseEntity.ok(teamInfo);

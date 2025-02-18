@@ -8,6 +8,7 @@ import static com.bisang.backend.team.domain.QTeamDescription.teamDescription;
 import static com.bisang.backend.team.domain.QTeamReview.teamReview;
 import static com.bisang.backend.team.domain.QTeamTag.teamTag;
 import static com.bisang.backend.team.domain.QTeamUser.teamUser;
+import static com.bisang.backend.team.domain.TeamPrivateStatus.PUBLIC;
 import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparing;
 import static java.util.function.Function.identity;
@@ -152,7 +153,7 @@ public class TeamQuerydslRepository {
                     Expressions.constant(emptyList())
             ))
             .from(team)
-            .where(team.areaCode.eq(areaCode).and(dynamicTeamIdLt))
+            .where(team.privateStatus.eq(PUBLIC), team.areaCode.eq(areaCode).and(dynamicTeamIdLt))
             .orderBy(team.id.desc())
             .limit(SHORT_PAGE_SIZE + 1).fetch();
 
@@ -196,7 +197,7 @@ public class TeamQuerydslRepository {
                     Expressions.constant(emptyList())
             ))
             .from(team)
-            .where(team.category.eq(category).and(dynamicTeamIdLt))
+            .where(team.privateStatus.eq(PUBLIC), team.category.eq(category).and(dynamicTeamIdLt))
             .orderBy(team.id.desc())
             .limit(SHORT_PAGE_SIZE + 1).fetch();
 
