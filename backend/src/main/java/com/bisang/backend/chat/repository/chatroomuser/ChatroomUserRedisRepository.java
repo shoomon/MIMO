@@ -1,5 +1,7 @@
 package com.bisang.backend.chat.repository.chatroomuser;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Set;
 
 import org.springframework.data.redis.core.RedisTemplate;
@@ -12,40 +14,62 @@ import lombok.RequiredArgsConstructor;
 public class ChatroomUserRedisRepository {
 
     private final RedisTemplate<String, Long> redisLongTemplate;
+    private final RedisTemplate<String, Double> redisDoubleTemplate;
 
-    // chatroomId와 userId로 teamUserId를 찾을 수 있도록 해주는 키
-    private static final String chatroomByUserKey = "chatroom:byUser:";
-    // chatroomId와 teamUserId로 userId를 찾을 수 있도록 해주는 키
-    private static final String chatroomByTeamUserKey = "chatroom:byTeamUser:";
     // chatroomId로 해당 채팅방에 속해있는 모든 유저의 userId를 저장하고 가져오는 키
     private static final String teamMemberKey = "teamMember:";
+    private static final String teamEnterScore = "teamEnterScore:";
+    private static final String teamEnterChatId = "teamEnterChatId:";
+    // chatroomId, userId로 유저가 가장 마지막으로 읽은 메시지 score와 id를 저장하고 가져오는 키
+    private static final String lastReadScoreKey = "lastReadScore:";
+    private static final String lastReadIdKey = "lastReadId:";
 
-
-    public void insertMember(Long teamId, Long userId, Long teamUserId) {
-
-        redisLongTemplate.opsForSet().add(teamMemberKey + teamId, userId);
-
-        redisLongTemplate.opsForHash().put(chatroomByUserKey + teamId, "userId:" + userId, teamUserId);
-        redisLongTemplate.opsForHash().put(chatroomByTeamUserKey + teamId, "teamUserId:" + teamUserId, userId);
+    public void insertMember(Long chatroomId, Long userId) {
+        redisLongTemplate.opsForSet().add(teamMemberKey + chatroomId, userId);
     }
 
-    public void deleteMember(Long teamId, Long userId, Long teamUserId) {
-        redisLongTemplate.opsForSet().remove(teamMemberKey + teamId, userId);
-        redisLongTemplate.opsForHash().delete(chatroomByUserKey + teamId, "userId:" + userId);
-        redisLongTemplate.opsForHash().delete(chatroomByTeamUserKey + teamId, "teamUserId:" + teamUserId);
+    public void insertTeamEnterScore(Long chatroomId, Long userId, Double score, Long enterChatId) {
+        redisDoubleTemplate.opsForValue().set(teamEnterScore + chatroomId + ":" + userId, score);
+        redisLongTemplate.opsForValue().set(teamEnterChatId + chatroomId + ":" + userId, enterChatId);
     }
 
-    public boolean isMember(Long teamId, Long userId, Long teamUserId) {
-        String key = chatroomByUserKey + teamId;
-        return redisLongTemplate.opsForHash().get(key, "userId:" + userId) == teamUserId;
+    public void insertTeamEnterChatId(Long chatroomId, Long userId, Long enterChatId) {
+        redisLongTemplate.opsForValue().set(teamEnterChatId + chatroomId + ":" + userId, enterChatId);
     }
 
-    public Set<Long> getTeamMembers(long teamId) {
-        return redisLongTemplate.opsForSet().members(teamMemberKey + teamId);
+    public void deleteMember(Long chatroomId, Long userId) {
+        redisLongTemplate.opsForSet().remove(teamMemberKey + chatroomId, userId);
     }
 
-    public Long getTeamUserId(Long userId, Long teamId) {
-        String key = chatroomByUserKey + teamId;
-        return (Long)redisLongTemplate.opsForHash().get(key, "userId:" + userId);
+    public Double getTeamEnterScore(Long chatroomId, Long userId) {
+        return redisDoubleTemplate.opsForValue().get(teamEnterScore + chatroomId + ":" + userId);
+    }
+
+    public Long getTeamEnterChatId(Long chatroomId, Long userId) {
+        return redisLongTemplate.opsForValue().get(teamEnterChatId + chatroomId + ":" + userId);
+    }
+
+    public boolean isMember(Long chatroomId, Long userId) {
+        return Boolean.TRUE.equals(redisLongTemplate.opsForSet().isMember(teamMemberKey + chatroomId, userId));
+    }
+
+    public Set<Long> getTeamMembers(long chatroomId) {
+        return redisLongTemplate.opsForSet().members(teamMemberKey + chatroomId);
+    }
+
+    public void insertLastReadScore(Long chatroomId, Long userId, LocalDateTime lastDateTime, Long lastChatId) {
+        double score = lastDateTime
+                .toInstant(ZoneOffset.ofTotalSeconds(0))
+                .toEpochMilli() + (lastChatId % 1000) / 1000.0;
+        redisDoubleTemplate.opsForValue().set(lastReadScoreKey + chatroomId + ":" + userId, score);
+        redisLongTemplate.opsForValue().set(lastReadIdKey + chatroomId + ":" + userId, lastChatId);
+    }
+
+    public Double getLastReadScore(Long chatroomId, Long userId) {
+        return redisDoubleTemplate.opsForValue().get(lastReadScoreKey + chatroomId + ":" + userId);
+    }
+
+    public Long getLastReadChatId(Long chatroomId, Long userId) {
+        return redisLongTemplate.opsForValue().get(lastReadIdKey + chatroomId + ":" + userId);
     }
 }

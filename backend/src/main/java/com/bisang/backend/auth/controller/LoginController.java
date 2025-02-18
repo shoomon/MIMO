@@ -54,6 +54,25 @@ public class LoginController {
     private final UserService userService;
     private final OAuth2Service oAuth2Service;
 
+    @PostMapping("/yame")
+    public ResponseEntity<AccessTokenResponse> loginYame(
+            @RequestParam("email") String email,
+            @RequestParam("name") String name,
+            HttpServletResponse response
+    ) {
+        UserTokens userTokens = oAuth2Service.loginYame(email, name);
+
+        Cookie cookie = new Cookie("refresh-token", userTokens.getRefreshToken());
+        cookie.setMaxAge(Math.toIntExact(refreshTokenExpiry));
+        cookie.setHttpOnly(true);
+        cookie.setSecure(false);
+        cookie.setPath("/");
+
+        response.addCookie(cookie);
+
+        return ResponseEntity.ok(new AccessTokenResponse(userTokens.getAccessToken()));
+    }
+
     @GetMapping
     public void loginWithGoogle(HttpServletResponse response) throws IOException {
         String redirectUri = encodeString(this.redirectUri);
@@ -97,8 +116,15 @@ public class LoginController {
 
     @PostMapping(value = "/logout")
     public ResponseEntity<Void> logout(
-            @CookieValue("refresh-token") String refreshToken
+            @CookieValue("refresh-token") String refreshToken,
+            HttpServletResponse response
     ) {
+        Cookie cookie = new Cookie("refresh-token", null);
+        cookie.setPath("/");       // 생성할 때 사용한 path와 동일해야 합니다.
+        cookie.setHttpOnly(true);  // HttpOnly 옵션 설정 (선택 사항)
+        cookie.setMaxAge(0);
+
+        response.addCookie(cookie);
 
         oAuth2Service.logout(refreshToken);
         return ResponseEntity.noContent().build();

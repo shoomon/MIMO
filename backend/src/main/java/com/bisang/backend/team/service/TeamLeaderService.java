@@ -2,63 +2,113 @@ package com.bisang.backend.team.service;
 
 import static com.bisang.backend.common.exception.ExceptionCode.*;
 import static com.bisang.backend.common.utils.PageUtils.PAGE_SIZE;
+import static com.bisang.backend.team.domain.TagStatus.NORMAL;
 import static com.bisang.backend.team.domain.TeamNotificationStatus.ACTIVE;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
 import java.util.List;
+import java.util.Optional;
 
-import org.apache.commons.lang3.RandomStringUtils;
+import com.bisang.backend.team.controller.dto.MyTeamSpecificDto;
+import com.bisang.backend.team.domain.Tag;
+import com.bisang.backend.team.domain.TeamTag;
+import com.bisang.backend.team.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bisang.backend.chat.service.ChatroomService;
+import com.bisang.backend.chat.service.ChatroomUserService;
 import com.bisang.backend.common.exception.TeamException;
+import com.bisang.backend.common.utils.StringUtils;
 import com.bisang.backend.invite.domain.TeamInvite;
 import com.bisang.backend.invite.repository.TeamInviteJpaRepository;
 import com.bisang.backend.team.annotation.TeamCoLeader;
 import com.bisang.backend.team.annotation.TeamLeader;
-import com.bisang.backend.team.controller.dto.TeamInviteDto;
 import com.bisang.backend.team.controller.dto.TeamUserDto;
 import com.bisang.backend.team.controller.response.TeamUserResponse;
 import com.bisang.backend.team.domain.Team;
 import com.bisang.backend.team.domain.TeamUser;
 import com.bisang.backend.team.domain.TeamUserRole;
-import com.bisang.backend.team.repository.TeamJpaRepository;
-import com.bisang.backend.team.repository.TeamUserJpaRepository;
-import com.bisang.backend.team.repository.TeamUserQuerydslRepository;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class TeamLeaderService {
+    private final TeamQuerydslRepository teamQuerydslRepository;
+    private final TeamSearchQuerydslRepository teamSearchQuerydslRepository;
     private final TeamJpaRepository teamJpaRepository;
     private final TeamUserJpaRepository teamUserJpaRepository;
     private final TeamUserQuerydslRepository teamUserQuerydslRepository;
     private final TeamInviteJpaRepository teamInviteJpaRepository;
-    private final ChatroomService chatroomService;
+    private final ChatroomUserService chatroomUserService;
+    private final TagJpaRepository tagJpaRepository;
+    private final TeamTagJpaRepository teamTagJpaRepository;
+
+    @TeamLeader
+    @Transactional
+    public void deleteTag(Long userId, Long teamId, String tag) {
+        Optional<TeamTag> optionalTeamTag = teamSearchQuerydslRepository.findByName(teamId, tag);
+        if (optionalTeamTag.isPresent()) {
+            if (tagJpaRepository.findByName(tag).get().getStatus().equals(NORMAL)) {
+                throw new TeamException(INVALID_REQUEST);
+            }
+            TeamTag findTeamTag = optionalTeamTag.get();
+            teamTagJpaRepository.delete(optionalTeamTag.get());
+            return;
+        }
+        throw new TeamException(NOT_FOUND);
+    }
+
+    @TeamLeader
+    @Transactional
+    public void addTag(Long userId, Long teamId, String tag) {
+        Optional<TeamTag> optionalTeamTag = teamSearchQuerydslRepository.findByName(teamId, tag);
+        if (optionalTeamTag.isPresent()) {
+            throw new TeamException(DUPLICATED_SOURCE);
+        }
+
+        Optional<Tag> optionalTag = tagJpaRepository.findByName(tag);
+        if (optionalTag.isPresent()) {
+            Tag getTag = optionalTag.get();
+            if (getTag.getStatus().equals(NORMAL)) {
+                throw new TeamException(INVALID_REQUEST);
+            }
+            teamTagJpaRepository.save(new TeamTag(teamId, getTag.getId()));
+            return;
+        }
+
+        Tag newTag = new Tag(tag);
+        tagJpaRepository.save(newTag);
+        teamTagJpaRepository.save(new TeamTag(teamId, newTag.getId()));
+    }
+
+    @TeamLeader
+    @Transactional(readOnly = true)
+    public MyTeamSpecificDto getMyTeamSpecificDto(Long userId, Long teamId) {
+        return teamQuerydslRepository.getMyTeamSpecificInfo(teamId);
+    }
 
     @TeamCoLeader
     @Transactional
     public void approveInviteRequest(Long userId, Long teamId, Long inviteId) {
         TeamInvite teamInvite = findTeamInviteById(inviteId);
         teamInvite.approveInvitation();
-        // TEAM_MEMBER 만들어서 넣어야되는데 안 넣음.
-        // CHATTING 방에 넣기. 여기는 닉네임 어떻게 되는거지?
         teamInviteJpaRepository.save(teamInvite);
 
-        String tmpNickname = RandomStringUtils.randomAlphabetic(10);
+        String tmpNickname = StringUtils.randomAlphaNumeric(10);
         TeamUser teamUser = TeamUser.createTeamMember(teamInvite.getUserId(), teamId, tmpNickname, ACTIVE);
         teamUserJpaRepository.save(teamUser);
+
+        // CHATTING 방에 참여.
+        chatroomUserService.enterChatroom(teamId, userId, tmpNickname);
     }
 
     @TeamCoLeader
     @Transactional
     public void rejectInviteRequest(Long userId, Long teamId, Long inviteId) {
         TeamInvite teamInvite = findTeamInviteById(inviteId);
-        teamInvite.rejectInvitation();
-        teamInviteJpaRepository.save(teamInvite);
+        teamInviteJpaRepository.delete(teamInvite);
     }
 
     @TeamLeader
@@ -86,13 +136,15 @@ public class TeamLeaderService {
     public void deleteUser(Long userId, Long teamId, Long teamUserId) {
         Team team = findTeamById(teamId);
         TeamUser teamUser = findTeamUserById(teamUserId);
+        teamUserInThisTeam(teamId, teamUser);
         leaderCannotDeleteValidation(team, teamUser);
         teamUserJpaRepository.delete(teamUser);
-    }
 
-    private void leaderCannotDeleteValidation(Team team, TeamUser teamUser) {
-        if (team.getTeamLeaderId().equals(teamUser.getUserId())) {
-            throw new TeamException(NOT_DELETE_LEADER);
+        // 채팅방 유저 강퇴
+        chatroomUserService.forceLeave(teamId, teamUser.getUserId());
+        Optional<TeamInvite> teamInvite = teamInviteJpaRepository.findByTeamIdAndUserId(teamId, userId);
+        if (teamInvite.isPresent()) {
+            teamInviteJpaRepository.delete(teamInvite.get());
         }
     }
 
@@ -122,10 +174,16 @@ public class TeamLeaderService {
         );
     }
 
-    @TeamCoLeader
-    @Transactional(readOnly = true)
-    public List<TeamInviteDto> findTeamInviteRequest(Long userId, Long teamId) {
-        return teamUserQuerydslRepository.getTeamInviteInfo(teamId);
+    private void teamUserInThisTeam(Long teamId, TeamUser teamUser) {
+        if (!teamUser.getTeamId().equals(teamId)) {
+            throw new TeamException(INVALID_REQUEST);
+        }
+    }
+
+    private void leaderCannotDeleteValidation(Team team, TeamUser teamUser) {
+        if (team.getTeamLeaderId().equals(teamUser.getUserId())) {
+            throw new TeamException(NOT_DELETE_LEADER);
+        }
     }
 
     private Team findTeamById(Long teamId) {

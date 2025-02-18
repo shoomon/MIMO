@@ -1,6 +1,14 @@
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
 spring:
   application:
     name: backend
+
+  main:
+    allow-bean-definition-overriding: true
 
   # 파일 업로드 용량 제한, resolve-lazily: 스프링 내부 서버까지 응답을 받기 위함.
   servlet:
@@ -22,7 +30,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: ${DB_ID}
     password: ${DB_PASSWORD}
-    url: jdbc:mysql://${DB_URL}/s12p12a504?socketTimeout=2000
+    url: jdbc:mysql://${DB_URL}/s12p12a504
     hikari:
       connection-timeout: 3000
       maximum-pool-size: 2
@@ -38,6 +46,12 @@ spring:
         format_sql: false
         use_sql_comments: false
     database-platform: org.hibernate.dialect.MySQLDialect
+
+  batch:
+    job:
+      enabled: false
+    jdbc:
+      initialize-schema: always
 
 cloud:
   aws:
@@ -61,5 +75,11 @@ oauth2:
       - openid
 
 openvidu:
-  url: "https://i12a504.p.ssafy.io"
+  url: "https://i12a504.p.ssafy.io:8443"
   secret: "MY_SECRET"
+
+server:
+  servlet:
+    encoding:
+      force-response: true
+      charset: UTF-8

@@ -2,15 +2,12 @@ package com.bisang.backend.transaction.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.bisang.backend.auth.annotation.AuthUser;
 import com.bisang.backend.transaction.controller.request.ChargeRequest;
+import com.bisang.backend.installment.controller.request.InstallmentRequest;
 import com.bisang.backend.transaction.controller.request.PaymentRequest;
-import com.bisang.backend.transaction.controller.request.QrCodeRequest;
 import com.bisang.backend.transaction.controller.request.TransferRequest;
 import com.bisang.backend.transaction.service.TransactionService;
 import com.bisang.backend.user.domain.User;
@@ -24,46 +21,54 @@ public class TransactionController {
     private final TransactionService transactionService;
 
     @PostMapping("/charge")
-    public void chargeBalance(
+    public ResponseEntity<Void> chargeBalance(
             @AuthUser User user,
             @RequestBody ChargeRequest chargeRequest
     ) {
-        transactionService.chargeBalance(TransactionService.ADMIN_ACCOUNT_NUMBER, chargeRequest);
+        transactionService.chargeBalance(TransactionService.ADMIN_ACCOUNT_NUMBER, chargeRequest, user);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(null);
     }
 
     @PostMapping("/transfer")
-    public void transferBalance(
+    public ResponseEntity<Void> transferBalance(
             @AuthUser User user,
             @RequestBody TransferRequest transferRequest
     ) {
-        transactionService.transferBalance(transferRequest);
-    }
+        transactionService.transferBalance(transferRequest, user);
 
-    @PostMapping("/payment/qrcode/team")
-    public ResponseEntity<String> generateTeamQrCodeDetails(
-            @AuthUser User user,
-            @RequestBody QrCodeRequest qrCodeRequest
-    ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(transactionService.generateExpiringUuidForTeam(qrCodeRequest));
+                .body(null);
     }
 
-    @PostMapping("/payment/qrcode/user")
-    public ResponseEntity<String> generateUserQrCodeDetails(
+    @PostMapping("/installment")
+    public ResponseEntity<Void> installmentBalance(
             @AuthUser User user,
-            @RequestBody QrCodeRequest qrCodeRequest
+            @RequestBody InstallmentRequest installmentRequest
     ) {
+        transactionService.installmentBalance(
+                user.getId(),
+                installmentRequest.getTeamId(),
+                installmentRequest,
+                user
+        );
+
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(transactionService.generateExpiringUuidForUser(qrCodeRequest));
+                .body(null);
     }
 
-    @PostMapping("/payment/pay")
-    public void pay(
-            @AuthUser User user,
+    @PostMapping("/pay")
+    public ResponseEntity<Void> pay(
             @RequestBody PaymentRequest paymentRequest
     ) {
         transactionService.pay(TransactionService.ADMIN_ACCOUNT_NUMBER, paymentRequest);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(null);
     }
 }

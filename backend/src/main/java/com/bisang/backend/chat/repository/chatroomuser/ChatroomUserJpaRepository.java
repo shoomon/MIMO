@@ -1,5 +1,7 @@
 package com.bisang.backend.chat.repository.chatroomuser;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,11 +15,15 @@ public interface ChatroomUserJpaRepository extends JpaRepository<ChatroomUser, L
     @Query("SELECT u.userId FROM ChatroomUser u WHERE u.chatroomId = :teamId")
     Set<Long> findUserIdsByTeamId(@Param("teamId") Long teamId);
 
-    @Query("SELECT u.nickname FROM ChatroomUser u WHERE u.id = :id")
-    String findNicknameById(@Param("id") Long id);
+    @Query("SELECT u.nickname FROM ChatroomUser u WHERE u.chatroomId = :chatroomId AND u.userId = :userId")
+    String findNicknameByChatroomIdAndUserId(@Param("chatroomId") Long chatroomId, @Param("userId") Long userId);
 
-    @Query("SELECT u.id FROM ChatroomUser u WHERE u.userId = :userId AND u.chatroomId = :teamId")
-    Long findTeamUserIdByUserIdAndChatroomId(@Param("userId") Long userId, @Param("teamId") Long teamId);
+    boolean existsByUserIdAndChatroomId(Long userId, Long teamId);
 
-    boolean existsByIdAndUserIdAndChatroomId(Long teamUserId, Long userId, Long chatroomId);
+    Optional<ChatroomUser> findByChatroomIdAndUserId(Long chatroomId, Long userId);
+
+    void deleteByChatroomIdAndUserId(Long teamId, Long userId);
+
+    @Query("SELECT c.chatroomId FROM ChatroomUser c WHERE c.userId = :userId")
+    List<Long> findAllChatroomIdsByUserId(long userId);
 }
