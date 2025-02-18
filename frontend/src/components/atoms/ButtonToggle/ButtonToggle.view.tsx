@@ -18,11 +18,12 @@ const ButtonToggleView = ({
 }: ButtonToggleViewProps) => {
     return (
         <button
+            type="button"
             onClick={onClick}
             className={`h-fit w-fit justify-center rounded-sm px-[8px] py-[2px] text-lg font-bold${
                 active
                     ? ' ' +
-                      'outline-brand-primary-400 bg-white text-black outline-2'
+                      'outline-brand-primary-400 bg-white text-black outline-3'
                     : ' ' +
                       'text-dark border-black bg-gray-50 opacity-60 hover:bg-gray-200'
             }`}

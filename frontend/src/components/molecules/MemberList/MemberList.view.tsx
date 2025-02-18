@@ -1,6 +1,11 @@
 import { TeamUserRole } from '@/types/Team';
 import type { ProfileImageProps } from './../../atoms/ProfileImage/ProfileImage';
 import { ButtonDefault } from '@/components/atoms';
+import BasicInputModal from '../BasicInputModal/BasicInputModal';
+import { useState } from 'react';
+import BasicModal from '../BasicModal/BasicModal';
+import { Navigate, useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 
 export interface MemberListViewProps {
     parsedDate?: string;
@@ -22,6 +27,13 @@ export interface MemberListViewProps {
     currentUserRole: TeamUserRole;
 }
 
+type ModalType =
+    | 'editRole'
+    | 'kickMember'
+    | 'acceptMember'
+    | 'rejectMember'
+    | null;
+
 const MemberListView = ({
     parsedDate,
     userInfo,
@@ -37,6 +49,11 @@ const MemberListView = ({
 }: MemberListViewProps) => {
     // 현재 접속한 사용자가 LEADER일 때만 액션 버튼 렌더링
     const canPerformActions = currentUserRole === 'LEADER';
+    // 어떤 모달이 열릴지 상태로 관리 (없으면 null)
+    const [activeModal, setActiveModal] = useState<ModalType>(null);
+    const closeModal = () => setActiveModal(null);
+    const Navigate = useNavigate();
+    const queryClient = useQueryClient();
 
     return (
         <div className="flex items-end justify-between">
@@ -61,25 +78,29 @@ const MemberListView = ({
                     </span>
                 </div>
             </div>
+
             {canPerformActions && (
                 <div>
                     {mode === 'member' && (
                         <div className="flex gap-3">
-                            {canPerformActions &&
-                                !(targetRole === 'LEADER') && (
-                                    <>
-                                        <ButtonDefault
-                                            type="default"
-                                            content="권한 수정"
-                                            onClick={onEditRole}
-                                        />
-                                        <ButtonDefault
-                                            type="fail"
-                                            content="멤버 추방"
-                                            onClick={onKickMember}
-                                        />
-                                    </>
-                                )}
+                            {canPerformActions && targetRole !== 'LEADER' && (
+                                <>
+                                    <ButtonDefault
+                                        type="default"
+                                        content="권한 수정"
+                                        onClick={() =>
+                                            setActiveModal('editRole')
+                                        }
+                                    />
+                                    <ButtonDefault
+                                        type="fail"
+                                        content="멤버 추방"
+                                        onClick={() =>
+                                            setActiveModal('kickMember')
+                                        }
+                                    />
+                                </>
+                            )}
                         </div>
                     )}
                     {mode === 'invite' && (
@@ -88,19 +109,83 @@ const MemberListView = ({
                                 <ButtonDefault
                                     type="default"
                                     content="승인"
-                                    onClick={onAcceptMember}
+                                    onClick={() =>
+                                        setActiveModal('acceptMember')
+                                    }
                                 />
                             )}
                             {onRejectMember && (
                                 <ButtonDefault
                                     type="fail"
                                     content="거절"
-                                    onClick={onRejectMember}
+                                    onClick={() =>
+                                        setActiveModal('rejectMember')
+                                    }
                                 />
                             )}
                         </div>
                     )}
                 </div>
+            )}
+
+            {/* 각 액션별 모달 렌더링 */}
+            {activeModal === 'editRole' && (
+                <BasicModal
+                    isOpen={true}
+                    title="권한 수정"
+                    subTitle="멤버의 권한을 수정하시겠습니까?"
+                    onConfirmClick={() => {
+                        onEditRole?.();
+                        closeModal();
+                        Navigate(0);
+                    }}
+                    onCancelClick={closeModal}
+                />
+            )}
+            {activeModal === 'kickMember' && (
+                <BasicModal
+                    isOpen={true}
+                    title="멤버 추방"
+                    subTitle="정말 멤버를 추방하시겠습니까?"
+                    onDeleteClick={() => {
+                        onKickMember?.();
+                        closeModal();
+                        queryClient.invalidateQueries({
+                            queryKey: ['teamUsers'],
+                        });
+                    }}
+                    onCancelClick={closeModal}
+                />
+            )}
+            {activeModal === 'acceptMember' && (
+                <BasicModal
+                    isOpen={true}
+                    title="가입 신청 승인"
+                    subTitle="회원 가입 신청을 승인하시겠습니까?"
+                    onConfirmClick={() => {
+                        onAcceptMember?.();
+                        closeModal();
+                        queryClient.invalidateQueries({
+                            queryKey: ['Invites'],
+                        });
+                    }}
+                    onCancelClick={closeModal}
+                />
+            )}
+            {activeModal === 'rejectMember' && (
+                <BasicModal
+                    isOpen={true}
+                    title="가입 신청 거절"
+                    subTitle="회원 가입 신청을 거절하시겠습니까?"
+                    onDeleteClick={() => {
+                        onRejectMember?.();
+                        closeModal();
+                        queryClient.invalidateQueries({
+                            queryKey: ['Invites'],
+                        });
+                    }}
+                    onCancelClick={closeModal}
+                />
             )}
         </div>
     );

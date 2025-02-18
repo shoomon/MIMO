@@ -7,9 +7,12 @@ import {
     TeamInfosResponse,
     TeamInvitesResponse,
     TeamNotificationStatus,
+    TeamPrivateStatus,
+    TeamRecruitStatus,
     TeamScheduleSpecificResponse,
     TeamSchedulesResponse,
     TeamUserResponse,
+    UpdateTeamRequest,
 } from '@/types/Team';
 
 export const createTeam = async (team: TeamCreateRequest): Promise<void> => {
@@ -166,7 +169,7 @@ export const rejectMember = async (
             inviteId,
         });
 
-        await customFetch('team-leader/invite-reject', {
+        await customFetch('/team-leader/invite-reject', {
             method: 'PATCH',
             body,
         });
@@ -618,6 +621,58 @@ export const createBoardComment = async (
         });
     } catch (error) {
         console.error('Error creating board comment:', error);
+        throw error;
+    }
+};
+
+export const updateTeam = async (
+    teamId: string,
+    name: string,
+    description: string,
+    recruitStatus: TeamRecruitStatus,
+    privateStatus: TeamPrivateStatus,
+    area: string,
+    category: string,
+    profile?: string,
+): Promise<boolean> => {
+    try {
+        const body = JSON.stringify({
+            teamId,
+            name,
+            description,
+            recruitStatus,
+            privateStatus,
+            profile,
+            area,
+            category,
+        });
+        const response = await customFetch('/team', {
+            method: 'PUT',
+            body,
+        });
+        return response.status == 200;
+    } catch (error) {
+        console.error('Error updating comment:', error);
+        throw error;
+    }
+};
+
+export const getTeamSpecificInfo = async (
+    teamId: string,
+): Promise<UpdateTeamRequest> => {
+    if (!teamId) {
+        throw new Error('팀 아이디가 없습니다.');
+    }
+
+    try {
+        const response = await customFetch('/team-leader/specific-info', {
+            method: 'GET',
+            params: { teamId }, // params는 객체여야 함
+        });
+
+        return response.json();
+    } catch (error) {
+        console.error('Error fetching category teams:', error);
         throw error;
     }
 };

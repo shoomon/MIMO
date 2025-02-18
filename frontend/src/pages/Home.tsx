@@ -9,7 +9,7 @@ import tagFormatter from '@/utils/tagFormatter';
 const Home = () => {
     const { data, isLoading, error } = useQuery({
         queryKey: ['Area', Area.GYEONGGI],
-        queryFn: () => getTeamInfosByArea(Area.GYEONGGI),
+        queryFn: () => getTeamInfosByArea('서울'),
     });
 
     // null 병합 연산자를 사용하여 기본값 빈 배열 제공
@@ -47,6 +47,7 @@ const Home = () => {
                     gap="4"
                     label="내 지역의 모임"
                     items={MeetingListByArea}
+                    content="모임이 없습니다."
                 />
             </div>
         </>

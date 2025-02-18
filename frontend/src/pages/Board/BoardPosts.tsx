@@ -50,10 +50,12 @@ const BoardPosts = () => {
         return <div>잘못된 응답값이다.</div>;
     }
 
+    console.log(boardData);
+
     const boardList = boardData.boardList.map((post: Post) => (
         <div className="flex flex-col gap-4">
             <CardBoard
-                key={post.postId}
+                key={post.boardId}
                 userProfileUri={post.userProfileUri}
                 userNickname={post.userNickname}
                 postTitle={post.postTitle}
@@ -64,7 +66,7 @@ const BoardPosts = () => {
                 updatedAt={post.updatedAt}
                 commentCount={post.commentCount}
                 layoutType="List"
-                linkto={`post/${post.postId.toString()}`}
+                linkto={`post/${post.boardId}`}
             />
             <hr className="border-gray-200" />
         </div>

@@ -15,7 +15,15 @@ const CategoryListView = ({ items, to, onClick }: CategoryListViewProps) => {
         return <CategoryItem {...item} onClick={onClick} />;
     });
 
-    return <ListContainer label="카테고리" to={to} gap="4" items={ItemList} />;
+    return (
+        <ListContainer
+            content="카테고리에 해당하는 모임이 없습니다."
+            label="카테고리"
+            to={to}
+            gap="4"
+            items={ItemList}
+        />
+    );
 };
 
 export default CategoryListView;
