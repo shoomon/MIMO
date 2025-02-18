@@ -55,7 +55,7 @@ public class TeamFileFacadeService {
         String areaCode,
         String category
     ) {
-        String profileUri = getProfileUri(teamId, profile);
+        String profileUri = getProfileUriForUpdate(teamId, profile);
         teamService.updateTeam(
             userId, teamId, name, description,
             recruitStatus, privateStatus, profileUri, Area.fromName(areaCode), TeamCategory.fromName(category));
@@ -66,6 +66,13 @@ public class TeamFileFacadeService {
             return CAT_IMAGE_URI;
         }
         return s3Service.saveFile(userId, teamProfile);
+    }
+
+    private String getProfileUriForUpdate(Long teamId, MultipartFile profile) {
+        if (profile == null) {
+            return null;
+        }
+        return s3Service.saveFile(teamId, profile);
     }
 
     private String getProfileUri(Long teamId, MultipartFile profile) {

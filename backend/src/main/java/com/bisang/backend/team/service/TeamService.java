@@ -234,7 +234,11 @@ public class TeamService {
             TeamCategory category
     ) {
         try {
-            profileImageRepository.save(createTeamProfile(teamId, profileUri));
+            if (profileUri != null) {
+                var profile = profileImageRepository.findTeamImageByImageTypeAndTeamId(TEAM, teamId);
+                profile.ifPresent(profileImageRepository::delete);
+                profileImageRepository.save(createTeamProfile(teamId, profileUri));
+            }
 
             Team team = findTeamById(teamId);
             team.updateTeamName(name);
@@ -261,17 +265,25 @@ public class TeamService {
                 team.updateAreaCode(areaCode);
             }
 
-            team.updateTeamProfileUri(profileUri);
-            // 채팅방 프로필 변경
-            chatroomService.updateChatroomProfileUri(teamId, profileUri);
-
+            if (profileUri != null) {
+                team.updateTeamProfileUri(profileUri);
+                // 채팅방 프로필 변경
+                chatroomService.updateChatroomProfileUri(teamId, profileUri);
+            }
             teamJpaRepository.save(team);
         } catch (TeamException e) {
+            if (profileUri == null) {
+                throw new TeamException(e.getCode(), e.getMessage());
+            }
             if (!profileUri.equals(CAT_IMAGE_URI)) {
                 s3Service.deleteFile(profileUri);
             }
             throw new TeamException(e.getCode(), e.getMessage());
         } catch (Exception e) {
+            if (profileUri == null) {
+                throw new TeamException(DUPLICATED_SOURCE);
+            }
+
             if (!profileUri.equals(CAT_IMAGE_URI)) {
                 s3Service.deleteFile(profileUri);
             }
