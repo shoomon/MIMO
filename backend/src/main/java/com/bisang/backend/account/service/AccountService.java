@@ -28,7 +28,7 @@ public class AccountService {
     private final UserJpaRepository userJpaRepository;
     private final TeamJpaRepository teamJpaRepository;
 
-    public Account createTeamAccount() {
+    public String createTeamAccount() {
         String accountNumber = IntStream.range(0, MAX_RETRY)
                 .mapToObj(i -> TEAM_ACCOUNT_PREFIX + createRandomNineNumber())
                 .filter(this::validateAccountNumber)
@@ -36,7 +36,9 @@ public class AccountService {
                 .orElseThrow(()
                         -> new IllegalStateException("세 번의 시도 끝에도 유효한 계좌번호를 생성하지 못했습니다."));
 
-        return accountJpaRepository.save(new Account(accountNumber));
+        accountJpaRepository.save(new Account(accountNumber));
+
+        return accountNumber;
     }
 
     public String createUserAccount() {
