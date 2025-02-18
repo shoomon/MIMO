@@ -1,5 +1,5 @@
 import { getMyAllInfoAPI } from "@/apis/AuthAPI";
-import { chargePaymentAPI } from "@/apis/PaymentAPI";
+import { chargePaymentAPI } from "@/apis/AccountAPI";
 import { ChargePaymentRequest, Iamport } from "@/types/Payment";
 import generateOrderUid from "@/utils/generateOrderUid";
 import { useMutation, useQuery } from "@tanstack/react-query";

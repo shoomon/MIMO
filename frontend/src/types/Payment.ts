@@ -11,12 +11,6 @@ export interface RequestPayParmas {
   buyer_postcode: string;
 }
 
-export interface ChargePaymentRequest {
-  amount: number;
-  impUid: string;
-  merchantUid: string;
-}
-
 export interface IamportResponseProps {
   amount: number;
   imp_uid: string;
@@ -33,3 +27,48 @@ export interface Iamport {
         callback?: RequestPayResponseCallback,
     ) => void;
 }
+
+export type BalanceResponse = number;
+
+export interface AccountDetailsResponse {
+
+  amount: number;
+  senderAccountNumber : string;
+  receiverAccountNumber : string;
+  memo: string;
+  transactionCategory : 'CHARGE' | 'TRANSFER' | 'DEPOSIT' | 'PAYMENT';
+  createdAt: string;
+
+}
+
+export interface TransferRequest {
+  amount: string;
+  receiverAccountNumber: string;
+}
+
+export interface InstallmentRequest {
+  teamId: string;
+  userId: string;
+  round: string;
+  amount: string;
+  transferRequest: TransferRequest;
+}
+
+export interface InstallmentResponse {
+  nickname: string;
+  amount: string;
+  installmentDate: string;
+}
+
+export interface CreateInstallmentRequest {
+  teamId: string;
+  installmentRequests: InstallmentRequest[];
+}
+
+export interface PayerDetailsRequest {
+  teamId: string;
+  round: string;
+}
+
+
+

@@ -11,7 +11,7 @@ import { Link } from 'react-router-dom';
 const MyPage = () => {
     const { isOpen, handleConfirm, handleCharge, handleCancel } = useCharge();
 
-    const { data, isSuccess } = useQuery({
+    const { data } = useQuery({
         queryKey: ['myAllData'],
         queryFn: getMyAllInfoAPI,
         staleTime: 1000 * 30,
