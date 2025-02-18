@@ -27,6 +27,8 @@ import lombok.ToString;
 @Table(
         name = "account_details",
         indexes = {
+                @Index(name = "idx_tx_id",
+                        columnList = "transaction_id"),
                 @Index(name = "idx_sender_tx_category",
                         columnList = "sender_account_number, transaction_category"),
                 @Index(name = "idx_receiver_tx_category",
@@ -37,11 +39,10 @@ public class AccountDetails {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "account_details_id")
-    private Long accountDetailsId;
+    private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "transaction_id", referencedColumnName = "transaction_id", nullable = false)
-    private Transaction transactionId;
+    @Column(name = "transaction_id", nullable = false)
+    private Long transactionId;
 
     @Column(name = "amount", nullable = false)
     private Long amount;
@@ -60,12 +61,12 @@ public class AccountDetails {
     private TransactionCategory transactionCategory;
 
     @CreatedDate
-    @Column(name = "created_at", updatable = false)
+    @Column(name = "created_at", updatable = false, nullable = false)
     private LocalDateTime createdAt;
 
     @Builder
     public AccountDetails(
-            Transaction transactionId,
+            Long transactionId,
             Long amount,
             String senderAccountNumber,
             String receiverAccountNumber,

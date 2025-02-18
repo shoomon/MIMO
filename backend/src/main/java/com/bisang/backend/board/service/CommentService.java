@@ -1,6 +1,8 @@
 package com.bisang.backend.board.service;
 
+import com.bisang.backend.board.domain.Board;
 import com.bisang.backend.board.domain.Comment;
+import com.bisang.backend.board.repository.BoardJpaRepository;
 import com.bisang.backend.board.repository.CommentJpaRepository;
 import com.bisang.backend.common.exception.BoardException;
 import com.bisang.backend.common.exception.ExceptionCode;
@@ -14,17 +16,23 @@ import lombok.RequiredArgsConstructor;
 public class CommentService {
 
     private final CommentJpaRepository commentJpaRepository;
+    private final BoardJpaRepository boardJpaRepository;
 
     public Long createComment(
             Long userId,
             Long teamUserId,
-            Long postId,
+            Long boardId,
             Long parentId,
             String content) {
+
+        boardJpaRepository.findById(boardId)
+                .orElseThrow(() -> new BoardException(ExceptionCode.BOARD_NOT_FOUND));
+
         if(parentId == null) {
+
             return commentJpaRepository.save(
                     Comment.builder()
-                            .boardId(postId)
+                            .boardId(boardId)
                             .teamUserId(teamUserId)
                             .userId(userId)
                             .parentCommentId(null)
@@ -35,7 +43,7 @@ public class CommentService {
 
         return commentJpaRepository.save(
                 Comment.builder()
-                        .boardId(postId)
+                        .boardId(boardId)
                         .teamUserId(teamUserId)
                         .userId(userId)
                         .parentCommentId(parentId)
@@ -46,7 +54,7 @@ public class CommentService {
 
     public Long updateComment(Long userId, Long commentId, String content) {
         Comment comment = commentJpaRepository.findById(commentId)
-                .orElseThrow(()->new EntityNotFoundException("댓글을 찾을 수 없습니다."));
+                .orElseThrow(()->new BoardException(ExceptionCode.COMMENT_NOT_FOUND));
 
         if(!isAuthor(comment, userId)) throw new BoardException(ExceptionCode.NOT_AUTHOR);
 

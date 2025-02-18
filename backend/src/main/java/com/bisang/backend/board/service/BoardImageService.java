@@ -26,20 +26,22 @@ public class BoardImageService {
     ){
         //todo: 게시글이 팀 id 가지고 있는 게 낫나
         List<Long> teamBoardId = teamBoardJpaRepository.getTeamBoardIdByTeamId(teamId);
-        //todo: in으로 조회할 때마다 게시글 id를 조회할 때 순서가 일관되는지?
-        // 읽은 id 다음 부분부터 읽어도 되는지 order by를 해야하는지
-        // 게시글 기본키가 있으니까 정렬 안해도 되나
-        // 일단 정렬함
-        List<Long> boardIdList = boardQuerydslRepository
+        // 게시글 id, 게시판 id
+        Map<Long, Long> teamBoardAndBoardId = boardQuerydslRepository
                 .getBoardIdListByTeamBoardId(teamBoardId, lastReadImageId, limit+1);
+
+        List<Long> boardIdList = teamBoardAndBoardId.keySet().stream().toList();
 
         Map<Long, String> boardImage = boardQuerydslRepository
                 .getImageThumbnailList(boardIdList);
 
         List<BoardThumbnailDto> imageList = new ArrayList<>();
 
-        for(Long boardId : boardIdList) {
-            imageList.add(new BoardThumbnailDto(boardId, boardImage.get(boardId)));
+        for(Long boardId : boardImage.keySet()) {
+            imageList.add(new BoardThumbnailDto(
+                    teamBoardAndBoardId.get(boardId), boardId, boardImage.get(boardId)
+                    )
+            );
         }
 
         Boolean hasNext = imageList.size() > limit ? true : false;

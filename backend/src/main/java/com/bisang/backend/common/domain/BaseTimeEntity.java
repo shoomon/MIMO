@@ -22,9 +22,10 @@ import lombok.NoArgsConstructor;
 public abstract class BaseTimeEntity {
 
     @CreatedDate
-    @Column(updatable = false)
+    @Column(name= "created_at", updatable = false)
     private LocalDateTime createdAt;
 
     @LastModifiedDate
+    @Column(name = "last_modified_at")
     private LocalDateTime lastModifiedAt;
 }

@@ -3,7 +3,6 @@ package com.bisang.backend.team.controller;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
-import com.bisang.backend.team.controller.response.TeamTitleDescSearchResponse;
 import com.bisang.backend.team.service.TeamFileFacadeService;
 import jakarta.validation.Valid;
 
@@ -84,14 +83,6 @@ public class TeamController {
         return ResponseEntity.status(CREATED).body(new TeamIdResponse(teamId));
     }
 
-    @GetMapping("/title-description")
-    public ResponseEntity<TeamTitleDescSearchResponse> getTitleDescription(
-        @RequestParam String searchKeyword,
-        @RequestParam Integer pageNumber
-    )  {
-        return ResponseEntity.ok(teamService.getTeamsByTitleOrDescription(searchKeyword, pageNumber));
-    }
-
     @PutMapping(consumes = {MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Void> updateTeam(
             @AuthUser User user,
@@ -116,10 +107,7 @@ public class TeamController {
             @Guest User user,
             @RequestParam Long teamId
     ) {
-        Long userId = null;
-        if (user != null) {
-            userId = user.getId();
-        }
+        Long userId = user == null ? null : user.getId();
 
         TeamDto teamInfo = teamService.getTeamGeneralInfo(userId, teamId);
         return ResponseEntity.ok(teamInfo);

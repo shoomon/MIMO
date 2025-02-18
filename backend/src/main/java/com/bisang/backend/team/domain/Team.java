@@ -32,11 +32,12 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 @Table(
-    name = "team",
-    indexes = {
-        @Index(name = "idx_team_area", columnList = "team_area_code, team_id desc"),
-        @Index(name = "idx_team_category", columnList = "team_category, team_id desc")
-    }
+        name = "team",
+        indexes = {
+            @Index(name = "idx_status_area_team", columnList = "private_status, team_area_code, team_id desc"),
+            @Index(name = "idx_status_category_team", columnList = "private_status, team_category, team_id desc"),
+            @Index(name = "idx_team_id_accountNumber", columnList = "team_id, team_account_number")
+        }
 )
 public class Team {
     @Id @Column(name = "team_id")

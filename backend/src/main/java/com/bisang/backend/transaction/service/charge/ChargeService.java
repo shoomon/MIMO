@@ -38,7 +38,7 @@ public class ChargeService {
     }
 
     private void updateAccountBalance(String accountNumber, Long balance) {
-        Account account = accountJpaRepository.findByAccountNumberWithLockingReads(accountNumber);
+        Account account = accountJpaRepository.findByAccountNumber(accountNumber);
         account.increaseBalance(balance);
         accountJpaRepository.save(account);
     }
