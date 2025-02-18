@@ -27,7 +27,6 @@ type Story = StoryObj<typeof meta>;
 // 더미 데이터: RatingStarProps (숫자 타입으로 수정)
 const sampleRating = {
     rating: 4.5,
-    reviewCount: 23, // reviewCount가 number 타입입니다.
 };
 
 // 더미 데이터: TagProps 배열
@@ -47,7 +46,6 @@ export const Default: Story = {
         maxCapacity: 12,
         currentCapacity: 6,
         teamUserId: 2,
-        nickName: 'jump',
         recruitStatus: 'ACTIVE_PUBLIC',
         notificationStatus: 'ACTIVE',
     },

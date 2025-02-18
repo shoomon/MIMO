@@ -37,7 +37,6 @@ const Category = () => {
                     content={item.description}
                     rating={item.reviewScore}
                     tagList={formattedTags}
-                    reviewCount={item.reviewScore}
                     image={{
                         memberCount: item.currentCapacity,
                         memberLimit: item.maxCapacity,

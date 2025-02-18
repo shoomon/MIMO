@@ -6,11 +6,13 @@ export interface SimpleTeamResponse {
     description: string;
     teamProfileUri: string;
     reviewScore: number;
-    reviewCount: number;
     memberCount: number;
     maxCapacity: number;
     currentCapacity: number;
     tags: string[];
+}
+export interface TagsResponse {
+    tags: { tagId: number; name: string }[];
 }
 
 export interface TeamInfoResponse {

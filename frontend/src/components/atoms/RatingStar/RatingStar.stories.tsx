@@ -19,22 +19,18 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
     args: {
-        reviewCount: 45,
         rating: 4.3,
     },
 };
 
 export const WithHalfStar: Story = {
     args: {
-        reviewCount: 5,
         rating: 4.7,
     },
 };
 
 export const Perfect: Story = {
     args: {
-        reviewCount: 2,
-
         rating: 5,
     },
 };

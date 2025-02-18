@@ -32,10 +32,7 @@ const MeetingInfoView = ({
     return (
         <div className="flex w-full flex-col gap-1">
             <span className="text-md font-normal">{subTitle}</span>
-            <RatingStar
-                rating={rating.rating}
-                reviewCount={rating.reviewCount}
-            />
+            <RatingStar rating={rating.rating} />
             <span className="text-display-xs font-extrabold">{title}</span>
             <div className="flex gap-2 py-1">
                 {displayedTags ? displayedTags : '태그가 존재하지 않습니다.'}

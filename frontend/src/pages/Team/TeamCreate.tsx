@@ -1,14 +1,21 @@
 import React, { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { ButtonDefault, Title } from '@/components/atoms';
 import { InputForm } from '@/components/molecules';
-import { createTeam, validTeamName } from '@/apis/TeamAPI';
-import { TeamCreateRequest } from '@/types/Team';
+import {
+    createTeam,
+    validTeamName,
+    getCategory,
+    getArea,
+} from '@/apis/TeamAPI';
+import { TagsResponse, TeamCreateRequest } from '@/types/Team';
 import { useNavigate } from 'react-router-dom';
 
 interface Step {
     field: keyof TeamCreateRequest;
     label: string;
     inputType?: 'text' | 'select' | 'file';
+    // options는 초기값(없어도 됨). 동적으로 덮어씁니다.
     options?: { value: string; label: string }[];
     validator?: (value: string) => boolean;
     checkDuplicate?: boolean;
@@ -32,37 +39,14 @@ const steps: Step[] = [
         field: 'area',
         label: '지역',
         inputType: 'select',
-        options: [
-            { value: '서울', label: '서울' },
-            { value: 'GYEONGGI', label: '경기도' },
-            { value: 'GANGWON', label: '강원도' },
-            { value: 'CHUNGCHEONG_NORTH', label: '충청북도' },
-            { value: 'CHUNGCHEONG_SOUTH', label: '충청남도' },
-            { value: 'JEOLLA_NORTH', label: '전라북도' },
-            { value: 'JEOLLA_SOUTH', label: '전라남도' },
-            { value: 'GYEONGSANG_NORTH', label: '경상북도' },
-            { value: 'GYEONGSANG_SOUTH', label: '경상남도' },
-            { value: 'JEJU', label: '제주특별자치도' },
-            { value: 'SEJONG', label: '세종특별자치시' },
-        ],
+        // options는 아래 useQuery 결과로 대체됨
         validator: (v) => !!v.trim(),
     },
     {
         field: 'category',
         label: '카테고리',
         inputType: 'select',
-        options: [
-            { value: 'BIKE', label: '바이크' },
-            { value: 'BOOK', label: '독서' },
-            { value: 'CAR', label: '자동차' },
-            { value: 'COOK', label: '요리' },
-            { value: '반려동물', label: '반려동물' },
-            { value: 'SPORTS', label: '스포츠' },
-            { value: 'GAME', label: '게임' },
-            { value: 'HEALTH', label: '헬스' },
-            { value: 'MUSIC', label: '음악/악기' },
-            { value: 'PHOTO', label: '사진/영상' },
-        ],
+        // options는 아래 useQuery 결과로 대체됨
         validator: (v) => !!v.trim(),
     },
     {
@@ -131,11 +115,21 @@ const TeamCreate: React.FC = () => {
     });
     const [error, setError] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
+    const navigate = useNavigate();
+
+    // 카테고리와 지역 데이터 동적 로딩 (TagsResponse 형식)
+    const { data: categoryData } = useQuery<TagsResponse>({
+        queryKey: ['categoryList'],
+        queryFn: () => getCategory(),
+    });
+    const { data: areaData } = useQuery<TagsResponse>({
+        queryKey: ['areaList'],
+        queryFn: () => getArea(),
+    });
 
     const currentField = steps[currentStep];
-    const navigate = useNavigate(); // navigate 훅 선언
 
-    // 파일 및 select 입력용 핸들러
+    // 파일 및 select 입력 핸들러
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
     ) => {
@@ -154,7 +148,7 @@ const TeamCreate: React.FC = () => {
         }
     };
 
-    // 텍스트 입력 전용 핸들러 (InputForm에서 사용)
+    // 텍스트 입력 전용 핸들러
     const handleTextChange: React.ChangeEventHandler<
         HTMLInputElement | HTMLTextAreaElement
     > = (e) => {
@@ -176,7 +170,6 @@ const TeamCreate: React.FC = () => {
             return;
         }
 
-        // 제목 중복 체크
         if (currentField.checkDuplicate && typeof value === 'string') {
             setLoading(true);
             try {
@@ -213,13 +206,12 @@ const TeamCreate: React.FC = () => {
         setLoading(true);
         setError('');
         try {
-            // plain object를 전달하고, API 내부에서 FormData로 변환
+            // API 내부에서 teamData를 FormData로 변환해서 전송한다고 가정
             await createTeam(teamData);
             alert('팀 생성이 완료되었습니다.');
             navigate('/');
         } catch (err) {
             console.log(err);
-
             setError('팀 생성 중 오류가 발생했습니다.');
         } finally {
             setLoading(false);
@@ -228,6 +220,19 @@ const TeamCreate: React.FC = () => {
 
     const renderInput = () => {
         if (currentField.inputType === 'select') {
+            let options = currentField.options || [];
+            // area와 category 필드는 동적 옵션 사용
+            if (currentField.field === 'area' && areaData) {
+                options = areaData.tags.map((tag) => ({
+                    value: tag.name,
+                    label: tag.name,
+                }));
+            } else if (currentField.field === 'category' && categoryData) {
+                options = categoryData.tags.map((tag) => ({
+                    value: tag.name,
+                    label: tag.name,
+                }));
+            }
             return (
                 <div>
                     <label htmlFor={currentField.field}>
@@ -240,7 +245,7 @@ const TeamCreate: React.FC = () => {
                         className="input-class"
                     >
                         <option value="">선택해주세요</option>
-                        {currentField.options?.map((option) => (
+                        {options.map((option) => (
                             <option key={option.value} value={option.value}>
                                 {option.label}
                             </option>
@@ -263,7 +268,6 @@ const TeamCreate: React.FC = () => {
                 </div>
             );
         } else {
-            // 텍스트 입력은 InputForm 사용 (handleTextChange는 union 타입으로 정의됨)
             return (
                 <InputForm
                     id={currentField.field}

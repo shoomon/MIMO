@@ -1,7 +1,7 @@
 import { customFetch } from './customFetch';
 import {
-    Area,
     MyTeamProfileResponse,
+    TagsResponse,
     TeamCreateRequest,
     TeamInfoResponse,
     TeamInfosResponse,
@@ -304,7 +304,7 @@ export const getTeamInfosByCategory = async (
 };
 
 export const getTeamInfosByArea = async (
-    area: Area,
+    area: string,
     teamId?: number,
 ): Promise<TeamInfosResponse> => {
     try {
@@ -646,26 +646,29 @@ export const updateTeam = async (
     privateStatus: TeamPrivateStatus,
     area: string,
     category: string,
-    profile?: string,
+    profile?: File, // 새 파일이 있을 때만 전달됨
 ): Promise<boolean> => {
     try {
-        const body = JSON.stringify({
-            teamId,
-            name,
-            description,
-            recruitStatus,
-            privateStatus,
-            profile,
-            area,
-            category,
-        });
+        const formData = new FormData();
+        formData.append('teamId', teamId);
+        formData.append('name', name);
+        formData.append('description', description);
+        formData.append('recruitStatus', recruitStatus);
+        formData.append('privateStatus', privateStatus);
+        formData.append('area', area);
+        formData.append('category', category);
+        // 새 프로필 파일이 선택된 경우에만 profile 필드를 추가합니다.
+        if (profile) {
+            formData.append('profile', profile);
+        }
+        // customFetch 내부에서 body가 FormData인 경우 Content-Type을 직접 설정하지 않도록 합니다.
         const response = await customFetch('/team', {
             method: 'PUT',
-            body,
+            body: formData,
         });
-        return response.status == 200;
+        return response.status === 200;
     } catch (error) {
-        console.error('Error updating comment:', error);
+        console.error('Error updating team:', error);
         throw error;
     }
 };
@@ -681,6 +684,32 @@ export const getTeamSpecificInfo = async (
         const response = await customFetch('/team-leader/specific-info', {
             method: 'GET',
             params: { teamId }, // params는 객체여야 함
+        });
+
+        return response.json();
+    } catch (error) {
+        console.error('Error fetching category teams:', error);
+        throw error;
+    }
+};
+
+export const getCategory = async (): Promise<TagsResponse> => {
+    try {
+        const response = await customFetch('/search-team/tag-category', {
+            method: 'GET',
+        });
+
+        return response.json();
+    } catch (error) {
+        console.error('Error fetching category teams:', error);
+        throw error;
+    }
+};
+
+export const getArea = async (): Promise<TagsResponse> => {
+    try {
+        const response = await customFetch('/search-team/tag-area', {
+            method: 'GET',
         });
 
         return response.json();

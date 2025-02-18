@@ -1,8 +1,12 @@
-// pages/TeamEdit.tsx
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { getTeamSpecificInfo, updateTeam } from '@/apis/TeamAPI';
+import {
+    getArea,
+    getCategory,
+    getTeamSpecificInfo,
+    updateTeam,
+} from '@/apis/TeamAPI';
 import { TeamPrivateStatus, TeamRecruitStatus } from '@/types/Team';
 
 import BaseLayout from '../layouts/BaseLayout';
@@ -29,6 +33,18 @@ const TeamEdit = () => {
         enabled: !!teamId,
     });
 
+    // 카테고리 목록 로딩
+    const { data: catgoryList } = useQuery({
+        queryKey: ['catgoryList', teamId],
+        queryFn: () => getCategory(),
+    });
+
+    // 지역 목록 로딩
+    const { data: areaList } = useQuery({
+        queryKey: ['areaList', teamId],
+        queryFn: () => getArea(),
+    });
+
     // 수정할 폼 데이터 상태
     const [formData, setFormData] = useState<{
         name: string;
@@ -42,7 +58,7 @@ const TeamEdit = () => {
         name: '',
         description: '',
         recruitStatus: 'ACTIVE_PUBLIC' as TeamRecruitStatus,
-        privateStatus: 'PRIVATE' as TeamPrivateStatus, // toggle 옵션에 맞춰 기본값 변경
+        privateStatus: 'PRIVATE' as TeamPrivateStatus,
         area: '',
         category: '',
         profileUri: '',
@@ -60,12 +76,12 @@ const TeamEdit = () => {
                 area: teamData.area,
                 category: teamData.category,
             });
-            // 기존 팀 사진 미리보기 설정
+            // 기존 팀 사진 미리보기 설정 (이 값은 화면 렌더링 전용)
             setProfilePreview(teamData.profileUri || '');
         }
     }, [teamData]);
 
-    // updateTeam API 호출을 위한 mutation
+    // updateTeam API 호출을 위한 mutation (profile은 새 파일이 있을 때만 File 객체 전달)
     const mutation = useMutation<
         boolean,
         Error,
@@ -77,7 +93,7 @@ const TeamEdit = () => {
             privateStatus: TeamPrivateStatus;
             area: string;
             category: string;
-            profile?: string;
+            profile?: File;
         }
     >({
         mutationFn: ({
@@ -112,15 +128,17 @@ const TeamEdit = () => {
         },
     });
 
-    // 입력값 변경 핸들러
+    // 입력값 변경 핸들러 (Input, TextArea, Select 모두 사용 가능)
     const handleChange = (
-        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+        e: React.ChangeEvent<
+            HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+        >,
     ) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
-    // 팀 공개여부 토글 변경 핸들러 (PRIVATE 관련)
+    // 팀 공개여부 토글 변경 핸들러
     const handleToggleChange = (value: string) => {
         setFormData((prev) => ({
             ...prev,
@@ -128,7 +146,7 @@ const TeamEdit = () => {
         }));
     };
 
-    // 가입 방식 토글 변경 핸들러 (recruitStatus 관련)
+    // 가입 방식 토글 변경 핸들러
     const handleRecruitToggleChange = (value: string) => {
         setFormData((prev) => ({
             ...prev,
@@ -143,8 +161,8 @@ const TeamEdit = () => {
             setProfileFile(file);
             const previewUrl = URL.createObjectURL(file);
             setProfilePreview(previewUrl);
-            // 업데이트할 프로필 URL로 미리보기 URL 적용
-            setFormData((prev) => ({ ...prev, profileUri: previewUrl }));
+            // 이 previewUrl은 화면에 보여주기 위해서만 사용합니다.
+            // updateTeam API 호출 시에는 새 File 객체(profileFile)만 전송합니다.
         }
     };
 
@@ -167,7 +185,8 @@ const TeamEdit = () => {
             privateStatus: formData.privateStatus,
             area: formData.area,
             category: formData.category,
-            profile: formData.profileUri,
+            // 새 파일이 선택된 경우에만 profile 필드를 전달합니다.
+            profile: profileFile || undefined,
         });
     };
 
@@ -251,7 +270,7 @@ const TeamEdit = () => {
                         />
                     </div>
 
-                    {/* ButtonToggleGroup: 팀 공개여부 설정 */}
+                    {/* 팀 공개여부 설정 */}
                     <div className="flex flex-col gap-2 pb-4 pl-2">
                         <span className="text-xl font-bold">팀 공개여부</span>
                         <ButtonToggleGroup
@@ -264,7 +283,7 @@ const TeamEdit = () => {
                         />
                     </div>
 
-                    {/* ButtonToggleGroup: 가입 방식 설정 */}
+                    {/* 가입 방식 설정 */}
                     <div className="flex flex-col gap-2 pb-4 pl-2">
                         <span className="text-xl font-bold">
                             가입 방식 설정
@@ -279,8 +298,53 @@ const TeamEdit = () => {
                             onChange={handleRecruitToggleChange}
                         />
                     </div>
+
+                    {/* 카테고리 선택 */}
                     <div className="flex flex-col gap-2 pb-4 pl-2">
-                        <span className="text-xl font-bold">카테고리</span>
+                        <span className="text-xl font-bold">카테고리 선택</span>
+                        <select
+                            name="category"
+                            value={formData.category}
+                            onChange={handleChange}
+                            className="rounded border border-gray-300 p-2"
+                        >
+                            <option value="">카테고리 선택</option>
+                            {catgoryList?.tags &&
+                                catgoryList.tags.map(
+                                    (tag: { tagId: number; name: string }) => (
+                                        <option
+                                            key={tag.tagId}
+                                            value={tag.name}
+                                        >
+                                            {tag.name}
+                                        </option>
+                                    ),
+                                )}
+                        </select>
+                    </div>
+
+                    {/* 지역 선택 */}
+                    <div className="flex flex-col gap-2 pb-4 pl-2">
+                        <span className="text-xl font-bold">지역 선택</span>
+                        <select
+                            name="area"
+                            value={formData.area}
+                            onChange={handleChange}
+                            className="rounded border border-gray-300 p-2"
+                        >
+                            <option value="">지역선택</option>
+                            {areaList?.tags &&
+                                areaList.tags.map(
+                                    (tag: { tagId: number; name: string }) => (
+                                        <option
+                                            key={tag.tagId}
+                                            value={tag.name}
+                                        >
+                                            {tag.name}
+                                        </option>
+                                    ),
+                                )}
+                        </select>
                     </div>
                 </form>
             </BodyLayout_64>

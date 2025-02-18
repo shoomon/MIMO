@@ -16,7 +16,7 @@ const ChatAlarm = () => {
     const { data } = useQuery<ChatRoomResponse[]>({
         queryKey: ['chatRoomList'],
         queryFn: getChatListAPI,
-        refetchInterval: 1000 * 10,
+        refetchInterval: 100000 * 10,
         enabled: isSuccess,
     });
 
@@ -25,7 +25,6 @@ const ChatAlarm = () => {
 
         let count = 0;
         data.forEach((item) => {
-
             count += item.unreadCount;
             subscribeRoom(item.chatroomId);
         });
