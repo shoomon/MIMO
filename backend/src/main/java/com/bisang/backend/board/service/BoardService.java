@@ -52,7 +52,7 @@ public class BoardService {
     private final TeamJpaRepository teamJpaRepository;
 
     @Transactional
-    @TeamMember
+//    @TeamMember
     public Long createPost(
             Long teamBoardId,
             Long teamId,
@@ -61,8 +61,8 @@ public class BoardService {
             String description,
             MultipartFile[] files
     ) {
-        TeamUser teamUser = teamUserJpaRepository.findByTeamIdAndUserId(teamId, userId)
-                .orElseThrow(() -> new TeamException(NOT_FOUND_TEAM_USER));
+//        TeamUser teamUser = teamUserJpaRepository.findByTeamIdAndUserId(teamId, userId)
+//                .orElseThrow(() -> new TeamException(NOT_FOUND_TEAM_USER));
 
         Long boardCount = boardJpaRepository.countBoardsByTeamBoardId(teamBoardId);
 
@@ -74,8 +74,8 @@ public class BoardService {
 
         Board post = boardJpaRepository.save(Board.builder()
                 .teamBoardId(teamBoardId)
-                .teamUserId(teamUser.getId())
-//                        .teamUserId(1L)
+//                .teamUserId(teamUser.getId())
+                        .teamUserId(1L)
                 .userId(userId)
                 .title(title)
                 .description(boardDescription)
@@ -89,6 +89,7 @@ public class BoardService {
                 String fileExtension = uri.substring(uri.lastIndexOf(".") + 1).toLowerCase();
 
                 boardImageJpaRepository.save(BoardImage.builder()
+                        .teamBoardId(teamBoardId)
                         .boardId(post.getId())
                         .teamId(teamId)
                         .fileExtension(fileExtension)
@@ -203,8 +204,8 @@ public class BoardService {
         Board board = boardJpaRepository.findById(boardId)
                 .orElseThrow(()-> new BoardException(ExceptionCode.BOARD_NOT_FOUND));
 
-        TeamUser teamUser = teamUserJpaRepository.findById(board.getTeamUserId())
-                .orElseThrow(() -> new EntityNotFoundException("팀유저를 찾을 수 없습니다."));
+//        TeamUser teamUser = teamUserJpaRepository.findById(board.getTeamUserId())
+//                .orElseThrow(() -> new EntityNotFoundException("팀유저를 찾을 수 없습니다."));
 
         if(!board.getUserId().equals(userId)) throw new BoardException(ExceptionCode.NOT_AUTHOR);
 
@@ -216,7 +217,6 @@ public class BoardService {
 
         boardDescription.updateDescription(description);
         boardDescriptionJpaRepository.save(boardDescription);
-        System.out.println(filesToDelete.size());
 
         if(filesToDelete != null){
             deleteImageFromS3(filesToDelete);
@@ -228,17 +228,16 @@ public class BoardService {
             }
         }
 
-
-
         if(filesToAdd != null){
             for(MultipartFile file : filesToAdd){
                 String uri = s3Service.saveFile(userId, file);
                 String fileExtension = uri.substring(uri.lastIndexOf(".") + 1).toLowerCase();
 
                 boardImageJpaRepository.save(BoardImage.builder()
+                        .teamBoardId(board.getTeamBoardId())
                         .boardId(board.getId())
-                        .teamId(teamUser.getTeamId())
-//                                .teamId(1L)
+//                        .teamId(teamUser.getTeamId())
+                                .teamId(1L)
                         .fileExtension(fileExtension)
                         .fileUri(uri)
                         .build());

@@ -10,14 +10,17 @@ import static com.bisang.backend.team.domain.QTeam.team;
 import static com.bisang.backend.team.domain.QTeamUser.teamUser;
 import static com.bisang.backend.user.domain.QUser.user;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.bisang.backend.board.controller.dto.*;
 import com.bisang.backend.board.domain.QBoardImage;
 import com.bisang.backend.common.exception.BoardException;
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
@@ -55,21 +58,29 @@ public class BoardQuerydslRepository {
                 .fetchOne()).orElseThrow(() -> new BoardException(BOARD_NOT_FOUND));
     }
 
-    public List<Long> getBoardIdListByTeamBoardId(
+    public Map<Long, Long> getBoardIdListByTeamBoardId(
             List<Long> teamBoardId,
             Long lastReadId,
             int limit
     ) {
-        BooleanExpression lastReadIdCondition = (lastReadId != null) ? board.id.lt(lastReadId) : null;
+        BooleanExpression lastReadIdCondition = (lastReadId != null) ? board.id.lt(lastReadId) : Expressions.TRUE;
 
-        return queryFactory
-                .select(board.id)
+        List<Tuple> result = queryFactory
+                .select(board.id, board.teamBoardId)
                 .from(board)
                 .where(board.teamBoardId.in(teamBoardId)
                         .and(lastReadIdCondition))
                 .orderBy(board.id.desc())
                 .limit(limit)
                 .fetch();
+
+        return result.stream()
+                .collect(Collectors.toMap(
+                        tuple -> Objects.requireNonNull(tuple.get(board.id)),
+                        tuple -> Objects.requireNonNull(tuple.get(board.teamBoardId)),
+                        (existing, replacement) -> existing,
+                        LinkedHashMap::new
+                ));
     }
 
     public List<Long> getBoardIdListByUserId(Long userId) {
@@ -129,6 +140,7 @@ public class BoardQuerydslRepository {
 
         List<BoardThumbnailDto> images = queryFactory
                 .select(Projections.constructor(BoardThumbnailDto.class,
+                        i.teamBoardId,
                         i.boardId,
                         i.fileUri
                 ))
