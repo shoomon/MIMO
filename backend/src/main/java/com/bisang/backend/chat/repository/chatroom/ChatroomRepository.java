@@ -36,7 +36,7 @@ public class ChatroomRepository {
 
         if (userChatroom == null || userChatroom.isEmpty()) {
             log.warn("채팅방 실시간 순서가 유실되었을 수 있습니다.");
-            userChatroom = chatroomUserJpaRepository.findAllIdsByUserId(userId);
+            userChatroom = chatroomUserJpaRepository.findAllChatroomIdsByUserId(userId);
         }
         return userChatroom;
     }
