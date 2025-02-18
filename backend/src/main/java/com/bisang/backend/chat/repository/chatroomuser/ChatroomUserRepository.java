@@ -7,7 +7,6 @@ import java.time.ZoneOffset;
 import java.util.Map;
 import java.util.Set;
 
-import com.bisang.backend.common.exception.ChatroomException;
 import jakarta.transaction.Transactional;
 
 import org.hibernate.NonUniqueResultException;
@@ -17,6 +16,7 @@ import org.springframework.stereotype.Repository;
 import com.bisang.backend.chat.domain.ChatroomUser;
 import com.bisang.backend.chat.repository.RedisCacheRepository;
 import com.bisang.backend.common.exception.AccountException;
+import com.bisang.backend.common.exception.ChatroomException;
 import com.bisang.backend.user.domain.User;
 import com.bisang.backend.user.repository.UserJpaRepository;
 
