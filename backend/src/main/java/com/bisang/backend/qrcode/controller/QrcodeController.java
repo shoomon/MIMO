@@ -24,7 +24,7 @@ public class QrcodeController {
     ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(qrCodeService.generateExpiringUuidForTeam(user, teamId, accountNumber));
+                .body(qrCodeService.generateExpiringUuidForTeam(user.getId(), teamId, accountNumber));
     }
 
     @GetMapping("/user")

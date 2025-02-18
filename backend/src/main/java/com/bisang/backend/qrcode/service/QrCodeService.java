@@ -4,6 +4,7 @@ import com.bisang.backend.account.service.AccountService;
 import com.bisang.backend.common.exception.ExceptionCode;
 import com.bisang.backend.common.exception.TeamException;
 import com.bisang.backend.common.exception.TransactionException;
+import com.bisang.backend.team.annotation.TeamLeader;
 import com.bisang.backend.team.repository.TeamUserJpaRepository;
 import com.bisang.backend.user.domain.User;
 import com.bisang.backend.user.service.UserService;
@@ -20,12 +21,10 @@ public class QrCodeService {
     private final RedisTemplate<String, String> redisTemplate;
     private final TeamUserJpaRepository teamUserJpaRepository;
     private final AccountService accountService;
-    private final UserService userService;
 
-    public String generateExpiringUuidForTeam(User user, Long teamId, String accountNumber) {
-        Long userId = user.getId();
-        validateTeamLeader(teamId, userId);
-        accountService.validateTeamAccount(userId, accountNumber);
+    @TeamLeader
+    public String generateExpiringUuidForTeam(Long userId, Long teamId, String accountNumber) {
+        accountService.validateTeamAccount(teamId, accountNumber);
 
         return generateExpiringUuid(accountNumber);
     }

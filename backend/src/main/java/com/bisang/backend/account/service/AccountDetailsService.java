@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import com.bisang.backend.account.repository.AccountDetailsQuerydslRepository;
 import com.bisang.backend.common.exception.ExceptionCode;
 import com.bisang.backend.common.exception.TeamException;
 import com.bisang.backend.team.domain.Team;
@@ -16,11 +17,10 @@ import org.springframework.stereotype.Service;
 
 import com.bisang.backend.account.domain.AccountDetails;
 import com.bisang.backend.account.controller.response.AccountDetailsResponse;
-import com.bisang.backend.account.converter.AccountDetailsConverter;
 import com.bisang.backend.user.domain.User;
 import com.bisang.backend.transaction.domain.Transaction;
 import com.bisang.backend.transaction.domain.TransactionCategory;
-import com.bisang.backend.transaction.repository.AccountDetailsJpaRepository;
+import com.bisang.backend.account.repository.AccountDetailsJpaRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,8 +28,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AccountDetailsService {
     private final AccountService accountService;
-
     private final TeamJpaRepository teamJpaRepository;
+    private final AccountDetailsQuerydslRepository accountDetailsQuerydslRepository;
     private final AccountDetailsJpaRepository accountDetailsJpaRepository;
 
     public AccountDetails createAccountDetails(
@@ -57,9 +57,7 @@ public class AccountDetailsService {
 
         accountService.validateUserAccount(userId, accountNumber);
 
-        List<AccountDetails> accountDetails
-                = accountDetailsJpaRepository.findByReceiverAccountNumberAndTransactionCategory(accountNumber, DEPOSIT);
-        return AccountDetailsConverter.accountDetailsToAccountDetailsResponses(accountDetails);
+        return accountDetailsQuerydslRepository.findAccountResponsesByReceiver(accountNumber, DEPOSIT);
     }
     
     public List<AccountDetailsResponse> getUserChargeAccountDetails(User user) {
@@ -68,9 +66,7 @@ public class AccountDetailsService {
 
         accountService.validateUserAccount(userId, accountNumber);
 
-        List<AccountDetails> accountDetails
-                = accountDetailsJpaRepository.findByReceiverAccountNumberAndTransactionCategory(accountNumber, CHARGE);
-        return AccountDetailsConverter.accountDetailsToAccountDetailsResponses(accountDetails);
+        return accountDetailsQuerydslRepository.findAccountResponsesByReceiver(accountNumber, CHARGE);
     }
 
     public List<AccountDetailsResponse> getUserTransferAccountDetails(User user) {
@@ -79,9 +75,7 @@ public class AccountDetailsService {
 
         accountService.validateUserAccount(userId, accountNumber);
 
-        List<AccountDetails> accountDetails
-                = accountDetailsJpaRepository.findBySenderAccountNumberAndTransactionCategory(accountNumber, TRANSFER);
-        return AccountDetailsConverter.accountDetailsToAccountDetailsResponses(accountDetails);
+        return accountDetailsQuerydslRepository.findAccountResponsesBySender(accountNumber, TRANSFER);
     }
 
     public List<AccountDetailsResponse> getUserPayAccountDetails(User user) {
@@ -90,9 +84,7 @@ public class AccountDetailsService {
 
         accountService.validateUserAccount(userId, accountNumber);
 
-        List<AccountDetails> accountDetails
-                = accountDetailsJpaRepository.findBySenderAccountNumberAndTransactionCategory(accountNumber, PAYMENT);
-        return AccountDetailsConverter.accountDetailsToAccountDetailsResponses(accountDetails);
+        return accountDetailsQuerydslRepository.findAccountResponsesBySender(accountNumber, PAYMENT);
     }
 
     @Transactional
@@ -118,18 +110,14 @@ public class AccountDetailsService {
         Team team = findByTeamId(teamId);
         String accountNumber = team.getAccountNumber();
 
-        List<AccountDetails> accountDetails =
-                accountDetailsJpaRepository.findByReceiverAccountNumberAndTransactionCategory(accountNumber, DEPOSIT);
-        return AccountDetailsConverter.accountDetailsToAccountDetailsResponses(accountDetails);
+        return accountDetailsQuerydslRepository.findAccountResponsesByReceiver(accountNumber, DEPOSIT);
     }
 
     public List<AccountDetailsResponse> getTeamPayAccountDetails(Long teamId) {
         Team team = findByTeamId(teamId);
         String accountNumber = team.getAccountNumber();
 
-        List<AccountDetails> accountDetails =
-                accountDetailsJpaRepository.findBySenderAccountNumberAndTransactionCategory(accountNumber, PAYMENT);
-        return AccountDetailsConverter.accountDetailsToAccountDetailsResponses(accountDetails);
+        return accountDetailsQuerydslRepository.findAccountResponsesByReceiver(accountNumber, PAYMENT);
     }
 
     private Team findByTeamId(Long teamId) {

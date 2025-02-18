@@ -4,10 +4,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ce0c64dd-4326-401e-b4f1-7b7313c859a1" name="Changes" comment="chore: new_backend_dev 병합">
+    <list default="true" id="ce0c64dd-4326-401e-b4f1-7b7313c859a1" name="Changes" comment="feat: team 계좌 내역 조회 기능 추가">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/account/controller/AccountController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/account/controller/AccountController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/account/controller/response/AccountDetailsResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/account/controller/response/AccountDetailsResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/account/domain/AccountDetails.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/account/domain/AccountDetails.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/account/service/AccountDetailsService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/account/service/AccountDetailsService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/installment/service/InstallmentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/installment/service/InstallmentService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/qrcode/controller/QrcodeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/qrcode/controller/QrcodeController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/qrcode/service/QrCodeService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/qrcode/service/QrCodeService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/repository/TeamJpaRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/repository/TeamJpaRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/controller/TransactionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/controller/TransactionController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/repository/AccountDetailsJpaRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/account/repository/AccountDetailsJpaRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/repository/AccountQuerydslRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/installment/repository/InstallmentQuerydslRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/repository/TransactionLogJpaRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/repository/TransactionJpaRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/service/TransactionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/service/TransactionService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -371,113 +382,65 @@
       <RunAsTest>true</RunAsTest>
       <method v="2" />
     </configuration>
-    <configuration name="FakeUser" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="backend [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$/backend" />
         <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
+        <option name="scriptParameters" />
         <option name="taskDescriptions">
           <list />
         </option>
         <option name="taskNames">
           <list>
-            <option value=":test" />
-            <option value="--tests" />
-            <option value="&quot;com.bisang.backend.user.FakeUser&quot;" />
+            <option value="build" />
           </list>
         </option>
         <option name="vmOptions" />
       </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
       <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <EXTENSION ID="com.intellij.execution.ExternalSystemRunConfigurationJavaExtension">
-        <extension name="net.ashald.envfile">
-          <option name="IS_ENABLED" value="false" />
-          <option name="IS_SUBST" value="false" />
-          <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-          <option name="IS_IGNORE_MISSING_FILES" value="false" />
-          <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-          <ENTRIES>
-            <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-          </ENTRIES>
-        </extension>
-      </EXTENSION>
       <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>true</RunAsTest>
+      <RunAsTest>false</RunAsTest>
       <method v="2" />
     </configuration>
-    <configuration name="FakeUser.createFakeUser" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="backend [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
-        <option name="env">
-          <map>
-            <entry key="ACCESS_TOKEN_EXPIRY" value="3600000" />
-            <entry key="DB_ID" value="root" />
-            <entry key="DB_PASSWORD" value="1234" />
-            <entry key="DB_URL" value="localhost:3306" />
-            <entry key="GOOGLE_CLIENT_ID" value="385340399378-kumk6r07je1g3fthqlupuh78roghr7l4.apps.googleusercontent.com" />
-            <entry key="GOOGLE_CLIENT_SECRET" value="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" />
-            <entry key="GOOGLE_REDIRECT_URI" value="http://localhost:5500" />
-            <entry key="GOOGLE_RESOURCE_URI" value="https://www.googleapis.com/oauth2/v2/userinfo" />
-            <entry key="GOOGLE_TOKEN_URI" value="https://oauth2.googleapis.com/token" />
-            <entry key="REDIS_PORT" value="6379" />
-            <entry key="REDIS_URI" value="i12a504.p.ssafy.io" />
-            <entry key="REFRESH_TOKEN_EXPIRY" value="604800000 " />
-            <entry key="S3_ACCESS_KEY" value="AKIAWLF26L5R2K6N3C4N" />
-            <entry key="S3_BUCKET_NAME" value="bisang-mimo-bucket" />
-            <entry key="S3_SECRET_KEY" value="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" />
-            <entry key="SECRET_KEY" value="6I90nKd!pR@w#uL2xMv&amp;TgYzQaXj%Nc5oP^B$Vm*H7LfRxWq" />
-          </map>
-        </option>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$/backend" />
         <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
+        <option name="scriptParameters" />
         <option name="taskDescriptions">
           <list />
         </option>
         <option name="taskNames">
           <list>
-            <option value=":test" />
-            <option value="--tests" />
-            <option value="&quot;com.bisang.backend.user.FakeUser.createFakeUser&quot;" />
+            <option value="clean" />
           </list>
         </option>
         <option name="vmOptions" />
       </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
       <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <EXTENSION ID="com.intellij.execution.ExternalSystemRunConfigurationJavaExtension">
-        <extension name="net.ashald.envfile">
-          <option name="IS_ENABLED" value="false" />
-          <option name="IS_SUBST" value="false" />
-          <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-          <option name="IS_IGNORE_MISSING_FILES" value="false" />
-          <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-          <ENTRIES>
-            <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-          </ENTRIES>
-        </extension>
-      </EXTENSION>
       <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>true</RunAsTest>
+      <RunAsTest>false</RunAsTest>
       <method v="2" />
     </configuration>
     <list>
       <item itemvalue="Application.BackendApplication" />
+      <item itemvalue="Gradle.backend [build]" />
+      <item itemvalue="Gradle.backend [clean]" />
       <item itemvalue="Gradle.ChargeTest.checkChargeTestResult" />
       <item itemvalue="Gradle.ChargeTest" />
-      <item itemvalue="Gradle.FakeUser" />
       <item itemvalue="Gradle.ChargeTest.chargeTest" />
-      <item itemvalue="Gradle.FakeUser.createFakeUser" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.backend [build]" />
+        <item itemvalue="Gradle.backend [clean]" />
         <item itemvalue="Gradle.ChargeTest.chargeTest" />
         <item itemvalue="Gradle.ChargeTest" />
         <item itemvalue="Gradle.ChargeTest.checkChargeTestResult" />
-        <item itemvalue="Gradle.FakeUser.createFakeUser" />
-        <item itemvalue="Gradle.FakeUser" />
       </list>
     </recent_temporary>
   </component>
@@ -866,7 +829,15 @@
       <option name="project" value="LOCAL" />
       <updated>1739853482654</updated>
     </task>
-    <option name="localTasksCounter" value="48" />
+    <task id="LOCAL-00048" summary="feat: team 계좌 내역 조회 기능 추가">
+      <option name="closed" value="true" />
+      <created>1739854412713</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1739854412713</updated>
+    </task>
+    <option name="localTasksCounter" value="49" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -908,7 +879,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat: redisson을 사용한 어노테이션 기반 분산락 구현" />
     <MESSAGE value="feat: 충전 관련 에러코드명 변경" />
     <MESSAGE value="refactor: 충전 관련 에러코드명 변경" />
     <MESSAGE value="refactor: 예외처리 클래스 추가 및 handler 메서드 추가" />
@@ -933,6 +903,7 @@
     <MESSAGE value="refactor: 계좌 관련 로직 리팩토링" />
     <MESSAGE value="refactor: 계좌 관련 로직 리팩토링 및 일부 기능 추가" />
     <MESSAGE value="chore: new_backend_dev 병합" />
-    <option name="LAST_COMMIT_MESSAGE" value="chore: new_backend_dev 병합" />
+    <MESSAGE value="feat: team 계좌 내역 조회 기능 추가" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: team 계좌 내역 조회 기능 추가" />
   </component>
 </project>
