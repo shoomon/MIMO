@@ -59,7 +59,14 @@ public class ChatroomUserService {
         );
         chatRedisService.afterSendMessage(chatroomId, message);
 
-        ChatroomUser chatroomUser = ChatroomUser.createChatroomUser(chatroomId, userId, nickname, enterDate, message.getId());
+        ChatroomUser chatroomUser
+                = ChatroomUser.createChatroomUser(
+                        chatroomId,
+                        userId,
+                        nickname,
+                        enterDate,
+                        message.getId()
+                );
 
         chatroomUserRepository.insertJpaMemberUser(chatroomUser);
         chatroomUserRepository.insertTeamEnterScore(enterDate, message.getId(), chatroomId, userId);
