@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.bisang.backend.common.utils.PageUtils.PAGE_SIZE;
 import static com.bisang.backend.common.utils.PageUtils.SHORT_PAGE_SIZE;
 import static com.bisang.backend.team.domain.QTag.tag;
 import static com.bisang.backend.team.domain.QTeam.team;
@@ -36,6 +37,47 @@ public class TeamSearchQuerydslRepository {
     private final TeamUserJpaRepository teamUserJpaRepository;
     private final JPAQueryFactory queryFactory;
     private final TeamJpaRepository teamJpaRepository;
+
+    public List<SimpleTeamDto> findRecentTeam() {
+        List<SimpleTeamDto> teams = queryFactory
+            .select(Projections.constructor(SimpleTeamDto.class,
+                team.id,
+                team.name,
+                team.shortDescription,
+                team.teamProfileUri,
+                Expressions.numberTemplate(Double.class, "{0}", 0.0),
+                Expressions.numberTemplate(Long.class, "{0}", 0L),
+                team.maxCapacity,
+                JPAExpressions.select(teamUser.count())
+                    .from(teamUser)
+                    .where(teamUser.teamId.eq(team.id)),
+                Expressions.constant(emptyList())
+            ))
+            .from(team)
+            .where(team.privateStatus.eq(PUBLIC))
+            .limit(SHORT_PAGE_SIZE)
+            .orderBy(team.id.desc())
+            .fetch();
+
+        List<Long> teamIds = teams.stream()
+            .map(SimpleTeamDto::teamId)
+            .toList();
+
+        Map<Long, List<String>> tagsMap = getTagsByTeamIds(teamIds);
+        Map<Long, SimpleTeamReviewDto> teamReviews = getReviewsByTeamIds(teamIds);
+
+        return teams.stream()
+            .map(teamDto -> {
+                List<String> tags = tagsMap.getOrDefault(teamDto.teamId(), emptyList());
+                SimpleTeamReviewDto simpleTeamReview
+                    = teamReviews.getOrDefault(
+                    teamDto.teamId(),
+                    new SimpleTeamReviewDto(teamDto.teamId(), 0D, 0L));
+                return createSimpleDto(teamDto, tags, simpleTeamReview);
+            })
+            .sorted(comparing(SimpleTeamDto::teamId).reversed())
+            .toList();
+    }
 
     public List<SimpleTagDto> findAreaTags() {
         List<String> areaNames = Area.getAreaNames();

@@ -4,10 +4,7 @@ import com.bisang.backend.team.annotation.EveryOne;
 import com.bisang.backend.team.controller.dto.SimpleTagDto;
 import com.bisang.backend.team.controller.dto.SimpleTeamDto;
 import com.bisang.backend.team.controller.dto.TagDto;
-import com.bisang.backend.team.controller.response.SimpleTagResponse;
-import com.bisang.backend.team.controller.response.TeamTagResponse;
-import com.bisang.backend.team.controller.response.TeamTagSearchResponse;
-import com.bisang.backend.team.controller.response.TeamTitleDescSearchResponse;
+import com.bisang.backend.team.controller.response.*;
 import com.bisang.backend.team.repository.TeamSearchQuerydslRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -56,5 +53,12 @@ public class TeamSearchService {
     public SimpleTagResponse getCategoryTags() {
         List<SimpleTagDto> areas = teamSearchQuerydslRepository.findCategoryTags();
         return new SimpleTagResponse(areas);
+    }
+
+    @EveryOne
+    @Transactional(readOnly = true)
+    public RecentTeamResponse getRecentTeams() {
+        List<SimpleTeamDto> teams = teamSearchQuerydslRepository.findRecentTeam();
+        return new RecentTeamResponse(teams);
     }
 }

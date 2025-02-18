@@ -1,9 +1,6 @@
 package com.bisang.backend.team.controller;
 
-import com.bisang.backend.team.controller.response.SimpleTagResponse;
-import com.bisang.backend.team.controller.response.TeamTagResponse;
-import com.bisang.backend.team.controller.response.TeamTagSearchResponse;
-import com.bisang.backend.team.controller.response.TeamTitleDescSearchResponse;
+import com.bisang.backend.team.controller.response.*;
 import com.bisang.backend.team.service.TeamSearchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -50,6 +47,11 @@ public class TeamSearchController {
     @GetMapping("/tag-category")
     public ResponseEntity<SimpleTagResponse> getCategoryTag() {
         return ResponseEntity.ok(teamSearchService.getCategoryTags());
+    }
+
+    @GetMapping("/recent")
+    public ResponseEntity<RecentTeamResponse> getRecentTeam() {
+        return ResponseEntity.ok(teamSearchService.getRecentTeams());
     }
 }
 
