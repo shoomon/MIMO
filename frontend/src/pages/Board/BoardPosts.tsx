@@ -58,7 +58,7 @@ const BoardPosts = () => {
                 key={post.boardId}
                 userProfileUri={post.userProfileUri}
                 userNickname={post.userNickname}
-                postTitle={post.postTitle}
+                postTitle={post.boardTitle}
                 imageUri={post.imageUri}
                 likeCount={post.likeCount}
                 viewCount={post.viewCount}

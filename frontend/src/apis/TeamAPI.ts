@@ -325,6 +325,19 @@ export const getTeamInfosByArea = async (
     }
 };
 
+export const getMyTeamInfos = async (): Promise<TeamInfosResponse> => {
+    try {
+        const response = await customFetch('/team-user/my-team-info', {
+            method: 'GET',
+        });
+
+        return response.json();
+    } catch (error) {
+        console.error('Error fetching area teams:', error);
+        throw error;
+    }
+};
+
 export const getAdhocSchedules = async (
     teamId: number,
     lastTeamScheduleId?: number,

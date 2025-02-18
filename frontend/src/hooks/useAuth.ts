@@ -5,7 +5,6 @@ import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 
 export const useAuth = () => {
-
     const [isLogin, setLogin] = useState<boolean>(false);
     const { accessToken } = useTokenStore();
     const connect = useSocketStore((state) => state.connect);
@@ -54,7 +53,7 @@ export const useOauth = () => {
         if (oauthToken) {
             const fetchToken = async () => {
                 const data = await getTokenAPI(oauthToken);
-   
+
                 setAccessToken(data.accessToken);
             };
 

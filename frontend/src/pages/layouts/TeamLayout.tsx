@@ -38,7 +38,6 @@ const TeamLayout = () => {
                         subTitle={'subtitle이 없습니다.'}
                         rating={{
                             rating: teamData?.score || 0,
-                            reviewCount: 0,
                         }}
                         title={teamData?.name || 'title이 없습니다.'}
                         tag={formattedTags}
@@ -49,7 +48,6 @@ const TeamLayout = () => {
                                 ? myProfileData.teamUserId
                                 : null
                         }
-                        nickName="일단닉네임"
                         recruitStatus={
                             teamData?.recruitStatus || 'ACTIVE_PUBLIC'
                         }

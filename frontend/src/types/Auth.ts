@@ -1,4 +1,4 @@
-import { SimpleBoardDTO, SimpleCommentDTO } from "./Board";
+import { SimpleBoardDTO, SimpleCommentDTO } from './Board';
 
 export interface OAuthResponse {
     accessToken: string;
@@ -9,8 +9,12 @@ export interface UserResponse {
     profileUri: string;
 }
 
-export interface UserMyResponse {
+export interface boardTeamInfo {
+    boardTeamInfo: SimpleBoardDTO;
+    imageUri: string;
+}
 
+export interface UserMyResponse {
     name: string;
     nickname: string;
     email: string;
@@ -19,6 +23,6 @@ export interface UserMyResponse {
     mileage: number;
     mileageIncome: number;
     mileageOutcome: number;
-    boards: SimpleBoardDTO[];
-    comments: SimpleCommentDTO[];
+    userBoard: boardTeamInfo[];
+    userComment: SimpleCommentDTO[];
 }

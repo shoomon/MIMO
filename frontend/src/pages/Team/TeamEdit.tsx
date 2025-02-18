@@ -279,6 +279,9 @@ const TeamEdit = () => {
                             onChange={handleRecruitToggleChange}
                         />
                     </div>
+                    <div className="flex flex-col gap-2 pb-4 pl-2">
+                        <span className="text-xl font-bold">카테고리</span>
+                    </div>
                 </form>
             </BodyLayout_64>
         </BaseLayout>
