@@ -1,5 +1,7 @@
 package com.bisang.backend.chat.batch;
 
+import java.util.List;
+
 import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -10,6 +12,7 @@ import com.bisang.backend.chat.domain.redis.RedisChatMessage;
 import com.bisang.backend.chat.repository.message.ChatMessageJpaRepository;
 
 import lombok.RequiredArgsConstructor;
+
 
 @Component
 @RequiredArgsConstructor
@@ -22,6 +25,7 @@ public class ChatItemWriter implements ItemWriter<ChatMessage> {
     public void write(Chunk<? extends ChatMessage> chunk) {
         // DB 저장
         chatMessageRepository.saveAll(chunk.getItems());
+
         // Redis에서 삭제
         deleteFromRedis(chunk);
     }
@@ -49,7 +53,6 @@ public class ChatItemWriter implements ItemWriter<ChatMessage> {
                 chatMessage.getId(),
                 chatMessage.getChatroomId(),
                 chatMessage.getUserId(),
-                chatMessage.getTeamUserId(),
                 chatMessage.getMessage(),
                 chatMessage.getCreatedAt(),
                 chatMessage.getChatType()

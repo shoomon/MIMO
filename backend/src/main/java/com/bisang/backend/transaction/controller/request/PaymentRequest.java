@@ -7,9 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PaymentRequest {
     private String uuid;
-    private Long paidAmount;
-    private String senderAccountNumber;
-    private String senderName;
-    private String receiverName;
+    private Long amount;
+    private String receiverAccountNumber;
     private String memo;
 }

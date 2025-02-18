@@ -59,28 +59,34 @@ public class TeamScheduleController {
 
     @GetMapping("/ad-hoc")
     public ResponseEntity<TeamSchedulesResponse> getAdhocSchedules(
+            @Guest User user,
             @RequestParam Long teamId,
             @RequestParam(required = false) Long lastTeamScheduleId
     ) {
-        var adhocSchedule = teamScheduleEveryOneService.getSchedules(teamId, AD_HOC, lastTeamScheduleId);
+        Long userId = user == null ? null : user.getId();
+        var adhocSchedule = teamScheduleEveryOneService.getSchedules(userId, teamId, AD_HOC, lastTeamScheduleId);
         return ResponseEntity.ok(adhocSchedule);
     }
 
     @GetMapping("/regular")
     public ResponseEntity<TeamSchedulesResponse> getRegularSchedules(
+            @Guest User user,
             @RequestParam Long teamId,
             @RequestParam(required = false) Long lastTeamScheduleId
     ) {
-        var adhocSchedule = teamScheduleEveryOneService.getSchedules(teamId, REGURAL, lastTeamScheduleId);
+        Long userId = user == null ? null : user.getId();
+        var adhocSchedule = teamScheduleEveryOneService.getSchedules(userId, teamId, REGULAR, lastTeamScheduleId);
         return ResponseEntity.ok(adhocSchedule);
     }
 
     @GetMapping("/closed")
     public ResponseEntity<TeamSchedulesResponse> getClosedSchedules(
+            @Guest User user,
             @RequestParam Long teamId,
             @RequestParam(required = false) Long lastTeamScheduleId
     ) {
-        var adhocSchedule = teamScheduleEveryOneService.getSchedules(teamId, CLOSED, lastTeamScheduleId);
+        Long userId = user == null ? null : user.getId();
+        var adhocSchedule = teamScheduleEveryOneService.getSchedules(userId, teamId, CLOSED, lastTeamScheduleId);
         return ResponseEntity.ok(adhocSchedule);
     }
 

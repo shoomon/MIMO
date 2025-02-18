@@ -27,6 +27,12 @@ public class BoardImage {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
+    @Column(name = "team_id", nullable = false)
+    private Long teamId;
+
+    @Column(name = "team_board_id", nullable = false)
+    private Long teamBoardId;
+
     @Column(name = "board_id", nullable = false)
     private Long boardId;
 
@@ -37,8 +43,10 @@ public class BoardImage {
     private String fileUri;
 
     @Builder
-    private BoardImage(Long boardId, String fileExtension, String fileUri) {
+    private BoardImage(Long teamBoardId, Long boardId, Long teamId, String fileExtension, String fileUri) {
+        this.teamBoardId = teamBoardId;
         this.boardId = boardId;
+        this.teamId = teamId;
         this.fileExtension = fileExtension;
         this.fileUri = fileUri;
     }

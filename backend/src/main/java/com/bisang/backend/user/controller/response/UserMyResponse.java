@@ -13,11 +13,12 @@ public record UserMyResponse(
         String nickname,
         String email,
         String profileUri,
+        String accountNumber,
         Double reviewScore,
         Long mileage,
         Long mileageIncome,
         Long mileageOutcome,
-        List<SimpleBoardDto> boards,
-        List<SimpleCommentDto> comments
+        List<SimpleBoardDto> userBoard,
+        List<SimpleCommentDto> userComment
 ) {
 }

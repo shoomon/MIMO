@@ -13,6 +13,7 @@ import jakarta.persistence.EntityListeners;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
@@ -31,7 +32,12 @@ import lombok.NoArgsConstructor;
 @Table(
         name = "team_user",
         uniqueConstraints = {
-            @UniqueConstraint(name = "UK_team_user", columnNames = {"team_id", "user_id"})
+            @UniqueConstraint(name = "UK_team_user", columnNames = {"team_id", "user_id"}),
+            @UniqueConstraint(name = "UK_team_nickname", columnNames = {"team_id", "nickname"})
+        },
+        indexes = {
+                @Index(name = "idx_user_team", columnList = "user_id, team_id desc"),
+                @Index(name = "idx_team_user", columnList = "team_id, user_id")
         }
 )
 public class TeamUser {
@@ -53,7 +59,7 @@ public class TeamUser {
     @Enumerated(STRING)
     private TeamUserRole role;
 
-    @Column(name = "nofitication_status", nullable = false)
+    @Column(name = "notification_status", nullable = false)
     @Enumerated(STRING)
     private TeamNotificationStatus status;
 

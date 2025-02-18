@@ -8,18 +8,17 @@ import com.bisang.backend.transaction.controller.request.TransferRequest;
 import com.bisang.backend.transaction.domain.Transaction;
 import com.bisang.backend.transaction.domain.TransactionCategory;
 import com.bisang.backend.transaction.domain.TransactionStatus;
+import com.bisang.backend.user.domain.User;
 
 @Component
 public class TransactionConverter {
 
     // 잔액 충전 트랜잭션
-    public static Transaction chargeRequestToTransaction(ChargeRequest chargeRequest) {
+    public static Transaction chargeRequestToTransaction(ChargeRequest chargeRequest, User user) {
         return Transaction.builder()
-                .balance(chargeRequest.getPaidAmount())
+                .amount(chargeRequest.getAmount())
                 .senderAccountNumber(null)
-                .receiverAccountNumber(chargeRequest.getReceiverAccountNumber())
-                .senderName(null)
-                .receiverName(chargeRequest.getReceiverName())
+                .receiverAccountNumber(user.getAccountNumber())
                 .impUid(chargeRequest.getImpUid())
                 .merchantUid(chargeRequest.getMerchantUid())
                 .memo("충전")
@@ -29,13 +28,11 @@ public class TransactionConverter {
     }
 
     // 잔액 송금 트랜잭션
-    public static Transaction transferRequestToTransaction(TransferRequest transferRequest) {
+    public static Transaction transferRequestToTransaction(TransferRequest transferRequest, User user) {
         return Transaction.builder()
-                .balance(transferRequest.getBalance())
-                .senderAccountNumber(transferRequest.getSenderAccountNumber())
+                .amount(transferRequest.getAmount())
+                .senderAccountNumber(user.getAccountNumber())
                 .receiverAccountNumber(transferRequest.getReceiverAccountNumber())
-                .senderName(transferRequest.getSenderName())
-                .receiverName(transferRequest.getReceiverName())
                 .impUid(null)
                 .merchantUid(null)
                 .memo("송금")
@@ -45,13 +42,11 @@ public class TransactionConverter {
     }
 
     // 잔액 결제 트랜잭션
-    public static Transaction paymentRequestToTransaction(PaymentRequest paymentRequest) {
+    public static Transaction paymentRequestToTransaction(PaymentRequest paymentRequest, String senderAccountNumber) {
         return Transaction.builder()
-                .balance(paymentRequest.getPaidAmount())
-                .senderAccountNumber(paymentRequest.getSenderAccountNumber())
-                .receiverAccountNumber(null)
-                .senderName(paymentRequest.getSenderName())
-                .receiverName(paymentRequest.getReceiverName())
+                .amount(paymentRequest.getAmount())
+                .senderAccountNumber(senderAccountNumber)
+                .receiverAccountNumber(paymentRequest.getReceiverAccountNumber())
                 .impUid(null)
                 .merchantUid(null)
                 .memo(paymentRequest.getMemo())

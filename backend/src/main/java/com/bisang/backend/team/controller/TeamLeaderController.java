@@ -1,17 +1,21 @@
 package com.bisang.backend.team.controller;
 
+import com.bisang.backend.team.controller.dto.MyTeamSpecificDto;
 import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bisang.backend.auth.annotation.AuthUser;
+import com.bisang.backend.invite.controller.response.TeamInvitesResponse;
+import com.bisang.backend.invite.service.TeamInviteService;
 import com.bisang.backend.team.controller.request.DowngradeRoleRequest;
 import com.bisang.backend.team.controller.request.InviteApproveRequest;
 import com.bisang.backend.team.controller.request.InviteRejectRequest;
@@ -29,6 +33,36 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/team-leader")
 public class TeamLeaderController {
     private final TeamLeaderService teamLeaderService;
+    private final TeamInviteService teamInviteService;
+
+    @GetMapping("/specific-info")
+    public ResponseEntity<MyTeamSpecificDto> getSpecificTeamDto(
+            @AuthUser User user,
+            @RequestParam("teamId") Long teamId
+    ) {
+        var response = teamLeaderService.getMyTeamSpecificDto(user.getId(), teamId);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/tag")
+    public ResponseEntity<Void> addTag(
+            @AuthUser User user,
+            @RequestParam("teamId") Long teamId,
+            @RequestParam("tag") String tag
+    ) {
+        teamLeaderService.addTag(user.getId(), teamId, tag);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/tag")
+    public ResponseEntity<Void> deleteTag(
+            @AuthUser User user,
+            @RequestParam("teamId") Long teamId,
+            @RequestParam("tag") String tag
+    ) {
+        teamLeaderService.deleteTag(user.getId(), teamId, tag);
+        return ResponseEntity.ok().build();
+    }
 
     @GetMapping("/users")
     public ResponseEntity<TeamUserResponse> getTeamUser(
@@ -39,6 +73,16 @@ public class TeamLeaderController {
     ) {
         var response = teamLeaderService.findTeamUsers(user.getId(), teamId, role, teamUserId);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/invite")
+    public ResponseEntity<TeamInvitesResponse> getTeamInvites(
+        @AuthUser User user,
+        @RequestParam Long teamId,
+        @RequestParam(required = false) Long lastTeamInviteId
+    ) {
+        var teamInvites = teamInviteService.getTeamInvites(user.getId(), teamId, lastTeamInviteId);
+        return ResponseEntity.ok(teamInvites);
     }
 
     @PatchMapping("/invite-approve")

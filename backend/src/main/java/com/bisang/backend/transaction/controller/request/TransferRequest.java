@@ -8,9 +8,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 public class TransferRequest {
-    private Long balance;
-    private String senderAccountNumber;
+    private Long amount;
     private String receiverAccountNumber;
-    private String senderName;
-    private String receiverName;
 }

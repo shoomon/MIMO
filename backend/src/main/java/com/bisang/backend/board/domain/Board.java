@@ -37,6 +37,9 @@ public class Board extends BaseTimeEntity {
     @Column(name = "team_board_id", nullable = false)
     private Long teamBoardId;
 
+    @Column(name = "team_id", nullable = false)
+    private Long teamId;
+
     @Column(name = "team_user_id", nullable = false)
     private Long teamUserId;
 
@@ -59,12 +62,14 @@ public class Board extends BaseTimeEntity {
     @Builder
     private Board(
             Long teamBoardId,
+            Long teamId,
             Long teamUserId,
             Long userId,
             String title,
             BoardDescription description
     ) {
         this.teamBoardId = teamBoardId;
+        this.teamId = teamId;
         this.teamUserId = teamUserId;
         this.userId = userId;
         this.title = title;

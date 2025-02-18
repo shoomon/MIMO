@@ -3,7 +3,6 @@ package com.bisang.backend.team.domain;
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
-import static java.lang.Math.max;
 import static java.lang.Math.min;
 import static lombok.AccessLevel.PROTECTED;
 
@@ -33,11 +32,12 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 @Table(
-    name = "team",
-    indexes = {
-        @Index(name = "idx_team_area", columnList = "team_area_code, team_id desc"),
-        @Index(name = "idx_team_category", columnList = "team_category, team_id desc")
-    }
+        name = "team",
+        indexes = {
+            @Index(name = "idx_status_area_team", columnList = "private_status, team_area_code, team_id desc"),
+            @Index(name = "idx_status_category_team", columnList = "private_status, team_category, team_id desc"),
+            @Index(name = "idx_team_id_accountNumber", columnList = "team_id, team_account_number")
+        }
 )
 public class Team {
     @Id @Column(name = "team_id")
@@ -147,5 +147,9 @@ public class Team {
     public void updateDescription(String description) {
         int shortDescriptionLength = min(this.description.getDescription().length(), 97);
         this.shortDescription = this.description.getDescription().substring(0, shortDescriptionLength) + "...";
+    }
+
+    public void updateCategory(TeamCategory category) {
+        this.category = category;
     }
 }

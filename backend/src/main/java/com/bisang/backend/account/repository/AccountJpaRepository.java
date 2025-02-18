@@ -11,5 +11,7 @@ import com.bisang.backend.account.domain.Account;
 public interface AccountJpaRepository extends JpaRepository<Account, String> {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT a FROM Account a WHERE a.accountNumber = :accountNumber")
+    Account findByAccountNumberWithLockingReads(String accountNumber);
+
     Account findByAccountNumber(String accountNumber);
 }
