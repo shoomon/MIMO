@@ -18,11 +18,11 @@ const AlbumView = ({ images = [], id }: AlbumProps) => {
 
     return (
         <div className="flex w-[28rem] flex-col gap-4">
-            <Title label="앨범" to={`/album/${id}`} />
+            <Title label="앨범" to={`album`} />
             <ul className="grid w-full grid-cols-3 gap-2">
                 {images.map((item) => (
                     <li key={item.boardId}>
-                        <Link to={item.boardId} className="inline-block">
+                        <Link to={`${item.boardId}`} className="inline-block">
                             <img
                                 src={item.imageUri}
                                 alt=""
