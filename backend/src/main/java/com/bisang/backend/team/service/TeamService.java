@@ -92,7 +92,8 @@ public class TeamService {
             TeamDescription teamDescription = new TeamDescription(description);
             teamDescriptionJpaRepository.save(teamDescription);
 
-            // TODO: 계좌 관련 생성 기능 추가
+            // 계좌 생성
+            String accountNumber = accountService.createTeamAccount();
 
             // 팀 생성
             newTeam = Team.builder()
@@ -100,7 +101,7 @@ public class TeamService {
                 .teamChatroomId(0L) // 추후 추가 필요, 챗룸 구현 이후
                 .name(name)
                 .description(teamDescription)
-                .accountNumber("1001111111111")
+                .accountNumber(accountNumber)
                 .recruitStatus(teamRecruitStatus)
                 .privateStatus(teamPrivateStatus)
                 .teamProfileUri(teamProfileUri)
