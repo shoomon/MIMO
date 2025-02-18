@@ -38,7 +38,7 @@ public class ChatMessageService {
                 message.getType()
         );
 
-        template.convertAndSend("/sub/chat" + chatroomId, messageResponse);
+        template.convertAndSend("/sub/chat/" + chatroomId, messageResponse);
     }
 
     public List<ChatMessageResponse> getMessages(Long userId, Long roomId, Long messageId, String timestamp) {
