@@ -16,11 +16,11 @@ import com.bisang.backend.user.domain.User;
 import com.bisang.backend.user.repository.UserJpaRepository;
 import jakarta.persistence.EntityNotFoundException;
 
-import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bisang.backend.board.domain.*;
@@ -53,11 +53,11 @@ public class BoardService {
     private final TeamJpaRepository teamJpaRepository;
 
     @Transactional
-//    @TeamMember
+    @TeamMember
     public Long createPost(
-            Long teamBoardId,
-            Long teamId,
             Long userId,
+            Long teamId,
+            Long teamBoardId,
             String title,
             String description,
             MultipartFile[] files
@@ -75,6 +75,7 @@ public class BoardService {
 
         Board post = boardJpaRepository.save(Board.builder()
                 .teamBoardId(teamBoardId)
+                .teamId(teamId)
                 .teamUserId(teamUser.getId())
 //                        .teamUserId(1L)
                 .userId(userId)
@@ -99,6 +100,143 @@ public class BoardService {
             }
         }
         return post.getId();
+    }
+
+    public BoardListResponse getPostListResponse(User user, Long teamBoardId, Long offset, Integer pageSize){
+
+        TeamBoard teamBoard = teamBoardJpaRepository.findTeamBoardById(teamBoardId)
+                .orElseThrow(() -> new BoardException(TEAM_BOARD_NOT_FOUND));
+
+        isValidGuest(user, teamBoard.getTeamId());
+
+        List<SimpleBoardListDto> list = getPostList(teamBoardId, offset, pageSize);
+
+        return new BoardListResponse(teamBoard.getBoardName(), list);
+    }
+
+    @Transactional
+    public BoardDetailResponse getPostDetail(User user, Long boardId) {
+        BoardDetailResponse postDetail = null;
+        BoardInfoDto boardInfo = boardQuerydslRepository.getBoardInfo(boardId);
+
+        isValidGuest(user, boardInfo.teamId());
+
+        boardJpaRepository.increaseViewCount(boardId);
+
+        String userProfileUri = userJpaRepository.getUserProfileUri(boardInfo.userId());
+        String userNickname = teamUserJpaRepository.getTeamUserNickname(boardInfo.teamUserId());
+        BoardLike userLike = boardLikeRepository
+                .findByTeamUserIdAndBoardId(boardInfo.teamUserId(), boardId).orElse(null);
+        BoardDto post = new BoardDto(
+                boardId,
+                boardInfo.userId(),
+                boardInfo.teamUserId(),
+                userProfileUri,
+                userNickname,
+                boardInfo.boardName(),
+                boardInfo.postTitle(),
+                boardInfo.description(),
+                boardInfo.likeCount(),
+                boardInfo.viewCount(),
+                boardInfo.createdAt(),
+                boardInfo.updatedAt()
+        );
+
+        List<CommentListDto> comments = getCommentList(boardId);
+        List<BoardFileDto> files = boardImageJpaRepository.findByBoardId(boardId);
+
+        postDetail = new BoardDetailResponse(post, files, userLike != null, comments);
+        return postDetail;
+    }
+
+    @Transactional
+    public void updatePost(
+            Long userId,
+            Long boardId,
+            String title,
+            String description,
+            List<BoardFileDto> filesToDelete,
+            MultipartFile[] filesToAdd
+    ) {
+        Board board = boardJpaRepository.findById(boardId)
+                .orElseThrow(()-> new BoardException(ExceptionCode.BOARD_NOT_FOUND));
+
+        TeamUser teamUser = teamUserJpaRepository.findById(board.getTeamUserId())
+                .orElseThrow(() -> new EntityNotFoundException("팀유저를 찾을 수 없습니다."));
+
+        if(!board.getUserId().equals(userId)) throw new BoardException(ExceptionCode.NOT_AUTHOR);
+
+        board.updateTitle(title);
+        boardJpaRepository.save(board);
+
+        BoardDescription boardDescription = boardDescriptionJpaRepository.findById(board.getDescription().getId())
+                .orElseThrow(()-> new BoardException(ExceptionCode.BOARD_NOT_FOUND));
+
+        boardDescription.updateDescription(description);
+        boardDescriptionJpaRepository.save(boardDescription);
+
+        if(filesToDelete != null){
+            deleteImageFromS3(filesToDelete);
+            for(BoardFileDto file : filesToDelete){
+                BoardImage curfile = boardImageJpaRepository.findById(file.fileId())
+                        .orElseThrow(()-> new EntityNotFoundException("첨부파일을 찾을 수 없습니다."));
+
+                boardImageJpaRepository.delete(curfile);
+            }
+        }
+
+        if(filesToAdd != null){
+            for(MultipartFile file : filesToAdd){
+                String uri = s3Service.saveFile(userId, file);
+                String fileExtension = uri.substring(uri.lastIndexOf(".") + 1).toLowerCase();
+
+                boardImageJpaRepository.save(BoardImage.builder()
+                        .teamBoardId(board.getTeamBoardId())
+                        .boardId(board.getId())
+                        .teamId(teamUser.getTeamId())
+//                                .teamId(1L)
+                        .fileExtension(fileExtension)
+                        .fileUri(uri)
+                        .build());
+            }
+        }
+    }
+
+    @Transactional
+    public void deletePost(Long userId, Long boardId) {
+        Board post = boardJpaRepository.findById(boardId)
+                .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
+
+        if(!post.getUserId().equals(userId)) throw new BoardException(ExceptionCode.NOT_AUTHOR);
+
+        boardLikeRepository.deleteByBoardId(boardId);
+
+        List<BoardFileDto> boardFiles = boardImageJpaRepository.findByBoardId(boardId);
+        deleteImageFromS3(boardFiles);
+        boardImageJpaRepository.deleteByBoardId(boardId);
+
+        boardDescriptionJpaRepository.deleteById(post.getDescription().getId());
+
+        boardJpaRepository.delete(post);
+
+        commentJpaRepository.deleteByBoardId(boardId);
+    }
+
+    @Transactional
+    public void likePost(Long teamUserId, Long postId){
+        Optional<BoardLike> userLike = boardLikeRepository.findByTeamUserIdAndBoardId(teamUserId, postId);
+
+        if (userLike.isPresent()) {
+            boardLikeRepository.delete(userLike.get());
+            boardJpaRepository.decreaseLikeCount(postId);
+        }else{
+            boardLikeRepository.save(BoardLike.builder()
+                    .teamUserId(teamUserId)
+                    .boardId(postId)
+                    .build()
+            );
+            boardJpaRepository.increaseLikeCount(postId);
+        }
     }
 
     public List<SimpleBoardListDto> getPostList(Long teamBoardId, Long offset, Integer pageSize) {
@@ -135,12 +273,8 @@ public class BoardService {
         return list;
     }
 
-    public BoardListResponse getPostListResponse(User user, Long teamBoardId, Long offset, Integer pageSize){
-
-        TeamBoard teamBoard = teamBoardJpaRepository.findTeamBoardById(teamBoardId)
-                .orElseThrow(() -> new BoardException(TEAM_BOARD_NOT_FOUND));
-
-        Team team = teamJpaRepository.findTeamById(teamBoard.getTeamId())
+    private void isValidGuest(User user, Long teamId) {
+        Team team = teamJpaRepository.findTeamById(teamId)
                 .orElseThrow(()->new TeamException(NOT_FOUND_TEAM));
 
         TeamPrivateStatus teamPrivateStatus = team.getPrivateStatus();
@@ -148,139 +282,10 @@ public class BoardService {
         if(TeamPrivateStatus.PRIVATE == teamPrivateStatus){
 
             if(user == null
-                || teamUserJpaRepository
+                    || teamUserJpaRepository
                     .findByTeamIdAndUserId(team.getId(), user.getId()).isEmpty()){
                 throw new TeamException(NOT_FOUND_TEAM_USER);
             }
-        }
-
-        List<SimpleBoardListDto> list = getPostList(teamBoardId, offset, pageSize);
-
-        return new BoardListResponse(teamBoard.getBoardName(), list);
-    }
-
-    @Transactional
-    //    @TeamMember
-    public BoardDetailResponse getPostDetail(Long boardId) {
-        BoardDetailResponse postDetail = null;
-        boardJpaRepository.increaseViewCount(boardId);
-
-        BoardInfoDto boardInfo = boardQuerydslRepository.getBoardInfo(boardId);
-        String userProfileUri = userJpaRepository.getUserProfileUri(boardInfo.userId());
-        String userNickname = teamUserJpaRepository.getTeamUserNickname(boardInfo.teamUserId());
-        BoardLike userLike = boardLikeRepository
-                .findByTeamUserIdAndBoardId(boardInfo.teamUserId(), boardId).orElse(null);
-        BoardDto post = new BoardDto(
-                boardId,
-                boardInfo.userId(),
-                boardInfo.teamUserId(),
-                userProfileUri,
-                userNickname,
-                boardInfo.boardName(),
-                boardInfo.postTitle(),
-                boardInfo.description(),
-                boardInfo.likeCount(),
-                boardInfo.viewCount(),
-                boardInfo.createdAt(),
-                boardInfo.updatedAt()
-        );
-
-        List<CommentListDto> comments = getCommentList(boardId);
-        List<BoardFileDto> files = boardImageJpaRepository.findByBoardId(boardId);
-
-        postDetail = new BoardDetailResponse(post, files, userLike != null, comments);
-        return postDetail;
-    }
-
-    @Transactional
-    //    @TeamMember
-    public void updatePost(
-            Long userId,
-            Long boardId,
-            String title,
-            String description,
-            List<BoardFileDto> filesToDelete,
-            MultipartFile[] filesToAdd
-    ) {
-        Board board = boardJpaRepository.findById(boardId)
-                .orElseThrow(()-> new BoardException(ExceptionCode.BOARD_NOT_FOUND));
-
-//        TeamUser teamUser = teamUserJpaRepository.findById(board.getTeamUserId())
-//                .orElseThrow(() -> new EntityNotFoundException("팀유저를 찾을 수 없습니다."));
-
-        if(!board.getUserId().equals(userId)) throw new BoardException(ExceptionCode.NOT_AUTHOR);
-
-        board.updateTitle(title);
-        boardJpaRepository.save(board);
-
-        BoardDescription boardDescription = boardDescriptionJpaRepository.findById(board.getDescription().getId())
-                .orElseThrow(()-> new BoardException(ExceptionCode.BOARD_NOT_FOUND));
-
-        boardDescription.updateDescription(description);
-        boardDescriptionJpaRepository.save(boardDescription);
-
-        if(filesToDelete != null){
-            deleteImageFromS3(filesToDelete);
-            for(BoardFileDto file : filesToDelete){
-                BoardImage curfile = boardImageJpaRepository.findById(file.fileId())
-                        .orElseThrow(()-> new EntityNotFoundException("첨부파일을 찾을 수 없습니다."));
-
-                boardImageJpaRepository.delete(curfile);
-            }
-        }
-
-        if(filesToAdd != null){
-            for(MultipartFile file : filesToAdd){
-                String uri = s3Service.saveFile(userId, file);
-                String fileExtension = uri.substring(uri.lastIndexOf(".") + 1).toLowerCase();
-
-                boardImageJpaRepository.save(BoardImage.builder()
-                        .teamBoardId(board.getTeamBoardId())
-                        .boardId(board.getId())
-//                        .teamId(teamUser.getTeamId())
-                                .teamId(1L)
-                        .fileExtension(fileExtension)
-                        .fileUri(uri)
-                        .build());
-            }
-        }
-    }
-
-    @Transactional
-    //    @TeamMember
-    public void deletePost(Long userId, Long boardId) {
-        Board post = boardJpaRepository.findById(boardId)
-                .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
-
-        if(!post.getUserId().equals(userId)) throw new BoardException(ExceptionCode.NOT_AUTHOR);
-
-        boardLikeRepository.deleteByBoardId(boardId);
-
-        List<BoardFileDto> boardFiles = boardImageJpaRepository.findByBoardId(boardId);
-        deleteImageFromS3(boardFiles);
-        boardImageJpaRepository.deleteByBoardId(boardId);
-
-        boardDescriptionJpaRepository.deleteById(post.getDescription().getId());
-
-        boardJpaRepository.delete(post);
-
-        commentJpaRepository.deleteByBoardId(boardId);
-    }
-
-    @Transactional
-    public void likePost(Long teamUserId, Long postId){
-        Optional<BoardLike> userLike = boardLikeRepository.findByTeamUserIdAndBoardId(teamUserId, postId);
-
-        if (userLike.isPresent()) {
-            boardLikeRepository.delete(userLike.get());
-            boardJpaRepository.decreaseLikeCount(postId);
-        }else{
-            boardLikeRepository.save(BoardLike.builder()
-                    .teamUserId(teamUserId)
-                    .boardId(postId)
-                    .build()
-            );
-            boardJpaRepository.increaseLikeCount(postId);
         }
     }
 
@@ -350,6 +355,4 @@ public class BoardService {
             }
         }
     }
-
-
 }

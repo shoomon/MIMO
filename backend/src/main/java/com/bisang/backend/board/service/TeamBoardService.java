@@ -6,8 +6,14 @@ import com.bisang.backend.board.controller.dto.TeamBoardDto;
 import com.bisang.backend.board.controller.response.TeamBoardListResponse;
 import com.bisang.backend.board.domain.TeamBoard;
 import com.bisang.backend.board.repository.*;
+import com.bisang.backend.common.exception.TeamException;
 import com.bisang.backend.s3.service.S3Service;
 import com.bisang.backend.team.annotation.TeamLeader;
+import com.bisang.backend.team.domain.Team;
+import com.bisang.backend.team.domain.TeamPrivateStatus;
+import com.bisang.backend.team.repository.TeamJpaRepository;
+import com.bisang.backend.team.repository.TeamUserJpaRepository;
+import com.bisang.backend.user.domain.User;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -16,6 +22,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.bisang.backend.common.exception.ExceptionCode.NOT_FOUND_TEAM;
+import static com.bisang.backend.common.exception.ExceptionCode.NOT_FOUND_TEAM_USER;
 
 @Service
 @RequiredArgsConstructor
@@ -29,8 +38,13 @@ public class TeamBoardService {
     private final BoardImageJpaRepository boardImageJpaRepository;
     private final BoardLikeRepository boardLikeRepository;
     private final S3Service s3Service;
+    private final TeamJpaRepository teamJpaRepository;
+    private final TeamUserJpaRepository teamUserJpaRepository;
 
-    public TeamBoardListResponse getTeamBoardList(Long teamId) {
+    public TeamBoardListResponse getTeamBoardList(User user, Long teamId) {
+
+        isValidGuest(user, teamId);
+
         List<TeamBoardDto> list = new ArrayList<>();
         List<TeamBoard> teamBoardList = teamBoardJpaRepository.findAllByTeamId(teamId);
 
@@ -43,8 +57,8 @@ public class TeamBoardService {
         return new TeamBoardListResponse(list);
     }
 
-//    @TeamLeader
-    public String createTeamBoard(Long teamId, String title) {
+    @TeamLeader
+    public String createTeamBoard(Long userId, Long teamId, String title) {
         TeamBoard teamBoard = teamBoardJpaRepository.save(TeamBoard.builder()
                 .teamId(teamId)
                 .boardName(title)
@@ -54,8 +68,8 @@ public class TeamBoardService {
     }
 
     @Transactional
-//    @TeamLeader
-    public void deleteTeamBoard(Long teamBoardId) {
+    @TeamLeader
+    public void deleteTeamBoard(Long userId, Long teamId, Long teamBoardId) {
         List<Long> boardIdList = boardJpaRepository.findTeamBoardIdByTeamBoardId(teamBoardId);
 
         boardJpaRepository.deleteAllByTeamBoardId(teamBoardId);
@@ -86,6 +100,22 @@ public class TeamBoardService {
                 for(BoardFileDto deleted : deletedImage) {
                     boardImageJpaRepository.deleteById(deleted.fileId());
                 }
+            }
+        }
+    }
+
+    private void isValidGuest(User user, Long teamId) {
+        Team team = teamJpaRepository.findTeamById(teamId)
+                .orElseThrow(()->new TeamException(NOT_FOUND_TEAM));
+
+        TeamPrivateStatus teamPrivateStatus = team.getPrivateStatus();
+
+        if(TeamPrivateStatus.PRIVATE == teamPrivateStatus){
+
+            if(user == null
+                    || teamUserJpaRepository
+                    .findByTeamIdAndUserId(team.getId(), user.getId()).isEmpty()){
+                throw new TeamException(NOT_FOUND_TEAM_USER);
             }
         }
     }
