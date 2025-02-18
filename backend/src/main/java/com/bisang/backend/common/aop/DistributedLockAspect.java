@@ -16,13 +16,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Order(1)
 @Aspect
 @Component
 @RequiredArgsConstructor
 public class DistributedLockAspect {
     private static final int MAX_RETRY_COUNT = 3;
-    private static final long RETRY_DELAY_MS = 100;
+    private static final long RETRY_DELAY_MS = 15;
 
     private final RedissonClient redissonClient;
 

@@ -12,6 +12,9 @@ import java.util.Optional;
 
 import com.bisang.backend.board.domain.TeamBoard;
 import com.bisang.backend.board.repository.TeamBoardJpaRepository;
+import com.bisang.backend.team.controller.dto.TagDto;
+import com.bisang.backend.team.controller.response.TeamTagResponse;
+import com.bisang.backend.team.controller.response.TeamTagSearchResponse;
 import com.bisang.backend.team.controller.response.TeamTitleDescSearchResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,7 +72,7 @@ public class TeamService {
         return teamJpaRepository.existsByName(name);
     }
 
-    @EveryOne
+    @Transactional
     public Long createTeam(
             Long leaderId,
             String nickname,
@@ -78,18 +81,66 @@ public class TeamService {
             String description,
             TeamRecruitStatus teamRecruitStatus,
             TeamPrivateStatus teamPrivateStatus,
-            MultipartFile teamProfile,
-            Area area,
-            TeamCategory teamCategory,
+            String teamProfileUri,
+            String area,
+            String teamCategory,
             Long maxCapacity
     ) {
-        String teamProfileUri = profileUriValidation(leaderId, teamProfile);
-        Long createdTeamId = null;
+        Team newTeam = null;
         try {
-            createdTeamId = createTeam(
-                    leaderId, nickname, notificationStatus,
-                    name, description, teamRecruitStatus, teamPrivateStatus,
-                    teamProfileUri, area, teamCategory, maxCapacity);
+            // 팀 설명 생성
+            TeamDescription teamDescription = new TeamDescription(description);
+            teamDescriptionJpaRepository.save(teamDescription);
+
+            // 계좌 생성
+            String accountNumber = accountService.createTeamAccount();
+
+            // 팀 생성
+            newTeam = Team.builder()
+                .teamLeaderId(leaderId)
+                .teamChatroomId(0L) // 추후 추가 필요, 챗룸 구현 이후
+                .name(name)
+                .description(teamDescription)
+                .accountNumber(accountNumber)
+                .recruitStatus(teamRecruitStatus)
+                .privateStatus(teamPrivateStatus)
+                .teamProfileUri(teamProfileUri)
+                .areaCode(Area.fromName(area))
+                .category(TeamCategory.fromName(teamCategory))
+                .maxCapacity(maxCapacity).build();
+            teamJpaRepository.save(newTeam);
+            // 프로필 이미지 저장, 기본 고양이, profile 있을 시 S3에 업로드 된 해당 프로필 이미지 경로
+            profileImageRepository.save(createTeamProfile(newTeam.getId(), teamProfileUri));
+
+            // 기본 태그 저장
+            Tag areaTag = findTagByName(area);
+            TeamTag areaTeamTag = new TeamTag(newTeam.getId(), areaTag.getId());
+            teamTagJpaRepository.save(areaTeamTag);
+
+            Tag categoryTag = findTagByName(teamCategory);
+            TeamTag categoryTeamTag = new TeamTag(newTeam.getId(), categoryTag.getId());
+            teamTagJpaRepository.save(categoryTeamTag);
+
+            //기본 게시판 생성
+            teamBoardJpaRepository.save(TeamBoard.builder()
+                .teamId(newTeam.getId())
+                .boardName("자유게시판")
+                .build()
+            );
+
+            // 팀 유저 저장
+            var teamUser = TeamUser.createTeamLeader(leaderId, newTeam.getId(), nickname, notificationStatus);
+            teamUserJpaRepository.save(teamUser);
+
+            // 채팅 룸 생성
+            chatroomService.createChatroom(
+                leaderId,
+                newTeam.getId(),
+                nickname,
+                name + "모임의 채팅방",
+                teamProfileUri,
+                GROUP
+            );
         } catch (TeamException e) {
             if (!teamProfileUri.equals(CAT_IMAGE_URI)) {
                 s3Service.deleteFile(teamProfileUri);
@@ -101,75 +152,6 @@ public class TeamService {
             }
             throw new TeamException(DUPLICATED_SOURCE);
         }
-        return createdTeamId;
-    }
-
-    @Transactional
-    public Long createTeam(
-            Long leaderId,
-            String nickname,
-            TeamNotificationStatus notificationStatus,
-            String name,
-            String description,
-            TeamRecruitStatus teamRecruitStatus,
-            TeamPrivateStatus teamPrivateStatus,
-            String teamProfileUri,
-            Area area,
-            TeamCategory teamCategory,
-            Long maxCapacity
-    ) {
-        // 팀 설명 생성
-        TeamDescription teamDescription = new TeamDescription(description);
-        teamDescriptionJpaRepository.save(teamDescription);
-
-        // TODO: 계좌 관련 생성 기능 추가
-
-        // 팀 생성
-        Team newTeam = Team.builder()
-                            .teamLeaderId(leaderId)
-                            .teamChatroomId(0L) // 추후 추가 필요, 챗룸 구현 이후
-                            .name(name)
-                            .description(teamDescription)
-                            .accountNumber("1001111111111")
-                            .recruitStatus(teamRecruitStatus)
-                            .privateStatus(teamPrivateStatus)
-                            .teamProfileUri(teamProfileUri)
-                            .areaCode(area)
-                            .category(teamCategory)
-                            .maxCapacity(maxCapacity).build();
-        teamJpaRepository.save(newTeam);
-        // 프로필 이미지 저장, 기본 고양이, profile 있을 시 S3에 업로드 된 해당 프로필 이미지 경로
-        profileImageRepository.save(createTeamProfile(newTeam.getId(), teamProfileUri));
-
-        // 기본 태그 저장
-        Tag areaTag = findTagByName(area.getName());
-        TeamTag areaTeamTag = new TeamTag(newTeam.getId(), areaTag.getId());
-        teamTagJpaRepository.save(areaTeamTag);
-
-        Tag categoryTag = findTagByName(teamCategory.getName());
-        TeamTag categoryTeamTag = new TeamTag(newTeam.getId(), categoryTag.getId());
-        teamTagJpaRepository.save(categoryTeamTag);
-
-        //기본 게시판 생성
-        teamBoardJpaRepository.save(TeamBoard.builder()
-                .teamId(newTeam.getId())
-                .boardName("자유게시판")
-                .build()
-        );
-
-        // 팀 유저 저장
-        var teamUser = TeamUser.createTeamLeader(leaderId, newTeam.getId(), nickname, notificationStatus);
-        teamUserJpaRepository.save(teamUser);
-
-        // 채팅 룸 생성
-        chatroomService.createChatroom(
-                leaderId,
-                newTeam.getId(),
-                nickname,
-                name + "모임의 채팅방",
-                teamProfileUri,
-                GROUP
-        );
 
         return newTeam.getId();
     }
@@ -182,7 +164,9 @@ public class TeamService {
         Integer size = hasNext ? SHORT_PAGE_SIZE : teams.size();
         Long lastTeamId = hasNext ? teams.get(size - 1).teamId() : null;
         if (hasNext) {
-            teams.remove(size - 1);
+            teams = teams.stream()
+                .limit(size)
+                .toList();
         }
         return new TeamInfosResponse(size, hasNext, lastTeamId, teams);
     }
@@ -195,7 +179,9 @@ public class TeamService {
         Integer size = hasNext ? SHORT_PAGE_SIZE : teams.size();
         Long lastTeamId = hasNext ? teams.get(size - 1).teamId() : null;
         if (hasNext) {
-            teams.remove(size - 1);
+            teams = teams.stream()
+                .limit(size)
+                .toList();
         }
         return new TeamInfosResponse(size, hasNext, lastTeamId, teams);
     }
@@ -220,34 +206,20 @@ public class TeamService {
         return new TeamTitleDescSearchResponse(numberOfTeams.intValue(), pageNumber, teams.size(), teams);
     }
 
-    @TeamLeader
-    public void updateTeam(
-            Long userId,
-            Long teamId,
-            String name,
-            String description,
-            TeamRecruitStatus recruitStatus,
-            TeamPrivateStatus privateStatus,
-            MultipartFile profile,
-            Area areaCode,
-            TeamCategory category
-    ) {
-        String profileUri = getProfileUri(teamId, profile);
-        try {
-            updateTeam(
-                    userId, teamId, name, description,
-                    recruitStatus, privateStatus, profileUri, areaCode, category);
-        } catch (TeamException e) {
-            if (!profileUri.equals(CAT_IMAGE_URI)) {
-                s3Service.deleteFile(profileUri);
-            }
-            throw new TeamException(e.getCode(), e.getMessage());
-        } catch (Exception e) {
-            if (!profileUri.equals(CAT_IMAGE_URI)) {
-                s3Service.deleteFile(profileUri);
-            }
-            throw new TeamException(INVALID_REQUEST);
-        }
+    @EveryOne
+    @Transactional(readOnly = true)
+    public TeamTagSearchResponse getTeamsByTag(Long tagId, Integer pageNumber) {
+        List<SimpleTeamDto> teams = teamQuerydslRepository.searchTeams(tagId, pageNumber);
+        Long teamsCount = teamQuerydslRepository.searchTeamsCount(tagId);
+        return new TeamTagSearchResponse(teamsCount.intValue(), pageNumber, teams.size(), teams);
+    }
+
+    @EveryOne
+    @Transactional(readOnly = true)
+    public TeamTagResponse getTagBySearchKeyword(String searchKeyword, Integer pageNumber) {
+        List<TagDto> tags = teamQuerydslRepository.searchTags(searchKeyword, pageNumber);
+        Long numberOfTags = teamQuerydslRepository.searchTagsCount(searchKeyword);
+        return new TeamTagResponse(numberOfTags.intValue(), pageNumber, tags.size(), tags);
     }
 
     @Transactional
@@ -262,38 +234,50 @@ public class TeamService {
             Area areaCode,
             TeamCategory category
     ) {
-        profileImageRepository.save(createTeamProfile(teamId, profileUri));
+        try {
+            profileImageRepository.save(createTeamProfile(teamId, profileUri));
 
-        Team team = findTeamById(teamId);
-        team.updateTeamName(name);
-        // 채팅방 이름 변경
-        chatroomService.updateChatroomTitle(teamId, name + "모임의 채팅방");
+            Team team = findTeamById(teamId);
+            team.updateTeamName(name);
+            // 채팅방 이름 변경
+            chatroomService.updateChatroomTitle(teamId, name + "모임의 채팅방");
 
-        var teamDescription = team.getDescription();
-        teamDescription.updateDescription(description);
-        teamDescriptionJpaRepository.save(teamDescription);
-        team.updateDescription(description);
+            var teamDescription = team.getDescription();
+            teamDescription.updateDescription(description);
+            teamDescriptionJpaRepository.save(teamDescription);
+            team.updateDescription(description);
 
-        team.updateRecruitStatus(recruitStatus);
-        team.updatePrivateStatus(privateStatus);
+            team.updateRecruitStatus(recruitStatus);
+            team.updatePrivateStatus(privateStatus);
 
-        if (category != team.getCategory()) {
-            deleteOldCategoryTeamTag(team);
-            saveNewCategoryTeamTag(teamId, category);
-            team.updateCategory(category);
+            if (category != team.getCategory()) {
+                deleteOldCategoryTeamTag(team);
+                saveNewCategoryTeamTag(teamId, category);
+                team.updateCategory(category);
+            }
+
+            if (areaCode != team.getAreaCode()) {
+                deleteOldAreaTeamTag(team);
+                saveNewAreaTeamTag(teamId, areaCode);
+                team.updateAreaCode(areaCode);
+            }
+
+            team.updateTeamProfileUri(profileUri);
+            // 채팅방 프로필 변경
+            chatroomService.updateChatroomProfileUri(teamId, profileUri);
+
+            teamJpaRepository.save(team);
+        } catch (TeamException e) {
+            if (!profileUri.equals(CAT_IMAGE_URI)) {
+                s3Service.deleteFile(profileUri);
+            }
+            throw new TeamException(e.getCode(), e.getMessage());
+        } catch (Exception e) {
+            if (!profileUri.equals(CAT_IMAGE_URI)) {
+                s3Service.deleteFile(profileUri);
+            }
+            throw new TeamException(INVALID_REQUEST);
         }
-
-        if (areaCode != team.getAreaCode()) {
-            deleteOldAreaTeamTag(team);
-            saveNewAreaTeamTag(teamId, areaCode);
-            team.updateAreaCode(areaCode);
-        }
-
-        team.updateTeamProfileUri(profileUri);
-        // 채팅방 프로필 변경
-        chatroomService.updateChatroomProfileUri(teamId, profileUri);
-
-        teamJpaRepository.save(team);
     }
 
     @TeamLeader
@@ -309,26 +293,6 @@ public class TeamService {
             return;
         }
         throw new TeamException(EXTRA_USER);
-    }
-
-    private String getProfileUri(Long teamId, MultipartFile profile) {
-        Optional<ProfileImage> profileImage = profileImageRepository.findTeamImageByImageTypeAndTeamId(TEAM, teamId);
-        if (profile == null) {
-            if (profileImage.isEmpty()) {
-                return CAT_IMAGE_URI;
-            }
-            return profileImage.get().getProfileUri();
-        }
-        if (profileImage.isPresent()) {
-            profileImageRepository.delete(profileImage.get());
-            try {
-                if (!profileImage.get().getProfileUri().equals(CAT_IMAGE_URI)) {
-                    s3Service.deleteFile(profileImage.get().getProfileUri());
-                }
-            } catch (Exception e) { // S3 서버에 없는 구글 파일이라 생긴 모든 삭제 실패는 무시.
-            }
-        }
-        return s3Service.saveFile(teamId, profile);
     }
 
     private String profileUriValidation(Long userId, MultipartFile teamProfile) {

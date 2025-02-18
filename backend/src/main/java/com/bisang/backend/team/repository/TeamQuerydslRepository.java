@@ -17,6 +17,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.bisang.backend.team.controller.dto.MyTeamSpecificDto;
+import com.bisang.backend.team.controller.dto.TagDto;
+import com.bisang.backend.team.domain.Team;
+import com.bisang.backend.team.domain.TeamPrivateStatus;
+import com.bisang.backend.team.domain.TeamRecruitStatus;
+import com.bisang.backend.team.domain.TeamTag;
 import org.springframework.stereotype.Repository;
 
 import com.bisang.backend.common.exception.TeamException;
@@ -41,6 +47,95 @@ public class TeamQuerydslRepository {
     private final JPAQueryFactory queryFactory;
     private final TeamJpaRepository teamJpaRepository;
 
+    public Optional<TeamTag> findByName(Long teamId, String name) {
+        return Optional.ofNullable(queryFactory
+                .select(teamTag)
+                .from(teamTag).join(tag).on(teamTag.tagId.eq(tag.id))
+                .where(tag.name.eq(name), teamTag.teamId.eq(teamId)).fetchOne());
+    }
+
+    public List<TagDto> searchTags(String searchText, Integer pageNumber) {
+        if (pageNumber == null) {
+            pageNumber = 1;
+        }
+
+        return queryFactory
+            .select(Projections.constructor(TagDto.class,
+                tag.id,
+                tag.name))
+            .from(tag)
+            .where(tag.name.contains(searchText))
+            .orderBy(tag.name.desc())
+            .limit(SHORT_PAGE_SIZE)
+            .offset((pageNumber - 1) * SHORT_PAGE_SIZE)
+            .fetch();
+    }
+
+    public Long searchTagsCount(String searchText) {
+        return queryFactory
+            .select(tag.count())
+            .from(tag)
+            .where(tag.name.contains(searchText))
+            .fetchOne();
+    }
+
+    public Long searchTeamsCount(Long tagId) {
+        return queryFactory
+            .select(teamTag.teamId.count())
+            .from(teamTag)
+            .where(teamTag.tagId.eq(tagId))
+            .fetchOne();
+    }
+
+    public List<SimpleTeamDto> searchTeams(Long tagId, Integer pageNumber) {
+        if (pageNumber == null) {
+            pageNumber = 1;
+        }
+
+        List<Long> teamIds = queryFactory
+            .select(teamTag.teamId)
+            .from(teamTag)
+            .where(teamTag.tagId.eq(tagId))
+            .orderBy(teamTag.teamId.desc())
+            .limit(SHORT_PAGE_SIZE)
+            .offset((pageNumber - 1) * SHORT_PAGE_SIZE)
+            .fetch();
+
+        List<SimpleTeamDto> teams = queryFactory
+            .select(Projections.constructor(SimpleTeamDto.class,
+                team.id,
+                team.name,
+                team.shortDescription,
+                team.teamProfileUri,
+                Expressions.numberTemplate(Double.class, "{0}", 0.0),
+                Expressions.numberTemplate(Long.class, "{0}", 0L),
+                team.maxCapacity,
+                JPAExpressions.select(teamUser.count())
+                    .from(teamUser)
+                    .where(teamUser.teamId.eq(team.id)),
+                Expressions.constant(emptyList())
+            ))
+            .from(team)
+            .where(team.id.in(teamIds))
+            .orderBy(team.id.desc())
+            .fetch();
+
+        Map<Long, List<String>> tagsMap = getTagsByTeamIds(teamIds);
+        Map<Long, SimpleTeamReviewDto> teamReviews = getReviewsByTeamIds(teamIds);
+
+        return teams.stream()
+            .map(teamDto -> {
+                List<String> tags = tagsMap.getOrDefault(teamDto.teamId(), emptyList());
+                SimpleTeamReviewDto simpleTeamReview
+                    = teamReviews.getOrDefault(
+                    teamDto.teamId(),
+                    new SimpleTeamReviewDto(teamDto.teamId(), 0D, 0L));
+                return createSimpleDto(teamDto, tags, simpleTeamReview);
+            })
+            .sorted(comparing(SimpleTeamDto::teamId).reversed())
+            .toList();
+    }
+
     public Long searchTeamsCount(String searchText) {
         return queryFactory
                 .select(team.count())
@@ -52,6 +147,10 @@ public class TeamQuerydslRepository {
     }
 
     public List<SimpleTeamDto> searchTeams(String searchText, Integer pageNumber) {
+        if (pageNumber == null) {
+            pageNumber = 1;
+        }
+
         List<SimpleTeamDto> teams = queryFactory
                 .select(Projections.constructor(SimpleTeamDto.class,
                         team.id,
@@ -91,6 +190,43 @@ public class TeamQuerydslRepository {
                 })
                 .sorted(comparing(SimpleTeamDto::teamId).reversed())
                 .toList();
+    }
+
+    public MyTeamSpecificDto getMyTeamSpecificInfo(Long teamId) {
+        Team findTeam = isTeamExistValidation(teamId);
+        SimpleTeamReviewDto simpleTeamReview = getSimpleTeamReview(teamId);
+        Long currentMemberCount = teamUserJpaRepository.countTeamUserByTeamId(teamId);
+        List<String> tags = getTags(teamId);
+
+        tags = removeAreaCategory(tags, findTeam);
+        return Optional.ofNullable(
+                queryFactory
+                        .select(Projections.constructor(MyTeamSpecificDto.class,
+                                team.id,
+                                team.teamProfileUri,
+                                team.name,
+                                teamDescription.description,
+                                team.recruitStatus,
+                                team.privateStatus,
+                                Expressions.constant(findTeam.getAreaCode().getName()),
+                                Expressions.constant(findTeam.getCategory().getName()),
+                                team.maxCapacity,
+                                Expressions.numberTemplate(Long.class, "{0}", currentMemberCount),
+                                Expressions.constant(simpleTeamReview == null ? 0D : simpleTeamReview.reviewScore()),
+                                Expressions.constant(simpleTeamReview == null ? 0L : simpleTeamReview.reviewCount()),
+                                Expressions.constant(tags)
+                        ))
+                        .from(team).join(teamDescription).on(team.description.id.eq(teamDescription.id))
+                        .where(team.id.eq(teamId))
+                        .fetchOne()).orElseThrow(() -> new TeamException(NOT_FOUND));
+    }
+
+    private List<String> removeAreaCategory(List<String> tags, Team findTeam) {
+        tags = tags.stream()
+                .filter(t -> !(t.equals(findTeam.getAreaCode().getName())
+                        || t.equals(findTeam.getCategory().getName())))
+                .toList();
+        return tags;
     }
 
     public TeamDto getTeamInfo(Long userId, Long teamId) {
@@ -232,8 +368,8 @@ public class TeamQuerydslRepository {
             .toList();
     }
 
-    private void isTeamExistValidation(Long teamId) {
-        teamJpaRepository.findTeamById(teamId)
+    private Team isTeamExistValidation(Long teamId) {
+        return teamJpaRepository.findTeamById(teamId)
             .orElseThrow(() -> new TeamException(NOT_FOUND));
     }
 

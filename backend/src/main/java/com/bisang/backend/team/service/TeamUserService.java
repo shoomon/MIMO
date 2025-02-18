@@ -55,7 +55,9 @@ public class TeamUserService {
         Integer size = hasNext ? SHORT_PAGE_SIZE : teamInfos.size();
         Long lastTeamId = hasNext ? teamInfos.get(size - 1).teamId() : null;
         if (hasNext) {
-            teamInfos.remove(size - 1);
+            teamInfos = teamInfos.stream()
+                .limit(size)
+                .toList();
         }
         return new TeamInfosResponse(size, hasNext, lastTeamId, teamInfos);
     }
@@ -63,8 +65,9 @@ public class TeamUserService {
     @Transactional(readOnly = true)
     public MyTeamUserInfoDto getMyTeamUserInfo(Long teamId, Long userId) {
         Optional<TeamUser> teamUser = teamUserJpaRepository.findByTeamIdAndUserId(teamId, userId);
+        Optional<TeamInvite> teamInvite = teamInviteJpaRepository.findByTeamIdAndUserIdAndStatus(teamId, userId);
         Team team = findTeamById(teamId);
-        return MyTeamUserInfoDto.teamUserToDto(teamUser, team);
+        return MyTeamUserInfoDto.teamUserToDto(teamUser, team, teamInvite);
     }
 
     @EveryOne
@@ -74,7 +77,7 @@ public class TeamUserService {
 
     @EveryOne
     @Transactional
-    public void joinTeam(Long userId, Long teamId, String nickname, TeamNotificationStatus status) {
+    public Long joinTeam(Long userId, Long teamId, String nickname, TeamNotificationStatus status) {
         isAlreadyJoinChecker(teamId, userId);
 
         Team team = findTeamById(teamId);
@@ -86,7 +89,7 @@ public class TeamUserService {
 
                 // 채팅 방 가입 추가
                 chatroomUserService.enterChatroom(teamId, userId, nickname);
-                return;
+                return newTeamMember.getId();
             } else if (team.getRecruitStatus() == ACTIVE_PRIVATE) {
                 throw new TeamException(NOT_PUBLIC_TEAM);
             }
@@ -175,7 +178,7 @@ public class TeamUserService {
         teamUserJpaRepository.delete(teamUser);
 
         // 채팅방 탈퇴 부분 추가
-        chatroomUserService.leaveChatroom(teamId, userId);
+        chatroomUserService.leaveChatroom(userId, teamId);
     }
 
     private static void leaderValidation(Team team, TeamUser teamUser) {

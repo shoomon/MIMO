@@ -28,13 +28,12 @@ public class TransferService {
     public void transfer(Transaction transaction) {
         String senderAccountNumber = transaction.getSenderAccountNumber();
         String receiverAccountNumber = transaction.getReceiverAccountNumber();
-        System.out.println(receiverAccountNumber);
-        Long balance = transaction.getBalance();
+        Long amount = transaction.getAmount();
 
-        validateSenderAccountBalance(senderAccountNumber, balance);
+        validateSenderAccountBalance(senderAccountNumber, amount);
 
-        updateSenderAccountBalance(senderAccountNumber, balance);
-        updateReceiverAccountBalance(receiverAccountNumber, balance);
+        updateSenderAccountBalance(senderAccountNumber, amount);
+        updateReceiverAccountBalance(receiverAccountNumber, amount);
 
         AccountDetails senderAccountDetails
                 = accountDetailsService.createAccountDetails(transaction, TransactionCategory.TRANSFER, "송금");
@@ -50,23 +49,23 @@ public class TransferService {
         updateInstallment(installmentRequest);
     }
 
-    private void validateSenderAccountBalance(String senderAccountNumber, Long balance) {
-        Account account = accountJpaRepository.findByAccountNumber(senderAccountNumber);
+    private void validateSenderAccountBalance(String senderAccountNumber, Long amount) {
+        Account account = accountJpaRepository.findByAccountNumberWithLockingReads(senderAccountNumber);
 
-        if (!account.validateBalance(balance)) {
+        if (!account.validateBalance(amount)) {
             throw new AccountException(ExceptionCode.NOT_ENOUGH_MONEY);
         }
     }
 
-    private void updateSenderAccountBalance(String senderAccountNumber, Long balance) {
-        Account account = accountJpaRepository.findByAccountNumber(senderAccountNumber);
-        account.decreaseBalance(balance);
+    private void updateSenderAccountBalance(String senderAccountNumber, Long amount) {
+        Account account = accountJpaRepository.findByAccountNumberWithLockingReads(senderAccountNumber);
+        account.decreaseBalance(amount);
         accountJpaRepository.save(account);
     }
 
-    private void updateReceiverAccountBalance(String receiverAccountNumber, Long balance) {
-        Account account = accountJpaRepository.findByAccountNumber(receiverAccountNumber);
-        account.increaseBalance(balance);
+    private void updateReceiverAccountBalance(String receiverAccountNumber, Long amount) {
+        Account account = accountJpaRepository.findByAccountNumberWithLockingReads(receiverAccountNumber);
+        account.increaseBalance(amount);
         accountJpaRepository.save(account);
     }
 

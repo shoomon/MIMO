@@ -27,6 +27,10 @@ import lombok.ToString;
 @Table(
         name = "account_details",
         indexes = {
+                @Index(name = "idx_sender_tx_category",
+                        columnList = "sender_account_number, transaction_category"),
+                @Index(name = "idx_receiver_tx_category",
+                        columnList = "receiver_account_number, transaction_category")
         }
 )
 public class AccountDetails {
@@ -37,22 +41,16 @@ public class AccountDetails {
 
     @ManyToOne
     @JoinColumn(name = "transaction_id", referencedColumnName = "transaction_id", nullable = false)
-    private Transaction transactionId;  // 단일 트랜잭션
+    private Transaction transactionId;
 
-    @Column(name = "balance", nullable = false)
-    private Long balance;
+    @Column(name = "amount", nullable = false)
+    private Long amount;
 
     @Column(name = "sender_account_number", nullable = true)
     private String senderAccountNumber;
 
-    @Column(name = "receiver_account_number", nullable = false)
+    @Column(name = "receiver_account_number", nullable = true)
     private String receiverAccountNumber;
-
-    @Column(name = "sender_name", nullable = true)
-    private String senderName;
-
-    @Column(name = "receiver_name", nullable = false)
-    private String receiverName;
 
     @Column(name = "memo", nullable = true)
     private String memo;
@@ -68,20 +66,16 @@ public class AccountDetails {
     @Builder
     public AccountDetails(
             Transaction transactionId,
-            Long balance,
+            Long amount,
             String senderAccountNumber,
             String receiverAccountNumber,
-            String senderName,
-            String receiverName,
             String memo,
             TransactionCategory transactionCategory
     ) {
         this.transactionId = transactionId;
-        this.balance = balance;
+        this.amount = amount;
         this.senderAccountNumber = senderAccountNumber;
         this.receiverAccountNumber = receiverAccountNumber;
-        this.senderName = senderName;
-        this.receiverName = receiverName;
         this.memo = memo;
         this.transactionCategory = transactionCategory;
     }

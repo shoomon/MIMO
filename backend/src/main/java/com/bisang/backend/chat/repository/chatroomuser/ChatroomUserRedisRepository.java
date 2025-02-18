@@ -5,7 +5,6 @@ import java.time.ZoneOffset;
 import java.util.Set;
 
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Repository;
 
 import lombok.RequiredArgsConstructor;
@@ -19,6 +18,8 @@ public class ChatroomUserRedisRepository {
 
     // chatroomId로 해당 채팅방에 속해있는 모든 유저의 userId를 저장하고 가져오는 키
     private static final String teamMemberKey = "teamMember:";
+    private static final String teamEnterScore = "teamEnterScore:";
+    private static final String teamEnterChatId = "teamEnterChatId:";
     // chatroomId, userId로 유저가 가장 마지막으로 읽은 메시지 score와 id를 저장하고 가져오는 키
     private static final String lastReadScoreKey = "lastReadScore:";
     private static final String lastReadIdKey = "lastReadId:";
@@ -27,8 +28,25 @@ public class ChatroomUserRedisRepository {
         redisLongTemplate.opsForSet().add(teamMemberKey + chatroomId, userId);
     }
 
+    public void insertTeamEnterScore(Long chatroomId, Long userId, Double score, Long enterChatId) {
+        redisDoubleTemplate.opsForValue().set(teamEnterScore + chatroomId + ":" + userId, score);
+        redisLongTemplate.opsForValue().set(teamEnterChatId + chatroomId + ":" + userId, enterChatId);
+    }
+
+    public void insertTeamEnterChatId(Long chatroomId, Long userId, Long enterChatId) {
+        redisLongTemplate.opsForValue().set(teamEnterChatId + chatroomId + ":" + userId, enterChatId);
+    }
+
     public void deleteMember(Long chatroomId, Long userId) {
         redisLongTemplate.opsForSet().remove(teamMemberKey + chatroomId, userId);
+    }
+
+    public Double getTeamEnterScore(Long chatroomId, Long userId) {
+        return redisDoubleTemplate.opsForValue().get(teamEnterScore + chatroomId + ":" + userId);
+    }
+
+    public Long getTeamEnterChatId(Long chatroomId, Long userId) {
+        return redisLongTemplate.opsForValue().get(teamEnterChatId + chatroomId + ":" + userId);
     }
 
     public boolean isMember(Long chatroomId, Long userId) {
@@ -43,7 +61,6 @@ public class ChatroomUserRedisRepository {
         double score = lastDateTime
                 .toInstant(ZoneOffset.ofTotalSeconds(0))
                 .toEpochMilli() + (lastChatId % 1000) / 1000.0;
-        System.out.println("calculate:" + score);
         redisDoubleTemplate.opsForValue().set(lastReadScoreKey + chatroomId + ":" + userId, score);
         redisLongTemplate.opsForValue().set(lastReadIdKey + chatroomId + ":" + userId, lastChatId);
     }

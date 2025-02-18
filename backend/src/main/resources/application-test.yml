@@ -30,7 +30,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: ${DB_ID}
     password: ${DB_PASSWORD}
-    url: jdbc:mysql://${DB_URL}/s12p12a504
+    url: jdbc:mysql://${DB_URL}/mimo
     hikari:
       connection-timeout: 3000
       maximum-pool-size: 2
@@ -38,9 +38,9 @@ spring:
 
   # JPA
   jpa:
-    show-sql: true
+    show-sql: false
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: false
@@ -75,11 +75,5 @@ oauth2:
       - openid
 
 openvidu:
-  url: "https://i12a504.p.ssafy.io:8443"
+  url: "https://i12a504.p.ssafy.io"
   secret: "MY_SECRET"
-
-server:
-  servlet:
-    encoding:
-      force-response: true
-      charset: UTF-8

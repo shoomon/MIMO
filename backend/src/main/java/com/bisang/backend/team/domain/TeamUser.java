@@ -32,7 +32,9 @@ import lombok.NoArgsConstructor;
 @Table(
         name = "team_user",
         uniqueConstraints = {
-            @UniqueConstraint(name = "UK_team_user", columnNames = {"team_id", "user_id"})},
+            @UniqueConstraint(name = "UK_team_user", columnNames = {"team_id", "user_id"}),
+            @UniqueConstraint(name = "UK_team_nickname", columnNames = {"team_id", "nickname"})
+        },
         indexes = {
             @Index(name = "idx_user_team", columnList = "user_id, team_id desc")
         }

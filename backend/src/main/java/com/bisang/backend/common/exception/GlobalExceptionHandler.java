@@ -8,6 +8,7 @@ import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Objects;
 
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -68,6 +69,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<ExceptionResponse> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
         ExceptionResponse error = new ExceptionResponse(1000, "입력 양식이 올바르지 않습니다. 다시 확인해주세요.");
         return ResponseEntity.status(BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(UserException.class)
+    public ResponseEntity<ExceptionResponse> handleUserException(UserException exception) {
+        log.warn(exception.getMessage(), exception);
+        return ResponseEntity.badRequest()
+            .body(new ExceptionResponse(exception.getCode(), exception.getMessage()));
     }
 
     @ExceptionHandler(SocialLoginException.class)
@@ -170,5 +178,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         log.warn(exception.getMessage(), exception);
         return ResponseEntity.internalServerError()
                 .body(new ExceptionResponse(exception.getCode(), exception.getMessage()));
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ExceptionResponse> exceptionHandler(Exception exception) {
+        log.warn(exception.getMessage(), exception);
+        return ResponseEntity.internalServerError()
+                .body(new ExceptionResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), exception.getMessage()));
     }
 }
