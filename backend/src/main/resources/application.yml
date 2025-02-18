@@ -1,6 +1,9 @@
 server:
   servlet:
     context-path: /api
+    encoding:
+      force-response: true
+      charset: UTF-8
 
 spring:
   application:
@@ -76,9 +79,3 @@ oauth2:
 openvidu:
   url: "https://i12a504.p.ssafy.io:8443"
   secret: "MY_SECRET"
-
-server:
-  servlet:
-    encoding:
-      force-response: true
-      charset: UTF-8
