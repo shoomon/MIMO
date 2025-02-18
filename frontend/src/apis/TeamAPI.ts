@@ -1,6 +1,5 @@
 import { customFetch } from './customFetch';
 import {
-    Area,
     MyTeamProfileResponse,
     TagsResponse,
     TeamCreateRequest,
@@ -305,7 +304,7 @@ export const getTeamInfosByCategory = async (
 };
 
 export const getTeamInfosByArea = async (
-    area: Area,
+    area: string,
     teamId?: number,
 ): Promise<TeamInfosResponse> => {
     try {

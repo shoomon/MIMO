@@ -22,6 +22,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
     args: {
+        chatroomId: 1, // 필수 prop 추가
         chatroomName: '박성문 회담',
         chatroomImage:
             'https://cloudfront-ap-northeast-1.images.arcpublishing.com/chosun/2TKUKXYMQF7ASZEUJLG7L4GM4I.jpg',
@@ -81,7 +82,7 @@ export const Default: Story = {
             {
                 type: 'sender',
                 item: {
-                    id: '15',
+                    id: '16',
                     nickname: '박성문',
                     profileImageUri:
                         'https://cloudfront-ap-northeast-1.images.arcpublishing.com/chosun/2TKUKXYMQF7ASZEUJLG7L4GM4I.jpg',

@@ -23,7 +23,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
     args: {
         item: {
-            chatroomId: 2,
+            chatroomId: '2',
             chatroomImage:
                 'https://cloudfront-ap-northeast-1.images.arcpublishing.com/chosun/2TKUKXYMQF7ASZEUJLG7L4GM4I.jpg',
             chatroomName: '안양 2030 동네친구모임',

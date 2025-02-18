@@ -47,7 +47,6 @@ export const Default: Story = {
         maxCapacity: 12,
         currentCapacity: 6,
         teamUserId: 2,
-        nickName: 'jump',
         recruitStatus: 'ACTIVE_PUBLIC',
         notificationStatus: 'ACTIVE',
     },
