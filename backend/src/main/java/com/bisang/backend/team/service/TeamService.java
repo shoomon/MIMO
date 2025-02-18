@@ -8,7 +8,6 @@ import static com.bisang.backend.s3.domain.ProfileImage.createTeamProfile;
 import static com.bisang.backend.s3.service.S3Service.CAT_IMAGE_URI;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.bisang.backend.board.domain.TeamBoard;
 import com.bisang.backend.board.repository.TeamBoardJpaRepository;
@@ -21,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bisang.backend.common.exception.TeamException;
-import com.bisang.backend.s3.domain.ProfileImage;
 import com.bisang.backend.s3.repository.ProfileImageRepository;
 import com.bisang.backend.s3.service.S3Service;
 import com.bisang.backend.account.service.AccountService;

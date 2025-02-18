@@ -4,14 +4,22 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ce0c64dd-4326-401e-b4f1-7b7313c859a1" name="Changes" comment="refactor: 팀 계좌 생성 관련 로직 리팩토링">
+    <list default="true" id="ce0c64dd-4326-401e-b4f1-7b7313c859a1" name="Changes" comment="refactor: 계좌 관련 로직 리팩토링">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/service/TeamService.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/service/TeamService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/account/domain/AccountDetails.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/account/domain/AccountDetails.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/account/service/AccountDetailsService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/account/service/AccountDetailsService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/common/aop/DistributedLockAspect.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/common/aop/DistributedLockAspect.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/common/domain/BaseTimeEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/common/domain/BaseTimeEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/user/service/UserService.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/user/service/UserService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/account/controller/AccountController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/account/controller/AccountController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/account/service/AccountService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/account/service/AccountService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/qrcode/controller/QrcodeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/qrcode/controller/QrcodeController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/qrcode/service/QrCodeService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/qrcode/service/QrCodeService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/domain/Team.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/domain/Team.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/domain/TeamUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/domain/TeamUser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/service/TeamService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/service/TeamService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/controller/request/QrCodeRequest.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/service/charge/ChargeService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/service/charge/ChargeService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/user/domain/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/user/domain/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/user/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/user/service/UserService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -142,7 +150,10 @@
     "git-widget-placeholder": "new__backend__dev__kyoungbeom",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/SSAFY/IdeaProjects/S12P11A504/backend/src/main/resources",
-    "settings.editor.selected.configurable": "editor.preferences.gutterIcons",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "preferences.keymap",
     "애플리케이션.BackendApplication.executor": "Run"
   }
 }]]></component>
@@ -827,7 +838,15 @@
       <option name="project" value="LOCAL" />
       <updated>1739841456883</updated>
     </task>
-    <option name="localTasksCounter" value="43" />
+    <task id="LOCAL-00043" summary="refactor: 계좌 관련 로직 리팩토링">
+      <option name="closed" value="true" />
+      <created>1739842839966</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1739842839966</updated>
+    </task>
+    <option name="localTasksCounter" value="44" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -869,7 +888,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="refactor: 유저 인증 추가" />
     <MESSAGE value="refactor: 클래스명 변경 및 클래스 위치 이동" />
     <MESSAGE value="feat: redisson을 사용한 어노테이션 기반 분산락 구현" />
     <MESSAGE value="feat: 충전 관련 에러코드명 변경" />
@@ -894,6 +912,7 @@
     <MESSAGE value="chore: new_backend_dev 병합" />
     <MESSAGE value="refactor: 계좌 관련 변수명 및 인덱스 수정" />
     <MESSAGE value="refactor: 팀 계좌 생성 관련 로직 리팩토링" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactor: 팀 계좌 생성 관련 로직 리팩토링" />
+    <MESSAGE value="refactor: 계좌 관련 로직 리팩토링" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor: 계좌 관련 로직 리팩토링" />
   </component>
 </project>

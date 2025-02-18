@@ -27,6 +27,8 @@ public class ChargeService {
         String receiverAccountNumber = transaction.getReceiverAccountNumber();
         Long amount = transaction.getAmount();
 
+        System.out.println(receiverAccountNumber);
+
         updateAccountBalance(ADMIN_ACCOUNT_NUMBER, amount);
         updateAccountBalance(receiverAccountNumber, amount);
 
@@ -36,7 +38,7 @@ public class ChargeService {
     }
 
     private void updateAccountBalance(String accountNumber, Long balance) {
-        Account account = accountJpaRepository.findByAccountNumberWithLockingReads(accountNumber);
+        Account account = accountJpaRepository.findByAccountNumber(accountNumber);
         account.increaseBalance(balance);
         accountJpaRepository.save(account);
     }
