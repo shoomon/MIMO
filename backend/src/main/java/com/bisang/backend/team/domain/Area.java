@@ -2,7 +2,9 @@ package com.bisang.backend.team.domain;
 
 import lombok.Getter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Getter
@@ -37,4 +39,7 @@ public enum Area {
         return AREA_MAP.get(name);
     }
 
+    public static List<String> getAreaNames() {
+        return new ArrayList<>(AREA_MAP.keySet());
+    }
 }

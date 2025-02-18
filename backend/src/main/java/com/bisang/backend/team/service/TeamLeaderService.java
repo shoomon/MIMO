@@ -13,9 +13,7 @@ import java.util.Optional;
 import com.bisang.backend.team.controller.dto.MyTeamSpecificDto;
 import com.bisang.backend.team.domain.Tag;
 import com.bisang.backend.team.domain.TeamTag;
-import com.bisang.backend.team.repository.TagJpaRepository;
-import com.bisang.backend.team.repository.TeamQuerydslRepository;
-import com.bisang.backend.team.repository.TeamTagJpaRepository;
+import com.bisang.backend.team.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,9 +30,6 @@ import com.bisang.backend.team.controller.response.TeamUserResponse;
 import com.bisang.backend.team.domain.Team;
 import com.bisang.backend.team.domain.TeamUser;
 import com.bisang.backend.team.domain.TeamUserRole;
-import com.bisang.backend.team.repository.TeamJpaRepository;
-import com.bisang.backend.team.repository.TeamUserJpaRepository;
-import com.bisang.backend.team.repository.TeamUserQuerydslRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -42,6 +37,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TeamLeaderService {
     private final TeamQuerydslRepository teamQuerydslRepository;
+    private final TeamSearchQuerydslRepository teamSearchQuerydslRepository;
     private final TeamJpaRepository teamJpaRepository;
     private final TeamUserJpaRepository teamUserJpaRepository;
     private final TeamUserQuerydslRepository teamUserQuerydslRepository;
@@ -53,7 +49,7 @@ public class TeamLeaderService {
     @TeamLeader
     @Transactional
     public void deleteTag(Long userId, Long teamId, String tag) {
-        Optional<TeamTag> optionalTeamTag = teamQuerydslRepository.findByName(teamId, tag);
+        Optional<TeamTag> optionalTeamTag = teamSearchQuerydslRepository.findByName(teamId, tag);
         if (optionalTeamTag.isPresent()) {
             if (tagJpaRepository.findByName(tag).get().getStatus().equals(NORMAL)) {
                 throw new TeamException(INVALID_REQUEST);
@@ -68,7 +64,7 @@ public class TeamLeaderService {
     @TeamLeader
     @Transactional
     public void addTag(Long userId, Long teamId, String tag) {
-        Optional<TeamTag> optionalTeamTag = teamQuerydslRepository.findByName(teamId, tag);
+        Optional<TeamTag> optionalTeamTag = teamSearchQuerydslRepository.findByName(teamId, tag);
         if (optionalTeamTag.isPresent()) {
             throw new TeamException(DUPLICATED_SOURCE);
         }
