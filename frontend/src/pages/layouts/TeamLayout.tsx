@@ -2,14 +2,17 @@ import { getTeamInfo } from '@/apis/TeamAPI';
 import { Album, DetailNav, MeetingInfo } from '@/components/molecules';
 import { useQuery } from '@tanstack/react-query';
 import { Outlet, useParams } from 'react-router-dom';
-import { TeamDataMockup } from '@/mock/TeamLayoutMock';
 import tagFormatter from '@/utils/tagFormatter';
 import useMyTeamProfile from '@/hooks/useMyTeamProfile';
+import { getAlbumImageList } from '@/apis/TeamBoardAPI';
 
 const TeamLayout = () => {
     const { teamId } = useParams() as { teamId: string };
 
-    const album = TeamDataMockup;
+    const { data: albumData } = useQuery({
+        queryKey: ['albumdata', teamId],
+        queryFn: () => getAlbumImageList(teamId),
+    });
 
     const { data: teamData } = useQuery({
         queryKey: ['teamInfo', teamId],
@@ -19,7 +22,6 @@ const TeamLayout = () => {
     const { data: myProfileData } = useMyTeamProfile(teamId);
 
     const formattedTags = tagFormatter(teamData?.tags || []);
-
     return (
         <main className="w-full">
             <section className="w-full">
@@ -55,7 +57,7 @@ const TeamLayout = () => {
                             myProfileData?.notificationStatus || 'ACTIVE'
                         }
                     />
-                    <Album id={teamId ?? ''} items={album.items} />
+                    <Album id={teamId ?? ''} images={albumData?.images ?? []} />
                 </section>
                 <section className="flex w-full flex-col gap-2 overflow-hidden pl-12">
                     <DetailNav />

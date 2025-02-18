@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { ButtonPrimary, Input } from '@/components/atoms';
 
 interface BasicInputModalProps {

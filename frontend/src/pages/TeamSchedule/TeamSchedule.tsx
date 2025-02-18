@@ -84,6 +84,7 @@ const TeamSchedule = () => {
                             items={renderScheduleCards(regularSchedules)}
                             to={`/team/${teamId}/schedule/regular`}
                             gap="4"
+                            content="등록된 정기 모임이 없습니다."
                         />
                     </div>
                     <div className="w-full">
@@ -92,6 +93,7 @@ const TeamSchedule = () => {
                             items={renderScheduleCards(adhocSchedules)}
                             to={`/team/${teamId}/schedule/ad-hoc`}
                             gap="4"
+                            content="등록된 번개 모임이 없습니다."
                         />
                     </div>
                     <div className="w-full">
@@ -100,6 +102,7 @@ const TeamSchedule = () => {
                             items={renderScheduleCards(closedSchedules)}
                             to={`/team/${teamId}/schedule/closed`}
                             gap="4"
+                            content="종료된 모임이 없습니다."
                         />
                     </div>
                 </>

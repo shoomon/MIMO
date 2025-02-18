@@ -27,6 +27,18 @@ export interface TeamInfoResponse {
     tags: string[];
 }
 
+export interface UpdateTeamRequest {
+    teamId: number;
+    profileUri: string;
+    name: string;
+    description: string;
+    recruitStatus: TeamRecruitStatus;
+    privateStatus: TeamPrivateStatus;
+    area: string;
+    category: string;
+    maxCapacity: number;
+}
+
 export interface MyTeamProfileResponse {
     teamId: number;
     teamUserId: number;

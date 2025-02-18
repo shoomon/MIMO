@@ -45,7 +45,7 @@ const Board = () => {
             const items =
                 board.boardList?.map((post) => (
                     <CardBoard
-                        key={post.postId}
+                        key={post.boardId}
                         userProfileUri={post.userProfileUri}
                         userNickname={post.userNickname}
                         postTitle={post.postTitle}
@@ -56,7 +56,7 @@ const Board = () => {
                         updatedAt={post.updatedAt}
                         commentCount={post.commentCount}
                         layoutType="Card"
-                        linkto={`${board.teamBoardId}/post/${post.postId}`}
+                        linkto={`${board.teamBoardId}/post/${post.boardId}`}
                     />
                 )) || [];
 
@@ -68,6 +68,7 @@ const Board = () => {
                         to={`${board.teamBoardId}`}
                         gap="4"
                         items={items}
+                        content="게시글이 없습니다."
                     />
                 </>
             );

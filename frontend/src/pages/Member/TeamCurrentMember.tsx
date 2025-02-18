@@ -6,6 +6,8 @@ import { getTeamUsers } from '@/apis/TeamAPI';
 import MemberList, {
     MemberListProps,
 } from '@/components/molecules/MemberList/MemberList';
+import BaseLayout from '../layouts/BaseLayout';
+import ButtonLayout from '../layouts/ButtonLayout';
 
 const TeamCurrentMember = () => {
     const { teamId } = useParams<{ teamId: string }>();
@@ -38,12 +40,17 @@ const TeamCurrentMember = () => {
         />
     ));
     return (
-        <BodyLayout_24>
-            <section className="flex w-full flex-col gap-6">
-                <Title label="멤버 목록" />
-                <>{member}</>
-            </section>
-        </BodyLayout_24>
+        <BaseLayout>
+            <ButtonLayout>
+                <></>
+            </ButtonLayout>
+            <BodyLayout_24>
+                <section className="flex w-full flex-col gap-6">
+                    <Title label="멤버 목록" />
+                    <>{member}</>
+                </section>
+            </BodyLayout_24>
+        </BaseLayout>
     );
 };
 

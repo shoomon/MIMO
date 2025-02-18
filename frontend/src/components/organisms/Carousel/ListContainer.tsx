@@ -7,6 +7,7 @@ interface ListContainerProps {
     to?: string;
     gap: string;
     items: React.ReactNode[];
+    content: string;
 }
 
 const options: EmblaOptionsType = {
@@ -17,7 +18,7 @@ const options: EmblaOptionsType = {
     skipSnaps: true,
 };
 
-function ListContainer({ gap, items, label, to }: ListContainerProps) {
+function ListContainer({ gap, items, label, to, content }: ListContainerProps) {
     const [emblaRef] = useEmblaCarousel(options);
 
     return (
@@ -34,7 +35,7 @@ function ListContainer({ gap, items, label, to }: ListContainerProps) {
                     </ul>
                 ) : (
                     <div className="text-text flex h-36 items-center justify-center text-xl">
-                        일정이 존재하지 않습니다.
+                        {content}
                     </div>
                 )}
             </section>
