@@ -1,12 +1,12 @@
 package com.bisang.backend.chat.controller;
 
+import static com.bisang.backend.common.exception.ExceptionCode.INVALID_REQUEST;
+import static com.bisang.backend.common.exception.ExceptionCode.UNAUTHORIZED_USER;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 
-import com.bisang.backend.common.exception.ChatAccessInvalidException;
-import com.bisang.backend.common.exception.ChatroomException;
-import com.bisang.backend.common.exception.ExceptionCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -22,12 +22,12 @@ import com.bisang.backend.chat.controller.response.ChatroomResponse;
 import com.bisang.backend.chat.domain.ChatroomStatus;
 import com.bisang.backend.chat.service.ChatroomService;
 import com.bisang.backend.chat.service.ChatroomUserService;
+import com.bisang.backend.common.exception.ChatAccessInvalidException;
+import com.bisang.backend.common.exception.ChatroomException;
 import com.bisang.backend.common.utils.DateUtils;
 import com.bisang.backend.user.domain.User;
 
 import lombok.RequiredArgsConstructor;
-
-import static com.bisang.backend.common.exception.ExceptionCode.*;
 
 @Controller
 @RequestMapping("/chatroom")

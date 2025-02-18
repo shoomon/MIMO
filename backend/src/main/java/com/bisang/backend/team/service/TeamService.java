@@ -11,10 +11,6 @@ import java.util.List;
 
 import com.bisang.backend.board.domain.TeamBoard;
 import com.bisang.backend.board.repository.TeamBoardJpaRepository;
-import com.bisang.backend.team.controller.dto.TagDto;
-import com.bisang.backend.team.controller.response.TeamTagResponse;
-import com.bisang.backend.team.controller.response.TeamTagSearchResponse;
-import com.bisang.backend.team.controller.response.TeamTitleDescSearchResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -194,30 +190,6 @@ public class TeamService {
     @Transactional(readOnly = true)
     public SimpleTeamDto getSimpleTeamInfo(Long userId, Long teamId) {
         return teamQuerydslRepository.getSimpleTeamInfo(userId, teamId);
-    }
-
-    @EveryOne
-    @Transactional(readOnly = true)
-    public TeamTitleDescSearchResponse getTeamsByTitleOrDescription(String searchKeyword, Integer pageNumber) {
-        List<SimpleTeamDto> teams = teamQuerydslRepository.searchTeams(searchKeyword, pageNumber);
-        Long numberOfTeams = teamQuerydslRepository.searchTeamsCount(searchKeyword);
-        return new TeamTitleDescSearchResponse(numberOfTeams.intValue(), pageNumber, teams.size(), teams);
-    }
-
-    @EveryOne
-    @Transactional(readOnly = true)
-    public TeamTagSearchResponse getTeamsByTag(Long tagId, Integer pageNumber) {
-        List<SimpleTeamDto> teams = teamQuerydslRepository.searchTeams(tagId, pageNumber);
-        Long teamsCount = teamQuerydslRepository.searchTeamsCount(tagId);
-        return new TeamTagSearchResponse(teamsCount.intValue(), pageNumber, teams.size(), teams);
-    }
-
-    @EveryOne
-    @Transactional(readOnly = true)
-    public TeamTagResponse getTagBySearchKeyword(String searchKeyword, Integer pageNumber) {
-        List<TagDto> tags = teamQuerydslRepository.searchTags(searchKeyword, pageNumber);
-        Long numberOfTags = teamQuerydslRepository.searchTagsCount(searchKeyword);
-        return new TeamTagResponse(numberOfTags.intValue(), pageNumber, tags.size(), tags);
     }
 
     @Transactional

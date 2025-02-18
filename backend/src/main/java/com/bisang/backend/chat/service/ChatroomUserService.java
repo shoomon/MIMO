@@ -3,6 +3,7 @@ package com.bisang.backend.chat.service;
 import static com.bisang.backend.common.exception.ExceptionCode.NOT_FOUND_TEAM;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -46,21 +47,29 @@ public class ChatroomUserService {
                 .findIdByTeamId(teamId)
                 .orElseThrow(() -> new ChatroomException(NOT_FOUND_TEAM));
 
+        LocalDateTime enterDate = LocalDateTime.now();
+        chatroomUserRepository.insertRedisMemberUser(chatroomId, userId);
 
         RedisChatMessage message = new RedisChatMessage(
                 chatroomId,
                 userId,
                 nickname + "님이 입장하셨습니다.",
-                LocalDateTime.now(),
+                enterDate,
                 ChatType.ENTER
         );
         chatRedisService.afterSendMessage(chatroomId, message);
 
-        ChatroomUser chatroomUser = ChatroomUser.createChatroomUser(chatroomId, userId, nickname, LocalDateTime.now(), message.getId());
-        chatroomUserRepository.insertJpaMemberUser(chatroomUser);
+        ChatroomUser chatroomUser
+                = ChatroomUser.createChatroomUser(
+                        chatroomId,
+                        userId,
+                        nickname,
+                        enterDate,
+                        message.getId()
+                );
 
-        //chatRedisService.afterEnterChatroom(chatroomId, userId, message.getTimestamp(), 0L);   //루아 스크립트 사용
-        chatroomUserRepository.insertRedisMemberUser(chatroomId, userId, message.getTimestamp(), message.getId());
+        chatroomUserRepository.insertJpaMemberUser(chatroomUser);
+        chatroomUserRepository.insertTeamEnterScore(enterDate, message.getId(), chatroomId, userId);
         chatroomUserRepository.updateLastRead(userId, message.getTimestamp(), chatroomId, message.getId());
 
         chatMessageService.broadcastMessage(chatroomId, message);
@@ -71,10 +80,13 @@ public class ChatroomUserService {
                 .findIdByTeamId(teamId)
                 .orElseThrow(() -> new ChatroomException(NOT_FOUND_TEAM));
 
+        Map<Object, Object> userInfo = chatroomUserRepository.getUserInfo(chatroomId, userId);
+        String nickname = (String)userInfo.get("nickname");
+
         RedisChatMessage message = new RedisChatMessage(
                 chatroomId,
                 userId,
-                "누군가 퇴장하였습니다.",
+                nickname + "님이 퇴장하였습니다.",
                 LocalDateTime.now(),
                 ChatType.LEAVE
         );
@@ -92,10 +104,13 @@ public class ChatroomUserService {
                 .findIdByTeamId(teamId)
                 .orElseThrow(() -> new ChatroomException(NOT_FOUND_TEAM));
 
+        Map<Object, Object> userInfo = chatroomUserRepository.getUserInfo(chatroomId, userId);
+        String nickname = (String)userInfo.get("nickname");
+
         RedisChatMessage redisChatMessage = new RedisChatMessage(
                 chatroomId,
                 userId,
-                "누군가 강제퇴장 되었습니다.",
+                nickname + "님이 강제퇴장 되었습니다.",
                 LocalDateTime.now(),
                 ChatType.FORCE
         );

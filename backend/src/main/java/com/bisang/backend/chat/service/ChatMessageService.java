@@ -4,8 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import com.bisang.backend.chat.repository.chatroomuser.ChatroomUserJpaRepository;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +13,7 @@ import com.bisang.backend.chat.repository.chatroomuser.ChatroomUserRepository;
 import com.bisang.backend.chat.repository.message.ChatMessageRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
@@ -46,7 +45,8 @@ public class ChatMessageService {
         Double teamEnterScore = chatroomUserRepository.getTeamEnterScore(roomId, userId);
         Long teamEnterChatId = chatroomUserRepository.getTeamEnterChatId(roomId, userId);
 
-        List<RedisChatMessage> messageList = chatMessageRepository.getMessages(roomId, messageId, timestamp, teamEnterScore, teamEnterChatId);
+        List<RedisChatMessage> messageList
+                = chatMessageRepository.getMessages(roomId, messageId, timestamp, teamEnterScore, teamEnterChatId);
         List<ChatMessageResponse> responseList = new LinkedList<>();
 
         for (RedisChatMessage message : messageList) {

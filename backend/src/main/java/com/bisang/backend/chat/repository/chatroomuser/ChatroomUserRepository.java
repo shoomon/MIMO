@@ -7,7 +7,6 @@ import java.time.ZoneOffset;
 import java.util.Map;
 import java.util.Set;
 
-import com.bisang.backend.common.exception.ChatroomException;
 import jakarta.transaction.Transactional;
 
 import org.hibernate.NonUniqueResultException;
@@ -17,6 +16,7 @@ import org.springframework.stereotype.Repository;
 import com.bisang.backend.chat.domain.ChatroomUser;
 import com.bisang.backend.chat.repository.RedisCacheRepository;
 import com.bisang.backend.common.exception.AccountException;
+import com.bisang.backend.common.exception.ChatroomException;
 import com.bisang.backend.user.domain.User;
 import com.bisang.backend.user.repository.UserJpaRepository;
 
@@ -33,13 +33,8 @@ public class ChatroomUserRepository {
     private final UserJpaRepository userJpaRepository;
     private final RedisCacheRepository redisCacheRepository;
 
-    public void insertRedisMemberUser(Long chatroomId, Long userId, LocalDateTime enterDate, Long chatId) {
+    public void insertRedisMemberUser(Long chatroomId, Long userId) {
         chatroomUserRedisRepository.insertMember(chatroomId, userId);
-
-        double score = enterDate
-                .toInstant(ZoneOffset.ofTotalSeconds(0))
-                .toEpochMilli() + (chatId % 1000) / 1000.0;
-        chatroomUserRedisRepository.insertTeamEnterScore(chatroomId, userId, score, chatId);
     }
 
     public void insertJpaMemberUser(ChatroomUser chatroomUser) {
@@ -73,7 +68,9 @@ public class ChatroomUserRepository {
             ChatroomUser user = chatroomUserJpaRepository
                     .findByChatroomIdAndUserId(chatroomId, userId)
                     .orElseThrow(() -> new ChatroomException(NOT_FOUND));
-            insertRedisMemberUser(chatroomId, userId, user.getEnterDate(), user.getEnterChatId());
+            insertRedisMemberUser(chatroomId, userId);
+            insertTeamEnterScore(user.getEnterDate(), user.getEnterChatId(), chatroomId, userId);
+
             return true;
         }
 
@@ -125,6 +122,13 @@ public class ChatroomUserRepository {
 
     public Long getLastReadChatId(Long chatroomId, Long userId) {
         return chatroomUserRedisRepository.getLastReadChatId(chatroomId, userId);
+    }
+
+    public void insertTeamEnterScore(LocalDateTime enterDate, Long enterChatId, Long chatroomId, Long userId) {
+        double score = enterDate
+                .toInstant(ZoneOffset.ofTotalSeconds(0))
+                .toEpochMilli() + (enterChatId % 1000) / 1000.0;
+        chatroomUserRedisRepository.insertTeamEnterScore(chatroomId, userId, score, enterChatId);
     }
 
     public Double getTeamEnterScore(Long roomId, Long userId) {

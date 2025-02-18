@@ -5,13 +5,13 @@ import static com.bisang.backend.common.exception.ExceptionCode.*;
 import java.util.List;
 import java.util.Map;
 
-import com.bisang.backend.chat.repository.chatroomuser.ChatroomUserJpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.bisang.backend.chat.domain.Chatroom;
 import com.bisang.backend.chat.domain.ChatroomStatus;
 import com.bisang.backend.chat.repository.RedisCacheRepository;
 import com.bisang.backend.chat.repository.chatroom.dto.ChatroomTitleProfileDto;
+import com.bisang.backend.chat.repository.chatroomuser.ChatroomUserJpaRepository;
 import com.bisang.backend.common.exception.ChatroomException;
 
 import lombok.RequiredArgsConstructor;
@@ -36,7 +36,7 @@ public class ChatroomRepository {
 
         if (userChatroom == null || userChatroom.isEmpty()) {
             log.warn("채팅방 실시간 순서가 유실되었을 수 있습니다.");
-            userChatroom = chatroomUserJpaRepository.findAllIdsByUserId(userId);
+            userChatroom = chatroomUserJpaRepository.findAllChatroomIdsByUserId(userId);
         }
         return userChatroom;
     }

@@ -74,6 +74,7 @@ public class UserService {
                 .nickname(user.getNickname())
                 .email(user.getEmail())
                 .profileUri(user.getProfileUri())
+                .accountNumber(user.getAccountNumber())
                 .mileage(0L)
                 .mileageIncome(0L)
                 .mileageOutcome(0L)
@@ -82,6 +83,7 @@ public class UserService {
                 .comments(new ArrayList<>())
                 .build();
     }
+
 //todo: 게시글+게시판+팀 테이블 join해서 가져오는 거랑 따로 조회해오는 거랑 어떤 게 성능이 더 좋을까
     public List<SimpleBoardDto> getUserBoardList(Long userId) {
         List<SimpleBoardDto> result = new ArrayList<>();
