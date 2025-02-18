@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import com.bisang.backend.common.exception.ExceptionCode;
+import com.bisang.backend.common.exception.TeamException;
+import com.bisang.backend.team.domain.Team;
+import com.bisang.backend.team.repository.TeamJpaRepository;
 import jakarta.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
@@ -25,6 +29,7 @@ import lombok.RequiredArgsConstructor;
 public class AccountDetailsService {
     private final AccountService accountService;
 
+    private final TeamJpaRepository teamJpaRepository;
     private final AccountDetailsJpaRepository accountDetailsJpaRepository;
 
     public AccountDetails createAccountDetails(
@@ -107,5 +112,28 @@ public class AccountDetailsService {
         allAccountDetails.sort(Comparator.comparing(AccountDetailsResponse::getCreatedAt).reversed());
 
         return allAccountDetails;
+    }
+
+    public List<AccountDetailsResponse> getTeamDepositAccountDetails(Long teamId) {
+        Team team = findByTeamId(teamId);
+        String accountNumber = team.getAccountNumber();
+
+        List<AccountDetails> accountDetails =
+                accountDetailsJpaRepository.findByReceiverAccountNumberAndTransactionCategory(accountNumber, DEPOSIT);
+        return AccountDetailsConverter.accountDetailsToAccountDetailsResponses(accountDetails);
+    }
+
+    public List<AccountDetailsResponse> getTeamPayAccountDetails(Long teamId) {
+        Team team = findByTeamId(teamId);
+        String accountNumber = team.getAccountNumber();
+
+        List<AccountDetails> accountDetails =
+                accountDetailsJpaRepository.findBySenderAccountNumberAndTransactionCategory(accountNumber, PAYMENT);
+        return AccountDetailsConverter.accountDetailsToAccountDetailsResponses(accountDetails);
+    }
+
+    private Team findByTeamId(Long teamId) {
+        return teamJpaRepository.findTeamById(teamId)
+                .orElseThrow(() -> new TeamException(ExceptionCode.NOT_FOUND_TEAM));
     }
 }

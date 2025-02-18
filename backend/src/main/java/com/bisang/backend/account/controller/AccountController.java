@@ -34,15 +34,6 @@ public class AccountController {
                 .body(accountService.getUserBalance(user));
     }
 
-    @GetMapping("/team/balance")
-    public ResponseEntity<Long> getTeamBalance(
-            @RequestParam(name = "teamId") Long teamId
-    ) {
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(accountService.getTeamBalance(teamId));
-    }
-
     @GetMapping("/user/deposit/details")
     public ResponseEntity<List<AccountDetailsResponse>> getUserDepositAccountDetails(
             @AuthUser User user
@@ -86,5 +77,32 @@ public class AccountController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(accountDetailsService.getUserAllAccountDetails(user));
+    }
+
+    @GetMapping("/team/balance")
+    public ResponseEntity<Long> getTeamBalance(
+            @RequestParam(name = "teamId") Long teamId
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(accountService.getTeamBalance(teamId));
+    }
+
+    @GetMapping("/team/deposit/details")
+    public ResponseEntity<List<AccountDetailsResponse>> getTeamDepositAccountDetails(
+            @RequestParam(name = "teamId") Long teamId
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(accountDetailsService.getTeamDepositAccountDetails(teamId));
+    }
+
+    @GetMapping("/team/pay/details")
+    public ResponseEntity<List<AccountDetailsResponse>> getTeamPayAccountDetails(
+            @RequestParam(name = "teamId") Long teamId
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(accountDetailsService.getTeamPayAccountDetails(teamId));
     }
 }
