@@ -27,8 +27,6 @@ public class ChargeService {
         String receiverAccountNumber = transaction.getReceiverAccountNumber();
         Long amount = transaction.getAmount();
 
-        System.out.println(receiverAccountNumber);
-
         updateAccountBalance(ADMIN_ACCOUNT_NUMBER, amount);
         updateAccountBalance(receiverAccountNumber, amount);
 

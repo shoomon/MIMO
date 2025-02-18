@@ -4,15 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ce0c64dd-4326-401e-b4f1-7b7313c859a1" name="Changes" comment="chore: new_backend_dev 병합">
+    <list default="true" id="ce0c64dd-4326-401e-b4f1-7b7313c859a1" name="Changes" comment="refactor: 팀 계좌 생성 관련 로직 리팩토링">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/common/exception/GlobalExceptionHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/common/exception/GlobalExceptionHandler.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/build/resources/main/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/resources/main/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/account/controller/response/AccountDetailsResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/account/controller/response/AccountDetailsResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/account/converter/AccountDetailsConverter.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/account/converter/AccountDetailsConverter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/service/TeamService.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/classes/java/main/com/bisang/backend/team/service/TeamService.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/account/domain/AccountDetails.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/account/domain/AccountDetails.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/account/service/AccountDetailsService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/account/service/AccountDetailsService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/common/aop/DistributedLockAspect.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/common/aop/DistributedLockAspect.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/common/domain/BaseTimeEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/common/domain/BaseTimeEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/service/charge/ChargeService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/service/charge/ChargeService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -87,7 +86,7 @@
     </excluded-from-favorite>
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master" />
+        <entry key="$PROJECT_DIR$" value="new_backend_dev" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -140,7 +139,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "old__backend__dev",
+    "git-widget-placeholder": "new__backend__dev__kyoungbeom",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/SSAFY/IdeaProjects/S12P11A504/backend/src/main/resources",
     "settings.editor.selected.configurable": "editor.preferences.gutterIcons",
@@ -167,9 +166,9 @@
     <configuration name="BackendApplication" type="Application" factoryName="Application" nameIsGenerated="true">
       <envs>
         <env name="ACCESS_TOKEN_EXPIRY" value="3600000" />
-        <env name="DB_ID" value="root" />
+        <env name="DB_ID" value="S12P12A504@stg-yswa-kr-practice-db-master.mariadb.database.azure.com" />
         <env name="DB_PASSWORD" value="1234" />
-        <env name="DB_URL" value="localhost:3306" />
+        <env name="DB_URL" value="stg-yswa-kr-practice-db-master.mariadb.database.azure.com:3306" />
         <env name="GOOGLE_CLIENT_ID" value="385340399378-kumk6r07je1g3fthqlupuh78roghr7l4.apps.googleusercontent.com" />
         <env name="GOOGLE_CLIENT_SECRET" value="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" />
         <env name="GOOGLE_REDIRECT_URI" value="http://localhost:5500" />
@@ -804,7 +803,31 @@
       <option name="project" value="LOCAL" />
       <updated>1739788680120</updated>
     </task>
-    <option name="localTasksCounter" value="40" />
+    <task id="LOCAL-00040" summary="refactor: 계좌 관련 변수명 및 인덱스 수정">
+      <option name="closed" value="true" />
+      <created>1739789655130</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1739789655130</updated>
+    </task>
+    <task id="LOCAL-00041" summary="refactor: 팀 계좌 생성 관련 로직 리팩토링">
+      <option name="closed" value="true" />
+      <created>1739840939295</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1739840939295</updated>
+    </task>
+    <task id="LOCAL-00042" summary="refactor: 팀 계좌 생성 관련 로직 리팩토링">
+      <option name="closed" value="true" />
+      <created>1739841456883</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1739841456883</updated>
+    </task>
+    <option name="localTasksCounter" value="43" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -846,8 +869,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="refactor: 메서드 매개변수명 변경" />
-    <MESSAGE value="chore: redisson 관련 의존성 추가" />
     <MESSAGE value="refactor: 유저 인증 추가" />
     <MESSAGE value="refactor: 클래스명 변경 및 클래스 위치 이동" />
     <MESSAGE value="feat: redisson을 사용한 어노테이션 기반 분산락 구현" />
@@ -871,6 +892,8 @@
     <MESSAGE value="refactor: 테이블 구조 변경 및 일부 로직 수정" />
     <MESSAGE value="test: 충전 로직 테스트 코드 작성" />
     <MESSAGE value="chore: new_backend_dev 병합" />
-    <option name="LAST_COMMIT_MESSAGE" value="chore: new_backend_dev 병합" />
+    <MESSAGE value="refactor: 계좌 관련 변수명 및 인덱스 수정" />
+    <MESSAGE value="refactor: 팀 계좌 생성 관련 로직 리팩토링" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor: 팀 계좌 생성 관련 로직 리팩토링" />
   </component>
 </project>
