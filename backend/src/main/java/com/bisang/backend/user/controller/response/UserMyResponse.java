@@ -13,6 +13,7 @@ public record UserMyResponse(
         String nickname,
         String email,
         String profileUri,
+        String accountNumber,
         Double reviewScore,
         Long mileage,
         Long mileageIncome,
