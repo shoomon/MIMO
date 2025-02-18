@@ -30,8 +30,6 @@ public class BoardImageService {
         Map<Long, Long> teamBoardAndBoardId = boardQuerydslRepository
                 .getBoardIdListByTeamBoardId(teamBoardId, lastReadImageId, limit+1);
 
-        for(Long l : teamBoardAndBoardId.keySet()) System.out.print(l+" ");
-
         List<Long> boardIdList = teamBoardAndBoardId.keySet().stream().toList();
 
         Map<Long, String> boardImage = boardQuerydslRepository
@@ -39,7 +37,7 @@ public class BoardImageService {
 
         List<BoardThumbnailDto> imageList = new ArrayList<>();
 
-        for(Long boardId : boardIdList) {
+        for(Long boardId : boardImage.keySet()) {
             imageList.add(new BoardThumbnailDto(
                     teamBoardAndBoardId.get(boardId), boardId, boardImage.get(boardId)
                     )

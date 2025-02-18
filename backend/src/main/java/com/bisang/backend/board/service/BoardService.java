@@ -62,8 +62,8 @@ public class BoardService {
             String description,
             MultipartFile[] files
     ) {
-//        TeamUser teamUser = teamUserJpaRepository.findByTeamIdAndUserId(teamId, userId)
-//                .orElseThrow(() -> new TeamException(NOT_FOUND_TEAM_USER));
+        TeamUser teamUser = teamUserJpaRepository.findByTeamIdAndUserId(teamId, userId)
+                .orElseThrow(() -> new TeamException(NOT_FOUND_TEAM_USER));
 
         Long boardCount = boardJpaRepository.countBoardsByTeamBoardId(teamBoardId);
 
@@ -75,8 +75,8 @@ public class BoardService {
 
         Board post = boardJpaRepository.save(Board.builder()
                 .teamBoardId(teamBoardId)
-//                .teamUserId(teamUser.getId())
-                        .teamUserId(1L)
+                .teamUserId(teamUser.getId())
+//                        .teamUserId(1L)
                 .userId(userId)
                 .title(title)
                 .description(boardDescription)

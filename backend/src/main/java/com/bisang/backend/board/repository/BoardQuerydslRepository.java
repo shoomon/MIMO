@@ -145,11 +145,12 @@ public class BoardQuerydslRepository {
                         i.fileUri
                 ))
                 .from(i)
-                .where(boardImage.id.eq(
+                .where(i.fileUri.isNotNull()
+                        .and(boardImage.id.eq(
                         JPAExpressions.select(i2.id.min())
                                 .from(i2)
                                 .where(i2.boardId.eq(i.boardId))
-                        )
+                        ))
                         .and(i.boardId.in(boardId)))
                 .fetch();
 
