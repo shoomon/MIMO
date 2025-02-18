@@ -1,5 +1,7 @@
 package com.bisang.backend.chat.repository.message;
 
+import static com.bisang.backend.common.exception.ExceptionCode.INVALID_REQUEST;
+
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeParseException;
@@ -8,21 +10,19 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.bisang.backend.common.exception.ChatroomException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 import org.springframework.stereotype.Repository;
 
 import com.bisang.backend.chat.domain.redis.RedisChatMessage;
+import com.bisang.backend.common.exception.ChatroomException;
 import com.bisang.backend.common.utils.DateUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import static com.bisang.backend.common.exception.ExceptionCode.INVALID_REQUEST;
 
 @Repository
 @RequiredArgsConstructor
