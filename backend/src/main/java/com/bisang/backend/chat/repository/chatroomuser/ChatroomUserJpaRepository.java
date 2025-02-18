@@ -24,6 +24,6 @@ public interface ChatroomUserJpaRepository extends JpaRepository<ChatroomUser, L
 
     void deleteByChatroomIdAndUserId(Long teamId, Long userId);
 
-    @Query("SELECT c.id FROM ChatroomUser c WHERE c.userId = :userId")
-    List<Long> findAllIdsByUserId(long userId);
+    @Query("SELECT c.chatroomId FROM ChatroomUser c WHERE c.userId = :userId")
+    List<Long> findAllChatroomIdsByUserId(long userId);
 }
