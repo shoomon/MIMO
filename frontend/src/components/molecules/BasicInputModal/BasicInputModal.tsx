@@ -5,10 +5,9 @@ interface BasicInputModalProps {
     isOpen: boolean;
     title: string;
     subTitle?: string;
-    /**
-     * 사용자가 입력한 게시판 이름을 인자로 받는 콜백 함수
-     */
-    onConfirmClick?: (boardName: string) => void;
+    inputPlaceholder?: string;
+    confirmLabel: string;
+    onConfirmClick?: (value: string) => void;
     onCancelClick?: () => void;
 }
 
@@ -16,6 +15,8 @@ const BasicInputModal = ({
     isOpen,
     title,
     subTitle,
+    inputPlaceholder = '입력',
+    confirmLabel,
     onConfirmClick,
     onCancelClick,
 }: BasicInputModalProps) => {
@@ -60,7 +61,7 @@ const BasicInputModal = ({
                     <Input
                         id="boardNameInput"
                         type="text"
-                        placeholder="게시판 이름을 입력하세요"
+                        placeholder={inputPlaceholder}
                         value={inputValue}
                         onChange={(e) => setInputValue(e.target.value)}
                     />
@@ -69,7 +70,7 @@ const BasicInputModal = ({
                     <ButtonPrimary
                         action="confirm"
                         onClick={handleConfirm}
-                        label="게시판 만들기"
+                        label={confirmLabel}
                     />
                     <ButtonPrimary
                         action="cancel"

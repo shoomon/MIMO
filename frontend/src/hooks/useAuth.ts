@@ -25,7 +25,7 @@ export const useAuth = () => {
         }
     }, [isSuccess]);
 
-    return { userInfo: data, isSuccess, isError, isLogin };
+    return { userInfo: data, isSuccess, isError, isLogin, setLogin };
 };
 
 export const useOauth = () => {

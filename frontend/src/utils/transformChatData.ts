@@ -1,20 +1,20 @@
 import { ChatMessageResponse } from "@/types/Chat";
 import { ChatItemProps } from "@/components/atoms/ChatItem/ChatItem.view";
 
-const transformChatData = (data: ChatMessageResponse[], userImageUri: string):ChatItemProps[] => {
+const transformChatData = (data: ChatMessageResponse[], nickname: string):ChatItemProps[] => {
   
-    let lastUserImageUri:string = "";
+    let lastUserNickname:string = "";
 
     if(!data) return [];
 
     const newChatData = data.map((item):ChatItemProps => {
       
-      const type = item.profileImageUri === userImageUri ? "receiver"  : "sender";
+      const type = item.nickname === nickname ? "receiver"  : "sender";
 
-      const hasReceivedMessage = item.profileImageUri === lastUserImageUri;
+      const hasReceivedMessage = item.profileImageUri === lastUserNickname;
 
       if(item.chatType === "MESSAGE"){
-        lastUserImageUri = item.profileImageUri;
+        lastUserNickname = item.profileImageUri;
       }
 
       return {
