@@ -5,7 +5,7 @@ import static com.bisang.backend.board.domain.QBoardDescription.boardDescription
 import static com.bisang.backend.board.domain.QBoardImage.boardImage;
 import static com.bisang.backend.board.domain.QComment.comment;
 import static com.bisang.backend.board.domain.QTeamBoard.teamBoard;
-import static com.bisang.backend.common.exception.ExceptionCode.BOARD_NOT_FOUNT;
+import static com.bisang.backend.common.exception.ExceptionCode.BOARD_NOT_FOUND;
 import static com.bisang.backend.team.domain.QTeam.team;
 import static com.bisang.backend.team.domain.QTeamUser.teamUser;
 import static com.bisang.backend.user.domain.QUser.user;
@@ -52,7 +52,7 @@ public class BoardQuerydslRepository {
                 .leftJoin(teamBoard).on(board.teamBoardId.eq(teamBoard.id)) // 게시판 종류 조인
                 .leftJoin(boardDescription).on(board.description.id.eq(boardDescription.id)) // 게시글 설명 조인
                 .where(board.id.eq(postId))
-                .fetchOne()).orElseThrow(() -> new BoardException(BOARD_NOT_FOUNT));
+                .fetchOne()).orElseThrow(() -> new BoardException(BOARD_NOT_FOUND));
     }
 
     public List<Long> getBoardIdListByTeamBoardId(

@@ -26,7 +26,7 @@ public class CommentService {
             String content) {
 
         boardJpaRepository.findById(boardId)
-                .orElseThrow(() -> new BoardException(ExceptionCode.BOARD_NOT_FOUNT));
+                .orElseThrow(() -> new BoardException(ExceptionCode.BOARD_NOT_FOUND));
 
         if(parentId == null) {
 
@@ -54,7 +54,7 @@ public class CommentService {
 
     public Long updateComment(Long userId, Long commentId, String content) {
         Comment comment = commentJpaRepository.findById(commentId)
-                .orElseThrow(()->new BoardException(ExceptionCode.COMMENT_NOT_FOUNT));
+                .orElseThrow(()->new BoardException(ExceptionCode.COMMENT_NOT_FOUND));
 
         if(!isAuthor(comment, userId)) throw new BoardException(ExceptionCode.NOT_AUTHOR);
 

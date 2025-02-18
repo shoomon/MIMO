@@ -6,7 +6,13 @@ import com.bisang.backend.board.controller.dto.*;
 import com.bisang.backend.board.controller.response.BoardListResponse;
 import com.bisang.backend.common.exception.BoardException;
 import com.bisang.backend.common.exception.ExceptionCode;
+import com.bisang.backend.common.exception.TeamException;
 import com.bisang.backend.s3.service.S3Service;
+import com.bisang.backend.team.annotation.TeamMember;
+import com.bisang.backend.team.domain.Team;
+import com.bisang.backend.team.domain.TeamPrivateStatus;
+import com.bisang.backend.team.repository.TeamJpaRepository;
+import com.bisang.backend.user.domain.User;
 import com.bisang.backend.user.repository.UserJpaRepository;
 import jakarta.persistence.EntityNotFoundException;
 
@@ -25,6 +31,8 @@ import com.bisang.backend.board.controller.response.BoardDetailResponse;
 
 import lombok.RequiredArgsConstructor;
 
+import static com.bisang.backend.common.exception.ExceptionCode.*;
+
 @Service
 @RequiredArgsConstructor
 public class BoardService {
@@ -41,9 +49,10 @@ public class BoardService {
     private final S3Service s3Service;
     private final UserJpaRepository userJpaRepository;
     private final TeamBoardJpaRepository teamBoardJpaRepository;
+    private final TeamJpaRepository teamJpaRepository;
 
     @Transactional
-    //    @TeamMember
+    @TeamMember
     public Long createPost(
             Long teamBoardId,
             Long teamId,
@@ -53,7 +62,7 @@ public class BoardService {
             MultipartFile[] files
     ) {
         TeamUser teamUser = teamUserJpaRepository.findByTeamIdAndUserId(teamId, userId)
-                .orElseThrow(() -> new EntityNotFoundException("팀유저를 찾을 수 없습니다."));
+                .orElseThrow(() -> new TeamException(NOT_FOUND_TEAM_USER));
 
         Long boardCount = boardJpaRepository.countBoardsByTeamBoardId(teamBoardId);
 
@@ -124,13 +133,28 @@ public class BoardService {
         return list;
     }
 
-    //    @TeamMember
-    public BoardListResponse getPostListResponse(Long teamBoardId, Long offset, Integer pageSize){
-        String boardName = teamBoardJpaRepository.getTeamBoardNameById(teamBoardId);
+    public BoardListResponse getPostListResponse(User user, Long teamBoardId, Long offset, Integer pageSize){
+
+        TeamBoard teamBoard = teamBoardJpaRepository.findTeamBoardById(teamBoardId)
+                .orElseThrow(() -> new BoardException(TEAM_BOARD_NOT_FOUND));
+
+        Team team = teamJpaRepository.findTeamById(teamBoard.getTeamId())
+                .orElseThrow(()->new TeamException(NOT_FOUND_TEAM));
+
+        TeamPrivateStatus teamPrivateStatus = team.getPrivateStatus();
+
+        if(TeamPrivateStatus.PRIVATE == teamPrivateStatus){
+
+            if(user == null
+                || teamUserJpaRepository
+                    .findByTeamIdAndUserId(team.getId(), user.getId()).isEmpty()){
+                throw new TeamException(NOT_FOUND_TEAM_USER);
+            }
+        }
 
         List<SimpleBoardListDto> list = getPostList(teamBoardId, offset, pageSize);
 
-        return new BoardListResponse(boardName, list);
+        return new BoardListResponse(teamBoard.getBoardName(), list);
     }
 
     @Transactional
@@ -177,7 +201,7 @@ public class BoardService {
             MultipartFile[] filesToAdd
     ) {
         Board board = boardJpaRepository.findById(boardId)
-                .orElseThrow(()-> new BoardException(ExceptionCode.BOARD_NOT_FOUNT));
+                .orElseThrow(()-> new BoardException(ExceptionCode.BOARD_NOT_FOUND));
 
         TeamUser teamUser = teamUserJpaRepository.findById(board.getTeamUserId())
                 .orElseThrow(() -> new EntityNotFoundException("팀유저를 찾을 수 없습니다."));
@@ -188,7 +212,7 @@ public class BoardService {
         boardJpaRepository.save(board);
 
         BoardDescription boardDescription = boardDescriptionJpaRepository.findById(board.getDescription().getId())
-                .orElseThrow(()-> new BoardException(ExceptionCode.BOARD_NOT_FOUNT));
+                .orElseThrow(()-> new BoardException(ExceptionCode.BOARD_NOT_FOUND));
 
         boardDescription.updateDescription(description);
         boardDescriptionJpaRepository.save(boardDescription);
@@ -266,8 +290,9 @@ public class BoardService {
     private List<CommentListDto> getCommentList(Long postId){
         List<CommentListDto> result = new ArrayList<>();
         Map<Long, List<CommentDto>> commentList = new HashMap<>();
+        Set<Long> addedKey = new HashSet<>();
+
         List<CommentDto> comments = commentQuerydslRepository.getCommentList(postId);
-        List<Long> addedKey = new ArrayList<>();
 
         for(CommentDto comment : comments) {
             if(comment.parentId() == null){
@@ -287,7 +312,7 @@ public class BoardService {
                 result.add(new CommentListDto(comment, commentList.get(comment.commentId())));
                 addedKey.add(comment.commentId());
             }else{
-//                if(addedKey.contains(comment.parentId())) continue;
+                if(addedKey.contains(comment.parentId())) continue;
                 if(!commentList.containsKey(comment.parentId())){
                     result.add(new CommentListDto(
                                     new CommentDto(
