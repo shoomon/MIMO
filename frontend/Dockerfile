@@ -7,11 +7,11 @@ WORKDIR /app
 # package.json과 package-lock.json을 복사
 COPY ./frontend/package*.json /app/
 
+# 나머지 소스 파일을 복사 (이 부분을 npm install 전에 실행)
+COPY ./frontend/ /app/
+
 # 의존성 설치
 RUN npm install
-
-# 나머지 소스 파일을 복사
-COPY ./frontend/ /app/
 
 # 빌드
 RUN npm run build
