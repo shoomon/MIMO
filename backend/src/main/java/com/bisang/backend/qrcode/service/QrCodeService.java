@@ -5,7 +5,6 @@ import com.bisang.backend.common.exception.ExceptionCode;
 import com.bisang.backend.common.exception.TeamException;
 import com.bisang.backend.common.exception.TransactionException;
 import com.bisang.backend.team.repository.TeamUserJpaRepository;
-import com.bisang.backend.transaction.controller.request.QrCodeRequest;
 import com.bisang.backend.user.domain.User;
 import com.bisang.backend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -23,23 +22,16 @@ public class QrCodeService {
     private final AccountService accountService;
     private final UserService userService;
 
-    public String generateExpiringUuidForTeam(User user, QrCodeRequest qrCodeRequest) {
-        Long teamId = qrCodeRequest.getTeamId();
+    public String generateExpiringUuidForTeam(User user, Long teamId, String accountNumber) {
         Long userId = user.getId();
-        String accountNumber = qrCodeRequest.getAccountNumber();
-
-        // TODO
-        // 아래 컬럼들 인덱싱
         validateTeamLeader(teamId, userId);
         accountService.validateTeamAccount(userId, accountNumber);
 
         return generateExpiringUuid(accountNumber);
     }
 
-    public String generateExpiringUuidForUser(User user, QrCodeRequest qrCodeRequest) {
+    public String generateExpiringUuidForUser(User user, String accountNumber) {
         Long userId = user.getId();
-        String accountNumber = qrCodeRequest.getAccountNumber();
-
         accountService.validateUserAccount(userId, accountNumber);
 
         return generateExpiringUuid(accountNumber);
@@ -71,9 +63,5 @@ public class QrCodeService {
         redisTemplate.opsForValue().set(uuid, accountNumber, 183, TimeUnit.SECONDS);
 
         return uuid;
-    }
-
-    private String getUserAccountNumberByQrCode(String uuid) {
-        return redisTemplate.opsForValue().get(uuid);
     }
 }

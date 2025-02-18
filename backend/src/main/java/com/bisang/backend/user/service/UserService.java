@@ -158,8 +158,4 @@ public class UserService {
     public Optional<User> findUserByEmail(String email) {
         return userJpaRepository.findByEmail(email);
     }
-
-    public User findUserByAccountNumber(String accountNumber) {
-        return userJpaRepository.findByAccountNumber(accountNumber);
-    }
 }

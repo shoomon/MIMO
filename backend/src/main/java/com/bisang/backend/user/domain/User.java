@@ -5,12 +5,7 @@ import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import org.apache.commons.lang3.Validate;
 
@@ -25,7 +20,11 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 @AllArgsConstructor(access = PROTECTED)
-@Table(name = "USERS")
+@Table(name = "USERS",
+        indexes = {
+                @Index(name = "idx_user_id_accountNumber", columnList = "user_id, user_account_number")
+        }
+)
 public class User extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)

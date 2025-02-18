@@ -23,8 +23,15 @@ public class ChatMessageRepository {
     private final ChatMessageRedisRepository chatMessageRedisRepository;
     private final ChatMessageJpaRepository chatMessageJpaRepository;
 
-    public List<RedisChatMessage> getMessages(Long roomId, Long messageId, String timestamp, Double teamEnterScore, Long teamEnterChatId) {
-        List<RedisChatMessage> messageList = chatMessageRedisRepository.getMessages(roomId, messageId, timestamp, teamEnterScore);
+    public List<RedisChatMessage> getMessages(
+            Long roomId,
+            Long messageId,
+            String timestamp,
+            Double teamEnterScore,
+            Long teamEnterChatId
+    ) {
+        List<RedisChatMessage> messageList
+                = chatMessageRedisRepository.getMessages(roomId, messageId, timestamp, teamEnterScore);
         int size = messageList.size();
 
         if (size < 30) {
@@ -44,7 +51,7 @@ public class ChatMessageRepository {
             Long enterMessageId
     ) {
         List<ChatMessage> messages = chatMessageJpaRepository
-                .findByChatroomIdAndIdLessThanAndIdGreaterThanEqualOrderByIdDesc(roomId, messageId, enterMessageId);
+                .getMessages(roomId, messageId, enterMessageId);
         List<RedisChatMessage> result = new LinkedList<>();
 
         int limit = Math.min(size, messages.size());
