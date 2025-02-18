@@ -4,16 +4,20 @@ import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.IntStream;
 
-import org.springframework.stereotype.Service;
-
-import com.bisang.backend.common.exception.AccountException;
-import com.bisang.backend.common.exception.ExceptionCode;
+import com.bisang.backend.common.exception.TeamException;
 import com.bisang.backend.team.repository.TeamJpaRepository;
 import com.bisang.backend.user.repository.UserJpaRepository;
+import org.springframework.stereotype.Service;
+
 import com.bisang.backend.account.domain.Account;
 import com.bisang.backend.account.repository.AccountJpaRepository;
+import com.bisang.backend.common.exception.AccountException;
+import com.bisang.backend.common.exception.ExceptionCode;
+import com.bisang.backend.user.domain.User;
 
 import lombok.RequiredArgsConstructor;
+
+import static com.bisang.backend.common.exception.ExceptionCode.NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -55,15 +59,25 @@ public class AccountService {
     }
 
     public void validateTeamAccount(Long teamId, String accountNumber) {
-        if (teamJpaRepository.findByIdAndAccountNumber(teamId, accountNumber).isEmpty()) {
-            throw new AccountException(ExceptionCode.NOT_MATCHED_TEAM_AND_ACCOUNT_NUMBER);
-        }
+        teamJpaRepository.findByIdAndAccountNumber(teamId, accountNumber)
+                .orElseThrow(() -> new AccountException(ExceptionCode.NOT_MATCHED_TEAM_AND_ACCOUNT_NUMBER));
     }
 
     public void validateUserAccount(Long userId, String accountNumber) {
-        if (userJpaRepository.findByIdAndAccountNumber(userId, accountNumber).isEmpty()) {
-            throw new AccountException(ExceptionCode.NOT_MATCHED_USER_AND_ACCOUNT_NUMBER);
-        }
+        userJpaRepository.findByIdAndAccountNumber(userId, accountNumber)
+                .orElseThrow(() -> new AccountException(ExceptionCode.NOT_MATCHED_USER_AND_ACCOUNT_NUMBER));
+    }
+
+    public Long getUserBalance(User user) {
+        String accountNumber = user.getAccountNumber();
+        return accountJpaRepository.findByAccountNumber(accountNumber).getBalance().getBalance();
+    }
+
+    public Long getTeamBalance(Long teamId) {
+        validateTeam(teamId);
+
+        String accountNumber = teamJpaRepository.findTeamById(teamId).get().getAccountNumber();
+        return accountJpaRepository.findByAccountNumber(accountNumber).getBalance().getBalance();
     }
 
     private String createRandomNineNumber() {
@@ -73,5 +87,10 @@ public class AccountService {
     private Boolean validateAccountNumber(String accountNumber) {
         Optional<Account> optionalAccount = accountJpaRepository.findById(accountNumber);
         return optionalAccount.isEmpty();
+    }
+
+    private void validateTeam(Long teamId) {
+        teamJpaRepository.findTeamById(teamId)
+                .orElseThrow(() -> new TeamException(NOT_FOUND));
     }
 }
