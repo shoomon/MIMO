@@ -79,8 +79,8 @@ public class UserService {
                 .mileageIncome(0L)
                 .mileageOutcome(0L)
                 .reviewScore(0D)
-                .boards(new ArrayList<>())
-                .comments(new ArrayList<>())
+                .userBoard(getUserBoardList(user.getId()))
+                .userComment(getUserCommentList(user.getId()))
                 .build();
     }
 
