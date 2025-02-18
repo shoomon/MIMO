@@ -39,11 +39,11 @@ const ChatPage = () => {
         staleTime: 1000 * 10,
     });
 
-    const {data:chatListData} = useQuery<ChatRoomResponse[]>({
+    const { data: chatListData } = useQuery<ChatRoomResponse[]>({
         queryKey: ['chatRoomList'],
         queryFn: getChatListAPI,
         staleTime: 1000 * 15,
-    })
+    });
 
     useEffect(() => {
         console.log('유저 정보', userInfo);
@@ -63,7 +63,10 @@ const ChatPage = () => {
         setRoomName(currentRoom.chatroomName);
         setRoomImage(currentRoom.chatroomImage);
 
-        setRoomData([...transformChatData(data, userInfo.profileUri), ...transformChatData(messages[roomId], userInfo.profileUri)]);
+        setRoomData([
+            ...transformChatData(data, userInfo.nickname),
+            ...transformChatData(messages[roomId], userInfo.nickname),
+        ]);
     }, [roomId, data, userInfo, chatListData, messages]);
 
     return (

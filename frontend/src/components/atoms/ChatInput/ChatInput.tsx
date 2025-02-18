@@ -2,7 +2,13 @@ import { useState } from 'react';
 import ChatInputView from './ChatInput.view';
 import useSocketStore from '@/stores/socketStore';
 
-const ChatInput = ({ chatroomId, onMessageSent }: { chatroomId: number, onMessageSent: () => void }) => {
+const ChatInput = ({
+    chatroomId,
+    onMessageSent,
+}: {
+    chatroomId: number;
+    onMessageSent: () => void;
+}) => {
     const [message, setMessage] = useState<string>('');
     const { sendMessage } = useSocketStore();
 
@@ -10,24 +16,30 @@ const ChatInput = ({ chatroomId, onMessageSent }: { chatroomId: number, onMessag
         setMessage(e.target.value);
     };
 
-    const submitMessage = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+    const sendMessageHandler = () => {
+        if (message.trim() == '') return;
+
         console.log('메세지 전송!', message, chatroomId);
         try {
             sendMessage(chatroomId, message);
-            setMessage("");
+            setMessage('');
             onMessageSent();
         } catch (e) {
             console.error(e);
         }
     };
 
-    const handleKeyDown = (e:React.KeyboardEvent<HTMLTextAreaElement>) => {
-        if(e.key == "Enter" && !e.shiftKey){
+    const submitMessage = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        sendMessageHandler();
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if (e.key == 'Enter' && !e.shiftKey) {
             e.preventDefault();
-            submitMessage(e);
-        }  
-    }
+            sendMessageHandler();
+        }
+    };
 
     return (
         <ChatInputView

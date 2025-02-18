@@ -10,6 +10,8 @@ import { useAuth } from '@/hooks/useAuth';
 export interface HeaderViewProps {
     userInfo?: ProfileImageProps;
     isLogin: boolean;
+    setLogin: React.Dispatch<React.SetStateAction<boolean>>;
+    setActive: React.Dispatch<React.SetStateAction<boolean>>;
     alarmActive: boolean;
     infoActive: boolean;
     handleSearch: (e: React.FormEvent<HTMLFormElement>) => void;
@@ -17,7 +19,6 @@ export interface HeaderViewProps {
     onChangeSearch: (e: React.ChangeEvent<HTMLInputElement>) => void;
     relatedItem: string[];
     onClickSearch: (e: React.MouseEvent<HTMLButtonElement>) => void;
-    onClickAlarm: (e: React.MouseEvent<HTMLButtonElement>) => void;
     onClickInfo: (e: React.MouseEvent<HTMLButtonElement>) => void;
     handleLogin: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
@@ -40,11 +41,15 @@ const LoginedMenu = ({
     userInfo,
     infoActive,
     onClickInfo,
+    setLogin,
+    setActive,
 }: {
     userInfo?: ProfileImageProps;
     alarmActive: boolean;
     infoActive: boolean;
     onClickInfo: (e: React.MouseEvent<HTMLButtonElement>) => void;
+    setLogin: React.Dispatch<React.SetStateAction<boolean>>;
+    setActive: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
     return (
         <div className="flex gap-4">
@@ -57,9 +62,11 @@ const LoginedMenu = ({
                     <Icon type="png" id="User" size={44} />
                 </button>
                 <MyInfoDropDown
+                    setActive={setActive}
                     active={infoActive}
                     userInfo={userInfo}
                     addStyle="absolute right-0 translate-y-full -bottom-4"
+                    setLogin={setLogin}
                 />
             </div>
         </div>
@@ -68,6 +75,8 @@ const LoginedMenu = ({
 
 const HeaderView = ({
     isLogin,
+    setLogin,
+    setActive,
     alarmActive,
     infoActive,
     handleSearch,
@@ -125,6 +134,8 @@ const HeaderView = ({
                         <LoginedMenu
                             onClickInfo={onClickInfo}
                             userInfo={userInfo}
+                            setActive={setActive}
+                            setLogin={setLogin}
                             alarmActive={alarmActive}
                             infoActive={infoActive}
                         />

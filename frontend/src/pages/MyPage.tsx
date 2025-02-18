@@ -1,20 +1,31 @@
-import { getMyAllInfoAPI } from '@/apis/AuthAPI';
-import { useQuery } from '@tanstack/react-query';
-import { useEffect } from 'react';
+import BasicInputModal from '@/components/molecules/BasicInputModal/BasicInputModal';
+import useCharge from '@/hooks/useCharge';
 
 const MyPage = () => {
-    const { data, isSuccess } = useQuery({
-        queryKey: ['myAllData'],
-        queryFn: getMyAllInfoAPI,
-        staleTime: 1000 * 30,
-        gcTime: 1000 * 60,
-    });
+    const { isOpen, handleConfirm, handleCharge, handleCancel } = useCharge();
 
-    useEffect(() => {
-        console.log(data);
-    }, [data, isSuccess]);
+    return (
+        <div>
+            <h1>마이페이지</h1>
 
-    return <div>내정보</div>;
+            <button
+                type="button"
+                className="bg-brand-primary-300 cursor-pointer p-2 text-white"
+                onClick={handleCharge}
+            >
+                충전하기
+            </button>
+            <BasicInputModal
+                isOpen={isOpen}
+                title="충전 금액을 입력해주세요."
+                subTitle="100원 이상부터 충전 가능합니다."
+                inputPlaceholder="금액을 입력하세요."
+                confirmLabel="충전하기"
+                onConfirmClick={handleConfirm}
+                onCancelClick={handleCancel}
+            />
+        </div>
+    );
 };
 
 export default MyPage;

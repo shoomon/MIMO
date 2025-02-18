@@ -66,6 +66,13 @@ const useSocketStore = create<SocketStore>((set, get) => ({
       }));
     });
 
+    // 에러 메시지 구독
+    const errorSubscription = client.subscribe('/queue/errors', (error: IMessage) => {
+      const errorData = JSON.parse(error.body);
+      console.log("에러 데이터", errorData);
+      // 에러 처리 로직
+    });
+
     // 구독 정보만 저장
     set((state) => ({
       subscriptions: {

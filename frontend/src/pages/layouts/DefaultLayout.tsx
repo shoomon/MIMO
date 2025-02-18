@@ -11,12 +11,14 @@ const DefaultLayout = () => {
     };
 
     const { handleLogin } = useOauth();
-    const { isLogin } = useAuth();
+    const { isLogin, setLogin } = useAuth();
 
     return (
         <>
             <Header
                 isLogin={isLogin}
+                setLogin={setLogin}
+                setActive={setinfoActive}
                 alarmActive={false}
                 infoActive={infoActive}
                 handleSearch={() => {}}
@@ -24,7 +26,6 @@ const DefaultLayout = () => {
                 onChangeSearch={() => {}}
                 relatedItem={[]}
                 onClickSearch={() => {}}
-                onClickAlarm={() => {}}
                 onClickInfo={handleToggleInfo}
                 handleLogin={handleLogin}
             />
