@@ -21,6 +21,8 @@ public class QChatMessage extends EntityPathBase<ChatMessage> {
 
     public final NumberPath<Long> chatroomId = createNumber("chatroomId", Long.class);
 
+    public final EnumPath<ChatType> chatType = createEnum("chatType", ChatType.class);
+
     public final DateTimePath<java.time.LocalDateTime> createdAt = createDateTime("createdAt", java.time.LocalDateTime.class);
 
     public final NumberPath<Long> id = createNumber("id", Long.class);

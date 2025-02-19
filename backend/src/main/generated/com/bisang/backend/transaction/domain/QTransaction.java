@@ -1,4 +1,4 @@
-package com.bisang.backend.transaction.domain.account.domain;
+package com.bisang.backend.transaction.domain;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -15,23 +15,29 @@ import com.querydsl.core.types.Path;
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
 public class QTransaction extends EntityPathBase<Transaction> {
 
-    private static final long serialVersionUID = 270352898L;
+    private static final long serialVersionUID = 2052154161L;
 
     public static final QTransaction transaction = new QTransaction("transaction");
 
-    public final NumberPath<Long> balance = createNumber("balance", Long.class);
+    public final NumberPath<Long> amount = createNumber("amount", Long.class);
+
+    public final DateTimePath<java.time.LocalDateTime> createdAt = createDateTime("createdAt", java.time.LocalDateTime.class);
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final StringPath impUid = createString("impUid");
+
     public final StringPath memo = createString("memo");
 
-    public final StringPath receiverAccount = createString("receiverAccount");
+    public final StringPath merchantUid = createString("merchantUid");
 
-    public final StringPath receiverName = createString("receiverName");
+    public final StringPath receiverAccountNumber = createString("receiverAccountNumber");
 
-    public final StringPath senderAccount = createString("senderAccount");
+    public final StringPath senderAccountNumber = createString("senderAccountNumber");
 
-    public final StringPath senderName = createString("senderName");
+    public final EnumPath<TransactionCategory> transactionCategory = createEnum("transactionCategory", TransactionCategory.class);
+
+    public final EnumPath<TransactionStatus> transactionStatus = createEnum("transactionStatus", TransactionStatus.class);
 
     public QTransaction(String variable) {
         super(Transaction.class, forVariable(variable));
