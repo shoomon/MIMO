@@ -72,9 +72,9 @@ const useTeamMileage = (teamId:string, round:string) => {
   
       return [balanceData, expenseData]
   
-    },[teamBalance, teamPayDetail, payDetailSuccess, balanceSuccess])
+  },[teamBalance, teamPayDetail, payDetailSuccess, balanceSuccess])
 
-    const teamMileageHistoryData = useMemo<RawDataRow[]>(() => {
+  const teamMileageHistoryData = useMemo<RawDataRow[]>(() => {
       if (!teamPayDetail) {
           return [];
       }
@@ -103,37 +103,97 @@ const useTeamMileage = (teamId:string, round:string) => {
       });
   }, [teamPayDetail]);
 
-  const teamPayerHistoryData = useMemo<RawDataRow[]>(() => {
+  const teamPayerHistoryShortData = useMemo<RawDataRow[]>(() => {
     if (!teamPayerDetail) {
         return [];
     }
 
-    return teamPayerDetail.map((data, index) => {
-        let transaction = '';
-
-        if (data.transactionCategory === 'CHARGE') {
-            transaction = '충전';
-        } else if (data.transactionCategory === 'TRANSFER') {
-            transaction = '송금';
-        } else if (data.transactionCategory === 'DEPOSIT') {
-            transaction = '입금';
-        } else if (data.transactionCategory === 'PAYMENT') {
-            transaction = '지출';
-        }
+    const data = teamPayerDetail.map((data, index) => {
 
         return {
             id: index,
-            transaction,
-            user: "",
-            name: data.memo,
-            date: data.createdAt,
+            transaction: "납부",
+            user: data.nickname,
+            name: "",
+            date: data.installmentDate,
             amount: data.amount,
         };
     });
-}, [teamPayDetail]);
+
+    if(data.length > 5){
+      return data.slice(0, 5);
+    }else{
+      return data;
+    }
+
+  }, [teamPayerDetail]);
+
+  const teamPayerHistoryData = useMemo<RawDataRow[]>(() => {
+      if (!teamPayerDetail) {
+          return [];
+      }
+  
+      return teamPayerDetail.map((data, index) => {
+  
+          return {
+              id: index,
+              transaction: "납부",
+              user: data.nickname,
+              name: "",
+              date: data.installmentDate,
+              amount: data.amount,
+          };
+      });
+  
+  }, [teamPayerDetail]);    
+
+  const teamNonPayerHistoryShortData = useMemo<RawDataRow[]>(() => {
+    if (!teamNonPayerDetail) {
+      return [];
+    }
+
+    const data =  teamNonPayerDetail.map((data, index) => {
+
+      return {
+          id: index,
+          transaction: "미납부",
+          user: data.nickname,
+          name: "",
+          date: data.installmentDate,
+          amount: data.amount,
+      };
+    });
+
+    if(data.length > 5){
+      return data.slice(0, 5);
+    }else{
+      return data;
+    }
+
+  }, [teamNonPayerDetail]);
+
+  const teamNonPayerHistoryData = useMemo<RawDataRow[]>(() => {
+    if (!teamNonPayerDetail) {
+      return [];
+    }
+
+    return teamNonPayerDetail.map((data, index) => {
+
+      return {
+          id: index,
+          transaction: "미납부",
+          user: data.nickname,
+          name: "",
+          date: data.installmentDate,
+          amount: data.amount,
+      };
+    });
+
+  }, [teamNonPayerDetail]);
+
 
   
-  return {teamMileageData, teamBalance, teamPayDetail, teamPayerDetail, teamNonPayerDetail, getMyPayerCheck, teamMileageHistoryData}
+  return {teamMileageData, teamPayerHistoryData, teamPayerHistoryShortData, teamNonPayerHistoryData, teamNonPayerHistoryShortData, teamBalance, teamPayDetail, teamPayerDetail, teamNonPayerDetail, getMyPayerCheck, teamMileageHistoryData}
 }
 
 export default useTeamMileage;

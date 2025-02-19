@@ -58,7 +58,7 @@ export interface InstallmentRequest {
 
 export interface InstallmentResponse {
   nickname: string;
-  amount: string;
+  amount: number;
   installmentDate: string;
 }
 

@@ -6,7 +6,7 @@ import { RawDataRow, transformData } from '@/utils/transformTableData';
 
 export interface MileageHistoryViewProps {
     title: string;
-    to: string;
+    to?: string;
     columns: ColumnDefinition[];
     items: RawDataRow[];
 }

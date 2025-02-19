@@ -19,7 +19,7 @@ export const createTeamInstallmentAPI = async ({teamId, installmentRequests}:Cre
 }
 
 // payer-details
-export const getTeamPayerDetailsAPI = async ({teamId, round}:PayerDetailsRequest): Promise<InstallmentResponse> => {
+export const getTeamPayerDetailsAPI = async ({teamId, round}:PayerDetailsRequest): Promise<InstallmentResponse[]> => {
 
   try {
       const response = await customFetch(`/installment/payer-details?teamId=${teamId}&round=${round}`, {
@@ -39,7 +39,7 @@ export const getTeamPayerDetailsAPI = async ({teamId, round}:PayerDetailsRequest
 }
 
 // non-payer-details
-export const getTeamNonPayerDetailsAPI = async ({teamId, round}:PayerDetailsRequest): Promise<InstallmentResponse> => {
+export const getTeamNonPayerDetailsAPI = async ({teamId, round}:PayerDetailsRequest): Promise<InstallmentResponse[]> => {
 
   try {
       const response = await customFetch(`/installment/non-payer-details?teamId=${teamId}&round=${round}`, {
