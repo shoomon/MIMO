@@ -18,8 +18,6 @@ public class AlarmScheduleService {
     private final AlarmJpaRepository alarmJpaRepository;
     private final AlarmQuerydslRepository alarmQuerydslRepository;
 
-    @Async("scheduleAlarmExecutor")
-    @Transactional
     public void sendAlarm(TeamSchedule teamSchedule) {
         List<TempAlarmDto> alarms = alarmQuerydslRepository.getAlarms(teamSchedule);
 
