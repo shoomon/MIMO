@@ -1,6 +1,7 @@
 package com.bisang.backend.schedule.domain;
 
 import static com.bisang.backend.common.exception.ExceptionCode.NOT_MINUS_MONEY;
+import static com.bisang.backend.common.exception.ExceptionCode.TEAM_MEMBER_RANGE;
 import static com.bisang.backend.schedule.domain.ScheduleStatus.*;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
@@ -96,6 +97,7 @@ public class TeamSchedule extends BaseTimeEntity {
         this.location = location;
         this.price = price;
         this.date = date;
+        participantsValidation(maxParticipants);
         this.maxParticipants = maxParticipants;
         this.currentParticipants = 1L;
         this.scheduleStatus = status;
@@ -110,6 +112,7 @@ public class TeamSchedule extends BaseTimeEntity {
     }
 
     public void updateMaxParticipants(Long maxParticipants) {
+        participantsValidation(maxParticipants);
         this.maxParticipants = maxParticipants;
     }
 
@@ -144,5 +147,11 @@ public class TeamSchedule extends BaseTimeEntity {
 
     public void closeSchedule() {
         this.scheduleStatus = CLOSED;
+    }
+
+    private void participantsValidation(Long maxParticipants) {
+        if (maxParticipants < 1 || maxParticipants > 1000) {
+            throw new ScheduleException(TEAM_MEMBER_RANGE);
+        }
     }
 }

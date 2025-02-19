@@ -1,5 +1,7 @@
 package com.bisang.backend.team.domain;
 
+import static com.bisang.backend.common.exception.ExceptionCode.INVALID_REQUEST;
+import static com.bisang.backend.common.exception.ExceptionCode.TEAM_MEMBER_RANGE;
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.CascadeType.PERSIST;
 import static jakarta.persistence.EnumType.STRING;
@@ -9,6 +11,7 @@ import static lombok.AccessLevel.PROTECTED;
 
 import java.time.LocalDateTime;
 
+import com.bisang.backend.common.exception.TeamException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -104,6 +107,9 @@ public class Team {
             TeamCategory category,
             Long maxCapacity
     ) {
+        if (maxCapacity < 1 || maxCapacity > 1000) {
+            throw new TeamException(TEAM_MEMBER_RANGE);
+        }
         this.maxCapacity = maxCapacity;
         this.teamLeaderId = teamLeaderId;
         this.teamChatroomId = teamChatroomId;
