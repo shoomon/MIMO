@@ -49,7 +49,7 @@ public class TeamScheduleQuerydslRepository {
         return queryFactory
             .selectFrom(teamSchedule)
             .where(teamSchedule.scheduleStatus.eq(status), lastDateTimeLt)
-            .orderBy(teamSchedule.date.desc())
+            .orderBy(teamSchedule.id.desc())
             .limit(SMALL_SCHEDULE_PAGE_SIZE + 1)
             .fetch();
     }
@@ -63,7 +63,7 @@ public class TeamScheduleQuerydslRepository {
         return queryFactory
             .selectFrom(teamSchedule)
             .where(teamSchedule.scheduleStatus.eq(status), lastScheduleIdLt)
-            .orderBy(teamSchedule.date.desc())
+            .orderBy(teamSchedule.id.desc())
             .limit(SMALL_SCHEDULE_PAGE_SIZE + 1)
             .fetch();
     }

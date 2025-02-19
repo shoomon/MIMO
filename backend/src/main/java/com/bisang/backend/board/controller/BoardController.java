@@ -87,7 +87,7 @@ public class BoardController {
 
     @GetMapping("/detail")
     public ResponseEntity<BoardDetailResponse> getPostDetail(
-            @AuthUser User user,
+            @Guest User user,
             @RequestParam(value = "post", required = true) Long postId
     ) {
         return ResponseEntity.ok(boardService.getPostDetail(user, postId));

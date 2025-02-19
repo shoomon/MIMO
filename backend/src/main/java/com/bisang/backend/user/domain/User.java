@@ -51,7 +51,7 @@ public class User extends BaseTimeEntity {
     private UserStatus status;
 
     @Builder
-    protected User(
+    public User(
             String accountNumber,
             String email,
             String name,

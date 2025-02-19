@@ -39,7 +39,7 @@ public class Alarm {
     @Column(name = "description", nullable = false)
     private String description;
 
-    private Alarm(Long userId, Long scheduleId, String title, String description) {
+    public Alarm(Long userId, Long scheduleId, String title, String description) {
         this.userId = userId;
         this.scheduleId = scheduleId;
         this.title = title;

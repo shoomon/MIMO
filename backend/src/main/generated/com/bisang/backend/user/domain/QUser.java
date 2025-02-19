@@ -21,6 +21,8 @@ public class QUser extends EntityPathBase<User> {
 
     public final com.bisang.backend.common.domain.QBaseTimeEntity _super = new com.bisang.backend.common.domain.QBaseTimeEntity(this);
 
+    public final StringPath accountNumber = createString("accountNumber");
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
@@ -35,11 +37,7 @@ public class QUser extends EntityPathBase<User> {
 
     public final StringPath nickname = createString("nickname");
 
-    public final StringPath password = createString("password");
-
     public final StringPath profileUri = createString("profileUri");
-
-    public final StringPath socialLoginId = createString("socialLoginId");
 
     public final EnumPath<UserStatus> status = createEnum("status", UserStatus.class);
 
