@@ -9,3 +9,15 @@ export interface UserAlarm {
 export interface UserAlarmsResponse {
     userAlarms: UserAlarm[];
 }
+
+export interface findSpecificAlarmResponse {
+    alarm: alarm;
+}
+export interface alarm {
+    alarmId: number;
+    userId: number;
+    teamId: string;
+    scheduleId: number;
+    title: string;
+    description: string;
+}

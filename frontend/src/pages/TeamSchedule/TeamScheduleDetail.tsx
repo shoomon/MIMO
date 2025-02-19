@@ -181,7 +181,11 @@ const TeamScheduleDetail = () => {
                             : '날짜 정보 없음'}
                     </span>
                     <span className="flex items-center gap-2">
-                        🪙 참가비 : {scheduleDetail?.price}
+                        🪙 참가비 :{' '}
+                        {scheduleDetail?.price != null &&
+                        scheduleDetail.price > 0
+                            ? `${scheduleDetail.price.toLocaleString()}원`
+                            : '없음'}
                     </span>
                     <span className="flex items-center gap-2">
                         👑 모임장 : {scheduleDetail?.nameOfLeader}

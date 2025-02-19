@@ -8,7 +8,7 @@ import MyInfoDropDown from '@/components/atoms/MyInfoDropDown/MyInfoDropDown';
 import { customFetch } from '@/apis/customFetch';
 import { useTokenStore } from '@/stores/tokenStore';
 import { useAuth } from '@/hooks/useAuth';
-import AlarmView from '../Alarm/AlarmView';
+import AlarmView from './../Alarm/Alarm.view';
 
 export interface HeaderViewProps {
     isLogin: boolean;
@@ -48,22 +48,15 @@ interface LoginedMenuProps {
 
 const LoginedMenu = ({
     userInfo,
-    alarmActive,
     userInfoActive,
-    handleAlarmClick,
     handleUserClick,
     setLogin,
-    setAlarmActive,
     setUserInfoActive,
 }: LoginedMenuProps) => {
     return (
         <div className="flex gap-4">
             {/* 알람 드롭다운 영역 */}
             <div className="relative">
-                <button onClick={handleAlarmClick} className="cursor-pointer">
-                    <Icon type="png" id="Alarm" size={44} />
-                </button>
-                {/* AlarmView 내부에서 알람 아이콘과 드롭다운을 관리하므로 별도로 추가하지 않아도 됨 */}
                 <AlarmView />
             </div>
             <ChatAlarm />

@@ -8,14 +8,12 @@ const DefaultLayout = () => {
 
     const { handleLogin } = useOauth();
     const { isLogin, setLogin } = useAuth();
-
     const [searchValue, setSearchValue] = useState<string>('');
 
     // 검색어 입력 핸들러
     const onChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchValue(e.target.value);
     };
-
     // 검색 실행 핸들러
     const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -25,7 +23,6 @@ const DefaultLayout = () => {
             );
         }
     };
-
     return (
         <>
             <Header
@@ -39,7 +36,7 @@ const DefaultLayout = () => {
                 handleLogin={handleLogin}
             />
 
-            <div className="flex flex-1 flex-col gap-3">
+            <div className="flex h-screen flex-1 flex-col gap-3">
                 <MainNav />
                 <NavLevel />
                 <Outlet />

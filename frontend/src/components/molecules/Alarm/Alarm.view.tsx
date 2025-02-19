@@ -1,11 +1,12 @@
 // src/components/atoms/AlarmView.tsx
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Icon } from '@/components/atoms';
 import Alarm from './Alarm';
 import { UserAlarmsResponse } from '@/types/User';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/hooks/useAuth';
 import { getMyAlarm } from '@/apis/UserAPI';
+import { useLocation } from 'react-router-dom';
 
 const AlarmView = () => {
     const { userInfo } = useAuth();
@@ -20,20 +21,43 @@ const AlarmView = () => {
     const unreadCount = data?.userAlarms?.length ?? 0;
 
     const [alarmActive, setAlarmActive] = useState(false);
-    // 여기서 userInfoActive는 헤더의 다른 드롭다운(내 정보)와 겹치지 않도록 상위에서 관리할 수도 있음
 
-    const handleAlarmClick = () => {
+    const handleAlarmClick = (e: React.MouseEvent) => {
+        e.stopPropagation();
         setAlarmActive((prev) => !prev);
     };
 
-    // 알람 데이터가 없으면 아이콘만 표시할 수도 있음
+    // 알람창 영역을 감싸는 ref
+    const alarmRef = useRef<HTMLDivElement>(null);
+
+    // ✅ 다른 곳 클릭 시 알람창 닫기
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (
+                alarmRef.current &&
+                !alarmRef.current.contains(event.target as Node)
+            ) {
+                setAlarmActive(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () =>
+            document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    // ✅ 페이지 이동 시 알람창 닫기
+    const location = useLocation();
+    useEffect(() => {
+        setAlarmActive(false);
+    }, [location]);
+
     return (
-        <div className="relative">
+        <div className="relative" ref={alarmRef}>
             <div>
                 <button onClick={handleAlarmClick} className="cursor-pointer">
                     <Icon type="png" id="Alarm" size={44} />
                 </button>
-                {alarmActive && unreadCount > 0 && (
+                {unreadCount > 0 && (
                     <div className="absolute right-0 bottom-0 z-10 flex h-6 w-6 translate-x-2 translate-y-1 items-center justify-center rounded-full bg-red-500">
                         <span className="text-md font-semibold text-white">
                             {unreadCount}

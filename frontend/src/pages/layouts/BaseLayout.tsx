@@ -5,7 +5,7 @@ export interface BaseLayoutprops {
 }
 
 const BaseLayout = ({ children }: BaseLayoutprops) => {
-    return <section className="flex flex-col gap-2">{children}</section>;
+    return <section className="flex h-full flex-col gap-2">{children}</section>;
 };
 
 export default BaseLayout;
