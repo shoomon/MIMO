@@ -119,14 +119,17 @@ public class BoardService {
         BoardDetailResponse postDetail = null;
         BoardInfoDto boardInfo = boardQuerydslRepository.getBoardInfo(boardId);
 
-        isValidGuest(user, boardInfo.teamId());
+        TeamUser teamUser = isValidGuest(user, boardInfo.teamId());
 
         boardJpaRepository.increaseViewCount(boardId);
 
         String userProfileUri = userJpaRepository.getUserProfileUri(boardInfo.userId());
         String userNickname = teamUserJpaRepository.getTeamUserNickname(boardInfo.teamUserId());
-        BoardLike userLike = boardLikeRepository
-                .findByTeamUserIdAndBoardId(boardInfo.teamUserId(), boardId).orElse(null);
+        BoardLike userLike = null;
+        if(teamUser != null){
+            userLike = boardLikeRepository
+                    .findByTeamUserIdAndBoardId(teamUser.getId(), boardId).orElse(null);
+        }
         BoardDto post = new BoardDto(
                 boardId,
                 boardInfo.userId(),
@@ -224,6 +227,9 @@ public class BoardService {
 
     @Transactional
     public void likePost(Long teamUserId, Long postId){
+        teamUserJpaRepository.findById(teamUserId)
+                .orElseThrow(()-> new TeamException(NOT_FOUND_TEAM_USER));
+
         Optional<BoardLike> userLike = boardLikeRepository.findByTeamUserIdAndBoardId(teamUserId, postId);
 
         if (userLike.isPresent()) {
@@ -273,20 +279,21 @@ public class BoardService {
         return list;
     }
 
-    private void isValidGuest(User user, Long teamId) {
+    private TeamUser isValidGuest(User user, Long teamId) {
         Team team = teamJpaRepository.findTeamById(teamId)
                 .orElseThrow(()->new TeamException(NOT_FOUND_TEAM));
+
+        TeamUser teamUser = teamUserJpaRepository
+                .findByTeamIdAndUserId(team.getId(), user.getId()).orElse(null);
 
         TeamPrivateStatus teamPrivateStatus = team.getPrivateStatus();
 
         if(TeamPrivateStatus.PRIVATE == teamPrivateStatus){
-
-            if(user == null
-                    || teamUserJpaRepository
-                    .findByTeamIdAndUserId(team.getId(), user.getId()).isEmpty()){
+            if(user == null || teamUser == null){
                 throw new TeamException(NOT_FOUND_TEAM_USER);
             }
         }
+        return teamUser;
     }
 
     //todo: 로직이 뭔가 이상한디유
