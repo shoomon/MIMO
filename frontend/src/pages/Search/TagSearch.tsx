@@ -32,7 +32,7 @@ export default function TitleSearch() {
     if (isError) return <div>에러가 발생했습니다.</div>;
 
     // 실제 응답 구조에 맞춰서 데이터 사용
-    if (!searchData || searchData.length === 0) {
+    if (!searchData || searchData.size === 0) {
         return <div>검색 결과가 없습니다.</div>;
     }
 

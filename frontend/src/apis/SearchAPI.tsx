@@ -10,7 +10,7 @@ export const TeamTitleSearch = async (
         if (pageNumber) params.pageNumber = pageNumber;
 
         // API 호출
-        const response = await customFetch('/team/title-description', {
+        const response = await customFetch('/search-team/title-description', {
             method: 'GET',
             params,
         });

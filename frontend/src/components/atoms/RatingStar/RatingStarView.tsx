@@ -33,9 +33,9 @@ const RatingStarView: React.FC<RatingStarViewProps> = ({
                 )}
                 {Array.from({ length: emptyStars }, (_, index) => (
                     <Icon
-                        key={`star-empty-${index}`}
+                        key={`emptyStar-${index}`}
                         type="svg"
-                        id="Star-Empty"
+                        id="emptyStar"
                     />
                 ))}
             </div>

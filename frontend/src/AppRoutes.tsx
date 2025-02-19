@@ -51,7 +51,6 @@ const AppRoutes = () => {
                 <Route path="/search" element={<Search />} />
                 {/* 제목·설명 기반 검색 */}
                 <Route path="/search/title" element={<TitleSearch />} />
-
                 {/* 태그 기반 검색 */}
                 <Route path="/search/tags" element={<TagSearch />} />
                 {/* 카테고리 --- 이것만 카테고리 리스트 뜸 */}
