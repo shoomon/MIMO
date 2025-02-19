@@ -39,7 +39,7 @@ public class TeamSearchService {
     @EveryOne
     @Transactional(readOnly = true)
     public TeamTagResponse getTagBySearchKeyword(String searchKeyword, Integer pageNumber) {
-        List<TagDto> tags = teamSearchQuerydslRepository.searchTags(searchKeyword, pageNumber);
+        List<SimpleTagDto> tags = teamSearchQuerydslRepository.searchTags(searchKeyword, pageNumber);
         Long numberOfTags = teamSearchQuerydslRepository.searchTagsCount(searchKeyword);
         return new TeamTagResponse(numberOfTags.intValue(), pageNumber, tags.size(), tags);
     }

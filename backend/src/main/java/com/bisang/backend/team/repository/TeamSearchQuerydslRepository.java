@@ -68,13 +68,13 @@ public class TeamSearchQuerydslRepository {
                 .where(tag.name.eq(name), teamTag.teamId.eq(teamId)).fetchOne());
     }
 
-    public List<TagDto> searchTags(String searchText, Integer pageNumber) {
+    public List<SimpleTagDto> searchTags(String searchText, Integer pageNumber) {
         if (pageNumber == null) {
             pageNumber = 1;
         }
 
         return queryFactory
-            .select(Projections.constructor(TagDto.class,
+            .select(Projections.constructor(SimpleTagDto.class,
                 tag.id,
                 tag.name))
             .from(tag)
