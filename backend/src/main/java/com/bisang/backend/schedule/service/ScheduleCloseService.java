@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 
 import static com.bisang.backend.common.utils.PageUtils.SMALL_SCHEDULE_PAGE_SIZE;
 import static com.bisang.backend.schedule.domain.ScheduleStatus.*;
@@ -21,7 +23,7 @@ public class ScheduleCloseService {
     private final TeamScheduleJpaRepository teamScheduleJpaRepository;
 
     @Async("scheduleCloseExecutor")
-    public Long closeAdhocSchedule(LocalDateTime lastDateTime) {
+    public Future<Long> closeAdhocSchedule(LocalDateTime lastDateTime) {
         List<TeamSchedule> closedAdhocSchedules
                 = teamScheduleQuerydslRepository.getTeamScheduleByStatusAndDateTime(AD_HOC, lastDateTime);
         if (closedAdhocSchedules.size() > SMALL_SCHEDULE_PAGE_SIZE) {
@@ -30,18 +32,18 @@ public class ScheduleCloseService {
             }
             teamScheduleJpaRepository.saveAll(closedAdhocSchedules);
             Long nextId = closedAdhocSchedules.get(SMALL_SCHEDULE_PAGE_SIZE).getId();
-            return nextId;
+            return CompletableFuture.completedFuture(nextId);
         }
 
         for (TeamSchedule teamSchedule : closedAdhocSchedules) {
             teamSchedule.updateStatus(CLOSED);
         }
         teamScheduleJpaRepository.saveAll(closedAdhocSchedules);
-        return null;
+        return CompletableFuture.completedFuture(null);
     }
 
     @Async("scheduleCloseExecutor")
-    public Long closeAdhocScheduleById(Long lastScheduleId) {
+    public Future<Long> closeAdhocScheduleById(Long lastScheduleId) {
         List<TeamSchedule> closedAdhocSchedules
                 = teamScheduleQuerydslRepository.getTeamScheduleByStatusAndScheduleIdLt(AD_HOC, lastScheduleId);
         if (closedAdhocSchedules.size() > SMALL_SCHEDULE_PAGE_SIZE) {
@@ -49,18 +51,19 @@ public class ScheduleCloseService {
                 teamSchedule.updateStatus(CLOSED);
             }
             teamScheduleJpaRepository.saveAll(closedAdhocSchedules);
-            return closedAdhocSchedules.get(SMALL_SCHEDULE_PAGE_SIZE).getId();
+            Long nextId = closedAdhocSchedules.get(SMALL_SCHEDULE_PAGE_SIZE).getId();
+            return CompletableFuture.completedFuture(nextId);
         }
 
         for (TeamSchedule teamSchedule : closedAdhocSchedules) {
             teamSchedule.updateStatus(CLOSED);
         }
         teamScheduleJpaRepository.saveAll(closedAdhocSchedules);
-        return null;
+        return CompletableFuture.completedFuture(null);
     }
 
     @Async("scheduleCloseExecutor")
-    public Long closeRegularSchedule(LocalDateTime lastDateTime) {
+    public Future<Long> closeRegularSchedule(LocalDateTime lastDateTime) {
         List<TeamSchedule> closedRegularSchedules
                 = teamScheduleQuerydslRepository.getTeamScheduleByStatusAndDateTime(REGULAR, lastDateTime);
         if (closedRegularSchedules.size() > SMALL_SCHEDULE_PAGE_SIZE) {
@@ -68,18 +71,19 @@ public class ScheduleCloseService {
                 teamSchedule.updateStatus(CLOSED);
             }
             teamScheduleJpaRepository.saveAll(closedRegularSchedules);
-            return closedRegularSchedules.get(SMALL_SCHEDULE_PAGE_SIZE).getId();
+            Long nextId = closedRegularSchedules.get(SMALL_SCHEDULE_PAGE_SIZE).getId();
+            return CompletableFuture.completedFuture(nextId);
         }
 
         for (TeamSchedule teamSchedule : closedRegularSchedules) {
             teamSchedule.updateStatus(CLOSED);
         }
         teamScheduleJpaRepository.saveAll(closedRegularSchedules);
-        return null;
+        return CompletableFuture.completedFuture(null);
     }
 
     @Async("scheduleCloseExecutor")
-    public Long closeRegularScheduleById(Long lastScheduleId) {
+    public Future<Long> closeRegularScheduleById(Long lastScheduleId) {
         List<TeamSchedule> closedAdhocSchedules
                 = teamScheduleQuerydslRepository.getTeamScheduleByStatusAndScheduleIdLt(REGULAR, lastScheduleId);
         if (closedAdhocSchedules.size() > SMALL_SCHEDULE_PAGE_SIZE) {
@@ -87,13 +91,14 @@ public class ScheduleCloseService {
                 teamSchedule.updateStatus(CLOSED);
             }
             teamScheduleJpaRepository.saveAll(closedAdhocSchedules);
-            return closedAdhocSchedules.get(SMALL_SCHEDULE_PAGE_SIZE).getId();
+            Long nextId = closedAdhocSchedules.get(SMALL_SCHEDULE_PAGE_SIZE).getId();
+            return CompletableFuture.completedFuture(nextId);
         }
 
         for (TeamSchedule teamSchedule : closedAdhocSchedules) {
             teamSchedule.updateStatus(CLOSED);
         }
         teamScheduleJpaRepository.saveAll(closedAdhocSchedules);
-        return null;
+        return CompletableFuture.completedFuture(null);
     }
 }

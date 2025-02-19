@@ -47,7 +47,7 @@ public class AlarmQuerydslRepository {
                 .fetch();
     }
 
-    public List<TempAlarmDto> getAlarms(TeamSchedule teamSchedule) {
+    public List<AlarmDto> getAlarms(TeamSchedule teamSchedule) {
         Long teamScheduleId = teamSchedule.getId();
 
         Team scheduleTeam = queryFactory
@@ -60,11 +60,12 @@ public class AlarmQuerydslRepository {
         }
 
         return queryFactory
-                .select(Projections.constructor(TempAlarmDto.class,
+                .select(Projections.constructor(AlarmDto.class,
                         teamUser.userId,
+                        teamUser.teamId,
                         scheduleParticipants.teamScheduleId,
-                        Expressions.constant(scheduleTeam.getName() + "모임에서 온 알람입니다."),
-                        Expressions.constant(teamSchedule.getTitle() + ": 해당 일정에 대해서 확인바랍니다.")
+                        Expressions.constant(scheduleTeam.getName()),
+                        Expressions.constant(teamSchedule.getTitle())
                 ))
                 .from(scheduleParticipants)
                 .join(teamUser)
@@ -73,9 +74,9 @@ public class AlarmQuerydslRepository {
                 .fetch();
     }
 
-    public List<AlarmDto> getUserAlarms(Long userId) {
+    public List<TempAlarmDto> getUserAlarms(Long userId) {
         return queryFactory
-            .select(Projections.constructor(AlarmDto.class,
+            .select(Projections.constructor(TempAlarmDto.class,
                 alarm.id,
                 alarm.userId,
                 alarm.scheduleId,
