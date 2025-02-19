@@ -78,6 +78,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             .body(new ExceptionResponse(exception.getCode(), exception.getMessage()));
     }
 
+    @ExceptionHandler(AlarmException.class)
+    public ResponseEntity<ExceptionResponse> handleAlarmException(AlarmException exception) {
+        log.warn(exception.getMessage(), exception);
+        return ResponseEntity.badRequest()
+                .body(new ExceptionResponse(exception.getCode(), exception.getMessage()));
+    }
+
     @ExceptionHandler(SocialLoginException.class)
     public ResponseEntity<ExceptionResponse> handleSocialLoginException(SocialLoginException exception) {
         log.warn(exception.getMessage(), exception);

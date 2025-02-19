@@ -26,20 +26,12 @@ public class TeamSearchController {
         return ResponseEntity.ok(teamSearchService.getTeamsByTitleOrDescription(searchKeyword, pageNumber));
     }
 
-    @GetMapping("/tags")
-    public ResponseEntity<TeamTagResponse> getTags(
+    @GetMapping("/tag-team")
+    public ResponseEntity<TeamTagSearchResponse> getTagTeam(
         @RequestParam String searchKeyword,
         @RequestParam Integer pageNumber
     ) {
-        return ResponseEntity.ok(teamSearchService.getTagBySearchKeyword(searchKeyword, pageNumber));
-    }
-
-    @GetMapping("/tag-team")
-    public ResponseEntity<TeamTagSearchResponse> getTagTeam(
-        @RequestParam Long tagId,
-        @RequestParam Integer pageNumber
-    ) {
-        return ResponseEntity.ok(teamSearchService.getTeamsByTag(tagId, pageNumber));
+        return ResponseEntity.ok(teamSearchService.getTeamsByTag(searchKeyword, pageNumber));
     }
 
     @GetMapping("/tag-area")

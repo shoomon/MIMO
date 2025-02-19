@@ -21,9 +21,15 @@ public class QChatroomUser extends EntityPathBase<ChatroomUser> {
 
     public final NumberPath<Long> chatroomId = createNumber("chatroomId", Long.class);
 
+    public final NumberPath<Long> enterChatId = createNumber("enterChatId", Long.class);
+
+    public final DateTimePath<java.time.LocalDateTime> enterDate = createDateTime("enterDate", java.time.LocalDateTime.class);
+
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final DateTimePath<java.time.LocalDateTime> lastModifiedAt = createDateTime("lastModifiedAt", java.time.LocalDateTime.class);
+
+    public final StringPath nickname = createString("nickname");
 
     public final NumberPath<Long> userId = createNumber("userId", Long.class);
 

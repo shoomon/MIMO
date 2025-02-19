@@ -25,6 +25,10 @@ public class QScheduleParticipants extends EntityPathBase<ScheduleParticipants> 
 
     public final NumberPath<Long> teamUserId = createNumber("teamUserId", Long.class);
 
+    public final NumberPath<Long> userId = createNumber("userId", Long.class);
+
+    public final EnumPath<ParticipantsRole> userRole = createEnum("userRole", ParticipantsRole.class);
+
     public QScheduleParticipants(String variable) {
         super(ScheduleParticipants.class, forVariable(variable));
     }
