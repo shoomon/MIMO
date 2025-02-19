@@ -34,7 +34,7 @@ const BasicModal = ({
                         {subTitle}
                     </section>
                 )}
-                <section className="flex space-x-2">
+                <section className="flex justify-center space-x-2">
                     {onConfirmClick && (
                         <ButtonPrimary
                             label="확인"

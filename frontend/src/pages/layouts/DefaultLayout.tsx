@@ -4,12 +4,7 @@ import { useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 
 const DefaultLayout = () => {
-    const [infoActive, setinfoActive] = useState<boolean>(false);
     const navigate = useNavigate();
-
-    const handleToggleInfo = () => {
-        setinfoActive((prev) => !prev);
-    };
 
     const { handleLogin } = useOauth();
     const { isLogin, setLogin } = useAuth();
@@ -36,15 +31,11 @@ const DefaultLayout = () => {
             <Header
                 isLogin={isLogin}
                 setLogin={setLogin}
-                setActive={setinfoActive}
-                alarmActive={false}
-                infoActive={infoActive}
                 handleSearch={handleSearch}
                 searchValue={searchValue}
                 onChangeSearch={onChangeSearch}
                 relatedItem={[]} // 검색어 자동완성 기능 추가 가능
                 onClickSearch={() => {}}
-                onClickInfo={handleToggleInfo}
                 handleLogin={handleLogin}
             />
 

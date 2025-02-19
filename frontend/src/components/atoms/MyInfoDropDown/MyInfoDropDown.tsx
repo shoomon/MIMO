@@ -1,8 +1,10 @@
+// src/components/atoms/MyInfoDropDown/MyInfoDropDown.tsx
 import { ProfileImageProps } from '../ProfileImage/ProfileImage';
 import MyInfoDropDownView from './MyInfoDropDown.view';
-import { useTokenStore } from './../../../stores/tokenStore';
+import { useTokenStore } from '@/stores/tokenStore';
 import { customFetch } from '@/apis/customFetch';
 import { useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 
 interface MyInfoDropDownProps {
     userInfo?: ProfileImageProps;
@@ -18,10 +20,8 @@ const logoutapi = async (): Promise<void> => {
             method: 'POST',
             credentials: 'include',
         });
-
-        console.log('로그아웃됨');
     } catch (error) {
-        console.error('Error fetching area teams:', error);
+        console.error('Error during logout:', error);
         throw error;
     }
 };
@@ -35,17 +35,19 @@ const MyInfoDropDown = ({
 }: MyInfoDropDownProps) => {
     const { logout } = useTokenStore();
     const queryClient = useQueryClient();
+    const navigate = useNavigate();
 
     if (!userInfo) {
-        return;
+        return null;
     }
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
         logout();
-        logoutapi();
+        await logoutapi();
         queryClient.removeQueries({ queryKey: ['userInfo'] });
         setActive(false);
         setLogin(false);
+        navigate('/');
     };
 
     return (

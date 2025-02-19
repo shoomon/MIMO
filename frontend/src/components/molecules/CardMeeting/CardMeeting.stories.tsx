@@ -34,13 +34,13 @@ const sampleThumbnail: ThumbnailProps = {
 
 // 더미 데이터: TagProps 배열
 const sampleTagList: TagProps[] = [
-    { to: '/tag/react', label: '뿌빠' },
-    { to: '/tag/javascript', label: '뿌빠' },
-    { to: '/tag/storybook', label: '뿌빠' },
-    { to: '/tag/javascript', label: '뿌빠' },
-    { to: '/tag/storybook', label: '뿌빠' },
-    { to: '/tag/storybook', label: '뿌빠' },
-    { to: '/tag/javascript', label: '뿌빠' },
+    { label: '뿌빠' },
+    { label: '뿌빠' },
+    { label: '뿌빠' },
+    { label: '뿌빠' },
+    { label: '뿌빠' },
+    { label: '뿌빠' },
+    { label: '뿌빠' },
 ];
 
 export const Default: Story = {

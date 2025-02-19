@@ -1,3 +1,4 @@
+// src/components/atoms/MyInfoDropDown/MyInfoDropDown.view.tsx
 import { Link } from 'react-router-dom';
 import ProfileImage, { ProfileImageProps } from '../ProfileImage/ProfileImage';
 
@@ -16,15 +17,15 @@ const MyInfoDropDownView = ({
 }: MyInfoDropDownViewProps) => {
     return (
         <section
-            className={`text-text flex w-[15.5rem] origin-top transform flex-col rounded-sm border border-gray-300 bg-white p-1 text-sm leading-normal font-semibold shadow-xl transition-all duration-200 ease-out ${
+            className={`text-text z-50 flex w-[15.5rem] origin-top transform flex-col rounded-sm border border-gray-300 bg-white p-1 text-sm leading-normal font-semibold shadow-xl transition-all duration-200 ease-out ${
                 active
                     ? 'scale-y-100 opacity-100'
                     : 'pointer-events-none scale-y-0 opacity-0'
-            } ${addStyle} `}
+            } ${addStyle}`}
         >
             <div className="flex gap-2 border-b border-gray-300 px-3 py-2 hover:bg-gray-100">
                 <ProfileImage {...userInfo} size={20} />
-                <span className="">{userInfo.nickname}</span>
+                <span>{userInfo.nickname}</span>
             </div>
             <Link to={`/mypage`} className="px-2 py-1.5 hover:bg-gray-100">
                 마이페이지

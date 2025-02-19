@@ -3,7 +3,7 @@ import { getMyTeamProfile } from '@/apis/TeamAPI';
 
 const useMyTeamProfile = (teamId?: string) => {
     return useQuery({
-        queryKey: [' MyInfo', teamId],
+        queryKey: ['MyInfo', teamId],
         queryFn: () => getMyTeamProfile(teamId!),
         enabled: !!teamId, // teamId가 있을 때만 호출
     });

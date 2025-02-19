@@ -25,50 +25,38 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
     args: {
         isLogin: true,
-        alarmActive: false,
-        infoActive: true,
         handleSearch: () => {},
         searchValue: '',
         onChangeSearch: () => {},
         relatedItem: [],
         onClickSearch: () => {},
-        onClickInfo: () => {},
         handleLogin: () => {},
         setLogin: () => {},
-        setActive: () => {},
     },
 };
 
 export const Login: Story = {
     args: {
         isLogin: true,
-        alarmActive: false,
-        infoActive: true,
         handleSearch: () => {},
         searchValue: '',
         onChangeSearch: () => {},
         relatedItem: [],
         onClickSearch: () => {},
-        onClickInfo: () => {},
         handleLogin: () => {},
         setLogin: () => {},
-        setActive: () => {},
     },
 };
 
 export const NoLogin: Story = {
     args: {
         isLogin: false,
-        alarmActive: false,
-        infoActive: true,
         handleSearch: () => {},
         searchValue: '',
         onChangeSearch: () => {},
         relatedItem: [],
         onClickSearch: () => {},
-        onClickInfo: () => {},
         handleLogin: () => {},
         setLogin: () => {},
-        setActive: () => {},
     },
 };

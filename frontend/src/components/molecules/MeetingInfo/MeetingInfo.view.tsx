@@ -16,6 +16,7 @@ export interface MeetingInfoViewProps {
     onJoinRequest: () => void;
     teamUserId: number | null;
     role: TeamUserRole;
+    invited: boolean;
 }
 
 const MeetingInfoView = ({
@@ -28,6 +29,7 @@ const MeetingInfoView = ({
     onUpdateInfo,
     onJoinRequest,
     role,
+    invited,
 }: MeetingInfoViewProps) => {
     return (
         <div className="flex w-full flex-col gap-1">
@@ -42,7 +44,7 @@ const MeetingInfoView = ({
                     멤버 {currentCapacity}/{maxCapacity}
                 </div>
                 <div className="flex gap-2">
-                    {role === 'GUEST' && (
+                    {role === 'GUEST' && !invited && (
                         <ButtonDefault
                             type="primary"
                             iconId="Mail"
@@ -57,6 +59,9 @@ const MeetingInfoView = ({
                             content="정보 수정"
                             onClick={onUpdateInfo}
                         />
+                    )}
+                    {role === 'GUEST' && invited && (
+                        <ButtonDefault type="primary" content="신청중" />
                     )}
                 </div>
             </div>
