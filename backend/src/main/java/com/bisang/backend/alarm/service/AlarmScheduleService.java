@@ -20,8 +20,8 @@ public class AlarmScheduleService {
     private final AlarmQuerydslRepository alarmQuerydslRepository;
 
     public void sendAlarm(TeamSchedule teamSchedule) {
-        List<AlarmDto> alarms = alarmQuerydslRepository.getAlarms(teamSchedule);
-        for (AlarmDto alarm : alarms) {
+        List<TempAlarmDto> alarms = alarmQuerydslRepository.getAlarms(teamSchedule);
+        for (TempAlarmDto alarm : alarms) {
             try {
                 alarmJpaRepository.save(new Alarm(alarm.userId(), alarm.scheduleId(), alarm.title(), alarm.description()));
             } catch (Exception e) {}

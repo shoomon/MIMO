@@ -47,7 +47,7 @@ public class AlarmQuerydslRepository {
                 .fetch();
     }
 
-    public List<AlarmDto> getAlarms(TeamSchedule teamSchedule) {
+    public List<TempAlarmDto> getAlarms(TeamSchedule teamSchedule) {
         Long teamScheduleId = teamSchedule.getId();
 
         Team scheduleTeam = queryFactory
@@ -60,9 +60,9 @@ public class AlarmQuerydslRepository {
         }
 
         return queryFactory
-                .select(Projections.constructor(AlarmDto.class,
-                        teamUser.userId,
+                .select(Projections.constructor(TempAlarmDto.class,
                         teamUser.teamId,
+                        teamUser.userId,
                         scheduleParticipants.teamScheduleId,
                         Expressions.constant(scheduleTeam.getName()),
                         Expressions.constant(teamSchedule.getTitle())
