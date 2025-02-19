@@ -3,6 +3,7 @@ package com.bisang.backend.alarm.service;
 import com.bisang.backend.alarm.repository.AlarmQuerydslRepository;
 import com.bisang.backend.schedule.domain.TeamSchedule;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -11,6 +12,7 @@ import java.util.List;
 
 import static java.time.temporal.ChronoUnit.MINUTES;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class AlarmScheduleExecutorService {

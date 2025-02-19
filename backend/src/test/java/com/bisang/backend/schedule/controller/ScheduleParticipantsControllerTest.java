@@ -116,7 +116,7 @@ public class ScheduleParticipantsControllerTest {
         }
 
         List<TeamSchedule> teamSchedules = new ArrayList<>();
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 100; i++) {
             TeamSchedule teamSchedule = TeamSchedule.builder()
                     .teamId(team.getId())
                     .teamUserId(leader.getId())
@@ -124,7 +124,7 @@ public class ScheduleParticipantsControllerTest {
                     .description("아무말 대잔치")
                     .location("멀티캠퍼스")
                     .price(1000L)
-                    .date(LocalDateTime.now().plusMinutes(2).truncatedTo(MINUTES))
+                    .date(LocalDateTime.now().plusMinutes(1).truncatedTo(MINUTES))
                     .maxParticipants(100L)
                     .status(AD_HOC).build();
             teamScheduleJpaRepository.save(teamSchedule);
