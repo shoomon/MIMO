@@ -5,7 +5,7 @@ import com.bisang.backend.team.controller.dto.SimpleTeamDto;
 import java.util.List;
 
 public record TeamTagSearchResponse(
-    Integer numberOfTags,
+    Integer numberOfTeams,
     Integer pageNumber,
     Integer size,
     List<SimpleTeamDto> teams

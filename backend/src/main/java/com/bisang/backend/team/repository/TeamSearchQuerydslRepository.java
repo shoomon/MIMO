@@ -2,6 +2,7 @@ package com.bisang.backend.team.repository;
 
 import com.bisang.backend.team.controller.dto.*;
 import com.bisang.backend.team.domain.Area;
+import com.bisang.backend.team.domain.Tag;
 import com.bisang.backend.team.domain.TeamCategory;
 import com.bisang.backend.team.domain.TeamTag;
 import com.querydsl.core.Tuple;
@@ -36,6 +37,7 @@ public class TeamSearchQuerydslRepository {
     private final TeamUserJpaRepository teamUserJpaRepository;
     private final JPAQueryFactory queryFactory;
     private final TeamJpaRepository teamJpaRepository;
+    private final TagJpaRepository tagJpaRepository;
 
     public List<SimpleTagDto> findAreaTags() {
         List<String> areaNames = Area.getAreaNames();
@@ -93,7 +95,13 @@ public class TeamSearchQuerydslRepository {
             .fetchOne();
     }
 
-    public Long searchTeamsCount(Long tagId) {
+    public Long searchTagTeamsCount(String searchText) {
+        Optional<Tag> tag = tagJpaRepository.findByName(searchText);
+        if (tag.isEmpty()) {
+            return 0L;
+        }
+
+        Long tagId = tag.get().getId();
         return queryFactory
             .select(teamTag.teamId.count())
             .from(teamTag).join(team).on(teamTag.teamId.eq(team.id))
@@ -101,10 +109,17 @@ public class TeamSearchQuerydslRepository {
             .fetchOne();
     }
 
-    public List<SimpleTeamDto> searchTeams(Long tagId, Integer pageNumber) {
+    public List<SimpleTeamDto> searchTagTeams(String searchText, Integer pageNumber) {
         if (pageNumber == null) {
             pageNumber = 1;
         }
+
+        Optional<Tag> tag = tagJpaRepository.findByName(searchText);
+        if (tag.isEmpty()) {
+            return emptyList();
+        }
+
+        Long tagId = tag.get().getId();
 
         List<Long> teamIds = queryFactory
             .select(teamTag.teamId)
