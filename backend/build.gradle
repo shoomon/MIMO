@@ -112,3 +112,17 @@ compileTestJava.options.encoding = 'UTF-8'
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+def generated = 'src/main/generated'
+
+tasks.withType(JavaCompile) {
+    options.generatedSourceOutputDirectory = file(generated)
+}
+
+sourceSets {
+    main.java.srcDirs += "$projectDir/build/generated"
+}
+
+clean {
+    delete file(generated)
+}
