@@ -18,6 +18,7 @@ import lombok.Builder;
 public record MyTeamUserInfoDto(
         Long teamId,
         Long teamUserId,
+        Boolean hasReview,
         Boolean isInvited,
         String nickname,
         TeamUserRole role,
@@ -27,12 +28,15 @@ public record MyTeamUserInfoDto(
     public static MyTeamUserInfoDto teamUserToDto(
             Optional<TeamUser> optionalTeamUser,
             Team team,
-            Optional<TeamInvite> optionalTeamInvite) {
+            Optional<TeamInvite> optionalTeamInvite,
+            Boolean hasReview
+            ) {
         if (optionalTeamUser.isPresent()) {
             TeamUser teamUser = optionalTeamUser.get();
             return MyTeamUserInfoDto.builder()
                     .teamId(teamUser.getTeamId())
                     .teamUserId(teamUser.getId())
+                    .hasReview(hasReview)
                     .isInvited(true)
                     .nickname(teamUser.getNickname())
                     .role(teamUser.getRole())
@@ -45,6 +49,7 @@ public record MyTeamUserInfoDto(
         return MyTeamUserInfoDto.builder()
                 .teamId(team.getId())
                 .teamUserId(0L)
+                .hasReview(hasReview)
                 .isInvited(isInvited)
                 .nickname("GUEST" + randomAlphaNumeric(10))
                 .role(GUEST)

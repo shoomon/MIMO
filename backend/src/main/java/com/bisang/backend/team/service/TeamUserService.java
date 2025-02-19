@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.bisang.backend.chat.service.ChatroomUserService;
+import com.bisang.backend.team.repository.TeamReviewJpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,6 +49,7 @@ public class TeamUserService {
     private final TeamInviteQuerydslRepository teamInviteQuerydslRepository;
     private final TeamUserQuerydslRepository teamUserQuerydslRepository;
     private final ChatroomUserService chatroomUserService;
+    private final TeamReviewJpaRepository teamReviewJpaRepository;
 
     @Transactional(readOnly = true)
     public TeamInfosResponse getMyTeamInfos(Long userId, Long teamId) {
@@ -68,7 +70,11 @@ public class TeamUserService {
         Optional<TeamUser> teamUser = teamUserJpaRepository.findByTeamIdAndUserId(teamId, userId);
         Optional<TeamInvite> teamInvite = teamInviteJpaRepository.findByTeamIdAndUserIdAndStatus(teamId, userId);
         Team team = findTeamById(teamId);
-        return MyTeamUserInfoDto.teamUserToDto(teamUser, team, teamInvite);
+        Boolean hasReview = false;
+        if (teamUser.isPresent()) {
+            hasReview = teamReviewJpaRepository.existsTeamReviewByTeamUserId(teamUser.get().getId());
+        }
+        return MyTeamUserInfoDto.teamUserToDto(teamUser, team, teamInvite, hasReview);
     }
 
     @EveryOne
