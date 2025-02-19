@@ -10,6 +10,8 @@ services:
       - ./frontend/.env
     networks:
       - frontend_backend_network
+    volumes:
+      - share_volume:/app/dist
 
   server:
     build:
@@ -36,8 +38,12 @@ services:
     volumes:
       - /home/ubuntu/A504/nginx.conf:/etc/nginx/nginx.conf:ro
       - /etc/letsencrypt:/etc/letsencrypt
+      - share_volume:/usr/share/nginx/html
 
 networks:
   frontend_backend_network:
     name: frontend_backend_network
     driver: bridge
+
+volumes:
+  share_volume:

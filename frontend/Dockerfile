@@ -22,8 +22,5 @@ FROM nginx:latest
 # Vite로 빌드된 파일을 Nginx 서버로 복사
 COPY --from=build /app/dist /usr/share/nginx/html
 
-# 소스 코드를 /app 디렉토리로 복사하여 보존
-COPY --from=build /app /app
-
 # Nginx 실행
 CMD ["nginx", "-g", "daemon off;"]
