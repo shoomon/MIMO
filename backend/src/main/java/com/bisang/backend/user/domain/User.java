@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = PROTECTED)
 @Table(name = "USERS",
         indexes = {
-                @Index(name = "idx_user_id_accountNumber", columnList = "user_id, user_account_number")
+                @Index(name = "idx_user_id_accountNumber", columnList = "user_id, account_number")
         }
 )
 public class User extends BaseTimeEntity {

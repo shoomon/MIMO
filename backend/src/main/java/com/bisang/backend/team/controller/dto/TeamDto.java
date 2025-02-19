@@ -11,6 +11,7 @@ public record TeamDto(
         String profileUri,
         String name,
         String description,
+        String accountNumber,
         TeamRecruitStatus recruitStatus,
         TeamPrivateStatus privateStatus,
         Area area,
