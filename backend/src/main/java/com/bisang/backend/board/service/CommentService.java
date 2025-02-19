@@ -92,7 +92,7 @@ public class CommentService {
         TeamUser user = teamUserJpaRepository.findById(teamUserId)
                 .orElseThrow(() -> new TeamException(ExceptionCode.NOT_FOUND_TEAM_USER));
 
-        if(userId.equals(user.getUserId())) {
+        if(!userId.equals(user.getUserId())) {
             throw new TeamException(ExceptionCode.NOT_FOUND_TEAM_USER);
         };
     }
