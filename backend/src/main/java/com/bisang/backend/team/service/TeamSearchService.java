@@ -30,9 +30,9 @@ public class TeamSearchService {
 
     @EveryOne
     @Transactional(readOnly = true)
-    public TeamTagSearchResponse getTeamsByTag(Long tagId, Integer pageNumber) {
-        List<SimpleTeamDto> teams = teamSearchQuerydslRepository.searchTeams(tagId, pageNumber);
-        Long teamsCount = teamSearchQuerydslRepository.searchTeamsCount(tagId);
+    public TeamTagSearchResponse getTeamsByTag(String searchKeyword, Integer pageNumber) {
+        List<SimpleTeamDto> teams = teamSearchQuerydslRepository.searchTagTeams(searchKeyword, pageNumber);
+        Long teamsCount = teamSearchQuerydslRepository.searchTagTeamsCount(searchKeyword);
         return new TeamTagSearchResponse(teamsCount.intValue(), pageNumber, teams.size(), teams);
     }
 
