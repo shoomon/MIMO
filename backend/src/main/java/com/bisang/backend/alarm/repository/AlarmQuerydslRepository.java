@@ -55,8 +55,8 @@ public class AlarmQuerydslRepository {
             .select(Projections.constructor(TempAlarmDto.class,
                 teamUser.userId,
                 scheduleParticipants.teamScheduleId,
-                Expressions.stringTemplate(scheduleTeam.getName() + " 모임의 일정입니다."),
-                Expressions.stringTemplate(teamSchedule.getTitle() + ": 해당 일정을 확인해주세요")
+                Expressions.stringTemplate(scheduleTeam.getName()),
+                Expressions.stringTemplate(teamSchedule.getTitle())
                 ))
             .from(scheduleParticipants)
             .join(teamUser)
