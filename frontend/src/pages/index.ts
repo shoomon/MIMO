@@ -1,6 +1,6 @@
 export { default as VideoChat } from './VideoChat';
 export { default as TeamList } from './TeamList';
-export { default as Search } from './Search';
+export { default as Search } from './Search/Search';
 export { default as Payment } from './Payment';
 export { default as MyPage } from './MyPage';
 export { default as Home } from './Home';
