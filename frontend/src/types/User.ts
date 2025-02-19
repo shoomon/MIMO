@@ -21,3 +21,17 @@ export interface alarm {
     title: string;
     description: string;
 }
+
+export interface getTeamReviewResponse {
+    size: number;
+    hasNext: boolean;
+    lastReviewId: number;
+    reviews: review[];
+}
+
+export interface review {
+    teamReviewId: number;
+    memo: string;
+    score: number;
+    createAt: string;
+}

@@ -1,4 +1,4 @@
-import { Header, MainNav, NavLevel } from '@/components/molecules';
+import { Header, MainNav } from '@/components/molecules';
 import { useAuth, useOauth } from '@/hooks/useAuth';
 import { useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
@@ -38,7 +38,7 @@ const DefaultLayout = () => {
 
             <div className="flex h-screen flex-1 flex-col gap-3">
                 <MainNav />
-                <NavLevel />
+                {/* <NavLevel /> */}
                 <Outlet />
             </div>
         </>

@@ -1,7 +1,6 @@
 // MeetingInfo.tsx
 import { useState } from 'react';
 import type { TagProps } from '@/components/atoms/Tag/Tag';
-import type { RatingStarProps } from '@/components/atoms/RatingStar/RatingStar';
 import getDisplayedTags from '@/utils/filterTagsByLength';
 import MeetingInfoView from './MeetingInfo.view';
 import { joinTeamForPrivate, joinTeamForPublic } from '@/apis/TeamAPI';
@@ -12,11 +11,14 @@ import BasicInputModal from '../BasicInputModal/BasicInputModal';
 import { useAuth } from '@/hooks/useAuth';
 import BasicModal from '../BasicModal/BasicModal';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { remainTeamReview } from '@/apis/UserAPI';
+import ReviewInputModal from '../BasicInputModal/ReviewInputModal';
 
 export interface MeetingInfoProps {
     teamId: string;
     subTitle: string;
-    rating: RatingStarProps;
+    reviewScore: number;
+    reviewCount: number;
     title: string;
     tag: TagProps[];
     maxCapacity: number;
@@ -26,11 +28,17 @@ export interface MeetingInfoProps {
     notificationStatus: TeamNotificationStatus;
 }
 
-type ModalType = 'public' | 'private' | 'kick' | 'accept' | 'ready' | null;
+type ModalType =
+    | 'public'
+    | 'private'
+    | 'kick'
+    | 'accept'
+    | 'ready'
+    | 'review'
+    | null;
 
 const MeetingInfo = ({
     subTitle,
-    rating,
     title,
     tag,
     maxCapacity,
@@ -39,6 +47,8 @@ const MeetingInfo = ({
     teamUserId,
     recruitStatus,
     notificationStatus,
+    reviewScore,
+    reviewCount,
 }: MeetingInfoProps) => {
     const displayedTags = getDisplayedTags(tag);
     const navigate = useNavigate();
@@ -49,13 +59,8 @@ const MeetingInfo = ({
         mutationFn: (inputMemo: string) =>
             joinTeamForPrivate(teamId, inputMemo),
         onSuccess: () => {
-            // 삭제 성공 시 캐시 정리 (필요하다면)
-            queryClient.invalidateQueries({
-                queryKey: ['teamInfo', teamId],
-            });
-            queryClient.invalidateQueries({
-                queryKey: ['MyInfo', teamId],
-            });
+            queryClient.invalidateQueries({ queryKey: ['teamInfo', teamId] });
+            queryClient.invalidateQueries({ queryKey: ['MyInfo', teamId] });
         },
         onError: (error) => {
             console.error('가입 신청', error);
@@ -67,14 +72,8 @@ const MeetingInfo = ({
         mutationFn: (inputNickName: string) =>
             joinTeamForPublic(teamId, inputNickName, notificationStatus),
         onSuccess: () => {
-            // 삭제 성공 시 캐시 정리 (필요하다면)
-
-            queryClient.invalidateQueries({
-                queryKey: ['teamInfo', teamId],
-            });
-            queryClient.invalidateQueries({
-                queryKey: ['MyInfo', teamId],
-            });
+            queryClient.invalidateQueries({ queryKey: ['teamInfo', teamId] });
+            queryClient.invalidateQueries({ queryKey: ['MyInfo', teamId] });
             setModalType('accept');
         },
         onError: (error) => {
@@ -83,9 +82,10 @@ const MeetingInfo = ({
         },
     });
 
-    // 모달 상태 관리: modalType에 따라 어떤 모달을 보여줄지 결정
+    // 모달 상태 관리
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalType, setModalType] = useState<ModalType>(null);
+
     const openModal = (type: ModalType) => {
         setModalType(type);
         setIsModalOpen(true);
@@ -99,14 +99,17 @@ const MeetingInfo = ({
         navigate(`/team/${teamId}/edit`);
     };
 
+    // onRemainReview: 리뷰 입력 모달 열기
+    const onRemainReview = () => {
+        openModal('review');
+    };
+
     const handleJoinRequest = () => {
         if (userInfo == undefined) {
             openModal('kick');
         } else if (recruitStatus === 'ACTIVE_PRIVATE') {
-            // 비공개 가입: 메모 입력 모달 열기
             openModal('private');
         } else if (recruitStatus === 'ACTIVE_PUBLIC') {
-            // 공개 가입: 닉네임 입력 모달 열기
             openModal('public');
         }
     };
@@ -118,17 +121,21 @@ const MeetingInfo = ({
         <>
             <MeetingInfoView
                 subTitle={subTitle}
-                rating={rating}
+                reviewScore={reviewScore}
+                reviewCount={reviewCount}
                 title={title}
                 displayedTags={displayedTags}
                 maxCapacity={maxCapacity}
                 currentCapacity={currentCapacity}
                 onUpdateInfo={handleUpdateInfo}
                 onJoinRequest={handleJoinRequest}
+                onRemainReview={onRemainReview}
                 teamUserId={teamUserId}
                 role={myProfileData.role}
                 invited={myProfileData.isInvited}
+                hasReview={myProfileData.hasReview}
             />
+
             {isModalOpen && modalType === 'public' && (
                 <BasicInputModal
                     confirmLabel="가입하기"
@@ -136,12 +143,12 @@ const MeetingInfo = ({
                     title="닉네임 입력"
                     subTitle="모임에서 사용할 닉네임을 입력하세요"
                     onConfirmClick={(inputNickName) => {
-                        // 입력받은 닉네임을 이용해 공개 가입 요청
                         JoinImmediately.mutate(inputNickName);
                     }}
                     onCancelClick={closeModal}
                 />
             )}
+
             {isModalOpen && modalType === 'private' && (
                 <BasicInputModal
                     confirmLabel="가입신청"
@@ -149,13 +156,13 @@ const MeetingInfo = ({
                     title="승인 후 가입되는 모임입니다."
                     subTitle="모임장에게 자신을 알려주세요."
                     onConfirmClick={(inputMemo) => {
-                        // 입력받은 메모를 이용해 비공개 가입 요청
                         SendJoinRequest.mutate(inputMemo);
                         closeModal();
                     }}
                     onCancelClick={closeModal}
                 />
             )}
+
             {isModalOpen && modalType === 'kick' && (
                 <BasicModal
                     isOpen={isModalOpen}
@@ -165,7 +172,8 @@ const MeetingInfo = ({
                         navigate('/login');
                     }}
                 />
-            )}{' '}
+            )}
+
             {isModalOpen && modalType === 'accept' && (
                 <BasicModal
                     isOpen={isModalOpen}
@@ -176,6 +184,7 @@ const MeetingInfo = ({
                     }}
                 />
             )}
+
             {isModalOpen && modalType === 'ready' && (
                 <BasicModal
                     isOpen={isModalOpen}
@@ -184,6 +193,32 @@ const MeetingInfo = ({
                     onConfirmClick={() => {
                         closeModal();
                     }}
+                />
+            )}
+
+            {isModalOpen && modalType === 'review' && (
+                <ReviewInputModal
+                    confirmLabel="리뷰 등록"
+                    isOpen={isModalOpen}
+                    title="리뷰 작성"
+                    subTitle="리뷰 내용을 입력하고 평점을 작성하세요."
+                    onConfirmClick={({ reviewText, rating }) => {
+                        remainTeamReview(teamId, reviewText, rating.toString())
+                            .then(() => {
+                                queryClient.invalidateQueries({
+                                    queryKey: ['teamInfo', teamId],
+                                });
+                                queryClient.invalidateQueries({
+                                    queryKey: ['MyInfo', teamId],
+                                });
+                                closeModal();
+                            })
+                            .catch((error) => {
+                                console.error('리뷰 등록 실패', error);
+                                alert('리뷰 등록에 실패했습니다.');
+                            });
+                    }}
+                    onCancelClick={closeModal}
                 />
             )}
         </>

@@ -123,7 +123,8 @@ export default function TitleSearch() {
                 key={item.teamId}
                 label={item.name}
                 content={item.description}
-                rating={item.reviewScore}
+                reviewScore={item.reviewScore}
+                reviewCount={item.reviewCount}
                 tagList={formattedTags}
                 image={{
                     memberCount: item.currentCapacity,

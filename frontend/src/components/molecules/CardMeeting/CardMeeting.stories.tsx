@@ -15,7 +15,7 @@ const meta = {
         ),
     ],
     argTypes: {
-        rating: { control: { type: 'number', min: 0, max: 5, step: 0.1 } },
+        reviewScore: { control: { type: 'number', min: 0, max: 5, step: 0.1 } },
         content: { control: 'text' },
         label: { control: 'text' },
     },
@@ -46,7 +46,8 @@ const sampleTagList: TagProps[] = [
 export const Default: Story = {
     args: {
         image: sampleThumbnail,
-        rating: 4.3,
+        reviewCount: 4.3,
+        reviewScore: 0,
         tagList: sampleTagList,
         content:
             'This is a sample meeting card content which is supposed to be quite long to test the textCutter functionality. It should be trimmed appropriately.',

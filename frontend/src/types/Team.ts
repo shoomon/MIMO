@@ -6,6 +6,7 @@ export interface SimpleTeamResponse {
     description: string;
     teamProfileUri: string;
     reviewScore: number;
+    reviewCount: number;
     memberCount: number;
     maxCapacity: number;
     currentCapacity: number;
@@ -25,7 +26,8 @@ export interface TeamInfoResponse {
     area: string;
     maxCapacity: number;
     currentCapacity: number;
-    score: number;
+    reviewScore: number;
+    reviewCount: number;
     tags: string[];
 }
 
@@ -44,6 +46,7 @@ export interface UpdateTeamRequest {
 export interface MyTeamProfileResponse {
     teamId: number;
     teamUserId: number;
+    hasReview: boolean;
     isInvited: boolean;
     nickname: string;
     role: TeamUserRole;

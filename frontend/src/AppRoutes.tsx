@@ -39,6 +39,7 @@ import Profile from './pages/Profile';
 import TitleSearch from './pages/Search/TitleSearch';
 import TagSearch from './pages/Search/TagSearch';
 import Login from './pages/login/Login';
+import Review from './pages/Review';
 
 const AppRoutes = () => {
     return (
@@ -81,6 +82,7 @@ const AppRoutes = () => {
                         <Route index element={<TeamDetail />} />
                         {/* 팀 수정 */}
                         <Route path="edit" element={<TeamEdit />} />
+                        <Route path="review" element={<Review />} />
                         {/* 팀 일정 */}
                         <Route path="schedule">
                             {/* 일정 메인 */}
