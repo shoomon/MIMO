@@ -19,6 +19,7 @@ export interface TeamInfoResponse {
     teamId: number;
     profileUri: string;
     name: string;
+    accountNumber: string;
     description: string;
     recruitStatus: TeamRecruitStatus;
     privateStatus: TeamPrivateStatus;

@@ -24,6 +24,8 @@ export const getUserQRCodeAPI = async ({accountNumber}:UserQRCodeRequest): Promi
 // QRcode-team
 export const getTeamQRCodeAPI = async ({accountNumber, teamId}:TeamQRCodeRequest): Promise<QRCodeResponse> => {
 
+ console.log("QR 코드 함수 호출");
+
   try {
       const response = await customFetch(`/qrcode/team?teamId=${teamId}&accountNumber=${accountNumber}`, {
           method: "GET",
@@ -33,7 +35,7 @@ export const getTeamQRCodeAPI = async ({accountNumber, teamId}:TeamQRCodeRequest
           throw new Error("데이터 가져오는 중 오류");
       }
 
-      return response.json();
+      return response.text();
   }catch(error){
       console.error(error);
 

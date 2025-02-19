@@ -2,7 +2,7 @@ import { ButtonDefault } from '@/components/atoms';
 import { CellValue } from '@/utils/transformTableData';
 
 // export default ExampleTable;
-interface ColumnDefinition {
+export interface ColumnDefinition {
     /** 컬럼 제목 (헤더에 표시됨) */
     title: string;
     /** 데이터 객체에서 해당 컬럼에 접근할 키 */

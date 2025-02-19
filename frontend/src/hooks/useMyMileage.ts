@@ -60,13 +60,9 @@ const useMyMileage = () => {
 
   const myMileageData:MileageStatusProps[] = useMemo(() => {
 
-    if(!myBalance || !myDepositList || !myPayList){
-      return [];
-    }
-
-    const balanceData = {type:"balance" as const, amount:myBalance};
-    const incomeData = {type:"income" as const, amount: myDepositList.reduce((acc, cur) => acc + cur.amount, 0)}
-    const expenseData = {type:"expense" as const, amount:myPayList.reduce((acc, cur) => acc + cur.amount, 0)}
+    const balanceData = myBalance == undefined ? {type: "balance" as const, amount: NaN} : {type:"balance" as const, amount:myBalance};
+    const incomeData = !myDepositList ? {type: "income" as const, amount: NaN} : {type:"income" as const, amount: myDepositList.reduce((acc, cur) => acc + cur.amount, 0)}
+    const expenseData = !myPayList ? {type: "expense" as const, amount: NaN} : {type:"expense" as const, amount:myPayList.reduce((acc, cur) => acc + cur.amount, 0)}
 
     return [balanceData, incomeData, expenseData]
 

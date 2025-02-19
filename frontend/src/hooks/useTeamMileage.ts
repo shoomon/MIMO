@@ -1,14 +1,16 @@
 import { getTeamBalanceAPI, getTeamPayDetailAPI } from "@/apis/AccountAPI";
+import { getMyPayerCheckAPI, getTeamNonPayerDetailsAPI, getTeamPayerDetailsAPI } from "@/apis/IntsallmentAPI";
 import { MileageStatusProps } from "@/components/atoms/MileageStatus/MileageStatus";
+import { RawDataRow } from "@/utils/transformTableData";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 
 const useTeamMileage = () => {
 
-  const { teamId } = useParams();
+  const { teamId, round } = useParams();
 
-  const { data: teamBalance } = useQuery({
+  const { data: teamBalance, isSuccess:balanceSuccess } = useQuery({
     queryKey: ["teamBalance", teamId],
     queryFn: async () => {
       if (!teamId) throw new Error("Team ID is required");
@@ -17,7 +19,7 @@ const useTeamMileage = () => {
     staleTime: 1000 * 20,
   })
 
-  const { data: teamPayDetail } = useQuery({
+  const { data: teamPayDetail, isSuccess: payDetailSuccess } = useQuery({
     queryKey: ["teamPayDetail", teamId],
     queryFn: async () => {
       if (!teamId) throw new Error("Team ID is required");
@@ -26,12 +28,45 @@ const useTeamMileage = () => {
     staleTime: 1000 * 20,
   })
 
-  const teamMileageData:MileageStatusProps[] = useMemo(() => {
-  
-      if(!teamBalance || !teamPayDetail){
+  const { data: teamPayerDetail } = useQuery({
 
-        console.log("마일리지 데이터가 없습니다..");
+    queryKey: ["teamPayerDetail", teamId, round],
+    queryFn: async () => {
+      if (!teamId || !round) throw new Error("Team ID or Round is required");
+      return getTeamPayerDetailsAPI({teamId, round});
+    },
+    staleTime: 1000 *20,
+  })
+  
+  const { data: teamNonPayerDetail } = useQuery({
+
+    queryKey: ["teamNonPayerDetail", teamId, round],
+    queryFn: async () => {
+      if (!teamId || !round) throw new Error("Team ID or Round is required");
+      return getTeamNonPayerDetailsAPI({teamId, round});
+    },
+    staleTime: 1000 *20,
+  })
+  
+  const { data: getMyPayerCheck } = useQuery({
+
+    queryKey: ["getMyPayerCheck", teamId, round],
+    queryFn: async () => {
+      if (!teamId || !round) throw new Error("Team ID or Round is required");
+      return getMyPayerCheckAPI({teamId, round});
+    },
+    staleTime: 1000 *20,
+  }) 
+
+  const teamMileageData:MileageStatusProps[] = useMemo(() => {
+      if(!payDetailSuccess || !balanceSuccess){
+        
         return [];
+      }
+
+      if(teamBalance == null){
+        
+        return [{type: "balance", amount: NaN}, {type: "expense", amount: NaN}];
       }
   
       const balanceData = {type:"balance" as const, amount:teamBalance};
@@ -40,10 +75,39 @@ const useTeamMileage = () => {
   
       return [balanceData, expenseData]
   
-    },[teamBalance, teamPayDetail])
+    },[teamBalance, teamPayDetail, payDetailSuccess, balanceSuccess])
+
+    const teamMileageHistoryData = useMemo<RawDataRow[]>(() => {
+      if (!teamPayDetail) {
+          return [];
+      }
+
+      return teamPayDetail.map((data, index) => {
+          let transaction = '';
+
+          if (data.transactionCategory === 'CHARGE') {
+              transaction = '충전';
+          } else if (data.transactionCategory === 'TRANSFER') {
+              transaction = '송금';
+          } else if (data.transactionCategory === 'DEPOSIT') {
+              transaction = '입금';
+          } else if (data.transactionCategory === 'PAYMENT') {
+              transaction = '지출';
+          }
+
+          return {
+              id: index,
+              transaction,
+              name: data.memo,
+              date: data.createdAt,
+              amount: data.amount,
+              hasReceipt: false,
+          };
+      });
+  }, [teamPayDetail]);
 
   
-  return {teamMileageData}
+  return {teamMileageData, teamBalance, teamPayDetail, teamPayerDetail, teamNonPayerDetail, getMyPayerCheck, teamMileageHistoryData}
 }
 
 export default useTeamMileage;

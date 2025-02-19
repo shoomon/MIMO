@@ -1,4 +1,4 @@
-import { ChargeRequest, TransferRequest } from "@/types/Transaction";
+import { ChargeRequest, PaymentRequest, TransferRequest } from "@/types/Transaction";
 import { customFetch } from "./customFetch";
 import { InstallmentRequest } from "@/types/Payment";
 

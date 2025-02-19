@@ -51,6 +51,10 @@ interface DataRow {
  */
 
 export const transformData = (data: RawDataRow[]): DataRow[] => {
+    if (data == undefined) {
+        return [];
+    }
+
     return data.map((row) => {
         // receipt 버튼 클릭 핸들러 (영어로 작성)
         const receiptHandler = () => {
