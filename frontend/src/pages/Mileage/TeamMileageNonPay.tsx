@@ -3,8 +3,11 @@ import useTeamMileage from '@/hooks/useTeamMileage';
 import { useParams } from 'react-router-dom';
 
 const TeamMileageNonPay = () => {
-    const { teamId } = useParams() as { teamId: string };
-    const { teamMileageData, teamMileageHistoryData } = useTeamMileage();
+    const { teamId, round } = useParams() as { teamId: string; round: string };
+    const { teamMileageData, teamMileageHistoryData } = useTeamMileage(
+        teamId,
+        round,
+    );
 
     const columns = [
         { title: '내역', dataIndex: 'transaction' },

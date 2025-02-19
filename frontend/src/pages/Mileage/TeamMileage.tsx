@@ -8,10 +8,13 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 const TeamMileage = () => {
-    const { teamId } = useParams() as { teamId: string };
+    const { teamId, round } = useParams() as { teamId: string; round: string };
     const [qrOpen, setQrOpen] = useState<boolean>(false);
     const queryClient = useQueryClient();
-    const { teamMileageData, teamMileageHistoryData } = useTeamMileage();
+    const { teamMileageData, teamMileageHistoryData } = useTeamMileage(
+        teamId,
+        round,
+    );
     const [accountNumber, setAccountNumber] = useState<string>('');
     const [QRuuid, setQRuuid] = useState<string>('');
 
@@ -43,7 +46,6 @@ const TeamMileage = () => {
         { title: '설명', dataIndex: 'name' },
         { title: '날짜', dataIndex: 'date' },
         { title: '금액', dataIndex: 'amount' },
-        { title: '영수증', dataIndex: 'receipt' },
     ];
 
     return (

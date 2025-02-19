@@ -21,11 +21,11 @@ export type CellValue =
  */
 export interface RawDataRow {
     id: number;
+    user: string;
     transaction: string; // "출금" 또는 "입금"
     name: string;
     date: string;
     amount: number;
-    hasReceipt: boolean;
 }
 
 /**

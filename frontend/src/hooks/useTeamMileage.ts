@@ -4,11 +4,8 @@ import { MileageStatusProps } from "@/components/atoms/MileageStatus/MileageStat
 import { RawDataRow } from "@/utils/transformTableData";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
-import { useParams } from "react-router-dom";
 
-const useTeamMileage = () => {
-
-  const { teamId, round } = useParams();
+const useTeamMileage = (teamId:string, round:string) => {
 
   const { data: teamBalance, isSuccess:balanceSuccess } = useQuery({
     queryKey: ["teamBalance", teamId],
@@ -98,13 +95,42 @@ const useTeamMileage = () => {
           return {
               id: index,
               transaction,
+              user: "",
               name: data.memo,
               date: data.createdAt,
               amount: data.amount,
-              hasReceipt: false,
           };
       });
   }, [teamPayDetail]);
+
+  const teamPayerHistoryData = useMemo<RawDataRow[]>(() => {
+    if (!teamPayerDetail) {
+        return [];
+    }
+
+    return teamPayerDetail.map((data, index) => {
+        let transaction = '';
+
+        if (data.transactionCategory === 'CHARGE') {
+            transaction = '충전';
+        } else if (data.transactionCategory === 'TRANSFER') {
+            transaction = '송금';
+        } else if (data.transactionCategory === 'DEPOSIT') {
+            transaction = '입금';
+        } else if (data.transactionCategory === 'PAYMENT') {
+            transaction = '지출';
+        }
+
+        return {
+            id: index,
+            transaction,
+            user: "",
+            name: data.memo,
+            date: data.createdAt,
+            amount: data.amount,
+        };
+    });
+}, [teamPayDetail]);
 
   
   return {teamMileageData, teamBalance, teamPayDetail, teamPayerDetail, teamNonPayerDetail, getMyPayerCheck, teamMileageHistoryData}

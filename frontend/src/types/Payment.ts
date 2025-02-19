@@ -32,9 +32,11 @@ export type BalanceResponse = number;
 
 export interface AccountDetailsResponse {
 
-  amount: number;
-  senderAccountNumber : string;
-  receiverAccountNumber : string;
+  amount: number; // 금액
+  senderAccountNumber : string; // 돈이 나가는 계좌
+  receiverAccountNumber : string; // 돈이 들어오는 계좌
+  senderNickname: string; // 돈 쓴 사람
+  receiverNickname: string; // 돈 받은 사람람
   memo: string;
   transactionCategory : 'CHARGE' | 'TRANSFER' | 'DEPOSIT' | 'PAYMENT';
   createdAt: string;
