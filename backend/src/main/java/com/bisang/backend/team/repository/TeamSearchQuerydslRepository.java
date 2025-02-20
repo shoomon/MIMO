@@ -7,6 +7,7 @@ import com.bisang.backend.team.domain.TeamCategory;
 import com.bisang.backend.team.domain.TeamTag;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -166,19 +167,18 @@ public class TeamSearchQuerydslRepository {
     }
 
     public Long searchTeamsCount(String searchText) {
-        return queryFactory
-                .select(team.count())
-                .from(team)
-                .leftJoin(teamDescription).on(team.id.eq(teamDescription.id))
-                .where(team.privateStatus.eq(PUBLIC), team.name.contains(searchText)
-                        .or(teamDescription.description.contains(searchText)))
-                .fetchOne();
+        return teamJpaRepository.countByKeyword(searchText);
     }
 
     public List<SimpleTeamDto> searchTeams(String searchText, Integer pageNumber) {
         if (pageNumber == null) {
             pageNumber = 1;
         }
+
+        List<Long> teamIds = teamJpaRepository.searchTeamIdByKeyword(
+            searchText,
+            SHORT_PAGE_SIZE.longValue(),
+            ((pageNumber.longValue()-1) * SHORT_PAGE_SIZE.longValue()));
 
         List<SimpleTeamDto> teams = queryFactory
                 .select(Projections.constructor(SimpleTeamDto.class,
@@ -196,15 +196,9 @@ public class TeamSearchQuerydslRepository {
                         ))
                 .from(team)
                 .leftJoin(teamDescription).on(team.id.eq(teamDescription.id))
-                .where(team.privateStatus.eq(PUBLIC), team.name.contains(searchText)
-                        .or(teamDescription.description.contains(searchText)))
-                .limit(SHORT_PAGE_SIZE)
-                .offset((pageNumber - 1) * SHORT_PAGE_SIZE)
+                .where(team.id.in(teamIds))
                 .fetch();
 
-        List<Long> teamIds = teams.stream()
-                .map(SimpleTeamDto::teamId)
-                .toList();
         Map<Long, List<String>> tagsMap = getTagsByTeamIds(teamIds);
         Map<Long, SimpleTeamReviewDto> teamReviews = getReviewsByTeamIds(teamIds);
 
