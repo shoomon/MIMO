@@ -121,6 +121,7 @@ const TeamCreate: React.FC = () => {
         queryKey: ['categoryList'],
         queryFn: () => getCategory(),
     });
+
     const { data: areaData } = useQuery<TagsResponse>({
         queryKey: ['areaList'],
         queryFn: () => getArea(),
@@ -244,13 +245,18 @@ const TeamCreate: React.FC = () => {
             setLoading(false);
         }
 
-        // 아직 마지막 스텝이 아니라면 다음 스텝으로 이동
+        // 만약 한 번이라도 마지막 스텝에 도달했다면 언제든 바로 제출
+        if (maxStep === steps.length - 1) {
+            await submitForm();
+            return;
+        }
+
+        // 아직 마지막 스텝에 도달하지 않았다면 다음 스텝으로 이동
         if (currentStep < steps.length - 1) {
             const nextStep = currentStep + 1;
             setCurrentStep(nextStep);
             setMaxStep((prev) => Math.max(prev, nextStep));
         } else {
-            // 마지막 스텝이면 폼 제출
             await submitForm();
         }
     };
@@ -275,7 +281,6 @@ const TeamCreate: React.FC = () => {
      */
     const getDisplayValue = (step: Step, value: string | File | null) => {
         if (step.inputType === 'file') {
-            // 파일일 경우 미리보기가 있으면 이미지 표시, 없으면 텍스트
             return value ? '이미지 업로드됨' : '파일 미선택';
         }
         if (typeof value === 'string') {
@@ -283,13 +288,13 @@ const TeamCreate: React.FC = () => {
 
             if (step.field === 'area' && areaData) {
                 dynamicOptions = areaData.tags.map((tag) => ({
-                    value: tag.name,
-                    label: tag.name,
+                    value: tag,
+                    label: tag,
                 }));
             } else if (step.field === 'category' && categoryData) {
                 dynamicOptions = categoryData.tags.map((tag) => ({
-                    value: tag.name,
-                    label: tag.name,
+                    value: tag,
+                    label: tag,
                 }));
             } else if (step.options) {
                 dynamicOptions = step.options;
@@ -313,18 +318,17 @@ const TeamCreate: React.FC = () => {
         let content;
 
         if (isActive) {
-            // 활성 스텝
             if (step.inputType === 'select') {
                 let options = step.options || [];
                 if (step.field === 'area' && areaData) {
                     options = areaData.tags.map((tag) => ({
-                        value: tag.name,
-                        label: tag.name,
+                        value: tag,
+                        label: tag,
                     }));
                 } else if (step.field === 'category' && categoryData) {
                     options = categoryData.tags.map((tag) => ({
-                        value: tag.name,
-                        label: tag.name,
+                        value: tag,
+                        label: tag,
                     }));
                 }
                 content = (
@@ -358,12 +362,24 @@ const TeamCreate: React.FC = () => {
                                     alt="프로필 이미지 미리보기"
                                     className="h-32 w-32 object-cover"
                                 />
+                                <button
+                                    type="button"
+                                    className="mt-2 rounded bg-gray-200 px-2 py-1 text-sm"
+                                    onClick={() => {
+                                        setTeamData((prev) => ({
+                                            ...prev,
+                                            [currentField.field]: null,
+                                        }));
+                                        setPreviewUrl('');
+                                    }}
+                                >
+                                    초기화
+                                </button>
                             </div>
                         )}
                     </>
                 );
             } else {
-                // text 타입
                 content = (
                     <InputForm
                         id={step.field}
@@ -373,7 +389,6 @@ const TeamCreate: React.FC = () => {
                 );
             }
         } else {
-            // 이전(또는 이미 넘어간) 스텝: 읽기 전용 + 클릭 시 해당 스텝으로 이동
             if (step.inputType === 'file') {
                 content = (
                     <div
@@ -420,7 +435,7 @@ const TeamCreate: React.FC = () => {
         );
     };
 
-    // 한 번이라도 마지막 스텝에 도달했다면 버튼 라벨을 '제출'로 고정
+    // 버튼 라벨은 maxStep가 마지막이면 '제출'로 고정
     const buttonLabel = maxStep === steps.length - 1 ? '제출' : '다음';
 
     return (
@@ -433,7 +448,6 @@ const TeamCreate: React.FC = () => {
                     {steps
                         .slice(0, maxStep + 1)
                         .map((step, index) => renderStep(step, index))}
-                    {/* 새로 추가된 스텝으로 스크롤하기 위한 dummy div */}
                     <div ref={bottomRef} />
                 </div>
                 {error && <div className="text-fail mt-2">{error}</div>}

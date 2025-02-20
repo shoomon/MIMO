@@ -53,7 +53,7 @@ const Alarm = ({ active, addStyle, data }: AlarmProps) => {
 
     return (
         <section
-            className={`text-text z-50 flex w-[15.5rem] origin-top transform flex-col rounded-sm border border-gray-300 bg-white p-1 text-sm leading-normal font-semibold shadow-xl transition-all duration-200 ease-out ${active ? 'scale-y-100 opacity-100' : 'pointer-events-none scale-y-0 opacity-0'} ${addStyle} `}
+            className={`text-text z-50 flex max-h-[300px] w-[15.5rem] origin-top transform flex-col overflow-scroll rounded-sm border border-gray-300 bg-white p-1 text-sm leading-normal font-semibold shadow-xl transition-all duration-200 ease-out ${active ? 'scale-y-100 opacity-100' : 'pointer-events-none scale-y-0 opacity-0'} ${addStyle} `}
         >
             {alarms.length === 0 ? (
                 <div className="p-2">알람이 없습니다.</div>

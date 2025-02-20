@@ -76,7 +76,7 @@ const Home = () => {
             {userInfo != undefined && (
                 <div className="py-8">
                     <ListContainer
-                        to="./recentmeetinglist"
+                        to="./mymeeting"
                         gap="4"
                         label="나의 모임"
                         items={myMeetingList}

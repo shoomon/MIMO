@@ -4,6 +4,7 @@ import {
     getTeamReviewResponse,
 } from '@/types/User';
 import { customFetch } from './customFetch';
+import { TagsResponse } from '@/types/Team';
 
 export const getMyAlarm = async (): Promise<UserAlarmsResponse> => {
     try {
@@ -85,6 +86,46 @@ export const deleteTeamReview = async (teamId: string): Promise<void> => {
         return response.json();
     } catch (error) {
         console.error('Error in remainTeamReview:', error);
+        throw error;
+    }
+};
+
+export const updateNickname = async (
+    teamId: string,
+    nickname: string,
+): Promise<void> => {
+    try {
+        const body = JSON.stringify({ teamId, nickname });
+        const response = await customFetch('/team-user', {
+            method: 'PATCH',
+            body,
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            if (response.status == 500) {
+                throw new Error('중복된 닉네임입니다.');
+            } else {
+                throw new Error(errorData.message);
+            }
+        }
+    } catch (error) {
+        console.error('Error in updateNickname:', error);
+        throw error;
+    }
+};
+
+export const addTag = async (teamId: string, tags: string[]): Promise<void> => {
+    try {
+        const params = { teamId };
+        const body = JSON.stringify({ tags });
+        await customFetch('/team-leader/tag', {
+            method: 'POST',
+            params,
+            body,
+        });
+    } catch (error) {
+        console.error('Error in addTag:', error);
         throw error;
     }
 };
