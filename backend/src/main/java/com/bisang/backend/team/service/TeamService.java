@@ -217,14 +217,18 @@ public class TeamService {
             team.updatePrivateStatus(privateStatus);
 
             if (category != team.getCategory()) {
-                teamTagJpaRepository.save(new TeamTag(team.getId(), category.getName()));
+                if (teamTagJpaRepository.findByTeamIdAndTagName(team.getId(), category.getName()).isEmpty()) {
+                    teamTagJpaRepository.save(new TeamTag(team.getId(), category.getName()));
+                }
                 teamTagJpaRepository.findByTeamIdAndTagName(team.getId(), team.getCategory().getName())
                     .ifPresent(teamTagJpaRepository::delete);
                 team.updateCategory(category);
             }
 
             if (areaCode != team.getAreaCode()) {
-                teamTagJpaRepository.save(new TeamTag(team.getId(), areaCode.getName()));
+                if (teamTagJpaRepository.findByTeamIdAndTagName(team.getId(), areaCode.getName()).isEmpty()) {
+                    teamTagJpaRepository.save(new TeamTag(team.getId(), areaCode.getName()));
+                }
                 teamTagJpaRepository.findByTeamIdAndTagName(team.getId(), team.getAreaCode().getName())
                     .ifPresent(teamTagJpaRepository::delete);
                 team.updateAreaCode(areaCode);
