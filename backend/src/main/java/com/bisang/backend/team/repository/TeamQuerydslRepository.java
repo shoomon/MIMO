@@ -73,11 +73,13 @@ public class TeamQuerydslRepository {
         SimpleTeamReviewDto simpleTeamReview = getSimpleTeamReview(teamId);
         Long currentMemberCount = teamUserJpaRepository.countTeamUserByTeamId(teamId);
 
+        List<String> resultTags = new ArrayList<>();
+        resultTags.add(team.getAreaCode().getName());
+        resultTags.add(team.getCategory().getName());
         List<String> tags = getTags(teamId);
         tags.remove(team.getAreaCode().getName());
         tags.remove(team.getCategory().getName());
-        tags.add(team.getAreaCode().getName());
-        tags.add(team.getCategory().getName());
+        resultTags.addAll(tags);
 
         return TeamDto.builder()
             .teamId(teamId)
@@ -91,7 +93,7 @@ public class TeamQuerydslRepository {
             .currentCapacity(currentMemberCount)
             .reviewScore(simpleTeamReview == null ? 0D : simpleTeamReview.reviewScore())
             .reviewCount(simpleTeamReview == null ? 0L : simpleTeamReview.reviewCount())
-            .tags(tags)
+            .tags(resultTags)
             .build();
     }
 
@@ -101,11 +103,13 @@ public class TeamQuerydslRepository {
         SimpleTeamReviewDto simpleTeamReview = getSimpleTeamReview(teamId);
         Long userCount = getUserCount(teamId);
 
+        List<String> resultTags = new ArrayList<>();
+        resultTags.add(team.getAreaCode().getName());
+        resultTags.add(team.getCategory().getName());
         List<String> tags = getTags(teamId);
         tags.remove(team.getAreaCode().getName());
         tags.remove(team.getCategory().getName());
-        tags.add(team.getAreaCode().getName());
-        tags.add(team.getCategory().getName());
+        resultTags.addAll(tags);
 
         return SimpleTeamDto.builder()
             .teamId(teamId)
@@ -116,7 +120,7 @@ public class TeamQuerydslRepository {
             .currentCapacity(userCount)
             .reviewScore(simpleTeamReview == null ? 0D : simpleTeamReview.reviewScore())
             .reviewCount(simpleTeamReview == null ? 0L : simpleTeamReview.reviewCount())
-            .tags(tags)
+            .tags(resultTags)
             .build();
     }
 
@@ -158,18 +162,21 @@ public class TeamQuerydslRepository {
 
         return teams.stream()
             .map(teamDto -> {
+                List<String> resultTest = new ArrayList<>();
+                resultTest.add(teamDto.area().getName());
+                resultTest.add(teamDto.category().getName());
                 List<String> tags = tagsMap.getOrDefault(teamDto.teamId(), emptyList());
                 if (!tags.isEmpty()) {
                     tags.remove(teamDto.area().getName());
                     tags.remove(teamDto.category().getName());
-                    tags.add(teamDto.area().getName());
-                    tags.add(teamDto.category().getName());
                 }
+                resultTest.addAll(tags);
+
                 SimpleTeamReviewDto simpleTeamReview
                     = teamReviews.getOrDefault(
                         teamDto.teamId(),
                         new SimpleTeamReviewDto(teamDto.teamId(), 0D, 0L));
-                return createSimpleDto(teamDto, tags, simpleTeamReview);
+                return createSimpleDto(teamDto, resultTest, simpleTeamReview);
             })
             .sorted(comparing(SimpleTeamDto::teamId).reversed())
             .toList();
@@ -213,18 +220,20 @@ public class TeamQuerydslRepository {
 
         return teams.stream()
             .map(teamDto -> {
+                List<String> resultTest = new ArrayList<>();
+                resultTest.add(teamDto.area().getName());
+                resultTest.add(teamDto.category().getName());
                 List<String> tags = tagsMap.getOrDefault(teamDto.teamId(), emptyList());
                 if (!tags.isEmpty()) {
                     tags.remove(teamDto.area().getName());
                     tags.remove(teamDto.category().getName());
-                    tags.add(teamDto.area().getName());
-                    tags.add(teamDto.category().getName());
                 }
+                resultTest.addAll(tags);
                 SimpleTeamReviewDto simpleTeamReview
                     = teamReviews.getOrDefault(
                         teamDto.teamId(),
                         new SimpleTeamReviewDto(teamDto.teamId(), 0D,0L));
-                return createSimpleDto(teamDto, tags, simpleTeamReview);
+                return createSimpleDto(teamDto, resultTest, simpleTeamReview);
             })
             .sorted(comparing(SimpleTeamDto::teamId).reversed())
             .toList();
@@ -290,10 +299,6 @@ public class TeamQuerydslRepository {
     }
 
     private SimpleTeamDto createSimpleDto(SpecificTeamDto dto, List<String> tags, SimpleTeamReviewDto simpleTeamReview) {
-        List<String> areaCategoryTags = new ArrayList<>();
-        areaCategoryTags.add(dto.area().getName());
-        areaCategoryTags.add(dto.category().getName());
-
         return new SimpleTeamDto(
             dto.teamId(),
             dto.name(),
@@ -303,7 +308,7 @@ public class TeamQuerydslRepository {
             simpleTeamReview.reviewCount(),
             dto.maxCapacity(),
             dto.currentCapacity(),
-            areaCategoryTags
+            tags
         );
     }
 

@@ -74,11 +74,12 @@ public class TeamController {
         @AuthUser User user,
         @Valid @ModelAttribute CreateTeamRequest req
     ) {
+        String teamName = req.name().replaceAll("\\s+", " ").trim();
         Long teamId = teamFileFacadeService.createTeam(
             user.getId(),
             req.nickname(),
             req.notificationStatus(),
-            req.name(),
+            teamName,
             req.description(),
             req.teamRecruitStatus(),
             req.teamPrivateStatus(),
@@ -95,10 +96,11 @@ public class TeamController {
             @AuthUser User user,
             @Valid @ModelAttribute UpdateTeamRequest req
     ) {
+        String teamName = req.name().replaceAll("\\s+", " ").trim();
         teamFileFacadeService.updateTeam(
                 user.getId(),
                 req.teamId(),
-                req.name(),
+                teamName,
                 req.description(),
                 req.recruitStatus(),
                 req.privateStatus(),

@@ -10,9 +10,11 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jdk.jfr.Category;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -142,11 +144,33 @@ public class TeamSearchQuerydslRepository {
         return teams.stream()
                 .map(teamDto -> {
                     List<String> tags = tagsMap.getOrDefault(teamDto.teamId(), emptyList());
+                    List<String> resultTest = new ArrayList<>();
+                    String area = null;
+                    String category = null;
+                    List<String> result = new ArrayList<>();
+                    for (String tag : tags) {
+                        if (Area.fromName(tag) != null) {
+                            area = tag;
+                            continue;
+                        }
+                        if (TeamCategory.fromName(tag) != null) {
+                            category = tag;
+                            continue;
+                        }
+                        resultTest.add(tag);
+                    }
+                    if (area != null) {
+                        result.add(area);
+                    }
+                    if (category != null) {
+                        result.add(category);
+                    }
+                    result.addAll(resultTest);
                     SimpleTeamReviewDto simpleTeamReview
                             = teamReviews.getOrDefault(
                             teamDto.teamId(),
                             new SimpleTeamReviewDto(teamDto.teamId(), 0D, 0L));
-                    return createSimpleDto(teamDto, tags, simpleTeamReview);
+                    return createSimpleDto(teamDto, result, simpleTeamReview);
                 })
                 .sorted(comparing(SimpleTeamDto::teamId).reversed())
                 .toList();
