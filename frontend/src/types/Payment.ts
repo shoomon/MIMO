@@ -1,3 +1,5 @@
+import { InstallmentRequest } from "./Transaction";
+
 export interface RequestPayParmas {
   pg: string,
   pay_method: string,
@@ -9,12 +11,6 @@ export interface RequestPayParmas {
   buyer_tel: string;
   buyer_addr: string;
   buyer_postcode: string;
-}
-
-export interface ChargePaymentRequest {
-  amount: number;
-  impUid: string;
-  merchantUid: string;
 }
 
 export interface IamportResponseProps {
@@ -33,3 +29,39 @@ export interface Iamport {
         callback?: RequestPayResponseCallback,
     ) => void;
 }
+
+export type BalanceResponse = number;
+
+export interface AccountDetailsResponse {
+
+  amount: number; // 금액
+  senderAccountNumber : string; // 돈이 나가는 계좌
+  receiverAccountNumber : string; // 돈이 들어오는 계좌
+  senderNickname: string; // 돈 쓴 사람
+  receiverNickname: string; // 돈 받은 사람람
+  memo: string;
+  transactionCategory : 'CHARGE' | 'TRANSFER' | 'DEPOSIT' | 'PAYMENT';
+  createdAt: string;
+
+}
+
+
+
+export interface InstallmentResponse {
+  nickname: string;
+  amount: number;
+  installmentDate: string;
+}
+
+export interface CreateInstallmentRequest {
+  teamId: string;
+  installmentRequests: InstallmentRequest[];
+}
+
+export interface PayerDetailsRequest {
+  teamId: string;
+  round: string;
+}
+
+
+

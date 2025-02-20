@@ -3,14 +3,18 @@ import MileageStatus, {
     MileageStatusProps,
 } from '@/components/atoms/MileageStatus/MileageStatus';
 
-interface MileageContainerViewProps {
+export interface MileageContainerViewProps {
+    titleActive?: boolean;
     items: MileageStatusProps[];
 }
 
-const MileageContainerView = ({ items }: MileageContainerViewProps) => {
+const MileageContainerView = ({
+    items,
+    titleActive = true,
+}: MileageContainerViewProps) => {
     return (
         <section className="flex flex-col gap-6">
-            <Title label="마일리지 💰" />
+            {titleActive && <Title label="마일리지 💰" />}
             <div className="flex gap-6">
                 {items.map((item) => {
                     return (

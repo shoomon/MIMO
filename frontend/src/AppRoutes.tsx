@@ -189,7 +189,10 @@ const AppRoutes = () => {
             <Route path="/video" element={<VideoChat />} />
 
             {/* QR 코드 */}
-            <Route path="/pay/:payId" element={<Payment />} />
+            <Route
+                path="/pay/:uuid/:amount/:receiverAccountNumber/:memo"
+                element={<Payment />}
+            />
         </Routes>
     );
 };

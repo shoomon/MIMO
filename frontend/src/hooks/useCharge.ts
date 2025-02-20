@@ -1,6 +1,7 @@
 import { getMyAllInfoAPI } from "@/apis/AuthAPI";
-import { chargePaymentAPI } from "@/apis/PaymentAPI";
-import { ChargePaymentRequest, Iamport } from "@/types/Payment";
+import { chargePaymentAPI } from "@/apis/TransactionAPI";
+import { Iamport } from "@/types/Payment";
+import { ChargeRequest } from "@/types/Transaction";
 import generateOrderUid from "@/utils/generateOrderUid";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -25,7 +26,7 @@ const useCharge = () => {
   });
 
   const mutationMileage = useMutation({
-    mutationFn:(data: ChargePaymentRequest) => {
+    mutationFn:(data: ChargeRequest) => {
                 return chargePaymentAPI(data);
     },
     onSuccess: (data) => {
