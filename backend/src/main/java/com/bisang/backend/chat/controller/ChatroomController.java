@@ -4,6 +4,7 @@ import static com.bisang.backend.common.exception.ExceptionCode.INVALID_REQUEST;
 import static com.bisang.backend.common.exception.ExceptionCode.UNAUTHORIZED_USER;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 
@@ -60,12 +61,14 @@ public class ChatroomController {
             throw new ChatroomException(INVALID_REQUEST);
         }
 
+        Long lastReadDateTimeMilli = lastReadDateTime.atZone(ZoneId.of("UTC")).toInstant().toEpochMilli();
+
         if (!chatroomUserService.isMember(lastReadRequest.chatroomId(), user.getId())) {
             throw new ChatAccessInvalidException(UNAUTHORIZED_USER);
         }
         chatroomUserService.updateLastRead(
                 user.getId(),
-                lastReadDateTime,
+                lastReadDateTimeMilli,
                 lastReadRequest.lastReadChatId(),
                 lastReadRequest.chatroomId());
 

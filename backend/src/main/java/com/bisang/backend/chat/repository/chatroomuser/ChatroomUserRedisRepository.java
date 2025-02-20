@@ -57,10 +57,8 @@ public class ChatroomUserRedisRepository {
         return redisLongTemplate.opsForSet().members(teamMemberKey + chatroomId);
     }
 
-    public void insertLastReadScore(Long chatroomId, Long userId, LocalDateTime lastDateTime, Long lastChatId) {
-        double score = lastDateTime
-                .toInstant(ZoneOffset.ofTotalSeconds(0))
-                .toEpochMilli() + (lastChatId % 1000) / 1000.0;
+    public void insertLastReadScore(Long chatroomId, Long userId, Long lastDateTime, Long lastChatId) {
+        double score = lastDateTime + (lastChatId % 1000) / 1000.0;
         redisDoubleTemplate.opsForValue().set(lastReadScoreKey + chatroomId + ":" + userId, score);
         redisLongTemplate.opsForValue().set(lastReadIdKey + chatroomId + ":" + userId, lastChatId);
     }

@@ -1,5 +1,8 @@
 package com.bisang.backend.chat.service;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +30,9 @@ public class ChatMessageService {
 
     public void broadcastMessage(Long chatroomId, RedisChatMessage message) {
 
+        LocalDateTime localDateTime
+                = LocalDateTime.ofInstant(Instant.ofEpochMilli(message.getTimestamp()), ZoneId.of("UTC"));
+
         Map<Object, Object> userInfo = chatroomUserRepository.getUserInfo(chatroomId, message.getUserId());
         ChatMessageResponse messageResponse = new ChatMessageResponse(
                 message.getId(),
@@ -34,7 +40,7 @@ public class ChatMessageService {
                 (String)userInfo.get("nickname"),
                 (String)userInfo.get("profileImage"),
                 message.getChat(),
-                message.getTimestamp(),
+                localDateTime,
                 message.getType()
         );
 
@@ -54,13 +60,16 @@ public class ChatMessageService {
                     roomId,
                     message.getUserId()
             );
+
+            LocalDateTime localDateTime
+                    = LocalDateTime.ofInstant(Instant.ofEpochMilli(message.getTimestamp()), ZoneId.of("UTC"));
             ChatMessageResponse messageResponse = new ChatMessageResponse(
                     message.getId(),
                     message.getUserId(),
                     (String)userInfo.get("nickname"),
                     (String)userInfo.get("profileImage"),
                     message.getChat(),
-                    message.getTimestamp(),
+                    localDateTime,
                     message.getType()
             );
             responseList.add(messageResponse);
