@@ -16,6 +16,9 @@ const ChatPage = () => {
     const [roomImage, setRoomImage] = useState<string>('');
     const [roomData, setRoomData] = useState<ChatItemProps[]>([]);
     const messages = useSocketStore((state) => state.messages);
+    const clearRoomMessages = useSocketStore(
+        (state) => state.clearRoomMessages,
+    );
 
     const handleRoomIn = (e: React.MouseEvent<HTMLButtonElement>) => {
         const currentRoomId = e.currentTarget.dataset.id;
@@ -25,6 +28,8 @@ const ChatPage = () => {
         }
 
         setRoomId(Number(currentRoomId));
+
+        clearRoomMessages(currentRoomId);
     };
 
     const { data } = useQuery({
@@ -46,8 +51,6 @@ const ChatPage = () => {
     });
 
     useEffect(() => {
-        console.log('유저 정보', userInfo);
-
         if (!userInfo) return;
         if (!data) return;
         if (!chatListData) return;
@@ -62,10 +65,9 @@ const ChatPage = () => {
 
         setRoomName(currentRoom.chatroomName);
         setRoomImage(currentRoom.chatroomImage);
-
         setRoomData([
-            ...transformChatData(data, userInfo.nickname),
-            ...transformChatData(messages[roomId], userInfo.nickname),
+            ...transformChatData(data, currentRoom.nickname),
+            ...transformChatData(messages[roomId], currentRoom.nickname),
         ]);
     }, [roomId, data, userInfo, chatListData, messages]);
 

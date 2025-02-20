@@ -14,6 +14,7 @@ export interface SocketStore {
     };
     connectionStatus: 'connected' | 'disconnected' | 'error';
     connect: (accessToken: string) => void;
+    clearRoomMessages: (chatroomId: string) => void;
     subscribeRoom: (chatroomId: string) => void;
     unsubscribeRoom: (chatroomId: string) => void;
     sendMessage: (chatroomId: number, message: string) => void;
@@ -55,8 +56,6 @@ const useSocketStore = create<SocketStore>((set, get) => ({
             (message: IMessage) => {
                 const messageData = JSON.parse(message.body);
 
-                console.log('소켓 데이터', messageData);
-
                 // 메시지 업데이트 로직 개선
                 set((state) => ({
                     messages: {
@@ -70,16 +69,6 @@ const useSocketStore = create<SocketStore>((set, get) => ({
             },
         );
 
-        // 에러 메시지 구독
-        // const errorSubscription = client.subscribe(
-        //     '/queue/errors',
-        //     (error: IMessage) => {
-        //         const errorData = JSON.parse(error.body);
-        //         console.log('에러 데이터', errorData);
-        //         // 에러 처리 로직
-        //     },
-        // );
-
         // 구독 정보만 저장
         set((state) => ({
             subscriptions: {
@@ -87,6 +76,14 @@ const useSocketStore = create<SocketStore>((set, get) => ({
                 [chatroomId]: subscription,
             },
         }));
+    },
+    clearRoomMessages: (chatroomId: string) => {
+        set((state) => ({
+            messages: {
+                ...state.messages,
+                [chatroomId]: [],
+            }
+        }))
     },
     unsubscribeRoom: (chatroomId: string) => {
         const { subscriptions } = get();

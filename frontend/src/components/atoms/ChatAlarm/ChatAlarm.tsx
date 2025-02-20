@@ -16,12 +16,14 @@ const ChatAlarm = () => {
     const { data } = useQuery<ChatRoomResponse[]>({
         queryKey: ['chatRoomList'],
         queryFn: getChatListAPI,
-        refetchInterval: 100000 * 10,
+        refetchInterval: 1000 * 15,
         enabled: isSuccess,
     });
 
     useEffect(() => {
         if (!data) return;
+
+        console.log('채팅방 데이터', data);
 
         let count = 0;
         data.forEach((item) => {
