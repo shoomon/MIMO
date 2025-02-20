@@ -4,11 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ce0c64dd-4326-401e-b4f1-7b7313c859a1" name="Changes" comment="chore: application.yml / application-test.yml 파일 수정">
+    <list default="true" id="ce0c64dd-4326-401e-b4f1-7b7313c859a1" name="Changes" comment="refactor: 결제시 Qrcode uuid 만료">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/build/resources/main/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/resources/main/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/qrcode/service/QrCodeService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/qrcode/service/QrCodeService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/service/TransactionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/service/TransactionService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/installment/controller/InstallmentController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/installment/controller/InstallmentController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/installment/service/InstallmentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/installment/service/InstallmentService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -162,7 +161,7 @@
       <recent name="com.bisang.backend.point.domain" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.ChargeTest">
+  <component name="RunManager" selected="Application.BackendApplication">
     <configuration name="BackendApplication" type="Application" factoryName="Application" nameIsGenerated="true">
       <envs>
         <env name="ACCESS_TOKEN_EXPIRY" value="3600000" />
@@ -442,22 +441,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1738554752629</updated>
-    </task>
-    <task id="LOCAL-00005" summary="feat: 계좌 재시도 로직 추가 / 계좌 유효성 검증 로직 추가 / 계좌 번호 생성 메서드명 수정">
-      <option name="closed" value="true" />
-      <created>1738632520755</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1738632520755</updated>
-    </task>
-    <task id="LOCAL-00006" summary="refactor: import 선언문 순서 변경">
-      <option name="closed" value="true" />
-      <created>1738641157988</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1738641157988</updated>
     </task>
     <task id="LOCAL-00007" summary="feat: 포인트 충전 로직 구현 완료">
       <option name="closed" value="true" />
@@ -835,7 +818,23 @@
       <option name="project" value="LOCAL" />
       <updated>1740010715697</updated>
     </task>
-    <option name="localTasksCounter" value="54" />
+    <task id="LOCAL-00054" summary="refactor: 결제시 Qrcode uuid 만려">
+      <option name="closed" value="true" />
+      <created>1740011057514</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1740011057514</updated>
+    </task>
+    <task id="LOCAL-00055" summary="refactor: 결제시 Qrcode uuid 만료">
+      <option name="closed" value="true" />
+      <created>1740011091935</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1740011091935</updated>
+    </task>
+    <option name="localTasksCounter" value="56" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -864,7 +863,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="origin/backend_dev" />
+                        <option value="TEST" />
                       </list>
                     </value>
                   </entry>
@@ -877,8 +876,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="refactor: 전반적 충전 로직 재구현 (관리자 계정에 대한 분산락 처리 추가, 트랜잭션 상태 변수 도입하여 상태값 관리)" />
-    <MESSAGE value="refactor: Balance 관련 클래스 위치 이동" />
     <MESSAGE value="refactor: 불필요 클래스 삭제" />
     <MESSAGE value="chore: 설명 주석 변경 및 추가" />
     <MESSAGE value="refactor: 잔액 기능 관련 구조 개선 및 잔액 충전 관련 핵심 서비스 로직 클래스별 분리 (트랜잭션 로그를 기록하는 작업의 경우 별도의 트랜잭션으로 작동할 수 있도록 분리 -&gt; 장애발생시 rollback 대상에 포함되지 않음)" />
@@ -902,6 +899,8 @@
     <MESSAGE value="refactor: 계좌 내역 메모 수정" />
     <MESSAGE value="chore: user 인덱스 오타 수정" />
     <MESSAGE value="chore: application.yml / application-test.yml 파일 수정" />
-    <option name="LAST_COMMIT_MESSAGE" value="chore: application.yml / application-test.yml 파일 수정" />
+    <MESSAGE value="refactor: 결제시 Qrcode uuid 만려" />
+    <MESSAGE value="refactor: 결제시 Qrcode uuid 만료" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor: 결제시 Qrcode uuid 만료" />
   </component>
 </project>

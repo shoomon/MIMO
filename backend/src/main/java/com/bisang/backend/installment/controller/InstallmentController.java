@@ -68,12 +68,12 @@ public class InstallmentController {
     }
 
     @GetMapping("/get-team-round")
-    public ResponseEntity<Long> getTeamInstallmentRound(
+    public ResponseEntity<Long> getTeamRound(
         @AuthUser User user,
         @RequestParam("teamId") Long teamId
     ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(installmentService.getTeamInstallmentRound(user.getId(), teamId));
+                .body(installmentService.getTeamRound(user.getId(), teamId));
     }
 }

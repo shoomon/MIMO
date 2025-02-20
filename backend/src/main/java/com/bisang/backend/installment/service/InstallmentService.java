@@ -91,7 +91,7 @@ public class InstallmentService {
     }
 
     @TeamMember
-    public Long getTeamInstallmentRound(Long id, Long teamId) {
+    public Long getTeamRound(Long id, Long teamId) {
         Team team = teamJpaRepository.findTeamById(teamId)
                 .orElseThrow(() -> new TeamException(ExceptionCode.NOT_FOUND_TEAM));
 
