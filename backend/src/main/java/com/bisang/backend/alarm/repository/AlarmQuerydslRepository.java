@@ -61,6 +61,7 @@ public class AlarmQuerydslRepository {
 
         return queryFactory
                 .select(Projections.constructor(AlarmDto.class,
+                        Expressions.constant(0L),
                         teamUser.userId,
                         teamUser.teamId,
                         scheduleParticipants.teamScheduleId,
