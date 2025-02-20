@@ -30,7 +30,7 @@ const PagenationView = ({
                         key={item}
                         type="button"
                         onClick={onClick}
-                        className={`${item === currentPage ? 'text-brand-primary-400' : 'hover:text-brand-primary-400 text-gray-500'} h-8 w-8 cursor-pointer rounded-xs bg-gray-100 text-sm`}
+                        className={`${item === currentPage ? 'text-brand-primary-400 bg-gray-200' : 'hover:text-brand-primary-400 bg-gray-100 text-gray-500'} h-8 w-8 cursor-pointer rounded-xs text-sm`}
                     >
                         {item}
                     </button>

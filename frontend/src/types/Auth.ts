@@ -19,6 +19,7 @@ export interface UserMyResponse {
     nickname: string;
     email: string;
     profileUri: string;
+    accountNumber: string;
     reviewScore: number;
     mileage: number;
     mileageIncome: number;

@@ -1,14 +1,9 @@
-import { rawTableData } from '@/mock/TeamMileageMock';
-import MileageHistoryView from './MileageHistory.view';
-import { useParams } from 'react-router-dom';
+import MileageHistoryView, {
+    MileageHistoryViewProps,
+} from './MileageHistory.view';
 
-const MileageHistory = () => {
-    const { teamId } = useParams();
-    console.log(teamId);
-
-    const data = rawTableData;
-
-    return <MileageHistoryView items={data} />;
+const MileageHistory = (props: MileageHistoryViewProps) => {
+    return <MileageHistoryView {...props} />;
 };
 
 export default MileageHistory;

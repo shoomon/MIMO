@@ -24,7 +24,7 @@ export const rawTableData: RawDataRow[] = [
         name: '홍길동',
         date: '2025-02-06',
         amount: 10000,
-        hasReceipt: true,
+        user: "",
     },
     {
         id: 2,
@@ -32,6 +32,6 @@ export const rawTableData: RawDataRow[] = [
         name: '김철수',
         date: '2025-02-07',
         amount: 20000,
-        hasReceipt: false,
+        user: "",
     },
 ];

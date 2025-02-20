@@ -38,6 +38,8 @@ import TeamSchedulesClosed from './pages/TeamSchedule/TeamSchedulesClosed';
 import Profile from './pages/Profile';
 import TitleSearch from './pages/Search/TitleSearch';
 import TagSearch from './pages/Search/TagSearch';
+import Login from './pages/login/Login';
+import Review from './pages/Review';
 
 const AppRoutes = () => {
     return (
@@ -47,6 +49,8 @@ const AppRoutes = () => {
             <Route element={<DefaultLayout />}>
                 {/* 메인 홈 */}
                 <Route path="/" element={<Home />} />
+                {/* 로그인 */}
+                <Route path="/login" element={<Login />} />
                 {/* 검색 */}
                 <Route path="/search" element={<Search />} />
                 {/* 제목·설명 기반 검색 */}
@@ -78,6 +82,7 @@ const AppRoutes = () => {
                         <Route index element={<TeamDetail />} />
                         {/* 팀 수정 */}
                         <Route path="edit" element={<TeamEdit />} />
+                        <Route path="review" element={<Review />} />
                         {/* 팀 일정 */}
                         <Route path="schedule">
                             {/* 일정 메인 */}
@@ -184,7 +189,10 @@ const AppRoutes = () => {
             <Route path="/video" element={<VideoChat />} />
 
             {/* QR 코드 */}
-            <Route path="/pay/:payId" element={<Payment />} />
+            <Route
+                path="/pay/:uuid/:amount/:receiverAccountNumber/:memo"
+                element={<Payment />}
+            />
         </Routes>
     );
 };

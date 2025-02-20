@@ -12,10 +12,9 @@ export const useAuth = () => {
     const { data, isSuccess, isError } = useQuery({
         queryKey: ['userInfo'],
         queryFn: () => getUserInfoAPI(accessToken),
-        enabled: !!accessToken,
         staleTime: 1000 * 60 * 10,
         gcTime: 1000 * 60 * 20,
-        retry: false,
+        enabled: !!accessToken,
     });
 
     useEffect(() => {

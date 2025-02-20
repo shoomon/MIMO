@@ -8,7 +8,7 @@ const meta = {
     argTypes: {
         subTitle: { control: 'text' },
         title: { control: 'text' },
-        rating: { control: 'object' },
+        reviewScore: { control: 'object' },
         tag: { control: 'object' },
         maxCapacity: { control: 'object' },
     },
@@ -24,11 +24,6 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// 더미 데이터: RatingStarProps (숫자 타입으로 수정)
-const sampleRating = {
-    rating: 4.5,
-};
-
 // 더미 데이터: TagProps 배열
 const sampleTagList = [
     { to: '/tag/react', label: 'React' },
@@ -40,7 +35,8 @@ export const Default: Story = {
     args: {
         teamId: '123',
         subTitle: 'Meeting Subtitle Sample',
-        rating: sampleRating,
+        reviewScore: 0,
+        reviewCount: 0,
         title: 'Meeting Title Sample',
         tag: sampleTagList,
         maxCapacity: 12,

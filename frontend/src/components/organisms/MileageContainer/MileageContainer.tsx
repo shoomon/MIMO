@@ -1,13 +1,9 @@
-import { TeamMileageMain } from '@/mock/TeamMileageMock';
-import MileageContainerView from './MileageContainer.view';
-import { useParams } from 'react-router-dom';
+import MileageContainerView, {
+    MileageContainerViewProps,
+} from './MileageContainer.view';
 
-const MileageContainer = () => {
-    const { teamId } = useParams();
-    console.log(teamId);
-    const data = TeamMileageMain;
-
-    return <MileageContainerView items={data} />;
+const MileageContainer = (props: MileageContainerViewProps) => {
+    return <MileageContainerView {...props} />;
 };
 
 export default MileageContainer;

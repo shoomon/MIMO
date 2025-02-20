@@ -7,9 +7,12 @@ import BodyLayout_24 from './layouts/BodyLayout_24';
 import { Icon, RatingStar, Title } from '@/components/atoms';
 import { dateParsing } from '@/utils';
 import { Link } from 'react-router-dom';
+import useMyMileage from '@/hooks/useMyMileage';
+import { MileageContainer } from '@/components/organisms';
 
 const MyPage = () => {
     const { isOpen, handleConfirm, handleCharge, handleCancel } = useCharge();
+    const { myMileageData } = useMyMileage();
 
     const { data } = useQuery({
         queryKey: ['myAllData'],
@@ -54,31 +57,32 @@ const MyPage = () => {
                     환경설정
                 </div>
                 {data?.reviewScore !== undefined ? (
-                    <RatingStar rating={data.reviewScore} />
+                    <RatingStar reviewScore={data.reviewScore} />
                 ) : (
                     <div>별점 정보가 없습니다.</div>
                 )}
 
-                <div>
-                    <div>
-                        <h1>마이페이지</h1>
-                        <button
-                            type="button"
-                            className="bg-brand-primary-300 cursor-pointer p-2 text-white"
-                            onClick={handleCharge}
-                        >
-                            충전하기
-                        </button>
-                        <BasicInputModal
-                            isOpen={isOpen}
-                            title="충전 금액을 입력해주세요."
-                            subTitle="100원 이상부터 충전 가능합니다."
-                            inputPlaceholder="금액을 입력하세요."
-                            confirmLabel="충전하기"
-                            onConfirmClick={handleConfirm}
-                            onCancelClick={handleCancel}
-                        />
-                    </div>
+                <div className="flex flex-col items-end gap-4">
+                    <button
+                        type="button"
+                        className="bg-brand-primary-300 hover:bg-brand-primary-500 w-fit cursor-pointer rounded p-2 text-white"
+                        onClick={handleCharge}
+                    >
+                        충전하기
+                    </button>
+                    <MileageContainer
+                        items={myMileageData}
+                        titleActive={false}
+                    />
+                    <BasicInputModal
+                        isOpen={isOpen}
+                        title="충전 금액을 입력해주세요."
+                        subTitle="100원 이상부터 충전 가능합니다."
+                        inputPlaceholder="금액을 입력하세요."
+                        confirmLabel="충전하기"
+                        onConfirmClick={handleConfirm}
+                        onCancelClick={handleCancel}
+                    />
                 </div>
 
                 {/* 내가 쓴 글과 댓글을 동등한 크기로 유지하는 컨테이너 */}

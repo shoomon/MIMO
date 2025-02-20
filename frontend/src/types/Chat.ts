@@ -4,6 +4,7 @@ export interface ChatRoomResponse{
   chatroomName: string;
   lastChat: string;
   lastDateTime: string;
+  nickname: string;
   unreadCount: number;
 }
 

@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 
 export const usePagenationList = (currentPage: number, pageSize: number) => {
     const [currentPageList, setCurrentPageList] = useState<number[]>([
-        1, 2, 3, 4,
+        1, 2, 3, 4, 5,
     ]);
 
     useEffect(() => {
-        const pageLineSize = 4;
+        const pageLineSize = 5;
         const pagelist: number[] = [];
         const currentLastPage =
             currentPage + pageLineSize > pageSize
@@ -19,8 +19,6 @@ export const usePagenationList = (currentPage: number, pageSize: number) => {
 
         setCurrentPageList(pagelist);
     }, [currentPage, pageSize]);
-
-    console.log(currentPageList);
 
     return { currentPageList };
 };
