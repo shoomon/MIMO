@@ -1,6 +1,5 @@
-import { ChargeRequest, PaymentRequest, TransferRequest } from "@/types/Transaction";
+import { ChargeRequest, InstallmentRequest, PaymentRequest, TransferRequest } from "@/types/Transaction";
 import { customFetch } from "./customFetch";
-import { InstallmentRequest } from "@/types/Payment";
 
 export const chargePaymentAPI = async (
     data: ChargeRequest,

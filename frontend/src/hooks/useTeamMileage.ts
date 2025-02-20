@@ -1,11 +1,40 @@
 import { getTeamBalanceAPI, getTeamPayDetailAPI } from "@/apis/AccountAPI";
-import { getMyPayerCheckAPI, getTeamNonPayerDetailsAPI, getTeamPayerDetailsAPI } from "@/apis/IntsallmentAPI";
+import { getMyPayerCheckAPI, getTeamCurrentRoundAPI, getTeamNonPayerDetailsAPI, getTeamPayerDetailsAPI } from "@/apis/IntsallmentAPI";
+import { getTeamUsers } from "@/apis/TeamAPI";
 import { MileageStatusProps } from "@/components/atoms/MileageStatus/MileageStatus";
 import { RawDataRow } from "@/utils/transformTableData";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 
 const useTeamMileage = (teamId:string, round:string) => {
+
+  const { data : teamInfo } = useQuery({
+    queryKey: ["teamInfo", teamId],
+    queryFn: async () => {
+      if(!teamId) throw new Error("Team ID is required");
+      return getTeamUsers(teamId);
+    },
+    staleTime: 1000 * 20
+  })
+
+  const { data : myPayCheck } = useQuery({
+    queryKey: ["payCheck", teamId],
+    queryFn: async () => {
+      if(!teamId) throw new Error("Team ID is required");
+      return getMyPayerCheckAPI({teamId, round});
+    },
+    staleTime: 1000 * 20
+  })
+
+  const { data : teamCurrentRound } = useQuery({
+    queryKey: ["teamCurrentRound", teamId],
+    queryFn: async () => {
+      if(!teamId) throw new Error("Team ID is required");
+
+      return getTeamCurrentRoundAPI({teamId});
+    },
+    staleTime: 1000 * 20
+  })
 
   const { data: teamBalance, isSuccess:balanceSuccess } = useQuery({
     queryKey: ["teamBalance", teamId],
@@ -53,7 +82,7 @@ const useTeamMileage = (teamId:string, round:string) => {
       return getMyPayerCheckAPI({teamId, round});
     },
     staleTime: 1000 *20,
-  }) 
+  })
 
   const teamMileageData:MileageStatusProps[] = useMemo(() => {
       if(!payDetailSuccess || !balanceSuccess){
@@ -193,7 +222,7 @@ const useTeamMileage = (teamId:string, round:string) => {
 
 
   
-  return {teamMileageData, teamPayerHistoryData, teamPayerHistoryShortData, teamNonPayerHistoryData, teamNonPayerHistoryShortData, teamBalance, teamPayDetail, teamPayerDetail, teamNonPayerDetail, getMyPayerCheck, teamMileageHistoryData}
+  return {teamCurrentRound, teamInfo, myPayCheck, teamMileageData, teamPayerHistoryData, teamPayerHistoryShortData, teamNonPayerHistoryData, teamNonPayerHistoryShortData, teamBalance, teamPayDetail, teamPayerDetail, teamNonPayerDetail, getMyPayerCheck, teamMileageHistoryData}
 }
 
 export default useTeamMileage;

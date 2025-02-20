@@ -1,3 +1,5 @@
+import { InstallmentRequest } from "./Transaction";
+
 export interface RequestPayParmas {
   pg: string,
   pay_method: string,
@@ -43,18 +45,7 @@ export interface AccountDetailsResponse {
 
 }
 
-export interface TransferRequest {
-  amount: string;
-  receiverAccountNumber: string;
-}
 
-export interface InstallmentRequest {
-  teamId: string;
-  userId: string;
-  round: string;
-  amount: string;
-  transferRequest: TransferRequest;
-}
 
 export interface InstallmentResponse {
   nickname: string;

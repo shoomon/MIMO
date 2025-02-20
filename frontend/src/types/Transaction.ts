@@ -14,7 +14,7 @@ export interface InstallmentRequest {
   userId: string;
   round: string;
   amount: string;
-  transferRequest: TransferRequest;
+  transferRequest: TransferRequest | null;
 }
 
 export interface PaymentRequest {

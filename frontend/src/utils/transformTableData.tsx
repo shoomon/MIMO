@@ -40,7 +40,7 @@ interface DataRow {
     name: CellValue;
     date: CellValue;
     amount: CellValue;
-    receipt: CellValue;
+    user: CellValue;
 }
 
 /**
@@ -56,24 +56,19 @@ export const transformData = (data: RawDataRow[]): DataRow[] => {
     }
 
     return data.map((row) => {
-        // receipt 버튼 클릭 핸들러 (영어로 작성)
-        const receiptHandler = () => {
-            alert('Receipt handler called');
-        };
-
         let transactionCell: CellValue = row.transaction;
         if (row.transaction === '출금') {
             transactionCell = {
                 content: row.transaction,
                 color: 'text-brand-primary-400',
             };
-        } else if (row.transaction === '입금') {
+        } else if (
+            row.transaction === '입금' ||
+            row.transaction === '지출' ||
+            row.transaction === '미납부'
+        ) {
             transactionCell = { content: row.transaction, color: 'text-fail' };
         }
-
-        const receiptCell: CellValue = row.hasReceipt
-            ? { label: '영수증', onClick: receiptHandler }
-            : '';
 
         return {
             id: row.id,
@@ -81,7 +76,7 @@ export const transformData = (data: RawDataRow[]): DataRow[] => {
             name: row.name,
             date: row.date,
             amount: row.amount.toLocaleString(),
-            receipt: receiptCell,
+            user: row.user,
         };
     });
 };

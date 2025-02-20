@@ -3,10 +3,10 @@ import AppRoutes from './AppRoutes';
 import { useModalStore } from './stores/modalStore';
 import BasicModal from './components/molecules/BasicModal/BasicModal';
 
-function App() {
-    const queryClient = new QueryClient();
-    const { isOpen, modalProps } = useModalStore();
+const queryClient = new QueryClient();
 
+function App() {
+    const { isOpen, modalProps } = useModalStore();
 
     return (
         <QueryClientProvider client={queryClient}>

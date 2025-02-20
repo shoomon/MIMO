@@ -61,7 +61,7 @@ export const getTeamNonPayerDetailsAPI = async ({teamId, round}:PayerDetailsRequ
 // check my payer
 export const getMyPayerCheckAPI = async ({teamId, round}:PayerDetailsRequest): Promise<boolean> => {
   try {
-      const response = await customFetch(`/installment/check?teamId=${teamId}&round=${round}`, {
+      const response = await customFetch(`/installment/check-user-pay?teamId=${teamId}&round=${round}`, {
           method: "GET",
       });
 
@@ -76,3 +76,23 @@ export const getMyPayerCheckAPI = async ({teamId, round}:PayerDetailsRequest): P
       throw error;
   }
 }
+
+// team round check
+
+export const getTeamCurrentRoundAPI = async ({teamId}:{teamId: string}): Promise<number> => {
+    try {
+        const response = await customFetch(`/installment/get-team-round?teamId=${teamId}`, {
+            method: "GET",
+        });
+  
+        if(!response.ok){
+            throw new Error("데이터 가져오는 중 오류");
+        }
+  
+        return response.json();
+    }catch(error){
+        console.error(error);
+  
+        throw error;
+    }
+  }
