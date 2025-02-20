@@ -25,10 +25,21 @@ const TeamScheduleCreate = () => {
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     ) => {
         const { id, value } = e.target;
-        setFormData((prev) => ({
-            ...prev,
-            [id]: value,
-        }));
+
+        setFormData((prev) => {
+            let newValue = value;
+
+            if (id === 'maxParticipants') {
+                const numValue = Number(value);
+                if (numValue < 1) newValue = '1';
+                if (numValue > 1000) newValue = '1000';
+            }
+
+            return {
+                ...prev,
+                [id]: newValue,
+            };
+        });
     };
 
     // 📝 일정 등록 함수

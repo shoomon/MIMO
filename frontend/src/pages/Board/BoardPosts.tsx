@@ -44,6 +44,7 @@ const BoardPosts = () => {
             alert('게시판 삭제에 실패했습니다.');
         },
     });
+
     const { data: myProfileData } = useMyTeamProfile(teamId);
 
     if (!boardData) {

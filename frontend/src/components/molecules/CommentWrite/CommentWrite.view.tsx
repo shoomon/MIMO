@@ -26,7 +26,7 @@ const CommentWriteView = ({
                 id="comment"
                 value={value}
                 onChange={handleChange}
-                className="h-fit w-[48.0626rem] rounded-sm border border-gray-300 bg-gray-50 px-4 py-2 leading-normal text-gray-500 placeholder:text-gray-500 focus:outline-none"
+                className="h-fit w-[48.0626rem] rounded-sm border border-gray-300 bg-gray-50 px-4 py-2 leading-normal text-gray-900 placeholder:text-gray-500 focus:outline-none"
             />
             <button
                 type="submit"

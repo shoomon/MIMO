@@ -57,7 +57,7 @@ const MyPage = () => {
                     환경설정
                 </div>
                 {data?.reviewScore !== undefined ? (
-                    <RatingStar rating={data.reviewScore} />
+                    <RatingStar reviewScore={data.reviewScore} />
                 ) : (
                     <div>별점 정보가 없습니다.</div>
                 )}
