@@ -55,7 +55,7 @@ public class InstallmentController {
                 .body(installmentService.getInstallmentNonPayerDetails(user.getId(), teamId, round));
     }
 
-    @GetMapping("/check")
+    @GetMapping("/check-user-pay")
     public ResponseEntity<Boolean> isUserPayInstallment(
             @AuthUser User user,
             @RequestParam("teamId") Long teamId,
@@ -65,5 +65,15 @@ public class InstallmentController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(installmentService.isUserPayInstallment(user.getId(), teamId, round));
+    }
+
+    @GetMapping("/get-team-round")
+    public ResponseEntity<Long> getTeamRound(
+        @AuthUser User user,
+        @RequestParam("teamId") Long teamId
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(installmentService.getTeamRound(user.getId(), teamId));
     }
 }

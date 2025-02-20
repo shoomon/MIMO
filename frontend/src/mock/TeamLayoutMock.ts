@@ -1,6 +1,6 @@
 export const TeamDataMockup = {
     subTitle: '강남구 1위 모임',
-    rating: { rating: 4.5, reviewCount: 3 },
+    rating: { rating: 4.5 },
     title: '강남구 역삼동 동네모임',
     tag: [
         { to: '/', label: '1' },

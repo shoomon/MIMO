@@ -1,4 +1,4 @@
-import { RelatedSearchItem, Search } from '@/components/atoms';
+import { Search } from '@/components/atoms';
 
 export interface SearchBarViewProps {
     handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
@@ -12,8 +12,6 @@ const SearchBarView = ({
     handleSubmit,
     value,
     onChange,
-    relatedItem,
-    onClick,
 }: SearchBarViewProps) => {
     return (
         <section className="space-y-3 rounded-3xl border border-gray-400 px-6 py-3">
@@ -22,21 +20,6 @@ const SearchBarView = ({
                 value={value}
                 onChange={onChange}
             />
-
-            {relatedItem.length > 0 ? (
-                <ul>
-                    {relatedItem.map((item) => {
-                        return (
-                            <li key={item} className="list-none">
-                                <RelatedSearchItem
-                                    value={item}
-                                    onClick={onClick}
-                                />
-                            </li>
-                        );
-                    })}
-                </ul>
-            ) : null}
         </section>
     );
 };

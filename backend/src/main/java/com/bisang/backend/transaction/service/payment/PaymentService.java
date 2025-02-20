@@ -36,7 +36,7 @@ public class PaymentService {
         updateAccountBalance(senderAccountNumber, amount);
 
         AccountDetails payerAccountDetails
-                = accountDetailsService.createAccountDetails(transaction, TransactionCategory.PAYMENT, "결제");
+                = accountDetailsService.createAccountDetails(transaction, TransactionCategory.PAYMENT);
         accountDetailsService.saveAccountDetails(payerAccountDetails);
     }
 
