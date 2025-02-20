@@ -29,7 +29,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ChatMessageRedisRepository {
 
-    private final RedisTemplate<String, RedisChatMessage> redisChatMessageTemplate;
     private final StringRedisTemplate redisTemplate;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -102,18 +101,18 @@ public class ChatMessageRedisRepository {
     }
 
     public Long unreadCount(Long chatroomId, Double lastReadScore) {
-        return redisChatMessageTemplate
+        return redisTemplate
                 .opsForZSet()
                 .count(teamMessageKey + chatroomId, lastReadScore, Double.MAX_VALUE);
     }
 
     public boolean checkChat(Long chatroomId, Double lastReadScore) {
-        Long count = redisChatMessageTemplate.opsForZSet()
+        Long count = redisTemplate.opsForZSet()
                 .count(teamMessageKey + chatroomId, lastReadScore, lastReadScore); // 특정 score 값만 조회
         return count != null && count > 0;
     }
 
     public Long countAllChat(Long chatroomId) {
-        return redisChatMessageTemplate.opsForZSet().size(teamMessageKey + chatroomId);
+        return redisTemplate.opsForZSet().size(teamMessageKey + chatroomId);
     }
 }
