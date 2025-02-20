@@ -78,7 +78,7 @@ public class TeamController {
             user.getId(),
             req.nickname(),
             req.notificationStatus(),
-            req.name(),
+            req.name().trim(),
             req.description(),
             req.teamRecruitStatus(),
             req.teamPrivateStatus(),
@@ -98,7 +98,7 @@ public class TeamController {
         teamFileFacadeService.updateTeam(
                 user.getId(),
                 req.teamId(),
-                req.name(),
+                req.name().trim(),
                 req.description(),
                 req.recruitStatus(),
                 req.privateStatus(),

@@ -117,7 +117,6 @@ public class Team {
         this.maxCapacity = maxCapacity;
         this.teamLeaderId = teamLeaderId;
         this.teamChatroomId = teamChatroomId;
-        name = name.trim();
         String pattern = "^[a-zA-Z0-9가-힣 ]{1,30}$";
         Validate.matchesPattern(name, pattern,
             "모임 이름은 영문, 숫자, 한글로만 구성되어 있으며, 길이는 1자리 이상 30자리 이하이어야 합니다.");
@@ -134,7 +133,6 @@ public class Team {
     }
 
     public void updateTeamName(String name) {
-        name = name.trim();
         String pattern = "^[a-zA-Z0-9가-힣 ]{1,30}$";
         Validate.matchesPattern(name, pattern,
                 "모임 이름은 영문, 숫자, 한글로만 구성되어 있으며, 길이는 1자리 이상 30자리 이하이어야 합니다.");
