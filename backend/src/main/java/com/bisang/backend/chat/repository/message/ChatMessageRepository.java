@@ -51,6 +51,11 @@ public class ChatMessageRepository {
             Long messageId,
             Long enterMessageId
     ) {
+
+        if (messageId < 0) {
+            messageId = Long.MAX_VALUE;
+        }
+
         List<ChatMessage> messages = chatMessageJpaRepository
                 .getMessages(roomId, messageId, enterMessageId);
         List<RedisChatMessage> result = new LinkedList<>();
@@ -64,8 +69,8 @@ public class ChatMessageRepository {
             Long createdAtMilli = createdAt.atZone(ZoneId.of("UTC")).toInstant().toEpochMilli();
             RedisChatMessage redisChatMessage = new RedisChatMessage(
                     chatMessage.getId(),
+                    chatMessage.getChatroomId(),
                     chatMessage.getUserId(),
-                    chatMessage.getTeamUserId(),
                     chatMessage.getMessage(),
                     createdAtMilli,
                     chatMessage.getChatType()
