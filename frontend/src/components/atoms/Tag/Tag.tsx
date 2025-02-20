@@ -19,7 +19,7 @@ const Tag = ({ label }: TagProps) => {
     return (
         <Link
             to={`/search/tags?searchKeyword=${label}&pageNumber=1`}
-            className="text-md border-brand-primary-400 text-brand-primary-400 h-fit w-fit rounded-sm border-[1px] bg-white px-[6px] py-[2px] font-semibold"
+            className="text-md border-brand-primary-400 text-brand-primary-400 h-fit w-fit rounded-sm border-[1px] bg-white px-[6px] py-[2px] font-semibold whitespace-nowrap"
         >
             {label}
         </Link>

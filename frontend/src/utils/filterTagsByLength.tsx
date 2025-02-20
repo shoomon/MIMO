@@ -4,7 +4,7 @@ const getDisplayedTags = (tagList: TagProps[]): JSX.Element[] => {
     let accumulatedLength = 0;
     const filteredTags: TagProps[] = [];
 
-    const LIMIT_LENGTH = 14;
+    const LIMIT_LENGTH = 20;
 
     for (const tag of tagList) {
         const tagLength = tag.label.length;

@@ -8,7 +8,7 @@ import { TeamNotificationStatus, TeamRecruitStatus } from '@/types/Team';
 import useMyTeamProfile from '@/hooks/useMyTeamProfile';
 import { useNavigate } from 'react-router-dom';
 import BasicInputModal from '../BasicInputModal/BasicInputModal';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth, useOauth } from '@/hooks/useAuth';
 import BasicModal from '../BasicModal/BasicModal';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import ReviewInputModal from '../BasicInputModal/ReviewInputModal';
@@ -55,7 +55,7 @@ const MeetingInfo = ({
     const { userInfo } = useAuth();
     const queryClient = useQueryClient();
     const [isConfirmDisabled, setIsConfirmDisabled] = useState(false);
-
+    const { handleLogin } = useOauth();
     const SendJoinRequest = useMutation({
         mutationFn: (inputMemo: string) =>
             joinTeamForPrivate(teamId, inputMemo),
@@ -93,6 +93,11 @@ const MeetingInfo = ({
     };
     const closeModal = () => {
         setModalType(null);
+        setIsModalOpen(false);
+    };
+
+    const login = () => {
+        handleLogin();
         setIsModalOpen(false);
     };
 
@@ -168,10 +173,8 @@ const MeetingInfo = ({
                 <BasicModal
                     isOpen={isModalOpen}
                     title="로그인이 필요합니다."
-                    subTitle="확인을 누르면 로그인 페이지로 이동합니다."
-                    onConfirmClick={() => {
-                        navigate('/login');
-                    }}
+                    subTitle="확인을 누르면 로그인 페이지가 열립니다."
+                    onConfirmClick={login}
                 />
             )}
 

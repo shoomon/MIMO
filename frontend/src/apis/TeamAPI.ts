@@ -711,7 +711,6 @@ export const getArea = async (): Promise<TagsResponse> => {
         const response = await customFetch('/search-team/tag-area', {
             method: 'GET',
         });
-
         return response.json();
     } catch (error) {
         console.error('Error fetching category teams:', error);

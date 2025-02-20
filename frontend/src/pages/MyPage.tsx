@@ -43,16 +43,10 @@ const MyPage = () => {
         fetchData();
     }, [accountNumber]);
 
-    const displayedBoard = Array.isArray(data?.userBoard)
-        ? data.userBoard.length > 3
-            ? data.userBoard.slice(0, 3)
-            : data.userBoard
-        : [];
-
+    // 글과 댓글 전체 배열을 그대로 사용
+    const displayedBoard = Array.isArray(data?.userBoard) ? data.userBoard : [];
     const displayedComment = Array.isArray(data?.userComment)
-        ? data.userComment.length > 3
-            ? data.userComment.slice(0, 3)
-            : data.userComment
+        ? data.userComment
         : [];
 
     return (
