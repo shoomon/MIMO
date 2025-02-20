@@ -6,6 +6,8 @@ import ProfileImage, {
 } from './../../atoms/ProfileImage/ProfileImage';
 import { useParams } from 'react-router-dom';
 import useMyTeamProfile from '@/hooks/useMyTeamProfile';
+import { useQueryClient } from '@tanstack/react-query';
+import { useModalStore } from '@/stores/modalStore';
 
 interface CommentProps {
     commentId: number;
@@ -17,7 +19,7 @@ interface CommentProps {
     isReply: boolean;
     onDelete: (id: number) => void;
     onUpdate: (someCommentId: number, content: string) => void;
-    // 새로 추가: 답글 작성 시 호출될 콜백
+    // 답글 작성 시 호출될 콜백 (선택적)
     onReply?: (parentCommentId: number) => void;
 }
 
@@ -49,18 +51,67 @@ const Comment = ({
 
     const [isEditing, setIsEditing] = useState(false);
     const parsedDate = dateParsing(new Date(writedate));
-
-    const { teamId } = useParams();
+    const { teamId, postId } = useParams<{ teamId: string; postId?: string }>();
     const { data: profileData } = useMyTeamProfile(teamId);
+    const queryClient = useQueryClient();
+    const { openModal, closeModal } = useModalStore();
+
     useEffect(() => {
         if (isEditing) {
             setFocus('commentContent');
         }
     }, [isEditing, setFocus]);
 
+    // 삭제 버튼 클릭 시 모달 처리
+    const handleDeleteClick = () => {
+        openModal({
+            title: '댓글을 삭제하시겠습니까?',
+            subTitle: '댓글을 삭제하면 답글이 모두 사라져요',
+            confirmLabel: '삭제',
+            cancelLabel: '취소',
+            onDeleteClick: () => {
+                onDelete(commentId);
+                openModal({
+                    title: '댓글이 삭제되었습니다',
+                    confirmLabel: '확인',
+                    onConfirmClick: () => {
+                        if (postId) {
+                            queryClient.invalidateQueries({
+                                queryKey: ['boardDetail', postId],
+                            });
+                        }
+                        closeModal();
+                    },
+                });
+            },
+            onCancelClick: closeModal,
+        });
+    };
+
+    // 수정 처리 (모달 통해 확인)
     const onSubmit: SubmitHandler<FormData> = (data) => {
-        onUpdate(someCommentId!, data.commentContent);
-        setIsEditing(false);
+        openModal({
+            title: '댓글을 수정하시겠습니까?',
+            confirmLabel: '수정',
+            cancelLabel: '취소',
+            onConfirmClick: () => {
+                onUpdate(someCommentId!, data.commentContent);
+                setIsEditing(false);
+                openModal({
+                    title: '댓글이 수정되었습니다',
+                    confirmLabel: '확인',
+                    onConfirmClick: () => {
+                        if (postId) {
+                            queryClient.invalidateQueries({
+                                queryKey: ['boardDetail', postId],
+                            });
+                        }
+                        closeModal();
+                    },
+                });
+            },
+            onCancelClick: closeModal,
+        });
     };
 
     const handleCancelClick = () => {
@@ -71,8 +122,8 @@ const Comment = ({
     return (
         <div className={`${isReply ? 'pl-8' : ''} flex w-full flex-col gap-2`}>
             <div className="flex h-fit w-full justify-between">
-                <div className="flex items-end justify-center gap-3">
-                    <div className="flex gap-1">
+                <div className="flex items-center justify-center gap-3">
+                    <div className="flex items-center gap-1">
                         <ProfileImage
                             userId={profileImage.userId}
                             profileUri={profileImage.profileUri}
@@ -101,7 +152,7 @@ const Comment = ({
                         </>
                     ) : (
                         <>
-                            {profileData?.nickname == 'name' && (
+                            {profileData?.nickname === name && (
                                 <button
                                     type="button"
                                     onClick={() => setIsEditing(true)}
@@ -109,16 +160,16 @@ const Comment = ({
                                     수정
                                 </button>
                             )}
-                            {(profileData?.nickname == 'name' ||
-                                profileData?.role == 'LEADER') && (
+                            {(profileData?.nickname === name ||
+                                profileData?.role === 'LEADER') && (
                                 <button
                                     type="button"
-                                    onClick={() => onDelete(commentId)}
+                                    onClick={handleDeleteClick}
                                 >
                                     삭제
                                 </button>
                             )}
-                            {onReply && profileData?.role != 'GUEST' && (
+                            {onReply && profileData?.role !== 'GUEST' && (
                                 <button
                                     type="button"
                                     onClick={() => onReply(commentId)}
@@ -130,7 +181,7 @@ const Comment = ({
                     )}
                 </div>
             </div>
-            <div className="w-full">
+            <div className="mb-3 w-full">
                 {isEditing ? (
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <textarea

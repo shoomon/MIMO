@@ -11,8 +11,8 @@ import BasicInputModal from '../BasicInputModal/BasicInputModal';
 import { useAuth } from '@/hooks/useAuth';
 import BasicModal from '../BasicModal/BasicModal';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { remainTeamReview } from '@/apis/UserAPI';
 import ReviewInputModal from '../BasicInputModal/ReviewInputModal';
+import { remainTeamReview } from '@/apis/UserAPI';
 
 export interface MeetingInfoProps {
     teamId: string;
@@ -54,6 +54,7 @@ const MeetingInfo = ({
     const navigate = useNavigate();
     const { userInfo } = useAuth();
     const queryClient = useQueryClient();
+    const [isConfirmDisabled, setIsConfirmDisabled] = useState(false);
 
     const SendJoinRequest = useMutation({
         mutationFn: (inputMemo: string) =>
@@ -202,7 +203,11 @@ const MeetingInfo = ({
                     isOpen={isModalOpen}
                     title="리뷰 작성"
                     subTitle="리뷰 내용을 입력하고 평점을 작성하세요."
+                    confirmDisabled={isConfirmDisabled} // 버튼 disabled prop 전달
                     onConfirmClick={({ reviewText, rating }) => {
+                        // 버튼 클릭 시 바로 disabled 상태로 전환
+                        setIsConfirmDisabled(true);
+
                         remainTeamReview(teamId, reviewText, rating.toString())
                             .then(() => {
                                 queryClient.invalidateQueries({
@@ -216,6 +221,12 @@ const MeetingInfo = ({
                             .catch((error) => {
                                 console.error('리뷰 등록 실패', error);
                                 alert('리뷰 등록에 실패했습니다.');
+                            })
+                            .finally(() => {
+                                // 예를 들어 1초 딜레이 후 다시 버튼 활성화
+                                setTimeout(() => {
+                                    setIsConfirmDisabled(false);
+                                }, 1000);
                             });
                     }}
                     onCancelClick={closeModal}

@@ -25,15 +25,18 @@ const TeamScheduleDetail = () => {
     const { data: profileData } = useMyTeamProfile(teamId);
     const queryClient = useQueryClient();
 
-    // 답글 작성 대상 댓글 ID (어떤 댓글에 대한 답글을 작성할지 결정)
+    // 답글 작성 대상 댓글 ID
     const [replyTarget, setReplyTarget] = useState<number | null>(null);
 
-    // 일정 상세 정보 가져오기
+    // 일정 상세 정보 가져오기 (서버에서 최신 데이터를 받아옴)
     const { data: scheduleDetail, isLoading: detailLoading } = useQuery({
         queryKey: ['scheduleDetail', scheduleId],
         queryFn: () => getSpecificSchedule(Number(teamId), Number(scheduleId)),
         enabled: !!teamId && !!scheduleId,
     });
+    useEffect(() => {
+        console.log('🔍 scheduleDetail changed:', scheduleDetail?.comments);
+    }, [scheduleDetail]);
 
     useEffect(() => {
         if (scheduleDetail?.isTeamScheduleMember) {
@@ -41,20 +44,14 @@ const TeamScheduleDetail = () => {
         }
     }, [scheduleDetail]);
 
-    // 댓글 상태 관리 (API에서 받아온 데이터를 저장)
-    const [comments, setComments] = useState<TeamScheduleCommentDto[]>([]);
-    useEffect(() => {
-        if (scheduleDetail?.comments) {
-            setComments(scheduleDetail.comments);
-        }
-    }, [scheduleDetail]);
+    // 정렬된 댓글 목록 (서버에서 받아온 데이터를 기반으로 정렬)
+    const sortedComments: TeamScheduleCommentDto[] = scheduleDetail?.comments
+        ? [...scheduleDetail.comments].sort(
+              (a, b) => a.commentSortId - b.commentSortId,
+          )
+        : [];
 
-    // 댓글 배열을 commentSortId 순으로 정렬
-    const sortedComments = [...comments].sort(
-        (a, b) => a.commentSortId - b.commentSortId,
-    );
-
-    // 일정 참여, 탈퇴, 삭제 Mutation (기존 코드)
+    // 일정 참여, 탈퇴, 삭제 Mutation
     const joinMutation = useMutation({
         mutationFn: () => joinSchedule(scheduleId?.toString() || ''),
         onSuccess: () => setIsJoined(true),
@@ -68,14 +65,13 @@ const TeamScheduleDetail = () => {
         onSuccess: () => navigate(`/team/${teamId}`),
     });
 
-    // 댓글 삭제 Mutation
+    // 댓글 삭제 Mutation - 로컬 업데이트 없이 캐시 무효화만 진행
     const deleteCommentMutation = useMutation({
         mutationFn: (commentId: number) => deleteComment(teamId!, commentId),
-        onMutate: async (commentId) => {
-            // UI에서 바로 삭제 반영
-            setComments((prev) =>
-                prev.filter((comment) => comment.commentSortId !== commentId),
-            );
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['scheduleDetail', scheduleId],
+            });
         },
         onError: (error) => {
             console.error('댓글 삭제 실패:', error);
@@ -83,7 +79,7 @@ const TeamScheduleDetail = () => {
         },
     });
 
-    // 댓글 수정 Mutation
+    // 댓글 수정 Mutation - 수정 후 캐시 무효화로 최신 데이터 반영
     const updateCommentMutation = useMutation({
         mutationFn: ({
             teamId,
@@ -94,14 +90,10 @@ const TeamScheduleDetail = () => {
             teamScheduleCommentId: number;
             content: string;
         }) => updateComment(teamId!, teamScheduleCommentId, content),
-        onMutate: async ({ teamScheduleCommentId, content }) => {
-            setComments((prev) =>
-                prev.map((comment) =>
-                    comment.teamScheduleCommentId === teamScheduleCommentId
-                        ? { ...comment, content }
-                        : comment,
-                ),
-            );
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['scheduleDetail', scheduleId],
+            });
         },
         onError: (error) => {
             console.error('댓글 수정 실패:', error);
@@ -120,7 +112,7 @@ const TeamScheduleDetail = () => {
     return (
         <section className="flex flex-col gap-2">
             <div className="py- flex min-h-[43px] items-end justify-end gap-2 self-stretch">
-                {profileData?.role != 'GUEST' &&
+                {profileData?.role !== 'GUEST' &&
                     !scheduleDetail?.isMyTeamSchedule &&
                     (isJoined ? (
                         <ButtonDefault
@@ -136,29 +128,29 @@ const TeamScheduleDetail = () => {
                             onClick={() => joinMutation.mutate()}
                         />
                     ))}
-                {scheduleDetail?.isMyTeamSchedule ||
-                    (profileData?.role == 'LEADER' && (
-                        <>
-                            <ButtonDefault
-                                content="일정 수정"
-                                iconId="PlusCalendar"
-                                iconType="svg"
-                                onClick={() =>
-                                    navigate(
-                                        `/team/${teamId}/schedule/edit/${scheduleId}`,
-                                    )
-                                }
-                            />
-                            <ButtonDefault
-                                content="글 삭제"
-                                type="fail"
-                                onClick={() => deleteMutation.mutate()}
-                            />
-                        </>
-                    ))}
+                {(scheduleDetail?.isMyTeamSchedule ||
+                    profileData?.role === 'LEADER') && (
+                    <>
+                        <ButtonDefault
+                            content="일정 수정"
+                            iconId="PlusCalendar"
+                            iconType="svg"
+                            onClick={() =>
+                                navigate(
+                                    `/team/${teamId}/schedule/edit/${scheduleId}`,
+                                )
+                            }
+                        />
+                        <ButtonDefault
+                            content="글 삭제"
+                            type="fail"
+                            onClick={() => deleteMutation.mutate()}
+                        />
+                    </>
+                )}
             </div>
             <BodyLayout_24>
-                <div className="text-dark flex h-fit w-full flex-col gap-4 border-b-1 border-gray-200">
+                <div className="text-dark flex h-fit w-full flex-col gap-4 border-b border-gray-200">
                     <Title
                         label={
                             statusText === '정기모임'
@@ -212,95 +204,94 @@ const TeamScheduleDetail = () => {
                             댓글
                         </span>
                         <span className="text-dark text-xl font-bold">
-                            {comments.length}
+                            {scheduleDetail?.comments?.length ?? 0}
                         </span>
                     </div>
-
                     <div className="gap-2">
                         {sortedComments.length > 0 ? (
-                            sortedComments.map((item) => (
-                                <div
-                                    key={item.commentSortId}
-                                    className="flex flex-col gap-2 pt-3 pb-2"
-                                >
-                                    {/* 댓글 렌더링: isReply가 true면 들여쓰기 적용 */}
-                                    <Comment
-                                        commentId={item.commentSortId}
-                                        someCommentId={
-                                            item.teamScheduleCommentId
-                                        }
-                                        content={item.content}
-                                        isReply={item.hasParent} // hasParent가 true이면 대댓글(답글)
-                                        writedate={item.time}
-                                        profileImage={{
-                                            nickname: item.name,
-                                            profileUri: item.profileUri,
-                                        }}
-                                        name={item.name}
-                                        onDelete={() =>
-                                            deleteCommentMutation.mutate(
-                                                item.commentSortId,
-                                            )
-                                        }
-                                        onUpdate={(
-                                            teamScheduleCommentId,
-                                            content,
-                                        ) =>
-                                            updateCommentMutation.mutate({
-                                                teamId: teamId!,
+                            sortedComments.map(
+                                (item: TeamScheduleCommentDto) => (
+                                    <div
+                                        key={item.teamScheduleCommentId}
+                                        className={`flex flex-col gap-2 pt-3 pb-2 ${
+                                            item.hasParent ? 'ml-8' : ''
+                                        }`}
+                                    >
+                                        <Comment
+                                            commentId={item.commentSortId}
+                                            someCommentId={
+                                                item.teamScheduleCommentId
+                                            }
+                                            content={item.content}
+                                            isReply={item.hasParent}
+                                            writedate={item.time}
+                                            profileImage={{
+                                                nickname: item.name,
+                                                profileUri: item.profileUri,
+                                            }}
+                                            name={item.name}
+                                            onDelete={() =>
+                                                deleteCommentMutation.mutate(
+                                                    item.commentSortId,
+                                                )
+                                            }
+                                            onUpdate={(
                                                 teamScheduleCommentId,
                                                 content,
-                                            })
-                                        }
-                                        onReply={(parentId) =>
-                                            setReplyTarget(parentId)
-                                        }
-                                    />
-                                    {/* 답글 작성 폼: replyTarget가 현재 댓글의 commentSortId와 일치하면 표시 */}
-                                    {replyTarget === item.commentSortId &&
-                                        !item.hasParent && (
-                                            <div className="ml-8">
-                                                <CommentWrite
-                                                    teamId={teamId!}
-                                                    teamScheduleId={scheduleId}
-                                                    teamUserId={Number(
-                                                        profileData?.teamUserId,
-                                                    )}
-                                                    parentCommentId={
-                                                        item.commentSortId
-                                                    }
-                                                    onCommentCreated={() => {
-                                                        queryClient.invalidateQueries(
-                                                            {
-                                                                queryKey: [
-                                                                    'scheduleDetail',
-                                                                    scheduleId,
-                                                                ],
-                                                            },
-                                                        );
-                                                        setReplyTarget(null);
-                                                    }}
-                                                />
-                                            </div>
-                                        )}
-                                </div>
-                            ))
+                                            ) =>
+                                                updateCommentMutation.mutate({
+                                                    teamId: teamId!,
+                                                    teamScheduleCommentId,
+                                                    content,
+                                                })
+                                            }
+                                            onReply={
+                                                !item.hasParent
+                                                    ? (parentId) =>
+                                                          setReplyTarget(
+                                                              parentId,
+                                                          )
+                                                    : undefined
+                                            }
+                                        />
+                                        {/* 루트 댓글에 대해서만 답글 작성 폼 표시 */}
+                                        {!item.hasParent &&
+                                            replyTarget ===
+                                                item.commentSortId && (
+                                                <div className="ml-8">
+                                                    <CommentWrite
+                                                        teamId={teamId!}
+                                                        teamScheduleId={
+                                                            scheduleId
+                                                        }
+                                                        teamUserId={Number(
+                                                            profileData?.teamUserId,
+                                                        )}
+                                                        parentCommentId={
+                                                            item.commentSortId
+                                                        }
+                                                        onCommentCreated={() => {
+                                                            setReplyTarget(
+                                                                null,
+                                                            );
+                                                        }}
+                                                    />
+                                                </div>
+                                            )}
+                                    </div>
+                                ),
+                            )
                         ) : (
                             <span>댓글이 없습니다.</span>
                         )}
                     </div>
                 </div>
                 {/* 최상위 댓글 작성 폼 */}
-                {profileData?.role != 'GUEST' && (
+                {profileData?.role !== 'GUEST' && (
                     <CommentWrite
                         teamId={teamId!}
                         teamScheduleId={scheduleId}
                         teamUserId={Number(profileData?.teamUserId)}
-                        onCommentCreated={() =>
-                            queryClient.invalidateQueries({
-                                queryKey: ['scheduleDetail', scheduleId],
-                            })
-                        }
                     />
                 )}
             </BodyLayout_24>

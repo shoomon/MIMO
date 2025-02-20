@@ -3,6 +3,7 @@ import { devtools } from 'zustand/middleware';
 export interface GlobalModalProps {
     title?: string;
     subTitle?: string;
+    onDeleteClick?: () => void;
     onConfirmClick?: () => void;
     onCancelClick?: () => void;
     confirmLabel?: string;

@@ -41,7 +41,9 @@ const RatingStarView: React.FC<RatingStarViewProps> = ({
                     />
                 ))}
             </div>
-            <span className="text-md font-extrabold">{reviewScore}</span>
+            <span className="text-md font-extrabold">
+                {reviewScore.toFixed(1)}
+            </span>
             {reviewCount && (
                 <span className="text-md font-light">({reviewCount})</span>
             )}

@@ -9,6 +9,7 @@ interface ReviewInputModalProps {
     subTitle?: string;
     inputPlaceholder?: string;
     confirmLabel: string;
+    confirmDisabled: boolean;
     /**
      * onConfirmClick은 리뷰 텍스트와 별점 값을 객체로 전달합니다.
      */
@@ -24,6 +25,7 @@ const ReviewInputModal = ({
     confirmLabel,
     onConfirmClick,
     onCancelClick,
+    confirmDisabled,
 }: ReviewInputModalProps) => {
     // 리뷰 텍스트와 별점 상태 관리
     const [inputValue, setInputValue] = useState('');
@@ -136,7 +138,7 @@ const ReviewInputModal = ({
                         action="confirm"
                         onClick={handleConfirm}
                         label={confirmLabel}
-                        disabled={!!error}
+                        disabled={!!error || confirmDisabled}
                     />
                     <ButtonPrimary
                         action="cancel"

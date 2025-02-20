@@ -47,11 +47,10 @@ export const remainTeamReview = async (
     try {
         const param = { teamId, memo, score };
 
-        const response = await customFetch('/team-review', {
+        await customFetch('/team-review', {
             method: 'POST',
             params: param,
         });
-        return response.json();
     } catch (error) {
         console.error('Error in remainTeamReview:', error);
         throw error;

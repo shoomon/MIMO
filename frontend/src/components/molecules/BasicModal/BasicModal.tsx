@@ -1,4 +1,4 @@
-import { ButtonPrimary } from '@/components/atoms';
+import { ButtonPrimary, Icon } from '@/components/atoms';
 import React from 'react';
 
 interface BasicModalProps {
@@ -31,20 +31,23 @@ const BasicModal = ({
     return (
         <div className="fixed inset-0 z-20 flex items-center justify-center bg-gray-600/20">
             <div className="w-full max-w-[352px] rounded-xl bg-gray-50 p-6">
+                {onDeleteClick && (
+                    <div className="mb-2 flex w-full items-center justify-center">
+                        <Icon id="Caution" type="svg" size={48} />
+                    </div>
+                )}
                 {/* Title */}
                 <section
                     className={`pb-${subTitle ? 2 : 8} text-text-xl text-center font-bold text-gray-900`}
                 >
                     {title}
                 </section>
-
                 {/* Subtitle */}
                 {subTitle && (
                     <section className="text-md pb-8 text-center font-medium text-gray-600">
                         {subTitle}
                     </section>
                 )}
-
                 {/* Buttons */}
                 <section className="flex justify-center space-x-2">
                     {onConfirmClick && (
