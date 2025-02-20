@@ -38,8 +38,8 @@ import TeamSchedulesClosed from './pages/TeamSchedule/TeamSchedulesClosed';
 import Profile from './pages/Profile';
 import TitleSearch from './pages/Search/TitleSearch';
 import TagSearch from './pages/Search/TagSearch';
-import Login from './pages/login/Login';
 import Review from './pages/Review';
+import MyMeeting from './pages/Member/MyMeeting';
 
 const AppRoutes = () => {
     return (
@@ -49,8 +49,6 @@ const AppRoutes = () => {
             <Route element={<DefaultLayout />}>
                 {/* 메인 홈 */}
                 <Route path="/" element={<Home />} />
-                {/* 로그인 */}
-                <Route path="/login" element={<Login />} />
                 {/* 검색 */}
                 <Route path="/search" element={<Search />} />
                 {/* 제목·설명 기반 검색 */}
@@ -61,6 +59,7 @@ const AppRoutes = () => {
                 <Route path="/category/:categoryId" element={<Category />} />
                 {/* 인기 모임 --- queryparam으로 */}
                 <Route path="/list" element={<TeamList />} />
+                <Route path="/mymeeting" element={<MyMeeting />} />
                 {/* 마이 페이지 */}
                 <Route path="/mypage" element={<MyPage />} />
                 {/* 채팅  */}

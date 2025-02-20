@@ -1,11 +1,10 @@
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import Icon from '../Icon/Icon';
 
 export interface CategoryItemProps {
     iconId: string;
     content: string;
     path: string;
-    isSelected?: boolean;
     onClick?: (path: string, event: React.MouseEvent) => void;
 }
 
@@ -23,7 +22,6 @@ const CategoryItem = ({
     iconId,
     content,
     path,
-    isSelected = false,
     onClick,
 }: CategoryItemProps) => {
     const handleClick = (event: React.MouseEvent) => {
@@ -32,6 +30,8 @@ const CategoryItem = ({
             onClick(path, event);
         }
     };
+    const { categoryId } = useParams<{ categoryId?: string }>();
+    const isSelected = categoryId === content;
 
     return (
         <Link

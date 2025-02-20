@@ -30,9 +30,9 @@ const BoardPosts = () => {
     });
 
     const deleteTeamBoardMutation = useMutation({
-        mutationFn: (teamBoardId: string) => deleteTeamBoard(teamBoardId),
-        onSuccess: () => {
-            // 삭제 성공 시 캐시 정리 (필요하다면)
+        mutationFn: ([teamId, teamBoardId]: [string, string]) =>
+            deleteTeamBoard(teamId, teamBoardId),
+        onSuccess: (_, [teamId]) => {
             queryClient.invalidateQueries({
                 queryKey: ['teamboardList', teamId],
             });
@@ -81,7 +81,10 @@ const BoardPosts = () => {
                         content="게시판 삭제"
                         type="fail"
                         onClick={() => {
-                            deleteTeamBoardMutation.mutate(teamBoardId!);
+                            deleteTeamBoardMutation.mutate([
+                                teamId!,
+                                teamBoardId!,
+                            ]);
                         }}
                     />
                 )}

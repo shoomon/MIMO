@@ -5,8 +5,6 @@ import { Link } from 'react-router-dom';
 import SearchBar from '../SearchBar/SearchBar';
 import { ProfileImageProps } from '@/components/atoms/ProfileImage/ProfileImage';
 import MyInfoDropDown from '@/components/atoms/MyInfoDropDown/MyInfoDropDown';
-import { customFetch } from '@/apis/customFetch';
-import { useTokenStore } from '@/stores/tokenStore';
 import { useAuth } from '@/hooks/useAuth';
 import AlarmView from './../Alarm/Alarm.view';
 
@@ -88,26 +86,6 @@ const HeaderView = ({
     handleLogin,
 }: HeaderViewProps) => {
     const { userInfo } = useAuth();
-    const { setAccessToken } = useTokenStore();
-
-    const loginapi = async (): Promise<void> => {
-        try {
-            const params = {
-                email: 'admin',
-                name: 'admin',
-            };
-
-            const response = await customFetch('/login/oauth2/yame', {
-                method: 'POST',
-                params,
-            });
-            const data = await response.json();
-            setAccessToken(data.accessToken);
-        } catch (error) {
-            console.error('Error fetching area teams:', error);
-            throw error;
-        }
-    };
 
     // 알람 드롭다운과 내 정보 드롭다운의 상태를 별도로 관리
     const [alarmActive, setAlarmActive] = useState(false);
@@ -157,12 +135,6 @@ const HeaderView = ({
                     />
                 ) : (
                     <>
-                        <button
-                            onClick={loginapi}
-                            className="rounded-lg border border-gray-200 px-2 py-1"
-                        >
-                            임시 로그인
-                        </button>
                         <NoLoginedMenu handleLogin={handleLogin} />
                     </>
                 )}

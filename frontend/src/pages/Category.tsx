@@ -26,10 +26,11 @@ const Category = () => {
     if (size == 0) {
         return (
             <BaseLayout>
+                <CategoryList />
                 <div className="flex h-screen flex-1 flex-col items-center justify-start p-4 pt-[200px] text-center">
                     <h1 className="text-3xl font-bold">'{categoryId}'</h1>
                     <span className="text-3xl font-light">
-                        검색 결과가 없습니다.
+                        카테고리 모임이 없습니다.
                     </span>
                 </div>
             </BaseLayout>
