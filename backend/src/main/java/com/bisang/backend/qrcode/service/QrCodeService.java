@@ -63,4 +63,8 @@ public class QrCodeService {
 
         return uuid;
     }
+
+    public void expireUuid(String uuid) {
+        redisTemplate.delete(uuid);
+    }
 }

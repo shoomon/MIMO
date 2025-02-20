@@ -34,15 +34,14 @@ public class AccountDetailsService {
 
     public AccountDetails createAccountDetails(
             Transaction transaction,
-            TransactionCategory transactionCategory,
-            String memo
+            TransactionCategory transactionCategory
     ) {
         return AccountDetails.builder()
                 .transactionId(transaction.getId())
                 .amount(transaction.getAmount())
                 .senderAccountNumber(transaction.getSenderAccountNumber())
                 .receiverAccountNumber(transaction.getReceiverAccountNumber())
-                .memo(memo)
+                .memo(transaction.getMemo())
                 .transactionCategory(transactionCategory)
                 .build();
     }

@@ -1,6 +1,8 @@
 package com.bisang.backend.chat.service;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -66,11 +68,15 @@ public class ChatroomService {
                 log.error("lastReadScore가 없습니다");
             }
 
+            Long lastChatDatetime = (Long)lastChat.get("lastDatetime");
+            LocalDateTime lastLocalDateTime
+                    = LocalDateTime.ofInstant(Instant.ofEpochMilli(lastChatDatetime), ZoneId.of("UTC"));
+
             ChatroomResponse cr = new ChatroomResponse(chatroomId,
                     (String)chatroomInfo.get("title"),
                     (String)chatroomInfo.get("profileUri"),
                     (String)lastChat.get("lastChat"),
-                    (LocalDateTime)lastChat.get("lastDatetime"),
+                    lastLocalDateTime,
                     (String)userInfo.get("nickname"),
                     unreadCount
             );

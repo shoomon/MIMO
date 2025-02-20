@@ -68,7 +68,7 @@ public class ChatRedisService {
     public void afterSendMessage(Long chatroomId, RedisChatMessage message) {
         Set<Long> teamMembers = chatroomUserRepository.getTeamMembers(chatroomId);
 
-        double timestamp = (double) message.getTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli();
+        double timestamp = (double) message.getTimestamp();
 
         message.setId(null);
 

@@ -2,7 +2,6 @@ package com.bisang.backend.team.service;
 
 import static com.bisang.backend.common.exception.ExceptionCode.*;
 import static com.bisang.backend.common.utils.PageUtils.PAGE_SIZE;
-import static com.bisang.backend.team.domain.TagStatus.NORMAL;
 import static com.bisang.backend.team.domain.TeamNotificationStatus.ACTIVE;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
@@ -11,7 +10,6 @@ import java.util.List;
 import java.util.Optional;
 
 import com.bisang.backend.team.controller.dto.MyTeamSpecificDto;
-import com.bisang.backend.team.domain.Tag;
 import com.bisang.backend.team.domain.TeamTag;
 import com.bisang.backend.team.repository.*;
 import org.springframework.stereotype.Service;
@@ -42,18 +40,13 @@ public class TeamLeaderService {
     private final TeamUserQuerydslRepository teamUserQuerydslRepository;
     private final TeamInviteJpaRepository teamInviteJpaRepository;
     private final ChatroomUserService chatroomUserService;
-    private final TagJpaRepository tagJpaRepository;
     private final TeamTagJpaRepository teamTagJpaRepository;
 
     @TeamLeader
     @Transactional
-    public void deleteTag(Long userId, Long teamId, String tag) {
-        Optional<TeamTag> optionalTeamTag = teamSearchQuerydslRepository.findByName(teamId, tag);
+    public void deleteTag(Long userId, Long teamId, String tagName) {
+        Optional<TeamTag> optionalTeamTag = teamTagJpaRepository.findByTeamIdAndTagName(teamId, tagName);
         if (optionalTeamTag.isPresent()) {
-            if (tagJpaRepository.findByName(tag).get().getStatus().equals(NORMAL)) {
-                throw new TeamException(INVALID_REQUEST);
-            }
-            TeamTag findTeamTag = optionalTeamTag.get();
             teamTagJpaRepository.delete(optionalTeamTag.get());
             return;
         }
@@ -62,25 +55,17 @@ public class TeamLeaderService {
 
     @TeamLeader
     @Transactional
-    public void addTag(Long userId, Long teamId, String tag) {
-        Optional<TeamTag> optionalTeamTag = teamSearchQuerydslRepository.findByName(teamId, tag);
-        if (optionalTeamTag.isPresent()) {
-            throw new TeamException(DUPLICATED_SOURCE);
-        }
+    public void addTag(Long userId, Long teamId, List<String> tags) {
+        tags = tags.stream()
+                    .distinct()
+                    .toList();
 
-        Optional<Tag> optionalTag = tagJpaRepository.findByName(tag);
-        if (optionalTag.isPresent()) {
-            Tag getTag = optionalTag.get();
-            if (getTag.getStatus().equals(NORMAL)) {
-                throw new TeamException(INVALID_REQUEST);
+        for (String tag : tags) {
+            Optional<TeamTag> optionalTeamTag = teamTagJpaRepository.findByTeamIdAndTagName(teamId, tag);
+            if (optionalTeamTag.isEmpty()) {
+                teamTagJpaRepository.save(new TeamTag(teamId, tag));
             }
-            teamTagJpaRepository.save(new TeamTag(teamId, getTag.getId()));
-            return;
         }
-
-        Tag newTag = new Tag(tag);
-        tagJpaRepository.save(newTag);
-        teamTagJpaRepository.save(new TeamTag(teamId, newTag.getId()));
     }
 
     @TeamLeader
@@ -101,7 +86,7 @@ public class TeamLeaderService {
         teamUserJpaRepository.save(teamUser);
 
         // CHATTING 방에 참여.
-        chatroomUserService.enterChatroom(teamId, userId, tmpNickname);
+        chatroomUserService.enterChatroom(teamId, teamInvite.getUserId(), tmpNickname);
     }
 
     @TeamCoLeader

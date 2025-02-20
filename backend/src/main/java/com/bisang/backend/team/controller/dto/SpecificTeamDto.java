@@ -1,14 +1,15 @@
 package com.bisang.backend.team.controller.dto;
 
-import java.util.List;
-
 import com.bisang.backend.team.domain.Area;
+import com.bisang.backend.team.domain.TeamCategory;
 import com.bisang.backend.team.domain.TeamPrivateStatus;
 import com.bisang.backend.team.domain.TeamRecruitStatus;
 import lombok.Builder;
 
+import java.util.List;
+
 @Builder
-public record TeamDto(
+public record SpecificTeamDto(
         Long teamId,
         String profileUri,
         String name,
@@ -16,6 +17,8 @@ public record TeamDto(
         String accountNumber,
         TeamRecruitStatus recruitStatus,
         TeamPrivateStatus privateStatus,
+        Area area,
+        TeamCategory category,
         Long maxCapacity,
         Long currentCapacity,
         Double reviewScore,
