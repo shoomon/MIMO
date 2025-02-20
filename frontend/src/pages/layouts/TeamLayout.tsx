@@ -36,9 +36,8 @@ const TeamLayout = () => {
                     <MeetingInfo
                         teamId={teamId}
                         subTitle={'subtitle이 없습니다.'}
-                        rating={{
-                            rating: teamData?.score || 0,
-                        }}
+                        reviewScore={teamData?.reviewScore || 0}
+                        reviewCount={teamData?.reviewCount || 0}
                         title={teamData?.name || 'title이 없습니다.'}
                         tag={formattedTags}
                         maxCapacity={teamData?.maxCapacity || 0}

@@ -1,14 +1,12 @@
 import { Link } from 'react-router-dom';
 
 export interface TagProps {
-    to: string;
     label: string;
 }
 
 /**
  * Tag 컴포넌트의 Props.
  * @typedef {Object} TagProps
- * @property {string} to - 이동할 URL.
  * @property {string} label - 태그에 표시할 텍스트.
  */
 
@@ -17,10 +15,10 @@ export interface TagProps {
  * @param {TagProps} props - 컴포넌트의 속성.
  * @returns {JSX.Element} 렌더링된 태그 컴포넌트.
  */
-const Tag = ({ to, label }: TagProps) => {
+const Tag = ({ label }: TagProps) => {
     return (
         <Link
-            to={to}
+            to={`/search/tags?searchKeyword=${label}&pageNumber=1`}
             className="text-md border-brand-primary-400 text-brand-primary-400 h-fit w-fit rounded-sm border-[1px] bg-white px-[6px] py-[2px] font-semibold"
         >
             {label}

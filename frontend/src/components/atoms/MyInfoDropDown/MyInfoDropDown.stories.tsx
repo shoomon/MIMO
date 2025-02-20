@@ -30,6 +30,8 @@ export const Default: Story = {
         },
         active: true,
         addStyle: '',
+        setActive: () => {},
+        setLogin: () => {},
     },
 };
 
@@ -37,5 +39,7 @@ export const NoData: Story = {
     args: {
         active: true,
         addStyle: '',
+        setActive: () => {},
+        setLogin: () => {},
     },
 };

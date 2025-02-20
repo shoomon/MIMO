@@ -36,7 +36,6 @@ const sampleProfile: ProfileImageProps = {
 
 export const Default: Story = {
     args: {
-        teamScheduleCommentId: 1,
         commentId: 1,
         profileImage: sampleProfile,
         writedate: new Date().toISOString(),
@@ -50,7 +49,6 @@ export const Default: Story = {
 
 export const Reply: Story = {
     args: {
-        teamScheduleCommentId: 1,
         commentId: 2,
         profileImage: sampleProfile,
         writedate: new Date().toISOString(),

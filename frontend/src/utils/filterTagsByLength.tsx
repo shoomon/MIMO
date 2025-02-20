@@ -14,7 +14,7 @@ const getDisplayedTags = (tagList: TagProps[]): JSX.Element[] => {
     }
 
     return filteredTags.map((item: TagProps) => (
-        <Tag key={item.label} to={item.to} label={item.label} />
+        <Tag key={item.label} label={item.label} />
     ));
 };
 

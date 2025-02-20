@@ -5,6 +5,7 @@ import { SimpleTeamResponse } from './../types/Team';
 import { getTeamInfosByCategory } from '@/apis/TeamAPI';
 import { useQuery } from '@tanstack/react-query';
 import { TeamInfosResponse } from '@/types/Team';
+import BaseLayout from './layouts/BaseLayout';
 
 const Category = () => {
     const { categoryId } = useParams<{ categoryId?: string }>();
@@ -22,6 +23,19 @@ const Category = () => {
 
     const size = data?.teams.length;
 
+    if (size == 0) {
+        return (
+            <BaseLayout>
+                <div className="flex h-screen flex-1 flex-col items-center justify-start p-4 pt-[200px] text-center">
+                    <h1 className="text-3xl font-bold">'{categoryId}'</h1>
+                    <span className="text-3xl font-light">
+                        검색 결과가 없습니다.
+                    </span>
+                </div>
+            </BaseLayout>
+        );
+    }
+
     // API 응답의 teams 배열을 CardMeeting 컴포넌트 목록으로 변환합니다.
     const meetingList =
         data?.teams.map((item: SimpleTeamResponse) => {
@@ -35,9 +49,9 @@ const Category = () => {
                     key={item.teamId}
                     label={item.name}
                     content={item.description}
-                    rating={item.reviewScore}
+                    reviewScore={item.reviewScore}
+                    reviewCount={item.reviewCount}
                     tagList={formattedTags}
-                    reviewCount={item.reviewScore}
                     image={{
                         memberCount: item.currentCapacity,
                         memberLimit: item.maxCapacity,

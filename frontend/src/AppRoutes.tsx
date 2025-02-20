@@ -36,6 +36,10 @@ import TeamSchedulesAdHoc from './pages/TeamSchedule/TeamSchedulesAdHoc';
 import TeamSchedulesRegular from './pages/TeamSchedule/TeamSchedulesRegular';
 import TeamSchedulesClosed from './pages/TeamSchedule/TeamSchedulesClosed';
 import Profile from './pages/Profile';
+import TitleSearch from './pages/Search/TitleSearch';
+import TagSearch from './pages/Search/TagSearch';
+import Login from './pages/login/Login';
+import Review from './pages/Review';
 
 const AppRoutes = () => {
     return (
@@ -45,8 +49,14 @@ const AppRoutes = () => {
             <Route element={<DefaultLayout />}>
                 {/* 메인 홈 */}
                 <Route path="/" element={<Home />} />
+                {/* 로그인 */}
+                <Route path="/login" element={<Login />} />
                 {/* 검색 */}
                 <Route path="/search" element={<Search />} />
+                {/* 제목·설명 기반 검색 */}
+                <Route path="/search/title" element={<TitleSearch />} />
+                {/* 태그 기반 검색 */}
+                <Route path="/search/tags" element={<TagSearch />} />
                 {/* 카테고리 --- 이것만 카테고리 리스트 뜸 */}
                 <Route path="/category/:categoryId" element={<Category />} />
                 {/* 인기 모임 --- queryparam으로 */}
@@ -72,6 +82,7 @@ const AppRoutes = () => {
                         <Route index element={<TeamDetail />} />
                         {/* 팀 수정 */}
                         <Route path="edit" element={<TeamEdit />} />
+                        <Route path="review" element={<Review />} />
                         {/* 팀 일정 */}
                         <Route path="schedule">
                             {/* 일정 메인 */}

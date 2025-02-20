@@ -1,10 +1,9 @@
 import { TeamUserRole } from '@/types/Team';
 import type { ProfileImageProps } from './../../atoms/ProfileImage/ProfileImage';
 import { ButtonDefault } from '@/components/atoms';
-import BasicInputModal from '../BasicInputModal/BasicInputModal';
 import { useState } from 'react';
 import BasicModal from '../BasicModal/BasicModal';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 
 export interface MemberListViewProps {
