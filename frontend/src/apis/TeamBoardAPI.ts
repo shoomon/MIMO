@@ -171,10 +171,14 @@ export const likeBoard = async (
 };
 
 export const deleteTeamBoard = async (
+    teamId: string,
     teamBoardId: string,
 ): Promise<boolean> => {
+    console.log(teamId, teamBoardId);
+
     try {
         const params = {
+            team: teamId,
             board: teamBoardId,
         };
         const response = await customFetch('/team-board', {

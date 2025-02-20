@@ -13,7 +13,7 @@ export interface SimpleTeamResponse {
     tags: string[];
 }
 export interface TagsResponse {
-    tags: { tagId: number; name: string }[];
+    tags: string[];
 }
 
 export interface TeamInfoResponse {
@@ -24,7 +24,6 @@ export interface TeamInfoResponse {
     description: string;
     recruitStatus: TeamRecruitStatus;
     privateStatus: TeamPrivateStatus;
-    area: string;
     maxCapacity: number;
     currentCapacity: number;
     reviewScore: number;

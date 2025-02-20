@@ -244,6 +244,22 @@ const TeamEdit = () => {
                             accept="image/*"
                             onChange={handleProfileChange}
                         />
+                        {profilePreview && (
+                            <button
+                                type="button"
+                                className="mt-2 h-8 w-15 rounded bg-gray-200 px-2 py-1 text-sm whitespace-nowrap"
+                                onClick={() => {
+                                    setProfileFile(null);
+                                    setProfilePreview('');
+                                    setFormData((prev) => ({
+                                        ...prev,
+                                        profileUri: '',
+                                    }));
+                                }}
+                            >
+                                초기화
+                            </button>
+                        )}
                     </div>
 
                     {/* 팀 이름 입력 */}
@@ -310,16 +326,11 @@ const TeamEdit = () => {
                         >
                             <option value="">카테고리 선택</option>
                             {catgoryList?.tags &&
-                                catgoryList.tags.map(
-                                    (tag: { tagId: number; name: string }) => (
-                                        <option
-                                            key={tag.tagId}
-                                            value={tag.name}
-                                        >
-                                            {tag.name}
-                                        </option>
-                                    ),
-                                )}
+                                catgoryList.tags.map((tag: string) => (
+                                    <option key={tag} value={tag}>
+                                        {tag}
+                                    </option>
+                                ))}
                         </select>
                     </div>
 
@@ -334,16 +345,11 @@ const TeamEdit = () => {
                         >
                             <option value="">지역선택</option>
                             {areaList?.tags &&
-                                areaList.tags.map(
-                                    (tag: { tagId: number; name: string }) => (
-                                        <option
-                                            key={tag.tagId}
-                                            value={tag.name}
-                                        >
-                                            {tag.name}
-                                        </option>
-                                    ),
-                                )}
+                                areaList.tags.map((tag: string) => (
+                                    <option key={tag} value={tag}>
+                                        {tag}
+                                    </option>
+                                ))}
                         </select>
                     </div>
                 </form>

@@ -4,7 +4,7 @@ interface SvgIconViewProps extends React.SVGProps<SVGSVGElement> {
 }
 
 const SvgIconView = ({ id, size = 20, ...props }: SvgIconViewProps) => {
-    const spriteUrl = `/_sprite.svg?v=${Date.now()}`; // 캐시 무효화
+    const spriteUrl = `/_sprite.svg?v=}`; // 캐시 무효화
 
     return (
         <svg
