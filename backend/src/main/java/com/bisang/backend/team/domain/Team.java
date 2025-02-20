@@ -36,7 +36,8 @@ import lombok.NoArgsConstructor;
         indexes = {
             @Index(name = "idx_status_area_team", columnList = "private_status, team_area_code, team_id desc"),
             @Index(name = "idx_status_category_team", columnList = "private_status, team_category, team_id desc"),
-            @Index(name = "idx_team_id_accountNumber", columnList = "team_id, team_account_number")
+            @Index(name = "idx_team_id_accountNumber", columnList = "team_id, team_account_number"),
+            @Index(name = "idx_team_round", columnList = "team_round")
         }
 )
 public class Team {
@@ -73,6 +74,9 @@ public class Team {
 
     @Column(name = "team_profile_uri")
     private String teamProfileUri;
+
+    @Column(name = "team_round")
+    private Long teamRound;
 
     @Enumerated(STRING)
     @Column(name = "team_area_code")
@@ -151,5 +155,9 @@ public class Team {
 
     public void updateCategory(TeamCategory category) {
         this.category = category;
+    }
+
+    public void updateTeamRound(Long teamRound) {
+        this.teamRound = teamRound;
     }
 }
