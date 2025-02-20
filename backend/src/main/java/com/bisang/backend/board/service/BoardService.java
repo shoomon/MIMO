@@ -323,23 +323,25 @@ public class BoardService {
             if (comment.parentId() == null) { // 최상위 댓글
                 result.add(new CommentListDto(comment, commentList.get(comment.commentId())));
                 addedKey.add(comment.commentId());
-            }else{
-                if(addedKey.contains(comment.parentId())) continue;
+            }else {
+                if (addedKey.contains(comment.parentId())) continue;
+                if(!commentList.containsKey(comment.parentId())){ //todo: 여기 지우면 대댓글 고쳐짐
                 result.add(new CommentListDto(
-                        new CommentDto(
-                                comment.parentId(),
-                                null,
-                                null,
-                                null,
-                                null,
-                                "삭제된 댓글입니다.",
-                                null,
-                                null
-                        ),
-                        commentList.get(comment.parentId())
+                                new CommentDto(
+                                        comment.parentId(),
+                                        null,
+                                        null,
+                                        null,
+                                        null,
+                                        "삭제된 댓글입니다.",
+                                        null,
+                                        null
+                                ),
+                                commentList.get(comment.parentId())
                         )
                 );
                 addedKey.add(comment.parentId());
+            } //todo: 여기도 지우기
             }
         }
         return result;
