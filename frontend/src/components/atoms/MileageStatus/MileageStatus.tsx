@@ -59,7 +59,6 @@ const MileageStatus = ({ type, amount }: MileageStatusProps) => {
 
     return (
         <MileageStatusView
-            to="/"
             iconColor={iconColor}
             icon={icon}
             label={label}
