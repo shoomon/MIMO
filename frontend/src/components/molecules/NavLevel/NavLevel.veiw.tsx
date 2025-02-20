@@ -11,7 +11,11 @@ const NavLevelView = ({ navItems }: NavLevelProps) => {
             <Icon type="svg" id="Arrow-Back" />
             {navItems.map((item) => {
                 return (
-                    <Title key={item.label} label={item.label} to={item.to} />
+                    <Title
+                        key={item.label}
+                        label={decodeURIComponent(item.label)}
+                        to={item.to}
+                    />
                 );
             })}
         </nav>

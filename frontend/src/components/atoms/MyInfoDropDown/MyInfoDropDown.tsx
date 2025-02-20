@@ -1,6 +1,10 @@
+// src/components/atoms/MyInfoDropDown/MyInfoDropDown.tsx
+import React, { useRef, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+
 import { ProfileImageProps } from '../ProfileImage/ProfileImage';
 import MyInfoDropDownView from './MyInfoDropDown.view';
-import { useTokenStore } from './../../../stores/tokenStore';
+import { useTokenStore } from '@/stores/tokenStore';
 import { customFetch } from '@/apis/customFetch';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -18,10 +22,8 @@ const logoutapi = async (): Promise<void> => {
             method: 'POST',
             credentials: 'include',
         });
-
-        console.log('로그아웃됨');
     } catch (error) {
-        console.error('Error fetching area teams:', error);
+        console.error('Error during logout:', error);
         throw error;
     }
 };
@@ -35,26 +37,55 @@ const MyInfoDropDown = ({
 }: MyInfoDropDownProps) => {
     const { logout } = useTokenStore();
     const queryClient = useQueryClient();
+    const navigate = useNavigate();
+    const location = useLocation();
 
-    if (!userInfo) {
-        return;
-    }
+    // 드롭다운 영역을 감싸는 ref 생성
+    const dropdownRef = useRef<HTMLDivElement>(null);
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
         logout();
-        logoutapi();
+        await logoutapi();
         queryClient.removeQueries({ queryKey: ['userInfo'] });
         setActive(false);
         setLogin(false);
+        navigate('/');
     };
 
+    // 외부 클릭 시 드롭다운 닫기
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (
+                dropdownRef.current &&
+                !dropdownRef.current.contains(event.target as Node)
+            ) {
+                setActive(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () =>
+            document.removeEventListener('mousedown', handleClickOutside);
+    }, [setActive]);
+
+    // 페이지 이동 시 드롭다운 닫기
+    useEffect(() => {
+        setActive(false);
+    }, [location, setActive]);
+
+    // 모든 Hook 호출 후, userInfo가 없으면 null 반환
+    if (!userInfo) {
+        return null;
+    }
+
     return (
-        <MyInfoDropDownView
-            userInfo={userInfo}
-            active={active}
-            addStyle={addStyle}
-            onClick={handleLogout}
-        />
+        <div ref={dropdownRef}>
+            <MyInfoDropDownView
+                userInfo={userInfo}
+                active={active}
+                addStyle={addStyle}
+                onClick={handleLogout}
+            />
+        </div>
     );
 };
 

@@ -15,7 +15,7 @@ const meta = {
         ),
     ],
     argTypes: {
-        rating: { control: { type: 'number', min: 0, max: 5, step: 0.1 } },
+        reviewScore: { control: { type: 'number', min: 0, max: 5, step: 0.1 } },
         content: { control: 'text' },
         label: { control: 'text' },
     },
@@ -34,19 +34,20 @@ const sampleThumbnail: ThumbnailProps = {
 
 // 더미 데이터: TagProps 배열
 const sampleTagList: TagProps[] = [
-    { to: '/tag/react', label: '뿌빠' },
-    { to: '/tag/javascript', label: '뿌빠' },
-    { to: '/tag/storybook', label: '뿌빠' },
-    { to: '/tag/javascript', label: '뿌빠' },
-    { to: '/tag/storybook', label: '뿌빠' },
-    { to: '/tag/storybook', label: '뿌빠' },
-    { to: '/tag/javascript', label: '뿌빠' },
+    { label: '뿌빠' },
+    { label: '뿌빠' },
+    { label: '뿌빠' },
+    { label: '뿌빠' },
+    { label: '뿌빠' },
+    { label: '뿌빠' },
+    { label: '뿌빠' },
 ];
 
 export const Default: Story = {
     args: {
         image: sampleThumbnail,
-        rating: 4.3,
+        reviewCount: 4.3,
+        reviewScore: 0,
         tagList: sampleTagList,
         content:
             'This is a sample meeting card content which is supposed to be quite long to test the textCutter functionality. It should be trimmed appropriately.',

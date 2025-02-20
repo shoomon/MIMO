@@ -32,7 +32,7 @@ export interface CreateBoardRequest {
 export type layoutType = 'List' | 'Card';
 
 export interface PostDetail {
-    postId: number;
+    postId: string;
     userId: number;
     teamUserId: number;
     userProfileUri: string;

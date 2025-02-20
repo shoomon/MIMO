@@ -9,6 +9,7 @@ interface BasicInputModalProps {
     confirmLabel: string;
     onConfirmClick?: (value: string) => void;
     onCancelClick?: () => void;
+    children?: React.ReactNode; // children 속성 추가
 }
 
 const BasicInputModal = ({
