@@ -16,6 +16,7 @@ import java.util.Optional;
 
 import com.bisang.backend.chat.service.ChatroomUserService;
 import com.bisang.backend.team.repository.TeamReviewJpaRepository;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -93,7 +94,11 @@ public class TeamUserService {
         if (team.getMaxCapacity() > currentUserCount) {
             if (team.getRecruitStatus() == ACTIVE_PUBLIC) {
                 TeamUser newTeamMember = createTeamMember(userId, teamId, nickname, status);
-                teamUserJpaRepository.save(newTeamMember);
+                try {
+                    teamUserJpaRepository.save(newTeamMember);
+                } catch (DataIntegrityViolationException e) {
+                    throw new TeamException(1003, "모임 내에 중복된 닉네임이 존재합니다.");
+                }
 
                 // 채팅 방 가입 추가
                 chatroomUserService.enterChatroom(teamId, userId, nickname);
@@ -132,7 +137,11 @@ public class TeamUserService {
     public void updateNickname(Long userId, Long teamId, String nickname) {
         TeamUser teamUser = findTeamUserByTeamIdAndUserId(teamId, userId);
         teamUser.updateNickname(nickname);
-        teamUserJpaRepository.save(teamUser);
+        try {
+            teamUserJpaRepository.save(teamUser);
+        } catch (DataIntegrityViolationException e) {
+            throw new TeamException(1003, "모임 내에 중복된 닉네임이 존재합니다.");
+        }
 
         // 채팅방 내의 닉네임 변경
         chatroomUserService.updateNickname(userId, teamId, nickname);
