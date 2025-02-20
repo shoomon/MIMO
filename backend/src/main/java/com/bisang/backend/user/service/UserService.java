@@ -1,6 +1,7 @@
 package com.bisang.backend.user.service;
 
 import static com.bisang.backend.common.exception.ExceptionCode.INVALID_REQUEST;
+import static com.bisang.backend.s3.service.S3Service.CAT_IMAGE_URI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -98,11 +99,14 @@ public class UserService {
         List<Long> boardId = new ArrayList<>(boardTeam.keySet());
 
         Map<Long, String> thumbnail = boardQuerydslRepository.getImageThumbnailList(boardId);
-        System.out.println("이미지: "+thumbnail.size());
 
         for(Long i : boardId) {
             BoardTeamDto boardTeamInfo = boardTeam.get(i);
             String imageUri = thumbnail.get(i);
+
+            if(imageUri == null){
+                imageUri = CAT_IMAGE_URI;
+            }
 
             result.add(new SimpleBoardDto(boardTeamInfo, imageUri));
         }
@@ -133,7 +137,7 @@ public class UserService {
         //키 값은 boardId
         List<Long> boardId = new ArrayList<>(boardTeam.keySet());
         Map<Long, String> thumbnail = boardQuerydslRepository.getImageThumbnailList(boardId);
-        System.out.println("이미지: "+thumbnail.size());
+
 
         for(Long i : comment.keySet()) {
             Comment commentInfo = comment.get(i);
@@ -141,6 +145,10 @@ public class UserService {
 
             BoardTeamDto boardTeamInfo = boardTeam.get(curBoardId);
             String imageUri = thumbnail.get(curBoardId);
+
+            if(imageUri == null){
+                imageUri = CAT_IMAGE_URI;
+            }
 
             result.add(
                     new SimpleCommentDto(
