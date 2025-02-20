@@ -1,9 +1,7 @@
 package com.bisang.backend.team.service;
 
 import com.bisang.backend.team.annotation.EveryOne;
-import com.bisang.backend.team.controller.dto.SimpleTagDto;
 import com.bisang.backend.team.controller.dto.SimpleTeamDto;
-import com.bisang.backend.team.controller.dto.TagDto;
 import com.bisang.backend.team.controller.response.*;
 import com.bisang.backend.team.repository.TeamSearchQuerydslRepository;
 import lombok.RequiredArgsConstructor;
