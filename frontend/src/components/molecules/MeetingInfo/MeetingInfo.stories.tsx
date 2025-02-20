@@ -27,7 +27,6 @@ type Story = StoryObj<typeof meta>;
 // 더미 데이터: RatingStarProps (숫자 타입으로 수정)
 const sampleRating = {
     rating: 4.5,
-    reviewCount: 23, // reviewCount가 number 타입입니다.
 };
 
 // 더미 데이터: TagProps 배열
