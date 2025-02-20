@@ -3,8 +3,9 @@ import { chargePaymentAPI } from "@/apis/TransactionAPI";
 import { Iamport } from "@/types/Payment";
 import { ChargeRequest } from "@/types/Transaction";
 import generateOrderUid from "@/utils/generateOrderUid";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useCallback, useEffect, useState } from "react";
+import { useAuth } from "./useAuth";
 
 declare global {
   interface Window {
@@ -18,8 +19,11 @@ const useCharge = () => {
   const [payment, setPayment] = useState<number>(0);
   const [isOpen, setOpen] = useState<boolean>(false);
   const [isImpLoaded, setIsImpLoaded] = useState(false);
+  const { userInfo } = useAuth();
+  const queryClient = useQueryClient();
 
-  const { data: userInfo } = useQuery({
+
+  const { data: userAllInfo } = useQuery({
     queryKey: ['myAllData'],
     queryFn: getMyAllInfoAPI,
     staleTime: 1000 * 30,
@@ -33,6 +37,7 @@ const useCharge = () => {
     onSuccess: (data) => {
       if(!data) return;
 
+      queryClient.invalidateQueries({ queryKey : ["myBalance", userInfo]});
       // 마일리지 쿼리 연결
     }
   })
@@ -52,10 +57,9 @@ const useCharge = () => {
         };
   },[])
 
-  const chargePayment = () => {
+  const chargePayment = useCallback(() => {
 
-    if(!isImpLoaded || !userInfo || !IMP){
-      console.log("IMP is not loaded yet");
+    if(!isImpLoaded || !userAllInfo || !IMP){
 
       return;
     }
@@ -65,8 +69,8 @@ const useCharge = () => {
     const orderUid = generateOrderUid();
     const itemName = 'MIMO 마일리지 충전';
     const paymentPrice = payment;
-    const buyerName = userInfo.nickname;
-    const buyerEmail = userInfo.email;
+    const buyerName = userAllInfo.nickname;
+    const buyerEmail = userAllInfo.email;
     const buyerAddress = '역삼동 뺑뺑이 ssafy';
 
     IMP.request_pay(
@@ -97,23 +101,11 @@ const useCharge = () => {
               }
           } else {
 
-            const {
-              error_msg,
-              error_code,
-              status
-            } = rsp;
-
-            console.error('결제 실패:', {
-              message: error_msg,
-              code: error_code,
-              status: status
-          });
-          
-          alert(`결제에 실패했습니다: ${error_msg}`);
+          alert(`결제에 실패했습니다`);
           }
       },
     );
-  }
+  }, [IMP, isImpLoaded, mutationMileage, payment, userAllInfo])
 
   const handleConfirm = async (value: string) => {
 
@@ -122,10 +114,17 @@ const useCharge = () => {
       return;
     }
 
-    await setPayment(Number(value));
-    await chargePayment();
-    await setOpen(false);
+    setPayment(Number(value));
+    
+    setOpen(false);
   }
+
+  useEffect(() => {
+    if(payment > 0){
+      chargePayment();
+      setPayment(0);
+    }
+  }, [payment, chargePayment])
 
   const handleCancel = () => {
     setOpen(false);
@@ -135,7 +134,7 @@ const useCharge = () => {
     setOpen(true);
   }
 
-  return { isOpen, handleConfirm, handleCharge, handleCancel}
+  return { isOpen, handleConfirm, handleCharge, handleCancel }
 }
 
 export default useCharge;

@@ -59,8 +59,7 @@ const TeamMileage = () => {
                 </button>
             )}
             <div
-                onClick={(e) => {
-                    e.stopPropagation();
+                onClick={(e: React.MouseEvent<HTMLDivElement>) => {
                     setQrOpen(false);
                 }}
                 className={`fixed inset-0 flex items-center justify-center bg-gray-600/20 ${qrOpen ? 'block' : 'hidden'}`}
@@ -68,6 +67,9 @@ const TeamMileage = () => {
                 {QRuuid && (
                     <QRCodeCanvas
                         value={`${import.meta.env.VITE_APP_URL}pay/${QRuuid}/100/${accountNumber}/바나나우유`}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                        }}
                     />
                 )}
             </div>

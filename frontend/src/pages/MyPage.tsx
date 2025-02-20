@@ -9,10 +9,16 @@ import { dateParsing } from '@/utils';
 import { Link } from 'react-router-dom';
 import useMyMileage from '@/hooks/useMyMileage';
 import { MileageContainer } from '@/components/organisms';
+import { useEffect, useState } from 'react';
+import { QRCodeCanvas } from 'qrcode.react';
+import { getUserQRCodeAPI } from '@/apis/QRCodeAPI';
 
 const MyPage = () => {
     const { isOpen, handleConfirm, handleCharge, handleCancel } = useCharge();
     const { myMileageData } = useMyMileage();
+    const [accountNumber, setAccountNumber] = useState<string>('');
+    const [qrOpen, setQrOpen] = useState<boolean>(false);
+    const [QRuuid, setQRuuid] = useState<string>('');
 
     const { data } = useQuery({
         queryKey: ['myAllData'],
@@ -20,6 +26,22 @@ const MyPage = () => {
         staleTime: 1000 * 30,
         gcTime: 1000 * 60,
     });
+
+    useEffect(() => {
+        if (data) {
+            setAccountNumber(data.accountNumber);
+        }
+    }, [data]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const data = await getUserQRCodeAPI({ accountNumber });
+
+            setQRuuid(data);
+        };
+
+        fetchData();
+    }, [accountNumber]);
 
     const displayedBoard = Array.isArray(data?.userBoard)
         ? data.userBoard.length > 3
@@ -63,13 +85,43 @@ const MyPage = () => {
                 )}
 
                 <div className="flex flex-col items-end gap-4">
-                    <button
-                        type="button"
-                        className="bg-brand-primary-300 hover:bg-brand-primary-500 w-fit cursor-pointer rounded p-2 text-white"
-                        onClick={handleCharge}
+                    <div className="flex gap-3">
+                        <button
+                            type="button"
+                            className="bg-brand-primary-300 hover:bg-brand-primary-500 w-fit cursor-pointer rounded p-2 text-white"
+                            onClick={() => {
+                                setQrOpen(!qrOpen);
+                            }}
+                        >
+                            결제하기
+                        </button>
+                        <button
+                            type="button"
+                            className="bg-brand-primary-300 hover:bg-brand-primary-500 w-fit cursor-pointer rounded p-2 text-white"
+                            onClick={handleCharge}
+                        >
+                            충전하기
+                        </button>
+                    </div>
+                    <div
+                        onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+                            setQrOpen(false);
+                        }}
+                        className={`fixed inset-0 flex items-center justify-center bg-gray-600/20 ${qrOpen ? 'block' : 'hidden'}`}
                     >
-                        충전하기
-                    </button>
+                        {QRuuid ? (
+                            <QRCodeCanvas
+                                value={`${import.meta.env.VITE_APP_URL}pay/${QRuuid}/100/${accountNumber}/바나나우유`}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                }}
+                            />
+                        ) : (
+                            <div className="bg-white p-4">
+                                <span>QR 코드 데이터가 없습니다..</span>
+                            </div>
+                        )}
+                    </div>
                     <MileageContainer
                         items={myMileageData}
                         titleActive={false}
