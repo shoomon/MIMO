@@ -1,30 +1,29 @@
 package com.bisang.backend.team.repository;
 
 import com.bisang.backend.team.controller.dto.*;
+import com.bisang.backend.team.controller.response.TagsResponse;
 import com.bisang.backend.team.domain.Area;
-import com.bisang.backend.team.domain.Tag;
 import com.bisang.backend.team.domain.TeamCategory;
-import com.bisang.backend.team.domain.TeamTag;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jdk.jfr.Category;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static com.bisang.backend.common.utils.PageUtils.SHORT_PAGE_SIZE;
-import static com.bisang.backend.team.domain.QTag.tag;
 import static com.bisang.backend.team.domain.QTeam.team;
 import static com.bisang.backend.team.domain.QTeamDescription.teamDescription;
 import static com.bisang.backend.team.domain.QTeamReview.teamReview;
 import static com.bisang.backend.team.domain.QTeamTag.teamTag;
 import static com.bisang.backend.team.domain.QTeamUser.teamUser;
-import static com.bisang.backend.team.domain.TeamPrivateStatus.PRIVATE;
 import static com.bisang.backend.team.domain.TeamPrivateStatus.PUBLIC;
 import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparing;
@@ -37,75 +36,23 @@ public class TeamSearchQuerydslRepository {
     private final TeamUserJpaRepository teamUserJpaRepository;
     private final JPAQueryFactory queryFactory;
     private final TeamJpaRepository teamJpaRepository;
-    private final TagJpaRepository tagJpaRepository;
+    private final TeamTagJpaRepository teamTagJpaRepository;
 
-    public List<SimpleTagDto> findAreaTags() {
+    public TagsResponse findAreaTags() {
         List<String> areaNames = Area.getAreaNames();
-        return queryFactory
-            .select(Projections.constructor(SimpleTagDto.class,
-                tag.id,
-                tag.name
-            ))
-            .from(tag)
-            .where(tag.name.in(areaNames))
-            .fetch();
+        return new TagsResponse(areaNames);
     }
 
-    public List<SimpleTagDto> findCategoryTags() {
+    public TagsResponse findCategoryTags() {
         List<String> categoryNames = TeamCategory.getCategoryNames();
-        return queryFactory
-            .select(Projections.constructor(SimpleTagDto.class,
-                tag.id,
-                tag.name
-            ))
-            .from(tag)
-            .where(tag.name.in(categoryNames))
-            .fetch();
-    }
-
-    public Optional<TeamTag> findByName(Long teamId, String name) {
-        return Optional.ofNullable(queryFactory
-                .select(teamTag)
-                .from(teamTag).join(tag).on(teamTag.tagId.eq(tag.id))
-                .where(tag.name.eq(name), teamTag.teamId.eq(teamId)).fetchOne());
-    }
-
-    public List<SimpleTagDto> searchTags(String searchText, Integer pageNumber) {
-        if (pageNumber == null) {
-            pageNumber = 1;
-        }
-
-        return queryFactory
-            .select(Projections.constructor(SimpleTagDto.class,
-                tag.id,
-                tag.name))
-            .from(tag)
-            .where(tag.name.contains(searchText))
-            .orderBy(tag.name.desc())
-            .limit(SHORT_PAGE_SIZE)
-            .offset((pageNumber - 1) * SHORT_PAGE_SIZE)
-            .fetch();
-    }
-
-    public Long searchTagsCount(String searchText) {
-        return queryFactory
-            .select(tag.count())
-            .from(tag)
-            .where(tag.name.contains(searchText))
-            .fetchOne();
+        return new TagsResponse(categoryNames);
     }
 
     public Long searchTagTeamsCount(String searchText) {
-        Optional<Tag> tag = tagJpaRepository.findByName(searchText);
-        if (tag.isEmpty()) {
-            return 0L;
-        }
-
-        Long tagId = tag.get().getId();
         return queryFactory
             .select(teamTag.teamId.count())
             .from(teamTag).join(team).on(teamTag.teamId.eq(team.id))
-            .where(team.privateStatus.eq(PUBLIC), teamTag.tagId.eq(tagId))
+            .where(team.privateStatus.eq(PUBLIC), teamTag.tagName.eq(searchText))
             .fetchOne();
     }
 
@@ -114,17 +61,10 @@ public class TeamSearchQuerydslRepository {
             pageNumber = 1;
         }
 
-        Optional<Tag> tag = tagJpaRepository.findByName(searchText);
-        if (tag.isEmpty()) {
-            return emptyList();
-        }
-
-        Long tagId = tag.get().getId();
-
         List<Long> teamIds = queryFactory
             .select(teamTag.teamId)
             .from(teamTag)
-            .where(teamTag.tagId.eq(tagId))
+            .where(teamTag.tagName.eq(searchText))
             .orderBy(teamTag.teamId.desc())
             .limit(SHORT_PAGE_SIZE)
             .offset((pageNumber - 1) * SHORT_PAGE_SIZE)
@@ -166,19 +106,18 @@ public class TeamSearchQuerydslRepository {
     }
 
     public Long searchTeamsCount(String searchText) {
-        return queryFactory
-                .select(team.count())
-                .from(team)
-                .leftJoin(teamDescription).on(team.id.eq(teamDescription.id))
-                .where(team.privateStatus.eq(PUBLIC), team.name.contains(searchText)
-                        .or(teamDescription.description.contains(searchText)))
-                .fetchOne();
+        return teamJpaRepository.countByKeyword(searchText);
     }
 
     public List<SimpleTeamDto> searchTeams(String searchText, Integer pageNumber) {
         if (pageNumber == null) {
             pageNumber = 1;
         }
+
+        List<Long> teamIds = teamJpaRepository.searchTeamIdByKeyword(
+            searchText,
+            SHORT_PAGE_SIZE.longValue(),
+            ((pageNumber.longValue()-1) * SHORT_PAGE_SIZE.longValue()));
 
         List<SimpleTeamDto> teams = queryFactory
                 .select(Projections.constructor(SimpleTeamDto.class,
@@ -196,26 +135,42 @@ public class TeamSearchQuerydslRepository {
                         ))
                 .from(team)
                 .leftJoin(teamDescription).on(team.id.eq(teamDescription.id))
-                .where(team.privateStatus.eq(PUBLIC), team.name.contains(searchText)
-                        .or(teamDescription.description.contains(searchText)))
-                .limit(SHORT_PAGE_SIZE)
-                .offset((pageNumber - 1) * SHORT_PAGE_SIZE)
+                .where(team.id.in(teamIds))
                 .fetch();
 
-        List<Long> teamIds = teams.stream()
-                .map(SimpleTeamDto::teamId)
-                .toList();
         Map<Long, List<String>> tagsMap = getTagsByTeamIds(teamIds);
         Map<Long, SimpleTeamReviewDto> teamReviews = getReviewsByTeamIds(teamIds);
 
         return teams.stream()
                 .map(teamDto -> {
                     List<String> tags = tagsMap.getOrDefault(teamDto.teamId(), emptyList());
+                    List<String> resultTest = new ArrayList<>();
+                    String area = null;
+                    String category = null;
+                    List<String> result = new ArrayList<>();
+                    for (String tag : tags) {
+                        if (Area.fromName(tag) != null) {
+                            area = tag;
+                            continue;
+                        }
+                        if (TeamCategory.fromName(tag) != null) {
+                            category = tag;
+                            continue;
+                        }
+                        resultTest.add(tag);
+                    }
+                    if (area != null) {
+                        result.add(area);
+                    }
+                    if (category != null) {
+                        result.add(category);
+                    }
+                    result.addAll(resultTest);
                     SimpleTeamReviewDto simpleTeamReview
                             = teamReviews.getOrDefault(
                             teamDto.teamId(),
                             new SimpleTeamReviewDto(teamDto.teamId(), 0D, 0L));
-                    return createSimpleDto(teamDto, tags, simpleTeamReview);
+                    return createSimpleDto(teamDto, result, simpleTeamReview);
                 })
                 .sorted(comparing(SimpleTeamDto::teamId).reversed())
                 .toList();
@@ -242,16 +197,15 @@ public class TeamSearchQuerydslRepository {
 
     private Map<Long, List<String>> getTagsByTeamIds(List<Long> teamIds) {
         List<Tuple> results = queryFactory
-            .select(teamTag.teamId, tag.name)
+            .select(teamTag.teamId, teamTag.tagName)
             .from(teamTag)
-            .join(tag).on(teamTag.tagId.eq(tag.id))
             .where(teamTag.teamId.in(teamIds))
             .fetch();
 
         return results.stream()
             .collect(groupingBy(
                 tuple -> tuple.get(teamTag.teamId),
-                mapping(tuple -> tuple.get(tag.name), toList())
+                mapping(tuple -> tuple.get(teamTag.tagName), toList())
             ));
     }
 

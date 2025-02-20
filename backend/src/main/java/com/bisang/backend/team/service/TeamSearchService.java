@@ -1,19 +1,16 @@
 package com.bisang.backend.team.service;
 
 import com.bisang.backend.team.annotation.EveryOne;
-import com.bisang.backend.team.controller.dto.SimpleTagDto;
 import com.bisang.backend.team.controller.dto.SimpleTeamDto;
-import com.bisang.backend.team.controller.dto.TagDto;
-import com.bisang.backend.team.controller.response.SimpleTagResponse;
-import com.bisang.backend.team.controller.response.TeamTagResponse;
-import com.bisang.backend.team.controller.response.TeamTagSearchResponse;
-import com.bisang.backend.team.controller.response.TeamTitleDescSearchResponse;
+import com.bisang.backend.team.controller.response.*;
 import com.bisang.backend.team.repository.TeamSearchQuerydslRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,8 +20,9 @@ public class TeamSearchService {
     @EveryOne
     @Transactional(readOnly = true)
     public TeamTitleDescSearchResponse getTeamsByTitleOrDescription(String searchKeyword, Integer pageNumber) {
-        List<SimpleTeamDto> teams = teamSearchQuerydslRepository.searchTeams(searchKeyword, pageNumber);
-        Long numberOfTeams = teamSearchQuerydslRepository.searchTeamsCount(searchKeyword);
+        String fulltextSearchKeyword = createFulltextPattern(searchKeyword);
+        List<SimpleTeamDto> teams = teamSearchQuerydslRepository.searchTeams(fulltextSearchKeyword, pageNumber);
+        Long numberOfTeams = teamSearchQuerydslRepository.searchTeamsCount(fulltextSearchKeyword);
         return new TeamTitleDescSearchResponse(numberOfTeams.intValue(), pageNumber, teams.size(), teams);
     }
 
@@ -38,23 +36,21 @@ public class TeamSearchService {
 
     @EveryOne
     @Transactional(readOnly = true)
-    public TeamTagResponse getTagBySearchKeyword(String searchKeyword, Integer pageNumber) {
-        List<SimpleTagDto> tags = teamSearchQuerydslRepository.searchTags(searchKeyword, pageNumber);
-        Long numberOfTags = teamSearchQuerydslRepository.searchTagsCount(searchKeyword);
-        return new TeamTagResponse(numberOfTags.intValue(), pageNumber, tags.size(), tags);
+    public TagsResponse getAreaTags() {
+        return teamSearchQuerydslRepository.findAreaTags();
     }
 
     @EveryOne
     @Transactional(readOnly = true)
-    public SimpleTagResponse getAreaTags() {
-        List<SimpleTagDto> areas = teamSearchQuerydslRepository.findAreaTags();
-        return new SimpleTagResponse(areas);
+    public TagsResponse getCategoryTags() {
+        return teamSearchQuerydslRepository.findCategoryTags();
     }
 
-    @EveryOne
-    @Transactional(readOnly = true)
-    public SimpleTagResponse getCategoryTags() {
-        List<SimpleTagDto> areas = teamSearchQuerydslRepository.findCategoryTags();
-        return new SimpleTagResponse(areas);
+    private String createFulltextPattern(String searchKeyword) {
+        List<String> searchKeywords = Arrays.stream(searchKeyword.split(" "))
+            .map(keyword -> keyword + "*")
+            .collect(Collectors.toList());
+
+        return String.join(" ", searchKeywords);
     }
 }

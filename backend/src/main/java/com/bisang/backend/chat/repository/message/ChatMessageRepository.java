@@ -1,6 +1,7 @@
 package com.bisang.backend.chat.repository.message;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -59,12 +60,14 @@ public class ChatMessageRepository {
         for (int i = limit - 1; i >= 0; i--) {
             ChatMessage chatMessage = messages.get(i);
 
+            LocalDateTime createdAt = chatMessage.getCreatedAt();
+            Long createdAtMilli = createdAt.atZone(ZoneId.of("UTC")).toInstant().toEpochMilli();
             RedisChatMessage redisChatMessage = new RedisChatMessage(
                     chatMessage.getId(),
                     chatMessage.getUserId(),
                     chatMessage.getTeamUserId(),
                     chatMessage.getMessage(),
-                    chatMessage.getCreatedAt(),
+                    createdAtMilli,
                     chatMessage.getChatType()
             );
 

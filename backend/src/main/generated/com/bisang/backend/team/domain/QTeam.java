@@ -50,6 +50,8 @@ public class QTeam extends EntityPathBase<Team> {
 
     public final StringPath teamProfileUri = createString("teamProfileUri");
 
+    public final NumberPath<Long> teamRound = createNumber("teamRound", Long.class);
+
     public QTeam(String variable) {
         this(Team.class, forVariable(variable), INITS);
     }
