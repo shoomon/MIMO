@@ -79,7 +79,7 @@ export const getMyPayerCheckAPI = async ({teamId, round}:PayerDetailsRequest): P
 
 // team round check
 
-export const getTeamCurrentRoundAPI = async ({teamId}:{teamId: string}): Promise<number> => {
+export const getTeamCurrentRoundAPI = async ({teamId}:{teamId: string}): Promise<string> => {
     try {
         const response = await customFetch(`/installment/get-team-round?teamId=${teamId}`, {
             method: "GET",

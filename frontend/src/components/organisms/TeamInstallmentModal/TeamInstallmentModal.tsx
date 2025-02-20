@@ -87,6 +87,8 @@ const TeamInstallmentModal = ({
             }
         };
 
+        console.log('회차 생성 데이터라네!!', data);
+
         fetchData();
     };
 

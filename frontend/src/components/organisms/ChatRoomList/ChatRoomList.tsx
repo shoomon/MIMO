@@ -12,7 +12,14 @@ const ChatRoomList = ({ onClick }: ChatRoomListProps) => {
     });
 
     if (!isSuccess) {
-        return <div>채팅방 데이터가 없습니다..</div>;
+        return (
+            <section className="flex w-full max-w-[30.5rem] flex-col border border-gray-200">
+                <span className="p-6 text-center text-2xl font-bold">
+                    채팅방
+                </span>
+                <section className="flex flex-1 flex-col items-center overflow-y-scroll border-t border-gray-200"></section>
+            </section>
+        );
     }
 
     return <ChatRoomListView onClick={onClick} chatListItems={chatListData} />;

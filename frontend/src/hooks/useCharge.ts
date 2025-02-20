@@ -3,8 +3,9 @@ import { chargePaymentAPI } from "@/apis/TransactionAPI";
 import { Iamport } from "@/types/Payment";
 import { ChargeRequest } from "@/types/Transaction";
 import generateOrderUid from "@/utils/generateOrderUid";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useCallback, useEffect, useState } from "react";
+import { useAuth } from "./useAuth";
 
 declare global {
   interface Window {
@@ -17,8 +18,12 @@ const useCharge = () => {
   const { IMP } = window;
   const [payment, setPayment] = useState<number>(0);
   const [isOpen, setOpen] = useState<boolean>(false);
+  const [isImpLoaded, setIsImpLoaded] = useState(false);
+  const { userInfo } = useAuth();
+  const queryClient = useQueryClient();
 
-  const { data: userInfo } = useQuery({
+
+  const { data: userAllInfo } = useQuery({
     queryKey: ['myAllData'],
     queryFn: getMyAllInfoAPI,
     staleTime: 1000 * 30,
@@ -32,23 +37,30 @@ const useCharge = () => {
     onSuccess: (data) => {
       if(!data) return;
 
+      queryClient.invalidateQueries({ queryKey : ["myBalance", userInfo]});
       // 마일리지 쿼리 연결
     }
   })
 
   useEffect(() => {
     const iamport = document.createElement('script');
-        iamport.src = 'https://cdn.iamport.kr/v1/iamport.js';
-        document.head.appendChild(iamport);
+    iamport.src = 'https://cdn.iamport.kr/v1/iamport.js';
+
+    iamport.onload = () => {
+      setIsImpLoaded(true);
+    }
+        
+    document.head.appendChild(iamport);
 
         return () => {
             document.head.removeChild(iamport);
         };
   },[])
 
-  const chargePayment = () => {
+  const chargePayment = useCallback(() => {
 
-    if(!userInfo || !IMP){
+    if(!isImpLoaded || !userAllInfo || !IMP){
+
       return;
     }
 
@@ -57,8 +69,8 @@ const useCharge = () => {
     const orderUid = generateOrderUid();
     const itemName = 'MIMO 마일리지 충전';
     const paymentPrice = payment;
-    const buyerName = userInfo.nickname;
-    const buyerEmail = userInfo.email;
+    const buyerName = userAllInfo.nickname;
+    const buyerEmail = userAllInfo.email;
     const buyerAddress = '역삼동 뺑뺑이 ssafy';
 
     IMP.request_pay(
@@ -88,11 +100,12 @@ const useCharge = () => {
                   console.error('충전 실패...', error);
               }
           } else {
-              alert('충전에 실패했습니다.');
+
+          alert(`결제에 실패했습니다`);
           }
       },
     );
-  }
+  }, [IMP, isImpLoaded, mutationMileage, payment, userAllInfo])
 
   const handleConfirm = async (value: string) => {
 
@@ -101,10 +114,17 @@ const useCharge = () => {
       return;
     }
 
-    await setPayment(Number(value));
-    await chargePayment();
-    await setOpen(false);
+    setPayment(Number(value));
+    
+    setOpen(false);
   }
+
+  useEffect(() => {
+    if(payment > 0){
+      chargePayment();
+      setPayment(0);
+    }
+  }, [payment, chargePayment])
 
   const handleCancel = () => {
     setOpen(false);
@@ -114,7 +134,7 @@ const useCharge = () => {
     setOpen(true);
   }
 
-  return { isOpen, handleConfirm, handleCharge, handleCancel}
+  return { isOpen, handleConfirm, handleCharge, handleCancel }
 }
 
 export default useCharge;

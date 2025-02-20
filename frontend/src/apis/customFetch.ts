@@ -98,6 +98,13 @@ export const customFetch = async (
                     }
 
                     if (refreshResponse.ok) {
+
+                        const setAccessToken = useTokenStore.getState().setAccessToken;
+
+                        const data = await refreshResponse.json();
+
+                        setAccessToken(data);
+
                         // refresh 성공 시, 원래 요청 재시도 (재시도 횟수 증가)
                         return customFetch(
                             endpoint,
