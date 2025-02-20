@@ -1,4 +1,5 @@
 server:
+  timezone: Asia/Seoul
   servlet:
     context-path: /api
 
