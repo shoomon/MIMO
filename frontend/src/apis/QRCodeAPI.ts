@@ -13,7 +13,7 @@ export const getUserQRCodeAPI = async ({accountNumber}:UserQRCodeRequest): Promi
           throw new Error("데이터 가져오는 중 오류");
       }
 
-      return response.json();
+      return response.text();
   }catch(error){
       console.error(error);
 
