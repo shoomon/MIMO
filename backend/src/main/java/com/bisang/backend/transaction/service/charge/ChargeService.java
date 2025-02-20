@@ -4,6 +4,7 @@ import static com.bisang.backend.transaction.service.TransactionService.ADMIN_AC
 
 import com.bisang.backend.transaction.domain.Transaction;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bisang.backend.account.domain.Account;

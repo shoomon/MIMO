@@ -23,6 +23,7 @@ import com.bisang.backend.user.domain.User;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -37,7 +38,7 @@ public class TransactionService {
 
     private final TransactionJpaRepository transactionLogJpaRepository;
 
-    @DistributedLock(name = "관리자 계좌번호", waitTime = 10, leaseTime = 3)
+    @DistributedLock(name = "관리자 계좌번호", waitTime = 5, leaseTime = 1)
     public void chargeBalance(String key, ChargeRequest chargeRequest, User user) {
         Transaction transaction
                 = TransactionConverter.chargeRequestToTransaction(chargeRequest, user);
@@ -100,7 +101,7 @@ public class TransactionService {
 
     }
 
-    @DistributedLock(name = "관리자 계좌번호", waitTime = 3, leaseTime = 3)
+    @DistributedLock(name = "관리자 계좌번호", waitTime = 10, leaseTime = 1)
     public void pay(String key, PaymentRequest paymentRequest) {
         String senderAccountNumber = qrCodeService.getSenderAccountNumber(paymentRequest.getUuid());
 

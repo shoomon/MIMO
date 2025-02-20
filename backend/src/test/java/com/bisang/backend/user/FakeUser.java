@@ -11,6 +11,9 @@ import com.bisang.backend.account.repository.AccountJpaRepository;
 import com.bisang.backend.user.domain.User;
 import com.bisang.backend.user.repository.UserJpaRepository;
 
+/**
+ * 200명의 가짜 유저 생성
+ */
 @Component
 public class FakeUser {
     public static final int USER_COUNT = 250;

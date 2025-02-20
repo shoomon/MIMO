@@ -41,7 +41,6 @@ public class InstallmentService {
         Long teamRound = installmentRequests.get(0).getRound();
         team.updateTeamRound(teamRound);
 
-
         List<Installment> installments
                 = InstallmentConverter.installmentRequestsToInstallments(installmentRequests);
         installmentJpaRepository.saveAll(installments);

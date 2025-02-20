@@ -2,6 +2,7 @@ package com.bisang.backend.transaction;
 
 import static com.bisang.backend.user.FakeUser.*;
 
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -33,17 +34,17 @@ public class ChargeTest {
     @Test
     @Order(1)
     @DisplayName("250명의 유저 동시 충전 테스트")
-    public void chargeTest() throws InterruptedException {
+    public void concurrentChargeTest() throws InterruptedException {
         fakeUser.createFakeUser();
 
         ExecutorService executor = Executors.newFixedThreadPool(USER_COUNT);
+        CountDownLatch startLatch = new CountDownLatch(1);
+        CountDownLatch doneLatch = new CountDownLatch(USER_COUNT);
 
-        long startTime = System.currentTimeMillis();
-
-        try {
-            for (int i = 1; i <= USER_COUNT; i++) {
-                int userNumber = i;
-                executor.submit(() -> {
+        for (int i = 1; i <= USER_COUNT; i++) {
+            final int idx = i;
+            executor.submit(() -> {
+                try {
                     ChargeRequest chargeRequest = ChargeRequest.builder()
                             .amount(10000L)
                             .impUid(null)
@@ -51,20 +52,26 @@ public class ChargeTest {
                             .build();
 
                     User user = User.builder()
-                            .accountNumber(String.valueOf(TEST_ACCOUNT_NUMBER + userNumber))
+                            .accountNumber(String.valueOf(TEST_ACCOUNT_NUMBER + idx))
                             .build();
 
+                    startLatch.await();
                     transactionService.chargeBalance(TransactionService.ADMIN_ACCOUNT_NUMBER, chargeRequest, user);
-                });
-            }
-        } finally {
-            executor.shutdown();
-            executor.awaitTermination(30, TimeUnit.SECONDS);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                } finally {
+                    doneLatch.countDown();
+                }
+            });
         }
 
+        long startTime = System.currentTimeMillis();
+        startLatch.countDown();
+        doneLatch.await(60, TimeUnit.SECONDS);
+        executor.shutdown();
+
         long endTime = System.currentTimeMillis();
-        long duration = endTime - startTime;
-        System.out.println("처리 시간: " + duration + " 밀리초");
+        System.out.println("총 처리 시간: " + (endTime - startTime) + " 밀리초");
     }
 
     @Test

@@ -20,6 +20,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 import org.apache.commons.lang3.Validate;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -75,6 +76,7 @@ public class Team {
     @Column(name = "team_profile_uri")
     private String teamProfileUri;
 
+    @ColumnDefault("0")
     @Column(name = "team_round")
     private Long teamRound;
 

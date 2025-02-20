@@ -28,7 +28,7 @@ spring:
     url: jdbc:mysql://${DB_URL}/mimo
     hikari:
       connection-timeout: 3000
-      maximum-pool-size: 10
+      maximum-pool-size: 5
       minimum-idle: 2
 
   # JPA

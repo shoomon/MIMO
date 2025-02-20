@@ -4,10 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ce0c64dd-4326-401e-b4f1-7b7313c859a1" name="Changes" comment="refactor: 결제시 Qrcode uuid 만료">
+    <list default="true" id="ce0c64dd-4326-401e-b4f1-7b7313c859a1" name="Changes" comment="refactor: team 클래스 teamRound 변수 default 값 0 설정">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/installment/controller/InstallmentController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/installment/controller/InstallmentController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build/resources/main/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build/resources/main/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/common/aop/DistributedLockAspect.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/common/aop/DistributedLockAspect.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/installment/service/InstallmentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/installment/service/InstallmentService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/domain/Team.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/domain/Team.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/service/TransactionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/service/TransactionService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/service/charge/ChargeService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/service/charge/ChargeService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/application-test.yml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/application-test.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/test/java/com/bisang/backend/transaction/ChargeTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/test/java/com/bisang/backend/transaction/ChargeTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/test/java/com/bisang/backend/user/FakeUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/test/java/com/bisang/backend/user/FakeUser.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,7 +89,7 @@
     </excluded-from-favorite>
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="new_backend_dev_kyoungbeom" />
+        <entry key="$PROJECT_DIR$" value="new_backend_dev" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -114,37 +121,37 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.BackendApplication.executor&quot;: &quot;Run&quot;,
-    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
-    &quot;Gradle.Build backend.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.ChargeTest.chargeTest.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.ChargeTest.checkChargeTestResult.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.ChargeTest.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.ChargeTest.testConcurrentChargeRequests.executor&quot;: &quot;Debug&quot;,
-    &quot;Gradle.Download Sources.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.FakeUser.createFakeUser.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.FakeUser.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.backend [:BackendApplication.main()].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.backend [:com.bisang.backend.BackendApplication.main()].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.backend [:com.bisang.backend.point.infrastructure.PortOneProvider.main()].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.backend [build].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.backend [clean].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.backend [dependencies].executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;TEST&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/SSAFY/IdeaProjects/S12P11A504/backend/src/main/resources&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
-    &quot;애플리케이션.BackendApplication.executor&quot;: &quot;Run&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.BackendApplication.executor": "Run",
+    "DefaultHtmlFileTemplate": "HTML File",
+    "Gradle.Build backend.executor": "Run",
+    "Gradle.ChargeTest.chargeTest.executor": "Run",
+    "Gradle.ChargeTest.checkChargeTestResult.executor": "Run",
+    "Gradle.ChargeTest.executor": "Run",
+    "Gradle.ChargeTest.testConcurrentChargeRequests.executor": "Debug",
+    "Gradle.Download Sources.executor": "Run",
+    "Gradle.FakeUser.createFakeUser.executor": "Run",
+    "Gradle.FakeUser.executor": "Run",
+    "Gradle.backend [:BackendApplication.main()].executor": "Run",
+    "Gradle.backend [:com.bisang.backend.BackendApplication.main()].executor": "Run",
+    "Gradle.backend [:com.bisang.backend.point.infrastructure.PortOneProvider.main()].executor": "Run",
+    "Gradle.backend [build].executor": "Run",
+    "Gradle.backend [clean].executor": "Run",
+    "Gradle.backend [dependencies].executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "TEST__distributedLock",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/SSAFY/IdeaProjects/S12P11A504/backend/src/main/resources",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "preferences.keymap",
+    "애플리케이션.BackendApplication.executor": "Run"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\SSAFY\IdeaProjects\S12P11A504\backend\src\main\resources" />
@@ -161,7 +168,7 @@
       <recent name="com.bisang.backend.point.domain" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.BackendApplication">
+  <component name="RunManager" selected="Gradle.ChargeTest">
     <configuration name="BackendApplication" type="Application" factoryName="Application" nameIsGenerated="true">
       <envs>
         <env name="ACCESS_TOKEN_EXPIRY" value="3600000" />
@@ -441,46 +448,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1738554752629</updated>
-    </task>
-    <task id="LOCAL-00007" summary="feat: 포인트 충전 로직 구현 완료">
-      <option name="closed" value="true" />
-      <created>1738661495071</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1738661495071</updated>
-    </task>
-    <task id="LOCAL-00008" summary="refactor: 메서드 매개변수명 변경">
-      <option name="closed" value="true" />
-      <created>1738661522230</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1738661522230</updated>
-    </task>
-    <task id="LOCAL-00009" summary="chore: redisson 관련 의존성 추가">
-      <option name="closed" value="true" />
-      <created>1738744883395</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1738744883395</updated>
-    </task>
-    <task id="LOCAL-00010" summary="refactor: 유저 인증 추가">
-      <option name="closed" value="true" />
-      <created>1738744921963</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1738744921963</updated>
-    </task>
-    <task id="LOCAL-00011" summary="refactor: 불필요 클래스 삭제">
-      <option name="closed" value="true" />
-      <created>1738745048550</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1738745048550</updated>
     </task>
     <task id="LOCAL-00012" summary="refactor: 클래스명 변경 및 클래스 위치 이동">
       <option name="closed" value="true" />
@@ -834,7 +801,47 @@
       <option name="project" value="LOCAL" />
       <updated>1740011091935</updated>
     </task>
-    <option name="localTasksCounter" value="56" />
+    <task id="LOCAL-00056" summary="refactor: installmentRequest userId 칼럼 삭제">
+      <option name="closed" value="true" />
+      <created>1740035310127</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1740035310127</updated>
+    </task>
+    <task id="LOCAL-00057" summary="refactor: teamRound 변수 default 0으로 설정">
+      <option name="closed" value="true" />
+      <created>1740035368606</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1740035368606</updated>
+    </task>
+    <task id="LOCAL-00058" summary="refactor: InstallmentRequest 클래스 userId 변수 삭제">
+      <option name="closed" value="true" />
+      <created>1740035394302</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1740035394302</updated>
+    </task>
+    <task id="LOCAL-00059" summary="refactor: InstallmentRequest 클래스 userId 변수 삭제">
+      <option name="closed" value="true" />
+      <created>1740035436411</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1740035436411</updated>
+    </task>
+    <task id="LOCAL-00060" summary="refactor: team 클래스 teamRound 변수 default 값 0 설정">
+      <option name="closed" value="true" />
+      <created>1740035476576</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1740035476576</updated>
+    </task>
+    <option name="localTasksCounter" value="61" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -876,10 +883,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="refactor: 불필요 클래스 삭제" />
-    <MESSAGE value="chore: 설명 주석 변경 및 추가" />
-    <MESSAGE value="refactor: 잔액 기능 관련 구조 개선 및 잔액 충전 관련 핵심 서비스 로직 클래스별 분리 (트랜잭션 로그를 기록하는 작업의 경우 별도의 트랜잭션으로 작동할 수 있도록 분리 -&gt; 장애발생시 rollback 대상에 포함되지 않음)" />
-    <MESSAGE value="feat: 송금입금 기능 구현 및 일부 클래스명 변경, 클래스 위치 이동" />
     <MESSAGE value="feat: 결제 기능 구현 완료" />
     <MESSAGE value="merge: backend_dev 병합" />
     <MESSAGE value="refactor: 띄어쓰기, 반환타입 등 수정" />
@@ -901,6 +904,10 @@
     <MESSAGE value="chore: application.yml / application-test.yml 파일 수정" />
     <MESSAGE value="refactor: 결제시 Qrcode uuid 만려" />
     <MESSAGE value="refactor: 결제시 Qrcode uuid 만료" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactor: 결제시 Qrcode uuid 만료" />
+    <MESSAGE value="refactor: installmentRequest userId 칼럼 삭제" />
+    <MESSAGE value="refactor: teamRound 변수 default 0으로 설정" />
+    <MESSAGE value="refactor: InstallmentRequest 클래스 userId 변수 삭제" />
+    <MESSAGE value="refactor: team 클래스 teamRound 변수 default 값 0 설정" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor: team 클래스 teamRound 변수 default 값 0 설정" />
   </component>
 </project>
