@@ -75,6 +75,9 @@ public class TeamUser {
             TeamUserRole role,
             TeamNotificationStatus status
     ) {
+        String pattern = "^[a-zA-Z0-9가-힣]{1,30}$";
+        Validate.matchesPattern(nickname, pattern,
+            "모임 유저의 닉네임은 30자 이하의 영문, 숫자, 한글로 이루어져 있으며 ㅇㅇㅇ 같은 문자와 띄어쓰기는 허용하지 않습니다.");
         this.userId = userId;
         this.teamId = teamId;
         this.nickname = nickname;
