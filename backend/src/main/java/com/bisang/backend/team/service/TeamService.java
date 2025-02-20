@@ -14,6 +14,7 @@ import java.util.Optional;
 import com.bisang.backend.board.domain.TeamBoard;
 import com.bisang.backend.board.repository.TeamBoardJpaRepository;
 import com.bisang.backend.team.domain.*;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -226,7 +227,8 @@ public class TeamService {
             }
 
             if (areaCode != team.getAreaCode()) {
-                if (teamTagJpaRepository.findByTeamIdAndTagName(team.getId(), areaCode.getName()).isEmpty()) {
+                Optional<TeamTag> teamTag = teamTagJpaRepository.findByTeamIdAndTagName(team.getId(), areaCode.getName());
+                if (teamTag.isEmpty()) {
                     teamTagJpaRepository.save(new TeamTag(team.getId(), areaCode.getName()));
                 }
                 teamTagJpaRepository.findByTeamIdAndTagName(team.getId(), team.getAreaCode().getName())
@@ -248,16 +250,28 @@ public class TeamService {
                 s3Service.deleteFile(profileUri);
             }
             throw new TeamException(e.getCode(), e.getMessage());
-        } catch (Exception e) {
-            if (profileUri == null) {
-                throw new TeamException(DUPLICATED_SOURCE);
-            }
-
-            if (!profileUri.equals(CAT_IMAGE_URI)) {
+        } catch (DataIntegrityViolationException e) {
+            if (profileUri != null) {
                 s3Service.deleteFile(profileUri);
             }
-            throw new TeamException(INVALID_REQUEST);
+            throw new TeamException(1003, "모임명이 중복됩니다. 모임명을 변경해주세요.");
+        } catch (NullPointerException e) {
+            if (profileUri != null) {
+                s3Service.deleteFile(profileUri);
+            }
+            throw new TeamException(1000, "지역과 카테고리에 있어 유효하지 않은 주소입니다.");
         }
+
+//        catch (Exception e) {
+//            if (profileUri == null) {
+//                throw new TeamException(DUPLICATED_SOURCE);
+//            }
+//
+//            if (!profileUri.equals(CAT_IMAGE_URI)) {
+//                s3Service.deleteFile(profileUri);
+//            }
+//            throw new TeamException(INVALID_REQUEST);
+//        }
     }
 
     @TeamLeader
