@@ -5,7 +5,6 @@ import static com.bisang.backend.common.utils.PageUtils.SHORT_PAGE_SIZE;
 import static com.bisang.backend.invite.domain.InviteStatus.REJECTED;
 import static com.bisang.backend.invite.domain.InviteStatus.WAITING;
 import static com.bisang.backend.invite.domain.QTeamInvite.teamInvite;
-import static com.bisang.backend.team.domain.QTag.tag;
 import static com.bisang.backend.team.domain.QTeam.team;
 import static com.bisang.backend.team.domain.QTeamReview.teamReview;
 import static com.bisang.backend.team.domain.QTeamTag.teamTag;
@@ -218,15 +217,6 @@ public class TeamUserQuerydslRepository {
             .toList();
     }
 
-    private List<String> getTags(Long teamId) {
-        return queryFactory
-                .select(tag.name)
-                .from(teamTag)
-                .join(tag).on(teamTag.tagId.eq(tag.id))
-                .where(teamTag.teamId.eq(teamId))
-                .fetch();
-    }
-
     private SimpleTeamDto createSimpleDto(SimpleTeamDto dto, List<String> tags, SimpleTeamReviewDto simpleTeamReview) {
         return new SimpleTeamDto(
             dto.teamId(),
@@ -243,16 +233,15 @@ public class TeamUserQuerydslRepository {
 
     private Map<Long, List<String>> getTagsByTeamIds(List<Long> teamIds) {
         List<Tuple> results = queryFactory
-            .select(teamTag.teamId, tag.name)
+            .select(teamTag.teamId, teamTag.tagName)
             .from(teamTag)
-            .join(tag).on(teamTag.tagId.eq(tag.id))
             .where(teamTag.teamId.in(teamIds))
             .fetch();
 
         return results.stream()
             .collect(groupingBy(
                 tuple -> tuple.get(teamTag.teamId),
-                mapping(tuple -> tuple.get(tag.name), toList())
+                mapping(tuple -> tuple.get(teamTag.tagName), toList())
             ));
     }
 

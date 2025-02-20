@@ -4,10 +4,7 @@ import com.bisang.backend.team.annotation.EveryOne;
 import com.bisang.backend.team.controller.dto.SimpleTagDto;
 import com.bisang.backend.team.controller.dto.SimpleTeamDto;
 import com.bisang.backend.team.controller.dto.TagDto;
-import com.bisang.backend.team.controller.response.SimpleTagResponse;
-import com.bisang.backend.team.controller.response.TeamTagResponse;
-import com.bisang.backend.team.controller.response.TeamTagSearchResponse;
-import com.bisang.backend.team.controller.response.TeamTitleDescSearchResponse;
+import com.bisang.backend.team.controller.response.*;
 import com.bisang.backend.team.repository.TeamSearchQuerydslRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,23 +35,13 @@ public class TeamSearchService {
 
     @EveryOne
     @Transactional(readOnly = true)
-    public TeamTagResponse getTagBySearchKeyword(String searchKeyword, Integer pageNumber) {
-        List<SimpleTagDto> tags = teamSearchQuerydslRepository.searchTags(searchKeyword, pageNumber);
-        Long numberOfTags = teamSearchQuerydslRepository.searchTagsCount(searchKeyword);
-        return new TeamTagResponse(numberOfTags.intValue(), pageNumber, tags.size(), tags);
+    public TagsResponse getAreaTags() {
+        return teamSearchQuerydslRepository.findAreaTags();
     }
 
     @EveryOne
     @Transactional(readOnly = true)
-    public SimpleTagResponse getAreaTags() {
-        List<SimpleTagDto> areas = teamSearchQuerydslRepository.findAreaTags();
-        return new SimpleTagResponse(areas);
-    }
-
-    @EveryOne
-    @Transactional(readOnly = true)
-    public SimpleTagResponse getCategoryTags() {
-        List<SimpleTagDto> areas = teamSearchQuerydslRepository.findCategoryTags();
-        return new SimpleTagResponse(areas);
+    public TagsResponse getCategoryTags() {
+        return teamSearchQuerydslRepository.findCategoryTags();
     }
 }

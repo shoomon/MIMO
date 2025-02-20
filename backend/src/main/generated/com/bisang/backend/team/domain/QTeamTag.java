@@ -21,7 +21,7 @@ public class QTeamTag extends EntityPathBase<TeamTag> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final NumberPath<Long> tagId = createNumber("tagId", Long.class);
+    public final StringPath tagName = createString("tagName");
 
     public final NumberPath<Long> teamId = createNumber("teamId", Long.class);
 
