@@ -1,8 +1,6 @@
 export const MAIN_NAV_ITEMS = [
     { value: '탐색', path: '/search' },
-    { value: '나의 모임', path: '/meeting' },
-    { value: '이모저모', path: '/anything' },
-    { value: '이벤트', path: '/event' },
+    { value: '나의 모임', path: '/mymeeting' },
 ];
 
 export const DETAIL_NAV_ITEMS = [

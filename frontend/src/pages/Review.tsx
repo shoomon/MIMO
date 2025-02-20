@@ -5,14 +5,11 @@ import ButtonLayout from './layouts/ButtonLayout';
 import { useQuery } from '@tanstack/react-query';
 import { getTeamReview } from '@/apis/UserAPI';
 import { useParams } from 'react-router-dom';
-import useMyTeamProfile from '@/hooks/useMyTeamProfile';
-import { InputForm } from '@/components/molecules';
 import { review } from '@/types/User';
 import { dateParsing } from '@/utils';
 
 const Review = () => {
     const { teamId } = useParams<{ teamId: string }>();
-    const { data: profileData } = useMyTeamProfile(teamId);
 
     const { data } = useQuery({
         queryKey: ['teamReview', teamId],
@@ -50,21 +47,9 @@ const Review = () => {
                 <></>
             </ButtonLayout>
             <BodyLayout_24>
-                <section className="flex flex-col gap-8">
-                    {!profileData?.hasReview && (
-                        <div className="rounded-lg bg-gradient-to-r from-blue-500 to-teal-400 p-4 shadow-md">
-                            <InputForm
-                                id="review"
-                                type="text"
-                                placeholder="리뷰를 작성해주세요"
-                                label="리뷰 작성"
-                            />
-                        </div>
-                    )}
+                <section className="flex w-full flex-col gap-8">
                     <Title label="팀 리뷰 목록" />
-                    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                        {reviews}
-                    </div>
+                    <div className="flex w-full flex-col gap-4">{reviews}</div>
                 </section>
             </BodyLayout_24>
         </BaseLayout>
