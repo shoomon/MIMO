@@ -1,7 +1,7 @@
 import { CardMeeting } from '@/components/molecules';
 import CategoryList from '@/components/molecules/CategoryList/CategoryList';
 import ListContainer from '@/components/organisms/Carousel/ListContainer';
-import { Area, SimpleTeamResponse } from './../types/Team';
+import { SimpleTeamResponse } from './../types/Team';
 import { getMyTeamInfos, getTeamInfosByArea } from '@/apis/TeamAPI';
 import { useQuery } from '@tanstack/react-query';
 import tagFormatter from '@/utils/tagFormatter';
@@ -11,13 +11,14 @@ const Home = () => {
     const { userInfo } = useAuth();
 
     const { data, isLoading, error } = useQuery({
-        queryKey: ['Area', Area.GYEONGGI],
+        queryKey: ['Area', '서울'],
         queryFn: () => getTeamInfosByArea('서울'),
     });
 
     const { data: MyTeamList } = useQuery({
         queryKey: ['MyTeamList', userInfo?.nickname],
         queryFn: () => getMyTeamInfos(),
+        enabled: userInfo !== undefined,
     });
 
     // null 병합 연산자
@@ -30,9 +31,9 @@ const Home = () => {
                     key={item.teamId}
                     label={item.name}
                     content={item.description}
-                    rating={item.reviewScore}
-                    tagList={formattedTags}
+                    reviewScore={item.reviewScore}
                     reviewCount={item.reviewCount}
+                    tagList={formattedTags}
                     image={{
                         memberCount: item.currentCapacity,
                         memberLimit: item.maxCapacity,
@@ -52,9 +53,9 @@ const Home = () => {
                     key={item.teamId}
                     label={item.name}
                     content={item.description}
-                    rating={item.reviewScore}
-                    tagList={formattedTags}
+                    reviewScore={item.reviewScore}
                     reviewCount={item.reviewCount}
+                    tagList={formattedTags}
                     image={{
                         memberCount: item.currentCapacity,
                         memberLimit: item.maxCapacity,

@@ -65,7 +65,6 @@ export const UpcomingEvent: Story = {
         label: '안녕하세요? 오늘 오실래요?',
         entryFee: 10000,
         memberList: memberListMock.slice(0, 4),
-        isClosed: false,
         detailLink: '456',
     },
 };
@@ -79,7 +78,6 @@ export const BigEventWithManyMembers: Story = {
         label: 'Big Event',
         entryFee: 5000,
         memberList: memberListMock, // 6명의 멤버가 있어, 4명 렌더링 후 "+2"가 표시됩니다.
-        isClosed: false,
         detailLink: '456',
     },
 };

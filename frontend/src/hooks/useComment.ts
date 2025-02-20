@@ -6,7 +6,7 @@ interface UseCommentProps {
     teamId?: string;
     teamScheduleId?: string;
     // 게시판 댓글인 경우
-    postId?: number;
+    postId?: string;
     // 공통
     teamUserId: number;
     // 대댓글일 경우 (스케줄 댓글용)
@@ -15,24 +15,15 @@ interface UseCommentProps {
     parentId?: number;
 }
 
-// 댓글 작성 성공 후 호출할 콜백 타입
-type OnCommentCreated = () => void;
-
-export const useComment = (
-    props: UseCommentProps,
-    onCommentCreated?: OnCommentCreated,
-) => {
+export const useComment = (props: UseCommentProps) => {
     const [value, setValue] = useState<string>('');
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setValue(e.target.value);
     };
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-
+    const submitComment = async () => {
         try {
-            // 스케줄 댓글인 경우
             if (props.teamScheduleId) {
                 await createScheduleComment(
                     props.teamId!,
@@ -43,11 +34,9 @@ export const useComment = (
                         ? [props.parentCommentId]
                         : []),
                 );
-            }
-            // 게시판 댓글인 경우
-            else if (props.postId) {
+            } else if (props.postId) {
                 await createBoardComment(
-                    props.postId.toString(),
+                    props.postId,
                     props.teamUserId,
                     value,
                     ...(props.parentId !== undefined ? [props.parentId] : []),
@@ -57,16 +46,11 @@ export const useComment = (
             }
 
             setValue('');
-            // 댓글 작성 성공 후 콜백 실행 (예: 쿼리 무효화)
-            if (onCommentCreated) {
-                onCommentCreated();
-            }
-            alert('댓글이 등록되었습니다!');
         } catch (error) {
             console.error('댓글 등록 중 문제 발생:', error);
             alert('댓글 등록 중 문제가 발생했습니다.');
         }
     };
 
-    return { value, handleChange, handleSubmit };
+    return { value, handleChange, submitComment };
 };

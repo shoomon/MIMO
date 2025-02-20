@@ -8,7 +8,7 @@ const meta = {
         layout: 'centered',
     },
     argTypes: {
-        rating: {
+        reviewScore: {
             control: { type: 'number', min: 0, max: 5, step: 0.1 },
         },
     },
@@ -19,22 +19,21 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
     args: {
-        reviewCount: 45,
-        rating: 4.3,
+        reviewScore: 4.7,
+        reviewCount: 0,
     },
 };
 
 export const WithHalfStar: Story = {
     args: {
-        reviewCount: 5,
-        rating: 4.7,
+        reviewScore: 4.7,
+        reviewCount: 0,
     },
 };
 
 export const Perfect: Story = {
     args: {
-        reviewCount: 2,
-
-        rating: 5,
+        reviewScore: 4.7,
+        reviewCount: 0,
     },
 };

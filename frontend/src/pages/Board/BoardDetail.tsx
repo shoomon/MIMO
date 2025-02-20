@@ -26,6 +26,7 @@ const BoardDetail = () => {
 
     const navigate = useNavigate();
     const queryClient = useQueryClient();
+
     const { data: myProfileData } = useMyTeamProfile(teamId);
 
     // 댓글 작성 대상 (답글을 작성할 부모 댓글 ID)
@@ -153,6 +154,7 @@ const BoardDetail = () => {
                 teamScheduleCommentId.toString(),
                 content,
             ),
+
         onMutate: async ({ teamScheduleCommentId, content }) => {
             setComments((prevComments) =>
                 prevComments.map((thread) => {
@@ -329,19 +331,11 @@ const BoardDetail = () => {
                                                     myProfileData?.teamUserId ||
                                                     0
                                                 }
-                                                postId={Number(postId)}
+                                                postId={postId}
                                                 parentId={
                                                     thread.rootComment.commentId
                                                 }
                                                 onCommentCreated={() => {
-                                                    queryClient.invalidateQueries(
-                                                        {
-                                                            queryKey: [
-                                                                'boardDetail',
-                                                                postId,
-                                                            ],
-                                                        },
-                                                    );
                                                     setReplyTarget(null); // 답글 폼 숨김
                                                 }}
                                             />
@@ -391,16 +385,11 @@ const BoardDetail = () => {
                         )}
                     </div>
                 </div>
-                {myProfileData?.role != 'GUEST' && (
+                {myProfileData?.role !== 'GUEST' && (
                     <CommentWrite
                         teamId={teamId!}
                         teamUserId={myProfileData?.teamUserId || 0}
-                        postId={Number(postId)}
-                        onCommentCreated={() =>
-                            queryClient.invalidateQueries({
-                                queryKey: ['boardDetail', postId],
-                            })
-                        }
+                        postId={postId}
                     />
                 )}
             </BodyLayout_64>

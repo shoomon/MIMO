@@ -9,6 +9,7 @@ interface BasicInputModalProps {
     confirmLabel: string;
     onConfirmClick?: (value: string) => void;
     onCancelClick?: () => void;
+    children?: React.ReactNode; // children 속성 추가
 }
 
 const BasicInputModal = ({
@@ -49,7 +50,7 @@ const BasicInputModal = ({
             }`}
         >
             <div className="w-full max-w-[352px] rounded-xl bg-gray-50 p-6 shadow-xl">
-                <section className="text-text-xl pb-4 text-center font-bold text-gray-900">
+                <section className="text-text-xl pb-1 text-center font-bold text-gray-900">
                     {title}
                 </section>
                 {subTitle && (
