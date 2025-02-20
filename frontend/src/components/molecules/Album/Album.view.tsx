@@ -14,7 +14,12 @@ export interface AlbumProps {
 
 const AlbumView = ({ images = [] }: AlbumProps) => {
     if (!Array.isArray(images) || images.length === 0) {
-        return <p>앨범에 아무것도 없어요</p>;
+        return (
+            <>
+                <Title label="앨범" to={`album`} />
+                <span className="text-center">앨범에 아무것도 없어요</span>
+            </>
+        );
     }
 
     return (

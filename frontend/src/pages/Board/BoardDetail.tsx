@@ -97,9 +97,7 @@ const BoardDetail = () => {
             queryClient.cancelQueries({
                 queryKey: ['boardDetail', postId],
             });
-            queryClient.removeQueries({
-                queryKey: ['boardDetail', postId],
-            });
+
             queryClient.invalidateQueries({ queryKey: ['boardList'] });
             navigate(`../`);
         },
