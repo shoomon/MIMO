@@ -1,7 +1,10 @@
 package com.bisang.backend.team.controller.dto;
 
+import lombok.Builder;
+
 import java.util.List;
 
+@Builder
 public record SimpleTeamDto(
     Long teamId,
     String name,

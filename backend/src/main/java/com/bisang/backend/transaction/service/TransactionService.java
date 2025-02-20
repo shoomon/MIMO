@@ -113,6 +113,8 @@ public class TransactionService {
 
             updateTransactionStatus(transaction, TransactionStatus.SUCCESS);
             log.info("Balance Pay Success: {}", transaction);
+
+            qrCodeService.expireUuid(paymentRequest.getUuid());
         } catch (AccountException e1) {
             log.error("Balance Pay Error Occur : ", e1);
             updateTransactionStatus(transaction, TransactionStatus.FAIL);

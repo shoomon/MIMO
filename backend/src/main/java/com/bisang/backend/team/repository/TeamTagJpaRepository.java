@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.bisang.backend.team.domain.TeamTag;
 
 public interface TeamTagJpaRepository extends JpaRepository<TeamTag, Long> {
-    Optional<TeamTag> findByTeamIdAndTagId(Long teamId, Long tagId);
+    Optional<TeamTag> findByTeamIdAndTagName(Long teamId, String tagName);
 }

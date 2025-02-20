@@ -1,5 +1,7 @@
 package com.bisang.backend.chat.batch;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 import org.springframework.batch.item.Chunk;
@@ -48,13 +50,15 @@ public class ChatItemWriter implements ItemWriter<ChatMessage> {
 
     // ChatMessage → RedisChatMessage 변환
     private RedisChatMessage convertToRedisChatMessage(ChatMessage chatMessage) {
+        LocalDateTime createdAt = chatMessage.getCreatedAt();
+        Long createdAtMilli = createdAt.atZone(ZoneId.of("UTC")).toInstant().toEpochMilli();
 
         return new RedisChatMessage(
                 chatMessage.getId(),
                 chatMessage.getChatroomId(),
                 chatMessage.getUserId(),
                 chatMessage.getMessage(),
-                chatMessage.getCreatedAt(),
+                createdAtMilli,
                 chatMessage.getChatType()
         );
     }

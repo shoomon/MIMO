@@ -4,21 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ce0c64dd-4326-401e-b4f1-7b7313c859a1" name="Changes" comment="feat: team 계좌 내역 조회 기능 추가">
+    <list default="true" id="ce0c64dd-4326-401e-b4f1-7b7313c859a1" name="Changes" comment="refactor: 결제시 Qrcode uuid 만료">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/account/controller/AccountController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/account/controller/AccountController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/account/controller/response/AccountDetailsResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/account/controller/response/AccountDetailsResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/account/domain/AccountDetails.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/account/domain/AccountDetails.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/account/service/AccountDetailsService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/account/service/AccountDetailsService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/installment/controller/InstallmentController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/installment/controller/InstallmentController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/installment/service/InstallmentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/installment/service/InstallmentService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/qrcode/controller/QrcodeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/qrcode/controller/QrcodeController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/qrcode/service/QrCodeService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/qrcode/service/QrCodeService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/repository/TeamJpaRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/team/repository/TeamJpaRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/controller/TransactionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/controller/TransactionController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/repository/AccountDetailsJpaRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/account/repository/AccountDetailsJpaRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/repository/AccountQuerydslRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/installment/repository/InstallmentQuerydslRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/repository/TransactionLogJpaRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/repository/TransactionJpaRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/service/TransactionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/bisang/backend/transaction/service/TransactionService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,7 +82,7 @@
     </excluded-from-favorite>
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="new_backend_dev" />
+        <entry key="$PROJECT_DIR$" value="new_backend_dev_kyoungbeom" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -112,7 +101,7 @@
   <component name="GitLabMergeRequestsSettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;first&quot;: &quot;https://lab.ssafy.com/s12-webmobile1-sub1/S12P11A504.git&quot;,
-    &quot;second&quot;: &quot;d322942d-6291-4b27-aafc-08d61f5435ac&quot;
+    &quot;second&quot;: &quot;72f6421d-4263-4e0f-9ac5-a6759ab66296&quot;
   }
 }</component>
   <component name="ProjectColorInfo">{
@@ -125,37 +114,37 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.BackendApplication.executor": "Run",
-    "DefaultHtmlFileTemplate": "HTML File",
-    "Gradle.Build backend.executor": "Run",
-    "Gradle.ChargeTest.chargeTest.executor": "Run",
-    "Gradle.ChargeTest.checkChargeTestResult.executor": "Run",
-    "Gradle.ChargeTest.executor": "Run",
-    "Gradle.ChargeTest.testConcurrentChargeRequests.executor": "Debug",
-    "Gradle.Download Sources.executor": "Run",
-    "Gradle.FakeUser.createFakeUser.executor": "Run",
-    "Gradle.FakeUser.executor": "Run",
-    "Gradle.backend [:BackendApplication.main()].executor": "Run",
-    "Gradle.backend [:com.bisang.backend.BackendApplication.main()].executor": "Run",
-    "Gradle.backend [:com.bisang.backend.point.infrastructure.PortOneProvider.main()].executor": "Run",
-    "Gradle.backend [build].executor": "Run",
-    "Gradle.backend [clean].executor": "Run",
-    "Gradle.backend [dependencies].executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "new__backend__dev__kyoungbeom",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/SSAFY/IdeaProjects/S12P11A504/backend/src/main/resources",
-    "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "preferences.keymap",
-    "애플리케이션.BackendApplication.executor": "Run"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.BackendApplication.executor&quot;: &quot;Run&quot;,
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;Gradle.Build backend.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.ChargeTest.chargeTest.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.ChargeTest.checkChargeTestResult.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.ChargeTest.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.ChargeTest.testConcurrentChargeRequests.executor&quot;: &quot;Debug&quot;,
+    &quot;Gradle.Download Sources.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.FakeUser.createFakeUser.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.FakeUser.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.backend [:BackendApplication.main()].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.backend [:com.bisang.backend.BackendApplication.main()].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.backend [:com.bisang.backend.point.infrastructure.PortOneProvider.main()].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.backend [build].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.backend [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.backend [dependencies].executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;TEST&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/SSAFY/IdeaProjects/S12P11A504/backend/src/main/resources&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
+    &quot;애플리케이션.BackendApplication.executor&quot;: &quot;Run&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\SSAFY\IdeaProjects\S12P11A504\backend\src\main\resources" />
@@ -436,10 +425,10 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.ChargeTest" />
+        <item itemvalue="Gradle.ChargeTest.chargeTest" />
         <item itemvalue="Gradle.backend [build]" />
         <item itemvalue="Gradle.backend [clean]" />
-        <item itemvalue="Gradle.ChargeTest.chargeTest" />
-        <item itemvalue="Gradle.ChargeTest" />
         <item itemvalue="Gradle.ChargeTest.checkChargeTestResult" />
       </list>
     </recent_temporary>
@@ -452,54 +441,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1738554752629</updated>
-    </task>
-    <task id="LOCAL-00001" summary="build: build.gradle 의존성 추가">
-      <option name="closed" value="true" />
-      <created>1738567991015</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1738567991015</updated>
-    </task>
-    <task id="LOCAL-00002" summary="chore: gitignore 파일 수정">
-      <option name="closed" value="true" />
-      <created>1738569607195</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1738569607195</updated>
-    </task>
-    <task id="LOCAL-00003" summary="feat: 계좌 생성 로직 구현">
-      <option name="closed" value="true" />
-      <created>1738571093525</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1738571093525</updated>
-    </task>
-    <task id="LOCAL-00004" summary="feat: 계좌 생성 로직 구현">
-      <option name="closed" value="true" />
-      <created>1738571187240</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1738571187240</updated>
-    </task>
-    <task id="LOCAL-00005" summary="feat: 계좌 재시도 로직 추가 / 계좌 유효성 검증 로직 추가 / 계좌 번호 생성 메서드명 수정">
-      <option name="closed" value="true" />
-      <created>1738632520755</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1738632520755</updated>
-    </task>
-    <task id="LOCAL-00006" summary="refactor: import 선언문 순서 변경">
-      <option name="closed" value="true" />
-      <created>1738641157988</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1738641157988</updated>
     </task>
     <task id="LOCAL-00007" summary="feat: 포인트 충전 로직 구현 완료">
       <option name="closed" value="true" />
@@ -837,7 +778,63 @@
       <option name="project" value="LOCAL" />
       <updated>1739854412713</updated>
     </task>
-    <option name="localTasksCounter" value="49" />
+    <task id="LOCAL-00049" summary="refactor: 계좌 내역 조회 관련 리팩토링">
+      <option name="closed" value="true" />
+      <created>1739871368428</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1739871368428</updated>
+    </task>
+    <task id="LOCAL-00050" summary="feat: 팀 회차 정보 API 구현">
+      <option name="closed" value="true" />
+      <created>1740009971726</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1740009971728</updated>
+    </task>
+    <task id="LOCAL-00051" summary="refactor: 계좌 내역 메모 수정">
+      <option name="closed" value="true" />
+      <created>1740010063762</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1740010063762</updated>
+    </task>
+    <task id="LOCAL-00052" summary="chore: user 인덱스 오타 수정">
+      <option name="closed" value="true" />
+      <created>1740010100592</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1740010100592</updated>
+    </task>
+    <task id="LOCAL-00053" summary="chore: application.yml / application-test.yml 파일 수정">
+      <option name="closed" value="true" />
+      <created>1740010715697</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1740010715697</updated>
+    </task>
+    <task id="LOCAL-00054" summary="refactor: 결제시 Qrcode uuid 만려">
+      <option name="closed" value="true" />
+      <created>1740011057514</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1740011057514</updated>
+    </task>
+    <task id="LOCAL-00055" summary="refactor: 결제시 Qrcode uuid 만료">
+      <option name="closed" value="true" />
+      <created>1740011091935</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1740011091935</updated>
+    </task>
+    <option name="localTasksCounter" value="56" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -866,7 +863,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="origin/backend_dev" />
+                        <option value="TEST" />
                       </list>
                     </value>
                   </entry>
@@ -879,13 +876,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat: 충전 관련 에러코드명 변경" />
-    <MESSAGE value="refactor: 충전 관련 에러코드명 변경" />
-    <MESSAGE value="refactor: 예외처리 클래스 추가 및 handler 메서드 추가" />
-    <MESSAGE value="feat: 예외처리 클래스 추가 및 handler 메서드 추가" />
-    <MESSAGE value="refactor: 트랜잭션 클래스 관련 멤버 변수 추가 및 메서드 추가" />
-    <MESSAGE value="refactor: 전반적 충전 로직 재구현 (관리자 계정에 대한 분산락 처리 추가, 트랜잭션 상태 변수 도입하여 상태값 관리)" />
-    <MESSAGE value="refactor: Balance 관련 클래스 위치 이동" />
     <MESSAGE value="refactor: 불필요 클래스 삭제" />
     <MESSAGE value="chore: 설명 주석 변경 및 추가" />
     <MESSAGE value="refactor: 잔액 기능 관련 구조 개선 및 잔액 충전 관련 핵심 서비스 로직 클래스별 분리 (트랜잭션 로그를 기록하는 작업의 경우 별도의 트랜잭션으로 작동할 수 있도록 분리 -&gt; 장애발생시 rollback 대상에 포함되지 않음)" />
@@ -904,6 +894,13 @@
     <MESSAGE value="refactor: 계좌 관련 로직 리팩토링 및 일부 기능 추가" />
     <MESSAGE value="chore: new_backend_dev 병합" />
     <MESSAGE value="feat: team 계좌 내역 조회 기능 추가" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: team 계좌 내역 조회 기능 추가" />
+    <MESSAGE value="refactor: 계좌 내역 조회 관련 리팩토링" />
+    <MESSAGE value="feat: 팀 회차 정보 API 구현" />
+    <MESSAGE value="refactor: 계좌 내역 메모 수정" />
+    <MESSAGE value="chore: user 인덱스 오타 수정" />
+    <MESSAGE value="chore: application.yml / application-test.yml 파일 수정" />
+    <MESSAGE value="refactor: 결제시 Qrcode uuid 만려" />
+    <MESSAGE value="refactor: 결제시 Qrcode uuid 만료" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor: 결제시 Qrcode uuid 만료" />
   </component>
 </project>
