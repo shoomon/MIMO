@@ -1,12 +1,11 @@
 // src/components/atoms/MyInfoDropDown/MyInfoDropDown.tsx
 import React, { useRef, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-
 import { ProfileImageProps } from '../ProfileImage/ProfileImage';
 import MyInfoDropDownView from './MyInfoDropDown.view';
 import { useTokenStore } from '@/stores/tokenStore';
-import { customFetch } from '@/apis/customFetch';
 import { useQueryClient } from '@tanstack/react-query';
+import { logoutapi } from '@/apis/AuthAPI';
 
 interface MyInfoDropDownProps {
     userInfo?: ProfileImageProps;
@@ -15,18 +14,6 @@ interface MyInfoDropDownProps {
     setActive: React.Dispatch<React.SetStateAction<boolean>>;
     setLogin: React.Dispatch<React.SetStateAction<boolean>>;
 }
-
-const logoutapi = async (): Promise<void> => {
-    try {
-        await customFetch('/login/oauth2/logout', {
-            method: 'POST',
-            credentials: 'include',
-        });
-    } catch (error) {
-        console.error('Error during logout:', error);
-        throw error;
-    }
-};
 
 const MyInfoDropDown = ({
     userInfo,

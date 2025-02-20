@@ -5,6 +5,7 @@ import { MileageStatusProps } from "@/components/atoms/MileageStatus/MileageStat
 import { RawDataRow } from "@/utils/transformTableData";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
+import useMyTeamProfile from "./useMyTeamProfile";
 
 const useTeamMileage = (teamId:string, round:string) => {
 
@@ -17,10 +18,12 @@ const useTeamMileage = (teamId:string, round:string) => {
     staleTime: 1000 * 20
   })
 
+  const { data : myTeamInfo } = useMyTeamProfile(teamId);
+
   const { data : myPayCheck } = useQuery({
     queryKey: ["payCheck", teamId],
     queryFn: async () => {
-      if(!teamId) throw new Error("Team ID is required");
+      if(!teamId || !round) throw new Error("Team ID or Round is required");
       return getMyPayerCheckAPI({teamId, round});
     },
     staleTime: 1000 * 20
@@ -33,7 +36,7 @@ const useTeamMileage = (teamId:string, round:string) => {
 
       return getTeamCurrentRoundAPI({teamId});
     },
-    staleTime: 1000 * 20
+    staleTime: 1000 * 5
   })
 
   const { data: teamBalance, isSuccess:balanceSuccess } = useQuery({
@@ -219,10 +222,8 @@ const useTeamMileage = (teamId:string, round:string) => {
     });
 
   }, [teamNonPayerDetail]);
-
-
   
-  return {teamCurrentRound, teamInfo, myPayCheck, teamMileageData, teamPayerHistoryData, teamPayerHistoryShortData, teamNonPayerHistoryData, teamNonPayerHistoryShortData, teamBalance, teamPayDetail, teamPayerDetail, teamNonPayerDetail, getMyPayerCheck, teamMileageHistoryData}
+  return {teamCurrentRound, teamInfo, myTeamInfo, myPayCheck, teamMileageData, teamPayerHistoryData, teamPayerHistoryShortData, teamNonPayerHistoryData, teamNonPayerHistoryShortData, teamBalance, teamPayDetail, teamPayerDetail, teamNonPayerDetail, getMyPayerCheck, teamMileageHistoryData}
 }
 
 export default useTeamMileage;

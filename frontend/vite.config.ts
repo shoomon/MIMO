@@ -16,5 +16,14 @@ export default defineConfig({
         alias: {
             '@': '/src', // 프로젝트 루트 기준 src 폴더를 가리킴
         },
-    },    
+    },
+    build: {
+        minify: 'esbuild',
+        terserOptions: {
+          compress: {
+            drop_console: true,
+            drop_debugger: true
+          }
+        }
+      }  
 });

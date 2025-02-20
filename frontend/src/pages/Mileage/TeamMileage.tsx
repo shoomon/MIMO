@@ -11,10 +11,8 @@ const TeamMileage = () => {
     const { teamId, round } = useParams() as { teamId: string; round: string };
     const [qrOpen, setQrOpen] = useState<boolean>(false);
     const queryClient = useQueryClient();
-    const { teamMileageData, teamMileageHistoryData } = useTeamMileage(
-        teamId,
-        round,
-    );
+    const { teamMileageData, teamMileageHistoryData, myTeamInfo } =
+        useTeamMileage(teamId, round);
     const [accountNumber, setAccountNumber] = useState<string>('');
     const [QRuuid, setQRuuid] = useState<string>('');
 
@@ -36,7 +34,7 @@ const TeamMileage = () => {
 
             setQRuuid(data);
         };
-        if (accountNumber) {
+        if (myTeamInfo && myTeamInfo.role == 'LEADER' && accountNumber) {
             fetchData();
         }
     }, [accountNumber, teamId]);
@@ -50,14 +48,16 @@ const TeamMileage = () => {
 
     return (
         <div className="relative flex flex-col gap-16 px-8 py-4">
-            <button
-                onClick={() => {
-                    setQrOpen(!qrOpen);
-                }}
-                className={`bg-brand-primary-300 hover:bg-brand-primary-500 absolute right-8 w-fit rounded-sm p-2 text-white`}
-            >
-                결제하기
-            </button>
+            {myTeamInfo && myTeamInfo.role == 'LEADER' && (
+                <button
+                    onClick={() => {
+                        setQrOpen(!qrOpen);
+                    }}
+                    className={`bg-brand-primary-300 hover:bg-brand-primary-500 absolute right-8 w-fit rounded-sm p-2 text-white`}
+                >
+                    결제하기
+                </button>
+            )}
             <div
                 onClick={(e) => {
                     e.stopPropagation();

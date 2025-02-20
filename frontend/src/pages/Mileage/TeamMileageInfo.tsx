@@ -9,7 +9,7 @@ import { useParams } from 'react-router-dom';
 const TeamMileageInfo = () => {
     const { teamId } = useParams() as { teamId: string };
     const queryClient = useQueryClient();
-    const [round, setRound] = useState<string>('0');
+    const [round, setRound] = useState<string>('2');
     const [amount, setAmount] = useState<number>(0);
     const [accountNumber, setAccountNumber] = useState<string>('');
     const [installOpen, setInstallOpen] = useState<boolean>(false);
@@ -19,8 +19,9 @@ const TeamMileageInfo = () => {
         teamNonPayerHistoryShortData,
         teamPayerHistoryShortData,
         teamInfo,
+        myTeamInfo,
         myPayCheck,
-    } = useTeamMileage(teamId, round);
+    } = useTeamMileage(teamId, round!);
 
     useEffect(() => {
         if (teamCurrentRound == undefined) {
@@ -63,15 +64,11 @@ const TeamMileageInfo = () => {
         setRound(e.target.value);
     };
 
-    const columns = [
-        { title: '내역', dataIndex: 'transaction' },
-        { title: '멤버', dataIndex: 'user' },
-        { title: '설명', dataIndex: 'name' },
-        { title: '날짜', dataIndex: 'date' },
-        { title: '금액', dataIndex: 'amount' },
-    ];
+    const sendInstallmentPay = () => {
+        const fetchData = async () => {};
+    };
 
-    const nonPayColumn = [
+    const columns = [
         { title: '내역', dataIndex: 'transaction' },
         { title: '멤버', dataIndex: 'user' },
         { title: '금액', dataIndex: 'amount' },
@@ -80,33 +77,43 @@ const TeamMileageInfo = () => {
     return (
         <div className="relative flex flex-col gap-16 px-8 py-4">
             <div className="absolute right-8 flex w-fit gap-2">
-                <button
-                    onClick={() => {
-                        setInstallOpen(true);
-                    }}
-                    className={`bg-brand-primary-300 hover:bg-brand-primary-500 cursor-pointer rounded-sm p-2 text-white`}
-                >
-                    회비 생성하기
-                </button>
-                {myPayCheck && (
-                    <button
-                        onClick={() => {}}
-                        className={`bg-brand-primary-300 hover:bg-brand-primary-500 cursor-pointer rounded-sm p-2 text-white`}
-                    >
-                        납부하기
-                    </button>
-                )}
+                {myTeamInfo &&
+                    myTeamInfo.role == 'LEADER' &&
+                    teamCurrentRound &&
+                    round == teamCurrentRound + 1 && (
+                        <button
+                            onClick={() => {
+                                setInstallOpen(true);
+                            }}
+                            className={`bg-brand-primary-300 hover:bg-brand-primary-500 cursor-pointer rounded-sm p-2 text-white`}
+                        >
+                            회비 생성하기
+                        </button>
+                    )}
+                {!myPayCheck &&
+                    teamCurrentRound &&
+                    round != teamCurrentRound + 1 && (
+                        <button
+                            onClick={sendInstallmentPay}
+                            className={`bg-brand-primary-300 hover:bg-brand-primary-500 cursor-pointer rounded-sm p-2 text-white`}
+                        >
+                            납부하기
+                        </button>
+                    )}
                 <select
                     value={round}
                     onChange={handleChange}
                     className="rounded-sm p-2"
                 >
                     {teamCurrentRound !== undefined &&
-                        Array.from({ length: teamCurrentRound + 1 }, (_, i) => (
-                            <option key={i} value={i + 1}>
-                                {i + 1}
-                            </option>
-                        ))}
+                        Array.from(
+                            { length: Number(teamCurrentRound + 1) },
+                            (_, i) => (
+                                <option key={i} value={i + 1}>
+                                    {i + 1}
+                                </option>
+                            ),
+                        )}
                 </select>
             </div>
             <div
@@ -135,7 +142,7 @@ const TeamMileageInfo = () => {
                 title="미납부 ❌"
                 to={`/team/${teamId}/mileage/non-payment`}
                 items={teamNonPayerHistoryShortData}
-                columns={nonPayColumn}
+                columns={columns}
             />
         </div>
     );

@@ -336,7 +336,7 @@ const TeamCreate: React.FC = () => {
                     >
                         <option value="">선택해주세요</option>
                         {options.map((option) => (
-                            <option key={option.value} value={option.value}>
+                            <option key={option.label} value={option.value}>
                                 {option.label}
                             </option>
                         ))}

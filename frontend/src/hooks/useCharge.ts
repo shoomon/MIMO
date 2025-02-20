@@ -17,6 +17,7 @@ const useCharge = () => {
   const { IMP } = window;
   const [payment, setPayment] = useState<number>(0);
   const [isOpen, setOpen] = useState<boolean>(false);
+  const [isImpLoaded, setIsImpLoaded] = useState(false);
 
   const { data: userInfo } = useQuery({
     queryKey: ['myAllData'],
@@ -38,8 +39,13 @@ const useCharge = () => {
 
   useEffect(() => {
     const iamport = document.createElement('script');
-        iamport.src = 'https://cdn.iamport.kr/v1/iamport.js';
-        document.head.appendChild(iamport);
+    iamport.src = 'https://cdn.iamport.kr/v1/iamport.js';
+
+    iamport.onload = () => {
+      setIsImpLoaded(true);
+    }
+        
+    document.head.appendChild(iamport);
 
         return () => {
             document.head.removeChild(iamport);
@@ -48,7 +54,9 @@ const useCharge = () => {
 
   const chargePayment = () => {
 
-    if(!userInfo || !IMP){
+    if(!isImpLoaded || !userInfo || !IMP){
+      console.log("IMP is not loaded yet");
+
       return;
     }
 
@@ -88,7 +96,20 @@ const useCharge = () => {
                   console.error('충전 실패...', error);
               }
           } else {
-              alert('충전에 실패했습니다.');
+
+            const {
+              error_msg,
+              error_code,
+              status
+            } = rsp;
+
+            console.error('결제 실패:', {
+              message: error_msg,
+              code: error_code,
+              status: status
+          });
+          
+          alert(`결제에 실패했습니다: ${error_msg}`);
           }
       },
     );
