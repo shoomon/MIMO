@@ -2,7 +2,9 @@ package com.bisang.backend.chat.service;
 
 import static com.bisang.backend.common.exception.ExceptionCode.NOT_FOUND_TEAM;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
@@ -38,7 +40,7 @@ public class ChatroomUserService {
         chatroomUserRepository.updateNickname(userId, chatroomId, nickname);
     }
 
-    public void updateLastRead(Long id, LocalDateTime lastDateTime, Long lastChatId, Long roomId) {
+    public void updateLastRead(Long id, Long lastDateTime, Long lastChatId, Long roomId) {
         chatroomUserRepository.updateLastRead(id, lastDateTime, roomId, lastChatId);
     }
 
@@ -47,7 +49,8 @@ public class ChatroomUserService {
                 .findIdByTeamId(teamId)
                 .orElseThrow(() -> new ChatroomException(NOT_FOUND_TEAM));
 
-        LocalDateTime enterDate = LocalDateTime.now();
+        Long enterDate = Instant.now().toEpochMilli();
+        LocalDateTime localEnterDate = LocalDateTime.ofInstant(Instant.ofEpochMilli(enterDate), ZoneId.of("UTC"));
         chatroomUserRepository.insertRedisMemberUser(chatroomId, userId);
 
         RedisChatMessage message = new RedisChatMessage(
@@ -64,7 +67,7 @@ public class ChatroomUserService {
                         chatroomId,
                         userId,
                         nickname,
-                        enterDate,
+                        localEnterDate,
                         message.getId()
                 );
 
@@ -83,11 +86,13 @@ public class ChatroomUserService {
         Map<Object, Object> userInfo = chatroomUserRepository.getUserInfo(chatroomId, userId);
         String nickname = (String)userInfo.get("nickname");
 
+        Long currentTime = Instant.now().toEpochMilli();
+
         RedisChatMessage message = new RedisChatMessage(
                 chatroomId,
                 userId,
                 nickname + "님이 퇴장하였습니다.",
-                LocalDateTime.now(),
+                currentTime,
                 ChatType.LEAVE
         );
 
@@ -107,11 +112,13 @@ public class ChatroomUserService {
         Map<Object, Object> userInfo = chatroomUserRepository.getUserInfo(chatroomId, userId);
         String nickname = (String)userInfo.get("nickname");
 
+        Long currentTime = Instant.now().toEpochMilli();
+
         RedisChatMessage redisChatMessage = new RedisChatMessage(
                 chatroomId,
                 userId,
                 nickname + "님이 강제퇴장 되었습니다.",
-                LocalDateTime.now(),
+                currentTime,
                 ChatType.FORCE
         );
 

@@ -36,9 +36,9 @@ public class TransferService {
         updateReceiverAccountBalance(receiverAccountNumber, amount);
 
         AccountDetails senderAccountDetails
-                = accountDetailsService.createAccountDetails(transaction, TransactionCategory.TRANSFER, "송금");
+                = accountDetailsService.createAccountDetails(transaction, TransactionCategory.TRANSFER);
         AccountDetails receiverAccountDetails
-                = accountDetailsService.createAccountDetails(transaction, TransactionCategory.DEPOSIT, "입금");
+                = accountDetailsService.createAccountDetails(transaction, TransactionCategory.DEPOSIT);
         accountDetailsService.saveAccountDetails(senderAccountDetails);
         accountDetailsService.saveAccountDetails(receiverAccountDetails);
     }

@@ -86,7 +86,7 @@ public class TeamLeaderService {
         teamUserJpaRepository.save(teamUser);
 
         // CHATTING 방에 참여.
-        chatroomUserService.enterChatroom(teamId, userId, tmpNickname);
+        chatroomUserService.enterChatroom(teamId, teamInvite.getUserId(), tmpNickname);
     }
 
     @TeamCoLeader

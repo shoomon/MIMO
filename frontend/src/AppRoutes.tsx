@@ -36,6 +36,8 @@ import TeamSchedulesAdHoc from './pages/TeamSchedule/TeamSchedulesAdHoc';
 import TeamSchedulesRegular from './pages/TeamSchedule/TeamSchedulesRegular';
 import TeamSchedulesClosed from './pages/TeamSchedule/TeamSchedulesClosed';
 import Profile from './pages/Profile';
+import TitleSearch from './pages/Search/TitleSearch';
+import TagSearch from './pages/Search/TagSearch';
 
 const AppRoutes = () => {
     return (
@@ -47,6 +49,10 @@ const AppRoutes = () => {
                 <Route path="/" element={<Home />} />
                 {/* 검색 */}
                 <Route path="/search" element={<Search />} />
+                {/* 제목·설명 기반 검색 */}
+                <Route path="/search/title" element={<TitleSearch />} />
+                {/* 태그 기반 검색 */}
+                <Route path="/search/tags" element={<TagSearch />} />
                 {/* 카테고리 --- 이것만 카테고리 리스트 뜸 */}
                 <Route path="/category/:categoryId" element={<Category />} />
                 {/* 인기 모임 --- queryparam으로 */}

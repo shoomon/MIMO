@@ -3,6 +3,7 @@ package com.bisang.backend.chat.repository.chatroomuser;
 import static com.bisang.backend.common.exception.ExceptionCode.NOT_FOUND;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.Map;
 import java.util.Set;
@@ -68,8 +69,10 @@ public class ChatroomUserRepository {
             ChatroomUser user = chatroomUserJpaRepository
                     .findByChatroomIdAndUserId(chatroomId, userId)
                     .orElseThrow(() -> new ChatroomException(NOT_FOUND));
+
+            Long enterDate = user.getEnterDate().atZone(ZoneId.of("UTC")).toInstant().toEpochMilli();
             insertRedisMemberUser(chatroomId, userId);
-            insertTeamEnterScore(user.getEnterDate(), user.getEnterChatId(), chatroomId, userId);
+            insertTeamEnterScore(enterDate, user.getEnterChatId(), chatroomId, userId);
 
             return true;
         }
@@ -112,7 +115,7 @@ public class ChatroomUserRepository {
         user.setNickname(nickname);
     }
 
-    public void updateLastRead(Long userId, LocalDateTime lastDateTime, Long roomId, Long lastChatId) {
+    public void updateLastRead(Long userId, Long lastDateTime, Long roomId, Long lastChatId) {
         chatroomUserRedisRepository.insertLastReadScore(roomId, userId, lastDateTime, lastChatId);
     }
 
@@ -124,10 +127,8 @@ public class ChatroomUserRepository {
         return chatroomUserRedisRepository.getLastReadChatId(chatroomId, userId);
     }
 
-    public void insertTeamEnterScore(LocalDateTime enterDate, Long enterChatId, Long chatroomId, Long userId) {
-        double score = enterDate
-                .toInstant(ZoneOffset.ofTotalSeconds(0))
-                .toEpochMilli() + (enterChatId % 1000) / 1000.0;
+    public void insertTeamEnterScore(Long enterDate, Long enterChatId, Long chatroomId, Long userId) {
+        double score = enterDate + (enterChatId % 1000) / 1000.0;
         chatroomUserRedisRepository.insertTeamEnterScore(chatroomId, userId, score, enterChatId);
     }
 
