@@ -39,8 +39,16 @@ const DefaultLayout = () => {
                 <MainNav />
                 {/* <NavLevel /> */}
                 <Outlet />
-                <footer className="bottom-0 mt-4 flex w-full items-center justify-center border-t-[0.3px] border-gray-200 bg-gray-100 py-[200px]">
-                    <div className="text-center text-2xl font-bold">MIMO</div>
+                <footer className="bottom-0 mt-4 flex w-full items-center justify-between border-t-[0.3px] border-gray-200 bg-gray-100 px-4 py-4">
+                    <div className="flex gap-4">
+                        <span>모두를 위한 모임</span>
+                        <a href="https://i12a504.p.ssafy.io/">
+                            https://i12a504.p.ssafy.io/
+                        </a>
+                    </div>
+                    <span className="text-brand-primary-400 text-[1.325rem] font-black">
+                        MIMO
+                    </span>
                 </footer>
             </div>
         </>
