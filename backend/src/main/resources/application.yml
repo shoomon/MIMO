@@ -32,8 +32,8 @@ spring:
     url: jdbc:mysql://${DB_URL}/s12p12a504
     hikari:
       connection-timeout: 3000
-      maximum-pool-size: 2
-      minimum-idle: 2
+      maximum-pool-size: 20
+      minimum-idle: 10
 
   # JPA
   jpa:

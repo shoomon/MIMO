@@ -1,9 +1,6 @@
 package com.bisang.backend.team.controller;
 
-import com.bisang.backend.team.controller.response.SimpleTagResponse;
-import com.bisang.backend.team.controller.response.TeamTagResponse;
-import com.bisang.backend.team.controller.response.TeamTagSearchResponse;
-import com.bisang.backend.team.controller.response.TeamTitleDescSearchResponse;
+import com.bisang.backend.team.controller.response.*;
 import com.bisang.backend.team.service.TeamSearchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -35,12 +32,12 @@ public class TeamSearchController {
     }
 
     @GetMapping("/tag-area")
-    public ResponseEntity<SimpleTagResponse> getAreaTag() {
+    public ResponseEntity<TagsResponse> getAreaTag() {
         return ResponseEntity.ok(teamSearchService.getAreaTags());
     }
 
     @GetMapping("/tag-category")
-    public ResponseEntity<SimpleTagResponse> getCategoryTag() {
+    public ResponseEntity<TagsResponse> getCategoryTag() {
         return ResponseEntity.ok(teamSearchService.getCategoryTags());
     }
 }

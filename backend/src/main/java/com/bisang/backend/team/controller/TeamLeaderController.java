@@ -1,6 +1,7 @@
 package com.bisang.backend.team.controller;
 
 import com.bisang.backend.team.controller.dto.MyTeamSpecificDto;
+import com.bisang.backend.team.controller.request.*;
 import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
@@ -16,11 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bisang.backend.auth.annotation.AuthUser;
 import com.bisang.backend.invite.controller.response.TeamInvitesResponse;
 import com.bisang.backend.invite.service.TeamInviteService;
-import com.bisang.backend.team.controller.request.DowngradeRoleRequest;
-import com.bisang.backend.team.controller.request.InviteApproveRequest;
-import com.bisang.backend.team.controller.request.InviteRejectRequest;
-import com.bisang.backend.team.controller.request.LeaderDeleteUserRequest;
-import com.bisang.backend.team.controller.request.UpgradeRoleRequest;
 import com.bisang.backend.team.controller.response.TeamUserResponse;
 import com.bisang.backend.team.domain.TeamUserRole;
 import com.bisang.backend.team.service.TeamLeaderService;
@@ -48,9 +44,9 @@ public class TeamLeaderController {
     public ResponseEntity<Void> addTag(
             @AuthUser User user,
             @RequestParam("teamId") Long teamId,
-            @RequestParam("tag") String tag
+            @RequestBody AddTagRequest addTagRequest
     ) {
-        teamLeaderService.addTag(user.getId(), teamId, tag);
+        teamLeaderService.addTag(user.getId(), teamId, addTagRequest.tags());
         return ResponseEntity.ok().build();
     }
 

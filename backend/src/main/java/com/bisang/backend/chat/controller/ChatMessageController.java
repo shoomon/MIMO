@@ -2,7 +2,7 @@ package com.bisang.backend.chat.controller;
 
 import static com.bisang.backend.common.exception.ExceptionCode.*;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -53,12 +53,14 @@ public class ChatMessageController {
         }
 
         Long userId = Long.valueOf(jwtUtil.getSubject(token));
+        Long currentTime = Instant.now().toEpochMilli();
+
         if (chatroomUserService.isMember(roomId, userId)) {
             RedisChatMessage redisMessage = new RedisChatMessage(
                     roomId,
                     userId,
                     chat.message(),
-                    LocalDateTime.now(),
+                    currentTime,
                     ChatType.MESSAGE
             );
             chatRedisService.afterSendMessage(roomId, redisMessage);

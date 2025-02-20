@@ -9,9 +9,12 @@ import static com.bisang.backend.s3.service.S3Service.CAT_IMAGE_URI;
 import static com.bisang.backend.team.domain.TeamPrivateStatus.PRIVATE;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.bisang.backend.board.domain.TeamBoard;
 import com.bisang.backend.board.repository.TeamBoardJpaRepository;
+import com.bisang.backend.team.domain.*;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,17 +29,6 @@ import com.bisang.backend.team.annotation.TeamLeader;
 import com.bisang.backend.team.controller.dto.SimpleTeamDto;
 import com.bisang.backend.team.controller.dto.TeamDto;
 import com.bisang.backend.team.controller.response.TeamInfosResponse;
-import com.bisang.backend.team.domain.Area;
-import com.bisang.backend.team.domain.Tag;
-import com.bisang.backend.team.domain.Team;
-import com.bisang.backend.team.domain.TeamCategory;
-import com.bisang.backend.team.domain.TeamDescription;
-import com.bisang.backend.team.domain.TeamNotificationStatus;
-import com.bisang.backend.team.domain.TeamPrivateStatus;
-import com.bisang.backend.team.domain.TeamRecruitStatus;
-import com.bisang.backend.team.domain.TeamTag;
-import com.bisang.backend.team.domain.TeamUser;
-import com.bisang.backend.team.repository.TagJpaRepository;
 import com.bisang.backend.team.repository.TeamDescriptionJpaRepository;
 import com.bisang.backend.team.repository.TeamJpaRepository;
 import com.bisang.backend.team.repository.TeamQuerydslRepository;
@@ -49,7 +41,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TeamService {
     private final AccountService accountService;
-    private final TagJpaRepository tagJpaRepository;
     private final TeamDescriptionJpaRepository teamDescriptionJpaRepository;
     private final TeamJpaRepository teamJpaRepository;
     private final TeamQuerydslRepository teamQuerydslRepository;
@@ -80,6 +71,10 @@ public class TeamService {
             String teamCategory,
             Long maxCapacity
     ) {
+        if (Area.fromName(area) == null || TeamCategory.fromName(teamCategory) == null) {
+            throw new TeamException(INVALID_REQUEST);
+        }
+
         Team newTeam = null;
         try {
             // 팀 설명 생성
@@ -106,14 +101,10 @@ public class TeamService {
             // 프로필 이미지 저장, 기본 고양이, profile 있을 시 S3에 업로드 된 해당 프로필 이미지 경로
             profileImageRepository.save(createTeamProfile(newTeam.getId(), teamProfileUri));
 
-            // 기본 태그 저장
-            Tag areaTag = findTagByName(area);
-            TeamTag areaTeamTag = new TeamTag(newTeam.getId(), areaTag.getId());
-            teamTagJpaRepository.save(areaTeamTag);
-
-            Tag categoryTag = findTagByName(teamCategory);
-            TeamTag categoryTeamTag = new TeamTag(newTeam.getId(), categoryTag.getId());
-            teamTagJpaRepository.save(categoryTeamTag);
+            TeamTag areaTag = new TeamTag(newTeam.getId(), area);
+            teamTagJpaRepository.save(areaTag);
+            TeamTag categoryTag = new TeamTag(newTeam.getId(), teamCategory);
+            teamTagJpaRepository.save(categoryTag);
 
             //기본 게시판 생성
             teamBoardJpaRepository.save(TeamBoard.builder()
@@ -227,14 +218,21 @@ public class TeamService {
             team.updatePrivateStatus(privateStatus);
 
             if (category != team.getCategory()) {
-                deleteOldCategoryTeamTag(team);
-                saveNewCategoryTeamTag(teamId, category);
+                if (teamTagJpaRepository.findByTeamIdAndTagName(team.getId(), category.getName()).isEmpty()) {
+                    teamTagJpaRepository.save(new TeamTag(team.getId(), category.getName()));
+                }
+                teamTagJpaRepository.findByTeamIdAndTagName(team.getId(), team.getCategory().getName())
+                    .ifPresent(teamTagJpaRepository::delete);
                 team.updateCategory(category);
             }
 
             if (areaCode != team.getAreaCode()) {
-                deleteOldAreaTeamTag(team);
-                saveNewAreaTeamTag(teamId, areaCode);
+                Optional<TeamTag> teamTag = teamTagJpaRepository.findByTeamIdAndTagName(team.getId(), areaCode.getName());
+                if (teamTag.isEmpty()) {
+                    teamTagJpaRepository.save(new TeamTag(team.getId(), areaCode.getName()));
+                }
+                teamTagJpaRepository.findByTeamIdAndTagName(team.getId(), team.getAreaCode().getName())
+                    .ifPresent(teamTagJpaRepository::delete);
                 team.updateAreaCode(areaCode);
             }
 
@@ -252,16 +250,28 @@ public class TeamService {
                 s3Service.deleteFile(profileUri);
             }
             throw new TeamException(e.getCode(), e.getMessage());
-        } catch (Exception e) {
-            if (profileUri == null) {
-                throw new TeamException(DUPLICATED_SOURCE);
-            }
-
-            if (!profileUri.equals(CAT_IMAGE_URI)) {
+        } catch (DataIntegrityViolationException e) {
+            if (profileUri != null) {
                 s3Service.deleteFile(profileUri);
             }
-            throw new TeamException(INVALID_REQUEST);
+            throw new TeamException(1003, "모임명이 중복됩니다. 모임명을 변경해주세요.");
+        } catch (NullPointerException e) {
+            if (profileUri != null) {
+                s3Service.deleteFile(profileUri);
+            }
+            throw new TeamException(1000, "지역과 카테고리에 있어 유효하지 않은 주소입니다.");
         }
+
+//        catch (Exception e) {
+//            if (profileUri == null) {
+//                throw new TeamException(DUPLICATED_SOURCE);
+//            }
+//
+//            if (!profileUri.equals(CAT_IMAGE_URI)) {
+//                s3Service.deleteFile(profileUri);
+//            }
+//            throw new TeamException(INVALID_REQUEST);
+//        }
     }
 
     @TeamLeader
@@ -300,47 +310,6 @@ public class TeamService {
 
     private Team findTeamById(Long teamId) {
         return teamJpaRepository.findById(teamId)
-                .orElseThrow(() -> new TeamException(NOT_FOUND));
-    }
-
-    private Tag findTagByName(String name) {
-        return tagJpaRepository.findByName(name)
-            .orElseThrow(() -> new TeamException(NOT_FOUND));
-    }
-
-    private void saveNewCategoryTeamTag(Long teamId, TeamCategory category) {
-        Tag categoryTag = findTagByName(category.getName());
-        TeamTag categoryTeamTag = new TeamTag(teamId, categoryTag.getId());
-        teamTagJpaRepository.save(categoryTeamTag);
-    }
-
-    private void saveNewAreaTeamTag(Long teamId, Area areaCode) {
-        Tag areaTag = findTagByName(areaCode.getName());
-        TeamTag areaTeamTag = new TeamTag(teamId, areaTag.getId());
-        teamTagJpaRepository.save(areaTeamTag);
-    }
-
-    private void deleteOldCategoryTeamTag(Team team) {
-        TeamCategory oldCategory = team.getCategory();
-        Tag oldCategoryTag = getOldTagByName(oldCategory.getName());
-        TeamTag savedCategoryTeamTag = getSavedTeamTagByTag(team.getId(), oldCategoryTag);
-        teamTagJpaRepository.delete(savedCategoryTeamTag);
-    }
-
-    private void deleteOldAreaTeamTag(Team team) {
-        Area oldArea = team.getAreaCode();
-        Tag oldAreaTag = getOldTagByName(oldArea.getName());
-        TeamTag savedAreaTeamTag = getSavedTeamTagByTag(team.getId(), oldAreaTag);
-        teamTagJpaRepository.delete(savedAreaTeamTag);
-    }
-
-    private Tag getOldTagByName(String name) {
-        return tagJpaRepository.findByName(name)
-                .orElseThrow(() -> new TeamException(NOT_FOUND));
-    }
-
-    private TeamTag getSavedTeamTagByTag(Long teamId, Tag oldTag) {
-        return teamTagJpaRepository.findByTeamIdAndTagId(teamId, oldTag.getId())
                 .orElseThrow(() -> new TeamException(NOT_FOUND));
     }
 }

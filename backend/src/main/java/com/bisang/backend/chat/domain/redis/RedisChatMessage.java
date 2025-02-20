@@ -1,13 +1,8 @@
 package com.bisang.backend.chat.domain.redis;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 import com.bisang.backend.chat.domain.ChatType;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,9 +21,7 @@ public class RedisChatMessage implements Serializable {
 
     private String chat;
 
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    private LocalDateTime timestamp;
+    private Long timestamp;
 
     private ChatType type;
 
@@ -36,7 +29,7 @@ public class RedisChatMessage implements Serializable {
             Long chatroomId,
             Long userId,
             String chat,
-            LocalDateTime timestamp,
+            Long timestamp,
             ChatType type
     ) {
         this.chatroomId = chatroomId;
@@ -51,7 +44,7 @@ public class RedisChatMessage implements Serializable {
             Long chatroomId,
             Long userId,
             String chat,
-            LocalDateTime timestamp,
+            Long timestamp,
             ChatType type
     ) {
         this.id = id;

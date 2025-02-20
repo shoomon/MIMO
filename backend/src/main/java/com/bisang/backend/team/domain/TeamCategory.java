@@ -17,8 +17,8 @@ public enum TeamCategory {
     SPORTS("스포츠"),
     GAME("게임"),
     HEALTH("헬스"),
-    MUSIC("음악/악기"),
-    PHOTO("사진/영상");
+    MUSIC("음악"),
+    PHOTO("사진");
 
     String name;
 
