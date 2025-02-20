@@ -325,23 +325,21 @@ public class BoardService {
                 addedKey.add(comment.commentId());
             }else{
                 if(addedKey.contains(comment.parentId())) continue;
-                if(!commentList.containsKey(comment.parentId())){
-                    result.add(new CommentListDto(
-                                    new CommentDto(
-                                            comment.parentId(),
-                                            null,
-                                            null,
-                                            null,
-                                            null,
-                                            "삭제된 댓글입니다.",
-                                            null,
-                                            null
-                                    ),
-                                    commentList.get(comment.parentId())
-                            )
-                    );
-                    addedKey.add(comment.parentId());
-                }
+                result.add(new CommentListDto(
+                        new CommentDto(
+                                comment.parentId(),
+                                null,
+                                null,
+                                null,
+                                null,
+                                "삭제된 댓글입니다.",
+                                null,
+                                null
+                        ),
+                        commentList.get(comment.parentId())
+                        )
+                );
+                addedKey.add(comment.parentId());
             }
         }
         return result;
