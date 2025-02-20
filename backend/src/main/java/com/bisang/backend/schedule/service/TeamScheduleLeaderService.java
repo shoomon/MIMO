@@ -1,10 +1,14 @@
 package com.bisang.backend.schedule.service;
 
 import static com.bisang.backend.common.exception.ExceptionCode.*;
+import static com.bisang.backend.schedule.domain.ScheduleStatus.CLOSED;
+import static com.bisang.backend.schedule.domain.ScheduleStatus.REGULAR;
+import static com.bisang.backend.team.domain.TeamUserRole.LEADER;
 import static java.time.temporal.ChronoUnit.MINUTES;
 
 import java.time.LocalDateTime;
 
+import com.bisang.backend.team.annotation.TeamMember;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,7 +18,6 @@ import com.bisang.backend.schedule.domain.ScheduleStatus;
 import com.bisang.backend.schedule.domain.TeamSchedule;
 import com.bisang.backend.schedule.repository.ScheduleParticipantsJpaRepository;
 import com.bisang.backend.schedule.repository.TeamScheduleJpaRepository;
-import com.bisang.backend.team.annotation.TeamLeader;
 import com.bisang.backend.team.domain.TeamUser;
 import com.bisang.backend.team.repository.TeamUserJpaRepository;
 
@@ -27,7 +30,7 @@ public class TeamScheduleLeaderService {
     private final TeamScheduleJpaRepository teamScheduleJpaRepository;
     private final ScheduleParticipantsJpaRepository scheduleParticipantsJpaRepository;
 
-    @TeamLeader
+    @TeamMember
     @Transactional
     public TeamSchedule createTeamSchedule(
         Long userId,
@@ -40,7 +43,17 @@ public class TeamScheduleLeaderService {
         Long price,
         ScheduleStatus status
     ) {
-        TeamUser teamUser = findTeamUserByTeamIdAndUserId(userId, teamId);
+        if (status.equals(CLOSED)) {
+            throw new ScheduleException(INVALID_REQUEST);
+        }
+
+        TeamUser teamUser = findTeamUserByTeamIdAndUserId(teamId, userId);
+        if (!teamUser.getRole().equals(LEADER)) {
+            if (status.equals(REGULAR)) {
+                throw new ScheduleException(INVALID_REQUEST);
+            }
+        }
+
         TeamSchedule teamSchedule = TeamSchedule.builder()
                 .teamId(teamId)
                 .teamUserId(teamUser.getId())
@@ -59,12 +72,7 @@ public class TeamScheduleLeaderService {
         return teamSchedule;
     }
 
-    private TeamUser findTeamUserByTeamIdAndUserId(Long userId, Long teamId) {
-        return teamUserJpaRepository.findByTeamIdAndUserId(teamId, userId)
-                .orElseThrow(() -> new ScheduleException(NOT_FOUND));
-    }
-
-    @TeamLeader
+    @TeamMember
     @Transactional
     public void updateTeamSchedule(
             Long userId,
@@ -79,6 +87,8 @@ public class TeamScheduleLeaderService {
             ScheduleStatus status
     ) {
         TeamSchedule teamSchedule = findTeamScheduleById(teamScheduleId);
+        TeamUser teamUser = findTeamUserByTeamIdAndUserId(teamId, userId);
+        leaderCanManipulate(teamUser, teamSchedule);
 
         teamSchedule.updateTitle(title);
         teamSchedule.updateDescription(description);
@@ -91,12 +101,31 @@ public class TeamScheduleLeaderService {
         teamScheduleJpaRepository.save(teamSchedule);
     }
 
-    @TeamLeader
+    @TeamMember
     @Transactional
     public void deleteTeamSchedule(Long userId, Long teamId, Long teamScheduleId) {
         TeamSchedule teamSchedule = findTeamScheduleById(teamScheduleId);
+        TeamUser teamUser = findTeamUserByTeamIdAndUserId(teamId, userId);
         teamScheduleValidation(teamId, teamSchedule);
+        leaderCanManipulate(teamUser, teamSchedule);
         teamScheduleJpaRepository.delete(teamSchedule);
+    }
+
+    private TeamUser findTeamUserByTeamIdAndUserId(Long teamId, Long userId) {
+        return teamUserJpaRepository.findByTeamIdAndUserId(teamId, userId)
+            .orElseThrow(() -> new ScheduleException(NOT_FOUND));
+    }
+
+    private static void leaderCanManipulate(TeamUser teamUser, TeamSchedule teamSchedule) {
+        if (!teamUser.getRole().equals(LEADER)) {
+            teamUserHaveSchedule(teamUser, teamSchedule);
+        }
+    }
+
+    private static void teamUserHaveSchedule(TeamUser teamUser, TeamSchedule teamSchedule) {
+        if (!teamUser.getId().equals(teamSchedule.getTeamUserId())) {
+            throw new ScheduleException(INVALID_REQUEST);
+        }
     }
 
     private void teamScheduleValidation(Long teamId, TeamSchedule teamSchedule) {

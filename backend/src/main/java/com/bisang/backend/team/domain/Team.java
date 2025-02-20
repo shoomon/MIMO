@@ -1,6 +1,9 @@
 package com.bisang.backend.team.domain;
 
+import static com.bisang.backend.common.exception.ExceptionCode.INVALID_REQUEST;
+import static com.bisang.backend.common.exception.ExceptionCode.TEAM_MEMBER_RANGE;
 import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.CascadeType.PERSIST;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static java.lang.Math.min;
@@ -8,6 +11,7 @@ import static lombok.AccessLevel.PROTECTED;
 
 import java.time.LocalDateTime;
 
+import com.bisang.backend.common.exception.TeamException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -57,7 +61,7 @@ public class Team {
     @Column(name = "short_description", length = 100, nullable = false)
     private String shortDescription;
 
-    @OneToOne(cascade = ALL, orphanRemoval = true)
+    @OneToOne(orphanRemoval = true)
     @JoinColumn(name = "team_description_id", referencedColumnName = "team_description_id")
     private TeamDescription description;
 
@@ -107,6 +111,9 @@ public class Team {
             TeamCategory category,
             Long maxCapacity
     ) {
+        if (maxCapacity < 1 || maxCapacity > 1000) {
+            throw new TeamException(TEAM_MEMBER_RANGE);
+        }
         this.maxCapacity = maxCapacity;
         this.teamLeaderId = teamLeaderId;
         this.teamChatroomId = teamChatroomId;

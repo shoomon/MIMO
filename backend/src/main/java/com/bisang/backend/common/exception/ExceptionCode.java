@@ -41,6 +41,9 @@ public enum ExceptionCode {
     UNAUTHORIZED_USER(5011, "해당 작업에 대한 권한이 없는 회원입니다."),
     NOT_MATCHED_TEAM_AND_ACCOUNT_NUMBER(5012, "해당 팀에게 할당된 계좌가 아닙니다."),
     NOT_MATCHED_USER_AND_ACCOUNT_NUMBER(5013, "해당 유저에게 할당된 계좌가 아닙니다."),
+    INVALID_AREA(5014, "지역은 서울, 경기도, 강원도... 등만 가능합니다."),
+    INVALID_CATEGORY(5015, "카테고리는 자동차, 독서, 반려동물... 등만 가능합니다."),
+    TEAM_MEMBER_RANGE(5016, "모임 정원은 1-1000명까지만 가능합니다."),
 
     FULL_SCHEDULE(6000, "해당 일정은 정원을 초과했습니다."),
     NOT_MINUS_MONEY(6001, "일정의 금액은 음수일 수 없습니다."),

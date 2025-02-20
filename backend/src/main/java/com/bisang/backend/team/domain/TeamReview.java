@@ -66,9 +66,9 @@ public class TeamReview {
     }
 
     private void memoValidation(String memo) {
-        String pattern = "^.{30,300}$";
+        String pattern = "^.{0,300}$";
         Validate.matchesPattern(memo, pattern,
-                "모임 리뷰의 길이는 30자리 이상 300자리 이하이어야 합니다.");
+                "모임 리뷰의 길이는 300자리 이하이어야 합니다.");
     }
 
     private void scoreValidation(Long score) {

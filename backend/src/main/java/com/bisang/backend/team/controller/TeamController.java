@@ -1,8 +1,11 @@
 package com.bisang.backend.team.controller;
 
+import static com.bisang.backend.common.exception.ExceptionCode.INVALID_AREA;
+import static com.bisang.backend.common.exception.ExceptionCode.INVALID_CATEGORY;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
+import com.bisang.backend.common.exception.TeamException;
 import com.bisang.backend.team.service.TeamFileFacadeService;
 import jakarta.validation.Valid;
 
@@ -51,7 +54,9 @@ public class TeamController {
         @RequestParam("area") String area,
         @RequestParam(required = false) Long teamId
     ) {
-        return ResponseEntity.ok(teamService.getTeamInfosByArea(Area.fromName(area), teamId));
+        Area findArea = Area.fromName(area);
+        areaValidation(findArea);
+        return ResponseEntity.ok(teamService.getTeamInfosByArea(findArea, teamId));
     }
 
     @GetMapping("/category")
@@ -59,6 +64,8 @@ public class TeamController {
         @RequestParam("category") String category,
         @RequestParam(required = false) Long teamId
     ) {
+        TeamCategory teamCategory = TeamCategory.fromName(category);
+        categoryValidation(teamCategory);
         return ResponseEntity.ok(teamService.getTeamInfosByCategory(TeamCategory.fromName(category), teamId));
     }
 
@@ -135,5 +142,17 @@ public class TeamController {
     ) {
         teamService.deleteTeam(user.getId(), teamId);
         return ResponseEntity.ok().build();
+    }
+
+    private void categoryValidation(TeamCategory teamCategory) {
+        if (teamCategory == null) {
+            throw new TeamException(INVALID_CATEGORY);
+        }
+    }
+
+    private void areaValidation(Area findArea) {
+        if (findArea == null) {
+            throw new TeamException(INVALID_AREA);
+        }
     }
 }

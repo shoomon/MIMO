@@ -95,6 +95,7 @@ public class TeamQuerydslRepository {
                         team.teamProfileUri,
                         team.name,
                         teamDescription.description,
+                        team.accountNumber,
                         team.recruitStatus,
                         team.privateStatus,
                         team.areaCode,
