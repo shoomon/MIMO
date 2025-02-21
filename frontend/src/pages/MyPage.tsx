@@ -4,7 +4,7 @@ import { getMyAllInfoAPI } from '@/apis/AuthAPI';
 import { useQuery } from '@tanstack/react-query';
 import BaseLayout from './layouts/BaseLayout';
 import BodyLayout_24 from './layouts/BodyLayout_24';
-import { Icon, RatingStar, Title } from '@/components/atoms';
+import { Icon, Title } from '@/components/atoms';
 import { dateParsing } from '@/utils';
 import { Link } from 'react-router-dom';
 import useMyMileage from '@/hooks/useMyMileage';
@@ -12,6 +12,7 @@ import { MileageContainer } from '@/components/organisms';
 import { useEffect, useState } from 'react';
 import { QRCodeCanvas } from 'qrcode.react';
 import { getUserQRCodeAPI } from '@/apis/QRCodeAPI';
+import UserInfoUpdateModal from '@/components/molecules/BasicInputModal/UserInfoUpdateModal';
 
 const MyPage = () => {
     const { isOpen, handleConfirm, handleCharge, handleCancel } = useCharge();
@@ -19,6 +20,8 @@ const MyPage = () => {
     const [accountNumber, setAccountNumber] = useState<string>('');
     const [qrOpen, setQrOpen] = useState<boolean>(false);
     const [QRuuid, setQRuuid] = useState<string>('');
+    const [isUserInfoUpdateModalOpen, setUserInfoUpdateModalOpen] =
+        useState<boolean>(false);
 
     const { data } = useQuery({
         queryKey: ['myAllData'],
@@ -58,9 +61,14 @@ const MyPage = () => {
                         alt="profile"
                         className="h-full w-full rounded-full"
                     />
-                    <div className="absolute right-0 bottom-0 rounded-full bg-white p-2 shadow-md">
-                        <Icon id="Pen" type="svg" />
-                    </div>
+                    <button
+                        type="button"
+                        onClick={() => setUserInfoUpdateModalOpen(true)}
+                    >
+                        <div className="absolute right-0 bottom-0 rounded-full bg-white p-2 shadow-md">
+                            <Icon id="Pen" type="svg" />
+                        </div>
+                    </button>
                 </div>
                 <div className="flex flex-col items-center gap-2">
                     <label className="text-lg font-bold">
@@ -68,15 +76,6 @@ const MyPage = () => {
                     </label>
                     <div className="font-light">{data?.email}</div>
                 </div>
-                <div className="flex items-center gap-1">
-                    <Icon id="Settings" type="svg" />
-                    환경설정
-                </div>
-                {data?.reviewScore !== undefined ? (
-                    <RatingStar reviewScore={data.reviewScore} />
-                ) : (
-                    <div>별점 정보가 없습니다.</div>
-                )}
 
                 <div className="flex flex-col items-end gap-4">
                     <div className="flex gap-3">
@@ -129,15 +128,33 @@ const MyPage = () => {
                         onConfirmClick={handleConfirm}
                         onCancelClick={handleCancel}
                     />
+                    <UserInfoUpdateModal
+                        isOpen={isUserInfoUpdateModalOpen}
+                        title="내 정보 수정"
+                        namePlaceholder="이름 입력"
+                        nicknamePlaceholder="닉네임 입력"
+                        initialName={data?.name || ''}
+                        initialNickname={data?.nickname || ''}
+                        initialProfileUrl={data?.profileUri || ''}
+                        onConfirm={(updatedData) => {
+                            console.log('업데이트된 사용자 정보:', updatedData);
+                            // updateUserInfo API 호출 또는 기타 작업 수행 후 모달 닫기
+                            setUserInfoUpdateModalOpen(false);
+                        }}
+                        onCancel={() => {
+                            // 모달 닫기
+                            setUserInfoUpdateModalOpen(false);
+                        }}
+                    />
                 </div>
 
                 {/* 내가 쓴 글과 댓글을 동등한 크기로 유지하는 컨테이너 */}
                 <div className="flex w-full gap-4">
                     {/* 내가 쓴 글 */}
                     <div className="min-w-0 flex-1">
-                        <section className="flex flex-col gap-6">
-                            <Title label="내가 쓴 글" to="current" />
-                            <div className="flex min-h-[313px] flex-col gap-4">
+                        <section className="overflow flex flex-col gap-6">
+                            <Title label="내가 쓴 글" />
+                            <div className="flex max-h-[400px] min-h-[400px] flex-col gap-4 truncate overflow-y-scroll">
                                 {displayedBoard.map((item) => {
                                     // boardTeamInfo가 없으면 렌더링하지 않음
                                     if (!item.boardTeamInfo) return null;
@@ -186,8 +203,8 @@ const MyPage = () => {
                     {/* 내가 쓴 댓글 */}
                     <div className="min-w-0 flex-1">
                         <section className="flex flex-col gap-6">
-                            <Title label="내가 쓴 댓글" to="current" />
-                            <div className="flex min-h-[313px] flex-col gap-4">
+                            <Title label="내가 쓴 댓글" />
+                            <div className="flex max-h-[400px] min-h-[400px] flex-col gap-4 truncate overflow-y-scroll">
                                 {displayedComment.map((item) => {
                                     // boardTeamInfo가 없으면 렌더링하지 않음
                                     if (!item.boardTeamInfo) return null;
