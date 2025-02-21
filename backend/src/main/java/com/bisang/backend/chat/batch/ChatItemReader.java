@@ -1,7 +1,7 @@
 package com.bisang.backend.chat.batch;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -50,9 +50,7 @@ public class ChatItemReader implements ItemReader<RedisChatMessage> {
         Set<String> chatRooms = redisTemplate.keys("teamMessage:*");
 
         //7일 전 구하기
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime sevenDaysAgo = now.minusDays(7);
-        double epochMilli = sevenDaysAgo.toInstant(ZoneOffset.ofTotalSeconds(0)).toEpochMilli();
+        double epochMilli = Instant.now().minus(7, ChronoUnit.DAYS).toEpochMilli();
 
         for (String roomKey : chatRooms) {
             Set<TypedTuple<String>> messages = redisTemplate

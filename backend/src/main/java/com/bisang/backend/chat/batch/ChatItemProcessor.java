@@ -21,7 +21,7 @@ public class ChatItemProcessor implements ItemProcessor<RedisChatMessage, ChatMe
             return null;
         }
 
-        Long timestamp = redisChatMessage.getTimestamp();;
+        Long timestamp = redisChatMessage.getTimestamp();
         LocalDateTime localTimestamp = LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), ZoneId.of("UTC"));
 
         return ChatMessage.createMessage(
