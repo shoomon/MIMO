@@ -2,11 +2,11 @@ package com.bisang.backend.chat.batch;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.List;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemWriter;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import com.bisang.backend.chat.domain.ChatMessage;
@@ -21,7 +21,8 @@ import lombok.RequiredArgsConstructor;
 public class ChatItemWriter implements ItemWriter<ChatMessage> {
 
     private final ChatMessageJpaRepository chatMessageRepository;
-    private final RedisTemplate<String, RedisChatMessage> redisChatMessageTemplate;
+    private final StringRedisTemplate redisChatMessageTemplate;
+    private final ObjectMapper objectMapper;
 
     @Override
     public void write(Chunk<? extends ChatMessage> chunk) {
@@ -37,9 +38,9 @@ public class ChatItemWriter implements ItemWriter<ChatMessage> {
             try {
                 String redisKey = "teamMessage:" + chatMessage.getChatroomId();
                 RedisChatMessage redisChatMessage = convertToRedisChatMessage(chatMessage);
-
+                String messageJson = objectMapper.writeValueAsString(redisChatMessage);
                 // Redis ZSet에서 삭제
-                redisChatMessageTemplate.opsForZSet().remove(redisKey, redisChatMessage);
+                redisChatMessageTemplate.opsForZSet().remove(redisKey, messageJson);
             } catch (Exception e) {
                 // 삭제 실패 로그 출력
                 System.err.println("Failed to delete Redis message: " + chatMessage.getId()
