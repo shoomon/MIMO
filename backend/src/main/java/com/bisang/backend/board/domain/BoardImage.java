@@ -10,6 +10,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -25,6 +27,12 @@ public class BoardImage {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
+    @Column(name = "team_id", nullable = false)
+    private Long teamId;
+
+    @Column(name = "team_board_id", nullable = false)
+    private Long teamBoardId;
+
     @Column(name = "board_id", nullable = false)
     private Long boardId;
 
@@ -34,8 +42,11 @@ public class BoardImage {
     @Column(length = 100, name = "file_uri", nullable = false)
     private String fileUri;
 
-    private BoardImage(Long boardId, String fileExtension, String fileUri) {
+    @Builder
+    private BoardImage(Long teamBoardId, Long boardId, Long teamId, String fileExtension, String fileUri) {
+        this.teamBoardId = teamBoardId;
         this.boardId = boardId;
+        this.teamId = teamId;
         this.fileExtension = fileExtension;
         this.fileUri = fileUri;
     }

@@ -13,6 +13,7 @@ import jakarta.persistence.Table;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @NoArgsConstructor(access = PROTECTED)
@@ -26,12 +27,17 @@ public class Chatroom {
     @Column(name = "chatroom_id")
     private Long id;
 
-    @Column(name = "chatroom_user_id", nullable = false)
+    @Column(name = "team_id")
+    private Long teamId;
+
+    @Column(name = "user_id", nullable = false)
     private Long userId;
 
+    @Setter
     @Column(length = 40, name = "chatroom_title", nullable = false)
     private String title;
 
+    @Setter
     @Column(name = "profile_uri")
     private String profileUri;
 
@@ -46,7 +52,26 @@ public class Chatroom {
         this.status = status;
     }
 
+    private Chatroom(Long userId, Long teamId, String title, String profileUri, ChatroomStatus status) {
+        this.userId = userId;
+        this.teamId = teamId;
+        this.title = title;
+        this.profileUri = profileUri;
+        this.status = status;
+    }
+
     public static Chatroom createChatroom(Long userId, String title, String profileUri, ChatroomStatus status) {
         return new Chatroom(userId, title, profileUri, status);
     }
+
+    public static Chatroom createTeamChatroom(
+            Long userId,
+            Long teamId,
+            String title,
+            String profileUri,
+            ChatroomStatus status
+    ) {
+        return new Chatroom(userId, teamId, title, profileUri, status);
+    }
+
 }

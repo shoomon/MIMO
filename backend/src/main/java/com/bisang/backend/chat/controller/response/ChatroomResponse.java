@@ -8,6 +8,7 @@ public record ChatroomResponse(
     String chatroomImage,
     String lastChat,
     LocalDateTime lastDateTime,
-    String nickname
+    String nickname,
+    Long unreadCount
 ) {
 }

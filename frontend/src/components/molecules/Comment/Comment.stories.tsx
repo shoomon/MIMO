@@ -30,8 +30,8 @@ type Story = StoryObj<typeof meta>;
 // 더미 프로필 이미지 데이터 (실제 ProfileImage 컴포넌트에 맞게 수정)
 const sampleProfile: ProfileImageProps = {
     userId: 'user123',
-    userName: 'Jane Doe',
-    imgSrc: 'https://randomuser.me/api/portraits/men/5.jpg',
+    nickname: 'Jane Doe',
+    profileUri: 'https://randomuser.me/api/portraits/men/5.jpg',
 };
 
 export const Default: Story = {
@@ -41,6 +41,7 @@ export const Default: Story = {
         writedate: new Date().toISOString(),
         content: 'This is a sample comment.',
         isReply: false,
+        name: 'John Doe',
         onDelete: action('onDelete'),
         onUpdate: action('onUpdate'),
     },
@@ -52,6 +53,7 @@ export const Reply: Story = {
         profileImage: sampleProfile,
         writedate: new Date().toISOString(),
         content: 'This is a sample reply comment.',
+        name: 'John Doe',
         isReply: true,
         onDelete: action('onDelete'),
         onUpdate: action('onUpdate'),

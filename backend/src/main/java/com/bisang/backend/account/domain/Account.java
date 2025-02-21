@@ -10,8 +10,10 @@ import jakarta.persistence.Table;
 
 import com.bisang.backend.common.domain.BaseTimeEntity;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @Entity
 @NoArgsConstructor(access = PROTECTED)
 @Table(

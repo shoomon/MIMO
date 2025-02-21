@@ -1,8 +1,6 @@
-import { Link } from 'react-router-dom';
 import Icon from '../Icon/Icon';
 
 export interface MileageStatusViewProps {
-    to: string;
     iconColor: string;
     icon: string;
     label: string;
@@ -11,7 +9,6 @@ export interface MileageStatusViewProps {
 }
 
 const MileageStatusView: React.FC<MileageStatusViewProps> = ({
-    to,
     iconColor,
     icon,
     label,
@@ -19,10 +16,7 @@ const MileageStatusView: React.FC<MileageStatusViewProps> = ({
     resultAmount,
 }) => {
     return (
-        <Link
-            to={to}
-            className="flex h-fit w-[255px] items-center gap-3 rounded-2xl border-[1px] border-gray-200 bg-white px-5 py-6"
-        >
+        <div className="flex h-fit w-[255px] items-center gap-3 rounded-2xl border-[1px] border-gray-200 bg-white px-5 py-6">
             <span className={`rounded-full p-5 ${iconColor}`}>
                 <Icon id={icon} size={30} type="svg" />
             </span>
@@ -32,7 +26,7 @@ const MileageStatusView: React.FC<MileageStatusViewProps> = ({
                 </span>
                 <span className={amountSizeFix}>{resultAmount}</span>
             </div>
-        </Link>
+        </div>
     );
 };
 

@@ -4,21 +4,25 @@ import Icon from './../Icon/Icon';
 export interface RatingStarViewProps {
     fullStars: number;
     hasHalfStar: boolean;
-    rating: number;
+    emptyStars: number;
+    reviewCount?: number;
+    reviewScore: number;
 }
 
 /**
  * RatingStarView 컴포넌트
  *
- * 별점 데이터를 기반으로 full star와 half star 아이콘을 렌더링합니다.
+ * 별점 데이터를 기반으로 full star, half star, empty star 아이콘을 렌더링합니다.
  *
- * @param {RatingStarViewProps} props - fullStars와 hasHalfStar 정보를 포함한 props
+ * @param {RatingStarViewProps} props - fullStars, hasHalfStar, emptyStars 정보를 포함한 props
  * @returns {JSX.Element} 렌더링된 별점 아이콘 뷰
  */
 const RatingStarView: React.FC<RatingStarViewProps> = ({
     fullStars,
     hasHalfStar,
-    rating,
+    emptyStars,
+    reviewCount,
+    reviewScore,
 }) => {
     return (
         <div className="flex items-center gap-1">
@@ -29,8 +33,20 @@ const RatingStarView: React.FC<RatingStarViewProps> = ({
                 {hasHalfStar && (
                     <Icon key="star-half" type="svg" id="Star-Half" />
                 )}
+                {Array.from({ length: emptyStars }, (_, index) => (
+                    <Icon
+                        key={`emptyStar-${index}`}
+                        type="svg"
+                        id="emptyStar"
+                    />
+                ))}
             </div>
-            <span className="text-md font-bold">{rating}</span>
+            <span className="text-md font-extrabold">
+                {reviewScore.toFixed(1)}
+            </span>
+            {reviewCount && (
+                <span className="text-md font-light">({reviewCount})</span>
+            )}
         </div>
     );
 };

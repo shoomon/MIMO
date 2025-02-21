@@ -27,6 +27,10 @@ public class QBoardImage extends EntityPathBase<BoardImage> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final NumberPath<Long> teamBoardId = createNumber("teamBoardId", Long.class);
+
+    public final NumberPath<Long> teamId = createNumber("teamId", Long.class);
+
     public QBoardImage(String variable) {
         super(BoardImage.class, forVariable(variable));
     }

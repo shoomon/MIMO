@@ -12,10 +12,14 @@ import lombok.Getter;
  *
  * 멤버: MEMBER
  *  - 역할: 구경, 채팅(악성 코드 배포시 추방)
+ *
+ * 게스트: GUEST
+ *  - 역할 : 게스트, 비 회원 가입자ㄹ
  */
 @Getter
 public enum TeamUserRole {
-    LEADER("방장", 1), CO_LEADER("부방장", 2), MEMBER("멤버", 3);
+    LEADER("방장", 1), CO_LEADER("부방장", 2),
+    MEMBER("멤버", 3), GUEST("게스트", 4);
 
     String description;
     Integer weight;

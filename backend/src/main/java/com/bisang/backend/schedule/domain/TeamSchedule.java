@@ -1,9 +1,11 @@
 package com.bisang.backend.schedule.domain;
 
+import static com.bisang.backend.common.exception.ExceptionCode.NOT_MINUS_MONEY;
+import static com.bisang.backend.common.exception.ExceptionCode.TEAM_MEMBER_RANGE;
 import static com.bisang.backend.schedule.domain.ScheduleStatus.*;
-import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
+import static java.lang.Math.min;
 import static lombok.AccessLevel.PROTECTED;
 
 import java.time.LocalDateTime;
@@ -14,11 +16,11 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 
 import com.bisang.backend.common.domain.BaseTimeEntity;
+import com.bisang.backend.common.exception.ScheduleException;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -31,6 +33,7 @@ import lombok.NoArgsConstructor;
         name = "team_schedule",
         indexes = {
             @Index(name = "idx_schedule_team_id", columnList = "team_id"),
+            @Index(name = "idx_schedule_status_date", columnList = "schedule_status, date desc")
         }
 )
 public class TeamSchedule extends BaseTimeEntity {
@@ -50,12 +53,15 @@ public class TeamSchedule extends BaseTimeEntity {
     @Column(length = 100, name = "short_description", nullable = false)
     private String shortDescription;
 
-    @OneToOne(cascade = ALL, orphanRemoval = true)
-    @JoinColumn(name = "schedule_description_id", referencedColumnName = "schedule_description_id")
-    private ScheduleDescription description;
+    @Lob
+    @Column(name = "description", nullable = false)
+    private String description;
 
     @Column(name = "location", nullable = false)
     private String location;
+
+    @Column(name = "price", nullable = false)
+    private Long price;
 
     @Column(name = "date", nullable = false)
     private LocalDateTime date;
@@ -75,26 +81,26 @@ public class TeamSchedule extends BaseTimeEntity {
         Long teamId,
         Long teamUserId,
         String title,
-        ScheduleDescription description,
+        String description,
         String location,
+        Long price,
         LocalDateTime date,
         Long maxParticipants,
-        String status
+        ScheduleStatus status
     ) {
         this.teamId = teamId;
         this.teamUserId = teamUserId;
         this.title = title;
-        this.shortDescription = description.getDescription().substring(100 - 3) + "...";
+        int length = min(description.length(), 97);
+        this.shortDescription = description.substring(length) + "...";
         this.description = description;
         this.location = location;
+        this.price = price;
         this.date = date;
+        participantsValidation(maxParticipants);
         this.maxParticipants = maxParticipants;
         this.currentParticipants = 1L;
-        if (status.equals("A")) {
-            this.scheduleStatus = AD_HOC;
-            return;
-        }
-        this.scheduleStatus = REGURAL;
+        this.scheduleStatus = status;
     }
 
     public void increaseCurrentParticipants() {
@@ -106,6 +112,7 @@ public class TeamSchedule extends BaseTimeEntity {
     }
 
     public void updateMaxParticipants(Long maxParticipants) {
+        participantsValidation(maxParticipants);
         this.maxParticipants = maxParticipants;
     }
 
@@ -122,11 +129,29 @@ public class TeamSchedule extends BaseTimeEntity {
     }
 
     public void updateDescription(String newDescription) {
-        this.shortDescription = newDescription.substring(100 - 3) + "...";
-        this.description.updateDescription(newDescription);
+        int shortDescriptionLength = min(newDescription.length(), 97);
+        this.shortDescription = newDescription.substring(0, shortDescriptionLength) + "...";
+        this.description = newDescription;
+    }
+
+    public void updatePrice(Long price) {
+        if (price < 0) {
+            throw new ScheduleException(NOT_MINUS_MONEY);
+        }
+        this.price = price;
+    }
+
+    public void updateStatus(ScheduleStatus status) {
+        this.scheduleStatus = status;
     }
 
     public void closeSchedule() {
         this.scheduleStatus = CLOSED;
+    }
+
+    private void participantsValidation(Long maxParticipants) {
+        if (maxParticipants < 1 || maxParticipants > 1000) {
+            throw new ScheduleException(TEAM_MEMBER_RANGE);
+        }
     }
 }

@@ -2,8 +2,8 @@ package com.bisang.backend.user.controller.response;
 
 import java.util.List;
 
-import com.bisang.backend.board.controller.dto.BoardDto;
-import com.bisang.backend.board.controller.dto.CommentDto;
+import com.bisang.backend.board.controller.dto.SimpleBoardDto;
+import com.bisang.backend.board.controller.dto.SimpleCommentDto;
 
 import lombok.Builder;
 
@@ -13,11 +13,12 @@ public record UserMyResponse(
         String nickname,
         String email,
         String profileUri,
+        String accountNumber,
         Double reviewScore,
         Long mileage,
         Long mileageIncome,
         Long mileageOutcome,
-        List<BoardDto> boards,
-        List<CommentDto> comments
+        List<SimpleBoardDto> userBoard,
+        List<SimpleCommentDto> userComment
 ) {
 }

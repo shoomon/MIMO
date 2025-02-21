@@ -1,21 +1,21 @@
-import { Icon, Logo } from '@/components/atoms';
+// src/components/molecules/Header/HeaderView.tsx
+import React, { useState } from 'react';
+import { ChatAlarm, Icon, Logo } from '@/components/atoms';
 import { Link } from 'react-router-dom';
 import SearchBar from '../SearchBar/SearchBar';
 import { ProfileImageProps } from '@/components/atoms/ProfileImage/ProfileImage';
 import MyInfoDropDown from '@/components/atoms/MyInfoDropDown/MyInfoDropDown';
+import { useAuth } from '@/hooks/useAuth';
+import AlarmView from './../Alarm/Alarm.view';
 
 export interface HeaderViewProps {
-    userInfo?: ProfileImageProps;
     isLogin: boolean;
-    alarmActive: boolean;
-    infoActive: boolean;
+    setLogin: React.Dispatch<React.SetStateAction<boolean>>;
     handleSearch: (e: React.FormEvent<HTMLFormElement>) => void;
     searchValue: string;
     onChangeSearch: (e: React.ChangeEvent<HTMLInputElement>) => void;
     relatedItem: string[];
     onClickSearch: (e: React.MouseEvent<HTMLButtonElement>) => void;
-    onClickAlarm: (e: React.MouseEvent<HTMLButtonElement>) => void;
-    onClickInfo: (e: React.MouseEvent<HTMLButtonElement>) => void;
     handleLogin: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
@@ -33,39 +33,42 @@ const NoLoginedMenu = ({
     );
 };
 
+interface LoginedMenuProps {
+    userInfo?: ProfileImageProps;
+    alarmActive: boolean;
+    userInfoActive: boolean;
+    handleAlarmClick: () => void;
+    handleUserClick: () => void;
+    setLogin: React.Dispatch<React.SetStateAction<boolean>>;
+    setAlarmActive: React.Dispatch<React.SetStateAction<boolean>>;
+    setUserInfoActive: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
 const LoginedMenu = ({
     userInfo,
-    alarmActive,
-    infoActive,
-    onClickAlarm,
-    onClickInfo,
-}: {
-    userInfo: ProfileImageProps;
-    alarmActive: boolean;
-    infoActive: boolean;
-    onClickAlarm: (e: React.MouseEvent<HTMLButtonElement>) => void;
-    onClickInfo: (e: React.MouseEvent<HTMLButtonElement>) => void;
-}) => {
+    userInfoActive,
+    handleUserClick,
+    setLogin,
+    setUserInfoActive,
+}: LoginedMenuProps) => {
     return (
-        <div className="flex gap-9">
-            <Link to="/">
-                <Icon type="png" id="Alarm" size={44} />
-            </Link>
-            <div>
-                <button onClick={onClickAlarm} className="cursor-pointer">
-                    <Icon type="png" id="Chat" size={44} />
-                </button>
-                {/* {해당 부분에 알림 dropdown 필요} */}
-                {alarmActive}
-            </div>
+        <div className="flex gap-4">
+            {/* 알람 드롭다운 영역 */}
             <div className="relative">
-                <button onClick={onClickInfo} className="cursor-pointer">
+                <AlarmView />
+            </div>
+            <ChatAlarm />
+            {/* 내 정보 드롭다운 영역 */}
+            <div className="relative">
+                <button onClick={handleUserClick} className="cursor-pointer">
                     <Icon type="png" id="User" size={44} />
                 </button>
                 <MyInfoDropDown
-                    active={infoActive}
+                    setActive={setUserInfoActive}
+                    active={userInfoActive}
                     userInfo={userInfo}
                     addStyle="absolute right-0 translate-y-full -bottom-4"
+                    setLogin={setLogin}
                 />
             </div>
         </div>
@@ -74,28 +77,36 @@ const LoginedMenu = ({
 
 const HeaderView = ({
     isLogin,
-    alarmActive,
-    infoActive,
+    setLogin,
     handleSearch,
     searchValue,
     onChangeSearch,
     relatedItem,
     onClickSearch,
-    onClickAlarm,
-    onClickInfo,
     handleLogin,
 }: HeaderViewProps) => {
-    // 유저 정보 받아와서 렌더링해야함함
-    const userInfo = {
-        userId: '25',
-        userName: '박성문',
-        imgSrc: 'https://cloudfront-ap-northeast-1.images.arcpublishing.com/chosun/2TKUKXYMQF7ASZEUJLG7L4GM4I.jpg',
+    const { userInfo } = useAuth();
+
+    // 알람 드롭다운과 내 정보 드롭다운의 상태를 별도로 관리
+    const [alarmActive, setAlarmActive] = useState(false);
+    const [userInfoActive, setUserInfoActive] = useState(false);
+
+    const handleAlarmClick = () => {
+        setAlarmActive((prev) => !prev);
+        // 내 정보 드롭다운은 닫기
+        setUserInfoActive(false);
+    };
+
+    const handleUserClick = () => {
+        setUserInfoActive((prev) => !prev);
+        // 알람 드롭다운은 닫기
+        setAlarmActive(false);
     };
 
     return (
-        <header className="w-full px-4 py-5 lg:w-[1440px]">
+        <header className="w-full py-5">
             <div className="flex flex-wrap items-center justify-between gap-4">
-                <h1 className="w-48">
+                <h1>
                     <Link to="/">
                         <Logo />
                     </Link>
@@ -111,16 +122,21 @@ const HeaderView = ({
                     />
                 </div>
 
-                {isLogin === true ? (
+                {isLogin ? (
                     <LoginedMenu
-                        onClickAlarm={onClickAlarm}
-                        onClickInfo={onClickInfo}
+                        handleAlarmClick={handleAlarmClick}
+                        handleUserClick={handleUserClick}
                         userInfo={userInfo}
                         alarmActive={alarmActive}
-                        infoActive={infoActive}
+                        userInfoActive={userInfoActive}
+                        setLogin={setLogin}
+                        setAlarmActive={setAlarmActive}
+                        setUserInfoActive={setUserInfoActive}
                     />
                 ) : (
-                    <NoLoginedMenu handleLogin={handleLogin} />
+                    <>
+                        <NoLoginedMenu handleLogin={handleLogin} />
+                    </>
                 )}
             </div>
         </header>

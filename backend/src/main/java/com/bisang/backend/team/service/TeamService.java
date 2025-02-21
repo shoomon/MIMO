@@ -1,30 +1,34 @@
 package com.bisang.backend.team.service;
 
+import static com.bisang.backend.chat.domain.ChatroomStatus.GROUP;
 import static com.bisang.backend.common.exception.ExceptionCode.*;
 import static com.bisang.backend.common.utils.PageUtils.SHORT_PAGE_SIZE;
+import static com.bisang.backend.s3.domain.ImageType.TEAM;
+import static com.bisang.backend.s3.domain.ProfileImage.createTeamProfile;
+import static com.bisang.backend.s3.service.S3Service.CAT_IMAGE_URI;
+import static com.bisang.backend.team.domain.TeamPrivateStatus.PRIVATE;
 
 import java.util.List;
+import java.util.Optional;
 
+import com.bisang.backend.board.domain.TeamBoard;
+import com.bisang.backend.board.repository.TeamBoardJpaRepository;
+import com.bisang.backend.team.domain.*;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bisang.backend.common.exception.TeamException;
+import com.bisang.backend.s3.repository.ProfileImageRepository;
+import com.bisang.backend.s3.service.S3Service;
+import com.bisang.backend.account.service.AccountService;
+import com.bisang.backend.chat.service.ChatroomUserService;
+import com.bisang.backend.chat.service.ChatroomService;
 import com.bisang.backend.team.annotation.EveryOne;
 import com.bisang.backend.team.annotation.TeamLeader;
 import com.bisang.backend.team.controller.dto.SimpleTeamDto;
 import com.bisang.backend.team.controller.dto.TeamDto;
 import com.bisang.backend.team.controller.response.TeamInfosResponse;
-import com.bisang.backend.team.domain.Area;
-import com.bisang.backend.team.domain.Tag;
-import com.bisang.backend.team.domain.Team;
-import com.bisang.backend.team.domain.TeamCategory;
-import com.bisang.backend.team.domain.TeamDescription;
-import com.bisang.backend.team.domain.TeamNotificationStatus;
-import com.bisang.backend.team.domain.TeamPrivateStatus;
-import com.bisang.backend.team.domain.TeamRecruitStatus;
-import com.bisang.backend.team.domain.TeamTag;
-import com.bisang.backend.team.domain.TeamUser;
-import com.bisang.backend.team.repository.TagJpaRepository;
 import com.bisang.backend.team.repository.TeamDescriptionJpaRepository;
 import com.bisang.backend.team.repository.TeamJpaRepository;
 import com.bisang.backend.team.repository.TeamQuerydslRepository;
@@ -36,16 +40,25 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class TeamService {
-    private final TagJpaRepository tagJpaRepository;
+    private final AccountService accountService;
     private final TeamDescriptionJpaRepository teamDescriptionJpaRepository;
     private final TeamJpaRepository teamJpaRepository;
     private final TeamQuerydslRepository teamQuerydslRepository;
     private final TeamTagJpaRepository teamTagJpaRepository;
     private final TeamUserJpaRepository teamUserJpaRepository;
+    private final S3Service s3Service;
+    private final ProfileImageRepository profileImageRepository;
+    private final TeamBoardJpaRepository teamBoardJpaRepository;
+    private final ChatroomService chatroomService;
+    private final ChatroomUserService chatroomUserService;
 
     @EveryOne
+    public Boolean existsTeamByName(String name) {
+        return teamJpaRepository.existsByName(name);
+    }
+
     @Transactional
-    public void createTeam(
+    public Long createTeam(
             Long leaderId,
             String nickname,
             TeamNotificationStatus notificationStatus,
@@ -54,44 +67,79 @@ public class TeamService {
             TeamRecruitStatus teamRecruitStatus,
             TeamPrivateStatus teamPrivateStatus,
             String teamProfileUri,
-            Area area,
-            TeamCategory teamCategory,
+            String area,
+            String teamCategory,
             Long maxCapacity
     ) {
-        // 팀 설명 생성
-        TeamDescription teamDescription = new TeamDescription(description);
-        teamDescriptionJpaRepository.save(teamDescription);
+        if (Area.fromName(area) == null || TeamCategory.fromName(teamCategory) == null) {
+            throw new TeamException(INVALID_REQUEST);
+        }
 
-        // TODO: 채팅 룸 관련 생성 기능 추가
-        // TODO: 계좌 관련 생성 기능 추가
+        Team newTeam = null;
+        try {
+            // 팀 설명 생성
+            TeamDescription teamDescription = new TeamDescription(description);
+            teamDescriptionJpaRepository.save(teamDescription);
 
-        // 팀 생성
-        Team newTeam = Team.builder()
-                            .teamLeaderId(leaderId)
-                            .teamChatroomId(0L) // 추후 추가 필요, 챗룸 구현 이후
-                            .name(name)
-                            .description(teamDescription)
-                            .accountNumber("1001111111111")
-                            .recruitStatus(teamRecruitStatus)
-                            .privateStatus(teamPrivateStatus)
-                            .teamProfileUri(teamProfileUri)
-                            .areaCode(area)
-                            .category(teamCategory)
-                            .maxCapacity(maxCapacity).build();
-        teamJpaRepository.save(newTeam);
+            // 계좌 생성
+            String accountNumber = accountService.createTeamAccount();
 
-        // 기본 태그 저장
-        Tag areaTag = findTagByName(area.getName());
-        TeamTag areaTeamTag = new TeamTag(newTeam.getId(), areaTag.getId());
-        teamTagJpaRepository.save(areaTeamTag);
+            // 팀 생성
+            newTeam = Team.builder()
+                    .teamLeaderId(leaderId)
+                    .teamChatroomId(0L) // 추후 추가 필요, 챗룸 구현 이후
+                    .name(name)
+                    .description(teamDescription)
+                    .accountNumber(accountNumber)
+                    .recruitStatus(teamRecruitStatus)
+                    .privateStatus(teamPrivateStatus)
+                    .teamProfileUri(teamProfileUri)
+                    .teamRound(0L)
+                    .areaCode(Area.fromName(area))
+                    .category(TeamCategory.fromName(teamCategory))
+                    .maxCapacity(maxCapacity).build();
+            teamJpaRepository.save(newTeam);
+            // 프로필 이미지 저장, 기본 고양이, profile 있을 시 S3에 업로드 된 해당 프로필 이미지 경로
+            profileImageRepository.save(createTeamProfile(newTeam.getId(), teamProfileUri));
 
-        Tag categoryTag = findTagByName(teamCategory.getName());
-        TeamTag categoryTeamTag = new TeamTag(newTeam.getId(), categoryTag.getId());
-        teamTagJpaRepository.save(categoryTeamTag);
+            TeamTag areaTag = new TeamTag(newTeam.getId(), area);
+            teamTagJpaRepository.save(areaTag);
+            TeamTag categoryTag = new TeamTag(newTeam.getId(), teamCategory);
+            teamTagJpaRepository.save(categoryTag);
 
-        // 팀 유저 저장
-        var teamUser = TeamUser.createTeamLeader(leaderId, newTeam.getId(), nickname, notificationStatus);
-        teamUserJpaRepository.save(teamUser);
+            //기본 게시판 생성
+            teamBoardJpaRepository.save(TeamBoard.builder()
+                    .teamId(newTeam.getId())
+                    .boardName("자유게시판")
+                    .build()
+            );
+
+            // 팀 유저 저장
+            var teamUser = TeamUser.createTeamLeader(leaderId, newTeam.getId(), nickname, notificationStatus);
+            teamUserJpaRepository.save(teamUser);
+
+            // 채팅 룸 생성
+            chatroomService.createChatroom(
+                    leaderId,
+                    newTeam.getId(),
+                    nickname,
+                    name + "모임의 채팅방",
+                    teamProfileUri,
+                    GROUP
+            );
+        } catch (TeamException e) {
+            if (!teamProfileUri.equals(CAT_IMAGE_URI)) {
+                s3Service.deleteFile(teamProfileUri);
+            }
+            throw new TeamException(e.getCode(), e.getMessage());
+        } catch (Exception e) {
+            if (!teamProfileUri.equals(CAT_IMAGE_URI)) {
+                s3Service.deleteFile(teamProfileUri);
+            }
+            throw new TeamException(DUPLICATED_SOURCE);
+        }
+
+        return newTeam.getId();
     }
 
     @EveryOne
@@ -100,9 +148,11 @@ public class TeamService {
         List<SimpleTeamDto> teams = teamQuerydslRepository.getTeamsByAreaCode(area, teamId);
         Boolean hasNext = teams.size() > SHORT_PAGE_SIZE;
         Integer size = hasNext ? SHORT_PAGE_SIZE : teams.size();
-        Long lastTeamId = teams.get(size - 1).teamId();
+        Long lastTeamId = hasNext ? teams.get(size - 1).teamId() : null;
         if (hasNext) {
-            teams.remove(size - 1);
+            teams = teams.stream()
+                    .limit(size)
+                    .toList();
         }
         return new TeamInfosResponse(size, hasNext, lastTeamId, teams);
     }
@@ -113,70 +163,116 @@ public class TeamService {
         List<SimpleTeamDto> teams = teamQuerydslRepository.getTeamsByCategory(category, teamId);
         Boolean hasNext = teams.size() > SHORT_PAGE_SIZE;
         Integer size = hasNext ? SHORT_PAGE_SIZE : teams.size();
-        Long lastTeamId = teams.get(size - 1).teamId();
+        Long lastTeamId = hasNext ? teams.get(size - 1).teamId() : null;
         if (hasNext) {
-            teams.remove(size - 1);
+            teams = teams.stream()
+                    .limit(size)
+                    .toList();
         }
         return new TeamInfosResponse(size, hasNext, lastTeamId, teams);
     }
 
     @EveryOne
     @Transactional(readOnly = true)
-    public TeamDto getTeamGeneralInfo(Long teamId) {
-        return teamQuerydslRepository.getTeamInfo(teamId);
+    public TeamDto getTeamGeneralInfo(Long userId, Long teamId) {
+        privateTeamValidation(userId, teamId);
+        return teamQuerydslRepository.getTeamInfo(userId, teamId);
     }
 
-    @TeamLeader
-    @Transactional
-    public void updateTeamName(Long userId, Long teamId, String name) {
-        Team team = findTeamById(teamId);
-        team.updateTeamName(name);
-        teamJpaRepository.save(team);
+    @EveryOne
+    @Transactional(readOnly = true)
+    public SimpleTeamDto getSimpleTeamInfo(Long userId, Long teamId) {
+        privateTeamValidation(userId, teamId);
+        return teamQuerydslRepository.getSimpleTeamInfo(userId, teamId);
     }
 
-    @TeamLeader
     @Transactional
-    public void updateTeamDescription(Long userId, Long teamId, String description) {
-        Team team = findTeamById(teamId);
+    public void updateTeam(
+            Long userId,
+            Long teamId,
+            String name,
+            String description,
+            TeamRecruitStatus recruitStatus,
+            TeamPrivateStatus privateStatus,
+            String profileUri,
+            Area areaCode,
+            TeamCategory category
+    ) {
+        try {
+            if (profileUri != null) {
+                var profile = profileImageRepository.findTeamImageByImageTypeAndTeamId(TEAM, teamId);
+                profile.ifPresent(profileImageRepository::delete);
+                profileImageRepository.save(createTeamProfile(teamId, profileUri));
+            }
 
-        var teamDescription = team.getDescription();
-        teamDescription.updateDescription(description);
-        teamDescriptionJpaRepository.save(teamDescription);
+            Team team = findTeamById(teamId);
+            team.updateTeamName(name);
+            // 채팅방 이름 변경
+            chatroomService.updateChatroomTitle(teamId, name + "모임의 채팅방");
 
-        team.updateShortDescription(description);
-        teamJpaRepository.save(team);
-    }
+            var teamDescription = team.getDescription();
+            teamDescription.updateDescription(description);
+            teamDescriptionJpaRepository.save(teamDescription);
+            team.updateDescription(description);
 
-    @TeamLeader
-    @Transactional
-    public void updateTeamRecruitStatus(Long userId, Long teamId, TeamRecruitStatus recruitStatus) {
-        Team team = findTeamById(teamId);
-        team.updateRecruitStatus(recruitStatus);
-        teamJpaRepository.save(team);
-    }
+            team.updateRecruitStatus(recruitStatus);
+            team.updatePrivateStatus(privateStatus);
 
-    @TeamLeader
-    @Transactional
-    public void updateTeamPrivateStatus(Long userId, Long teamId, TeamPrivateStatus privateStatus) {
-        Team team = findTeamById(teamId);
-        team.updatePrivateStatus(privateStatus);
-        teamJpaRepository.save(team);
-    }
+            if (category != team.getCategory()) {
+                if (teamTagJpaRepository.findByTeamIdAndTagName(team.getId(), category.getName()).isEmpty()) {
+                    teamTagJpaRepository.save(new TeamTag(team.getId(), category.getName()));
+                }
+                teamTagJpaRepository.findByTeamIdAndTagName(team.getId(), team.getCategory().getName())
+                        .ifPresent(teamTagJpaRepository::delete);
+                team.updateCategory(category);
+            }
 
-    @TeamLeader
-    @Transactional
-    public void updateTeamProfileUri(Long userId, Long teamId, String profileUri) {
-        Team team = findTeamById(teamId);
-        team.updateTeamProfileUri(profileUri);
-        teamJpaRepository.save(team);
-    }
+            if (areaCode != team.getAreaCode()) {
+                Optional<TeamTag> teamTag = teamTagJpaRepository.findByTeamIdAndTagName(team.getId(), areaCode.getName());
+                if (teamTag.isEmpty()) {
+                    teamTagJpaRepository.save(new TeamTag(team.getId(), areaCode.getName()));
+                }
+                teamTagJpaRepository.findByTeamIdAndTagName(team.getId(), team.getAreaCode().getName())
+                        .ifPresent(teamTagJpaRepository::delete);
+                team.updateAreaCode(areaCode);
+            }
 
-    @TeamLeader
-    @Transactional
-    public void updateTeamArea(Long userId, Long teamId, Area areaCode) {
-        Team team = findTeamById(teamId);
-        team.updateAreaCode(areaCode);
-        teamJpaRepository.save(team);
+            if (profileUri != null) {
+                team.updateTeamProfileUri(profileUri);
+                // 채팅방 프로필 변경
+                chatroomService.updateChatroomProfileUri(teamId, profileUri);
+            }
+            teamJpaRepository.save(team);
+        } catch (TeamException e) {
+            if (profileUri == null) {
+                throw new TeamException(e.getCode(), e.getMessage());
+            }
+            if (!profileUri.equals(CAT_IMAGE_URI)) {
+                s3Service.deleteFile(profileUri);
+            }
+            throw new TeamException(e.getCode(), e.getMessage());
+        } catch (DataIntegrityViolationException e) {
+            if (profileUri != null) {
+                s3Service.deleteFile(profileUri);
+            }
+            throw new TeamException(1003, "모임명이 중복됩니다. 모임명을 변경해주세요.");
+        } catch (NullPointerException e) {
+            if (profileUri != null) {
+                s3Service.deleteFile(profileUri);
+            }
+            throw new TeamException(1000, "지역과 카테고리에 있어 유효하지 않은 주소입니다.");
+        }
+
+//        catch (Exception e) {
+//            if (profileUri == null) {
+//                throw new TeamException(DUPLICATED_SOURCE);
+//            }
+//
+//            if (!profileUri.equals(CAT_IMAGE_URI)) {
+//                s3Service.deleteFile(profileUri);
+//            }
+//            throw new TeamException(INVALID_REQUEST);
+//        }
     }
 
     @TeamLeader
@@ -185,20 +281,36 @@ public class TeamService {
         Team team = findTeamById(teamId);
         List<TeamUser> teamUsers = teamUserJpaRepository.findByTeamId(teamId);
         if (teamUsers.size() == 1) {
-            // TODO 계좌 삭제
-            // TODO 채팅방 삭제
+            profileImageRepository.deleteTeamImageByImageTypeAndTeamId(TEAM, teamId);
             teamUserJpaRepository.delete(teamUsers.get(0));
             teamJpaRepository.delete(team);
+            chatroomUserService.leaveChatroom(userId, teamId);
+            return;
         }
+        throw new TeamException(EXTRA_USER);
+    }
+
+    private void privateTeamValidation(Long userId, Long teamId) {
+        Team team = findTeamById(teamId);
+        if (team.getPrivateStatus().equals(PRIVATE)) {
+            guestUserValidation(userId);
+            findTeamUser(teamId, userId);
+        }
+    }
+
+    private void guestUserValidation(Long userId) {
+        if (userId == null) {
+            throw new TeamException(INVALID_REQUEST);
+        }
+    }
+
+    private TeamUser findTeamUser(Long teamId, Long userId) {
+        return teamUserJpaRepository.findByTeamIdAndUserId(teamId, userId)
+                .orElseThrow(() -> new TeamException(INVALID_REQUEST));
     }
 
     private Team findTeamById(Long teamId) {
         return teamJpaRepository.findById(teamId)
                 .orElseThrow(() -> new TeamException(NOT_FOUND));
-    }
-
-    private Tag findTagByName(String name) {
-        return tagJpaRepository.findByName(name)
-            .orElseThrow(() -> new TeamException(NOT_FOUND));
     }
 }
