@@ -3,7 +3,7 @@ interface ButtonPrimaryViewProps {
     onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
     disabled: boolean;
     className: string;
-    children: React.ReactNode;
+    label: string;
 }
 
 const ButtonPrimaryView = ({
@@ -11,7 +11,7 @@ const ButtonPrimaryView = ({
     onClick,
     disabled,
     className,
-    children,
+    label,
 }: ButtonPrimaryViewProps) => (
     <button
         type={htmlType}
@@ -19,7 +19,7 @@ const ButtonPrimaryView = ({
         disabled={disabled}
         className={`flex h-[44px] w-[170px] justify-center rounded-lg px-[18px] py-[10px] font-bold ${className}`}
     >
-        {children}
+        {label}
     </button>
 );
 

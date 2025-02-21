@@ -13,6 +13,7 @@ import jakarta.persistence.Table;
 
 import com.bisang.backend.common.domain.BaseTimeEntity;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -45,6 +46,7 @@ public class Comment extends BaseTimeEntity {
     @Column(name = "content", nullable = false)
     private String content;
 
+    @Builder
     private Comment(
         Long boardId,
         Long teamUserId,
@@ -56,6 +58,10 @@ public class Comment extends BaseTimeEntity {
         this.teamUserId = teamUserId;
         this.userId = userId;
         this.parentCommentId = parentCommentId;
+        this.content = content;
+    }
+
+    public void updateContent(String content){
         this.content = content;
     }
 }

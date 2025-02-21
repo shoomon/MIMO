@@ -6,7 +6,9 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class RequestLimitRedisService {
@@ -53,6 +55,7 @@ public class RequestLimitRedisService {
             )
         );
 
+        log.info(result);
         if ("LIMIT_EXCEEDED".equals(result)) {
             return false;
         }

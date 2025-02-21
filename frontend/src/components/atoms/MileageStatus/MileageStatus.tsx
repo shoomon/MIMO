@@ -53,11 +53,12 @@ const MileageStatus = ({ type, amount }: MileageStatusProps) => {
 
     /** 금액을 천 단위로 포맷팅 */
     const formattedNumber = amount.toLocaleString();
-    const resultAmount = `${formattedNumber}원`;
+    const resultAmount = Number.isNaN(amount)
+        ? '---원'
+        : `${formattedNumber}원`;
 
     return (
         <MileageStatusView
-            to="/"
             iconColor={iconColor}
             icon={icon}
             label={label}

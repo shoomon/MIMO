@@ -18,7 +18,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
+import lombok.Setter;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -26,7 +26,8 @@ import lombok.NoArgsConstructor;
 @Table(
         name = "chatroom_user",
         indexes = {
-            @Index(name = "idx_user_id_chatroom_id", columnList = "user_id, last_modified_at"),
+            @Index(name = "idx_user_id_last_modified_at", columnList = "user_id, last_modified_at"),
+            @Index(name = "idx_user_id_chatroom_id", columnList = "user_id, chatroom_id")
         }
 )
 public class ChatroomUser {
@@ -42,6 +43,7 @@ public class ChatroomUser {
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
+    @Setter
     @Column(name = "nickname", nullable = false)
     private String nickname;
 
@@ -49,25 +51,36 @@ public class ChatroomUser {
     @Column(name = "last_modified_at")
     private LocalDateTime lastModifiedAt;
 
+    @Getter
+    @Column(name = "enter_date")
+    private LocalDateTime enterDate;
+
+    @Getter
+    @Column(name = "enter_chat_id")
+    private Long enterChatId;
+
     private ChatroomUser(
             Long chatroomId,
             Long userId,
             String nickname,
-            LocalDateTime lastModifiedAt
+            LocalDateTime enterDate,
+            Long enterChatId
     ) {
         this.chatroomId = chatroomId;
         this.userId = userId;
         this.nickname = nickname;
-        this.lastModifiedAt = lastModifiedAt;
+        this.enterDate = enterDate;
+        this.enterChatId = enterChatId;
     }
 
     public static ChatroomUser createChatroomUser(
             Long chatroomId,
             Long userId,
             String nickname,
-            LocalDateTime lastModifiedAt
+            LocalDateTime enterDate,
+            Long enterChatId
     ) {
-        return new ChatroomUser(chatroomId, userId, nickname, lastModifiedAt);
+        return new ChatroomUser(chatroomId, userId, nickname, enterDate, enterChatId);
     }
 
 }

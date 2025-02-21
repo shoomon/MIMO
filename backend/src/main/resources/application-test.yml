@@ -1,0 +1,74 @@
+spring:
+  application:
+    name: backend
+
+  main:
+    allow-bean-definition-overriding: true
+
+  # 파일 업로드 용량 제한, resolve-lazily: 스프링 내부 서버까지 응답을 받기 위함.
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 10MB
+      resolve-lazily: true
+
+  auth:
+    jwt:
+      secret-key: ${SECRET_KEY}
+      access-token-expiry: ${ACCESS_TOKEN_EXPIRY}
+      refresh-token-expiry: ${REFRESH_TOKEN_EXPIRY}
+    redis-uri: ${REDIS_URI}
+    redis-port: ${REDIS_PORT}
+
+  # MySQL
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${DB_ID}
+    password: ${DB_PASSWORD}
+    url: jdbc:mysql://${DB_URL}/mimo
+    hikari:
+      connection-timeout: 3000
+      maximum-pool-size: 10
+      minimum-idle: 2
+
+  # JPA
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        format_sql: false
+        use_sql_comments: false
+    database-platform: org.hibernate.dialect.MySQLDialect
+
+  batch:
+    job:
+      enabled: false
+    jdbc:
+      initialize-schema: always
+
+cloud:
+  aws:
+    s3:
+      bucket: ${S3_BUCKET_NAME}
+    stack.auto: false
+    region.static: ap-northeast-2
+    credentials:
+      accessKey: ${S3_ACCESS_KEY}
+      secretKey: ${S3_SECRET_KEY}
+oauth2:
+  google:
+    client-id: ${GOOGLE_CLIENT_ID}
+    client-secret: ${GOOGLE_CLIENT_SECRET}
+    redirect-uri: ${GOOGLE_REDIRECT_URI}
+    token-uri: ${GOOGLE_TOKEN_URI}
+    resource-uri: ${GOOGLE_RESOURCE_URI}
+    scope:
+      - email
+      - profile
+      - openid
+
+openvidu:
+  url: "https://i12a504.p.ssafy.io"
+  secret: "MY_SECRET"

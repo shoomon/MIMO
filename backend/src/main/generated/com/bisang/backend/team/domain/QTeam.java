@@ -22,9 +22,11 @@ public class QTeam extends EntityPathBase<Team> {
 
     public static final QTeam team = new QTeam("team");
 
+    public final StringPath accountNumber = createString("accountNumber");
+
     public final EnumPath<Area> areaCode = createEnum("areaCode", Area.class);
 
-    public final QCapacity capacity;
+    public final EnumPath<TeamCategory> category = createEnum("category", TeamCategory.class);
 
     public final DateTimePath<java.time.LocalDateTime> createdAt = createDateTime("createdAt", java.time.LocalDateTime.class);
 
@@ -32,17 +34,23 @@ public class QTeam extends EntityPathBase<Team> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final NumberPath<Long> maxCapacity = createNumber("maxCapacity", Long.class);
+
     public final StringPath name = createString("name");
 
     public final EnumPath<TeamPrivateStatus> privateStatus = createEnum("privateStatus", TeamPrivateStatus.class);
 
     public final EnumPath<TeamRecruitStatus> recruitStatus = createEnum("recruitStatus", TeamRecruitStatus.class);
 
+    public final StringPath shortDescription = createString("shortDescription");
+
     public final NumberPath<Long> teamChatroomId = createNumber("teamChatroomId", Long.class);
 
     public final NumberPath<Long> teamLeaderId = createNumber("teamLeaderId", Long.class);
 
     public final StringPath teamProfileUri = createString("teamProfileUri");
+
+    public final NumberPath<Long> teamRound = createNumber("teamRound", Long.class);
 
     public QTeam(String variable) {
         this(Team.class, forVariable(variable), INITS);
@@ -62,7 +70,6 @@ public class QTeam extends EntityPathBase<Team> {
 
     public QTeam(Class<? extends Team> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.capacity = inits.isInitialized("capacity") ? new QCapacity(forProperty("capacity")) : null;
         this.description = inits.isInitialized("description") ? new QTeamDescription(forProperty("description")) : null;
     }
 

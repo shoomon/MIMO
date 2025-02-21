@@ -13,7 +13,6 @@ const meta = {
         ),
     ],
     argTypes: {
-        to: { control: 'text' },
         label: { control: 'text' },
     },
 } satisfies Meta<typeof Tag>;
@@ -23,7 +22,6 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
     args: {
-        to: '/sample',
         label: 'Sample Tag',
     },
 };

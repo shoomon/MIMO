@@ -5,9 +5,7 @@ import static com.bisang.backend.common.exception.ExceptionCode.UNSUPPORTED_EXTE
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -28,10 +26,10 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Service
 public class S3Service {
+    public static final String CAT_IMAGE_URI = "https://bisang-mimo-bucket.s3.ap-northeast-2.amazonaws.com/"
+        + "a09365ab-3291-49a9-ad93-0aa41301166a.jpg";
 
     private final AmazonS3 amazonS3;
-    private Set<String> uploadedFileNames = new HashSet<>();
-    private Set<Long> uploadedFileSizes = new HashSet<>();
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
@@ -39,9 +37,8 @@ public class S3Service {
     @Value("${spring.servlet.multipart.max-file-size}")
     private String maxSizeString;
 
-    // 파일 삭제
-    @S3Limiter
-    public void deleteFile(Long userId, String fileUrl) {
+    // 파일 삭제 S3 서버 내에서
+    public void deleteFile(String fileUrl) {
         String[] urlParts = fileUrl.split("/");
         String fileBucket = urlParts[2].split("\\.")[0];
 
@@ -66,8 +63,7 @@ public class S3Service {
         }
     }
 
-    // 단일 파일 저장
-    @S3Limiter
+    // 단일 파일 저장 S3 서버에
     public String saveFile(Long userId, MultipartFile file) {
         String randomFilename = generateRandomFilename(file);
         ObjectMetadata metadata = new ObjectMetadata();
@@ -89,26 +85,6 @@ public class S3Service {
         return amazonS3.getUrl(bucket, randomFilename).toString();
     }
 
-    // 요청에 중복되는 파일 여부 확인
-    private boolean isDuplicate(Long userId, MultipartFile multipartFile) {
-        String fileName = multipartFile.getOriginalFilename();
-        Long fileSize = multipartFile.getSize();
-
-        if (uploadedFileNames.contains(fileName) && uploadedFileSizes.contains(fileSize)) {
-            return true;
-        }
-
-        uploadedFileNames.add(fileName);
-        uploadedFileSizes.add(fileSize);
-
-        return false;
-    }
-
-    private void clear() {
-        uploadedFileNames.clear();
-        uploadedFileSizes.clear();
-    }
-
     // 랜덤파일명 생성 (파일명 중복 방지)
     private String generateRandomFilename(MultipartFile multipartFile) {
         String originalFilename = multipartFile.getOriginalFilename();
@@ -120,7 +96,7 @@ public class S3Service {
     // 파일 확장자 체크
     private String validateFileExtension(String originalFilename) {
         String fileExtension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1).toLowerCase();
-        List<String> allowedExtensions = Arrays.asList("jpg", "png", "gif", "jpeg");
+        List<String> allowedExtensions = Arrays.asList("jpg", "png", "gif", "jpeg", "webp");
 
         if (!allowedExtensions.contains(fileExtension)) {
             throw new S3Exception(UNSUPPORTED_EXTENSIONS);

@@ -1,26 +1,31 @@
 package com.bisang.backend.team.controller;
 
+import static com.bisang.backend.common.exception.ExceptionCode.INVALID_AREA;
+import static com.bisang.backend.common.exception.ExceptionCode.INVALID_CATEGORY;
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
+
+import com.bisang.backend.common.exception.TeamException;
+import com.bisang.backend.team.service.TeamFileFacadeService;
+import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bisang.backend.auth.annotation.AuthUser;
+import com.bisang.backend.auth.annotation.Guest;
+import com.bisang.backend.team.controller.dto.SimpleTeamDto;
 import com.bisang.backend.team.controller.dto.TeamDto;
 import com.bisang.backend.team.controller.request.CreateTeamRequest;
-import com.bisang.backend.team.controller.request.UpdateTeamAreaRequest;
-import com.bisang.backend.team.controller.request.UpdateTeamDescriptionRequest;
-import com.bisang.backend.team.controller.request.UpdateTeamNameRequest;
-import com.bisang.backend.team.controller.request.UpdateTeamPrivateStatusRequest;
-import com.bisang.backend.team.controller.request.UpdateTeamProfileUriRequest;
-import com.bisang.backend.team.controller.request.UpdateTeamRecruitStatusRequest;
+import com.bisang.backend.team.controller.request.UpdateTeamRequest;
+import com.bisang.backend.team.controller.response.TeamIdResponse;
 import com.bisang.backend.team.controller.response.TeamInfosResponse;
 import com.bisang.backend.team.domain.Area;
 import com.bisang.backend.team.domain.TeamCategory;
@@ -34,105 +39,102 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/team")
 public class TeamController {
     private final TeamService teamService;
+    private final TeamFileFacadeService teamFileFacadeService;
+
+    @GetMapping("/exist-name")
+    public ResponseEntity<Boolean> existTeamName(
+        @Guest User user,
+        @RequestParam(name = "name") String name
+    ) {
+        return ResponseEntity.ok(teamService.existsTeamByName(name));
+    }
 
     @GetMapping("/area")
     public ResponseEntity<TeamInfosResponse> getTeamsByArea(
-        @RequestParam("area") Area area,
+        @RequestParam("area") String area,
         @RequestParam(required = false) Long teamId
     ) {
-        return ResponseEntity.ok(teamService.getTeamInfosByArea(area, teamId));
+        Area findArea = Area.fromName(area);
+        areaValidation(findArea);
+        return ResponseEntity.ok(teamService.getTeamInfosByArea(findArea, teamId));
     }
 
     @GetMapping("/category")
     public ResponseEntity<TeamInfosResponse> getTeamsByCategory(
-        @RequestParam("category") TeamCategory category,
+        @RequestParam("category") String category,
         @RequestParam(required = false) Long teamId
     ) {
-        return ResponseEntity.ok(teamService.getTeamInfosByCategory(category, teamId));
+        TeamCategory teamCategory = TeamCategory.fromName(category);
+        categoryValidation(teamCategory);
+        return ResponseEntity.ok(teamService.getTeamInfosByCategory(TeamCategory.fromName(category), teamId));
     }
 
-    @PostMapping
-    public ResponseEntity<Void> createTeam(
+    @PostMapping(consumes = {MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<TeamIdResponse> createTeam(
         @AuthUser User user,
-        @RequestBody CreateTeamRequest req
+        @Valid @ModelAttribute CreateTeamRequest req
     ) {
-        teamService.createTeam(
+        String teamName = req.name().replaceAll("\\s+", " ").trim();
+        Long teamId = teamFileFacadeService.createTeam(
             user.getId(),
             req.nickname(),
             req.notificationStatus(),
-            req.name(),
+            teamName,
             req.description(),
             req.teamRecruitStatus(),
             req.teamPrivateStatus(),
-            req.teamProfileUri(),
+            req.teamProfile(),
             req.area(),
             req.category(),
             req.maxCapacity()
         );
-        return ResponseEntity.status(CREATED).build();
+        return ResponseEntity.status(CREATED).body(new TeamIdResponse(teamId));
+    }
+
+    @PutMapping(consumes = {MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<Void> updateTeam(
+            @AuthUser User user,
+            @Valid @ModelAttribute UpdateTeamRequest req
+    ) {
+        String teamName = req.name().replaceAll("\\s+", " ").trim();
+        teamFileFacadeService.updateTeam(
+                user.getId(),
+                req.teamId(),
+                teamName,
+                req.description(),
+                req.recruitStatus(),
+                req.privateStatus(),
+                req.profile(),
+                req.area(),
+                req.category()
+        );
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping
     public ResponseEntity<TeamDto> getTeamInfo(
-        @RequestParam Long teamId
+            @Guest User user,
+            @RequestParam Long teamId
     ) {
-        TeamDto teamInfo = teamService.getTeamGeneralInfo(teamId);
+        Long userId = user == null ? null : user.getId();
+        TeamDto teamInfo = teamService.getTeamGeneralInfo(userId, teamId);
         return ResponseEntity.ok(teamInfo);
     }
 
-    @PatchMapping("/name")
-    public ResponseEntity<Void> updateTeamName(
-        @AuthUser User user,
-        @RequestBody UpdateTeamNameRequest req
+    @GetMapping("/simple")
+    public ResponseEntity<SimpleTeamDto> getSimpleTeamInfo(
+            @Guest User user,
+            @RequestParam Long teamId
     ) {
-        teamService.updateTeamName(user.getId(), req.teamId(), req.name());
-        return ResponseEntity.ok().build();
+        Long userId = null;
+        if (user != null) {
+            userId = user.getId();
+        }
+
+        SimpleTeamDto teamInfo = teamService.getSimpleTeamInfo(userId, teamId);
+        return ResponseEntity.ok(teamInfo);
     }
 
-    @PatchMapping("/description")
-    public ResponseEntity<Void> updateTeamDescription(
-        @AuthUser User user,
-        @RequestBody UpdateTeamDescriptionRequest req
-    ) {
-        teamService.updateTeamDescription(user.getId(), req.teamId(), req.description());
-        return ResponseEntity.ok().build();
-    }
-
-    @PatchMapping("/recruit-status")
-    public ResponseEntity<Void> updateTeamRecruitStatus(
-        @AuthUser User user,
-        @RequestBody UpdateTeamRecruitStatusRequest req
-    ) {
-        teamService.updateTeamRecruitStatus(user.getId(), req.teamId(), req.status());
-        return ResponseEntity.ok().build();
-    }
-
-    @PatchMapping("/private-status")
-    public ResponseEntity<Void> updateTeamPrivateStatus(
-        @AuthUser User user,
-        @RequestBody UpdateTeamPrivateStatusRequest req
-    ) {
-        teamService.updateTeamPrivateStatus(user.getId(), req.teamId(), req.status());
-        return ResponseEntity.ok().build();
-    }
-
-    @PatchMapping("/profile-uri")
-    public ResponseEntity<Void> updateTeamProfileUri(
-        @AuthUser User user,
-        @RequestBody UpdateTeamProfileUriRequest req
-    ) {
-        teamService.updateTeamProfileUri(user.getId(), req.teamId(), req.profileUri());
-        return ResponseEntity.ok().build();
-    }
-
-    @PatchMapping("/area")
-    public ResponseEntity<Void> updateTeamAreaUri(
-        @AuthUser User user,
-        @RequestBody UpdateTeamAreaRequest req
-    ) {
-        teamService.updateTeamArea(user.getId(), req.teamId(), req.area());
-        return ResponseEntity.ok().build();
-    }
 
     @DeleteMapping
     public ResponseEntity<Void> deleteTeam(
@@ -141,5 +143,17 @@ public class TeamController {
     ) {
         teamService.deleteTeam(user.getId(), teamId);
         return ResponseEntity.ok().build();
+    }
+
+    private void categoryValidation(TeamCategory teamCategory) {
+        if (teamCategory == null) {
+            throw new TeamException(INVALID_CATEGORY);
+        }
+    }
+
+    private void areaValidation(Area findArea) {
+        if (findArea == null) {
+            throw new TeamException(INVALID_AREA);
+        }
     }
 }

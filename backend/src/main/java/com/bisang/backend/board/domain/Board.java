@@ -15,9 +15,12 @@ import jakarta.persistence.Table;
 
 import com.bisang.backend.common.domain.BaseTimeEntity;
 
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
 @NoArgsConstructor(access = PROTECTED)
 @Table(
         name = "board",
@@ -33,6 +36,9 @@ public class Board extends BaseTimeEntity {
 
     @Column(name = "team_board_id", nullable = false)
     private Long teamBoardId;
+
+    @Column(name = "team_id", nullable = false)
+    private Long teamId;
 
     @Column(name = "team_user_id", nullable = false)
     private Long teamUserId;
@@ -53,19 +59,26 @@ public class Board extends BaseTimeEntity {
     @Column(name = "board_view_count", nullable = false)
     private Long viewCount;
 
+    @Builder
     private Board(
             Long teamBoardId,
+            Long teamId,
             Long teamUserId,
             Long userId,
             String title,
             BoardDescription description
     ) {
         this.teamBoardId = teamBoardId;
+        this.teamId = teamId;
         this.teamUserId = teamUserId;
         this.userId = userId;
         this.title = title;
         this.description = description;
         likes = 0L;
         viewCount = 0L;
+    }
+
+    public void updateTitle(String newTitle) {
+        this.title = newTitle;
     }
 }

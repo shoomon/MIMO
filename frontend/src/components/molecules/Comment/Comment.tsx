@@ -4,15 +4,23 @@ import { dateParsing } from '@/utils';
 import ProfileImage, {
     ProfileImageProps,
 } from './../../atoms/ProfileImage/ProfileImage';
+import { useParams } from 'react-router-dom';
+import useMyTeamProfile from '@/hooks/useMyTeamProfile';
+import { useQueryClient } from '@tanstack/react-query';
+import { useModalStore } from '@/stores/modalStore';
 
 interface CommentProps {
     commentId: number;
+    someCommentId?: number; // 수정 시 필요한 팀 일정 댓글 ID
     profileImage: ProfileImageProps;
+    name: string;
     writedate: string;
     content: string;
     isReply: boolean;
     onDelete: (id: number) => void;
-    onUpdate: (id: number, newContent: string) => void;
+    onUpdate: (someCommentId: number, content: string) => void;
+    // 답글 작성 시 호출될 콜백 (선택적)
+    onReply?: (parentCommentId: number) => void;
 }
 
 interface FormData {
@@ -21,12 +29,15 @@ interface FormData {
 
 const Comment = ({
     commentId,
+    someCommentId,
     profileImage,
     writedate,
     content,
     isReply,
+    name,
     onDelete,
     onUpdate,
+    onReply,
 }: CommentProps) => {
     const {
         register,
@@ -35,25 +46,72 @@ const Comment = ({
         setFocus,
         formState: { errors },
     } = useForm<FormData>({
-        defaultValues: {
-            commentContent: content,
-        },
+        defaultValues: { commentContent: content },
     });
 
     const [isEditing, setIsEditing] = useState(false);
     const parsedDate = dateParsing(new Date(writedate));
+    const { teamId, postId } = useParams<{ teamId: string; postId?: string }>();
+    const { data: profileData } = useMyTeamProfile(teamId);
+    const queryClient = useQueryClient();
+    const { openModal, closeModal } = useModalStore();
 
-    // 편집 모드 전환 시 textarea에 포커스 설정
     useEffect(() => {
         if (isEditing) {
             setFocus('commentContent');
         }
     }, [isEditing, setFocus]);
 
-    const onSubmit: SubmitHandler<FormData> = (data: FormData) => {
-        // 서버에 업데이트 요청 전에 추가 검증 또는 sanitize 로직을 넣을 수 있음
-        onUpdate(commentId, data.commentContent);
-        setIsEditing(false);
+    // 삭제 버튼 클릭 시 모달 처리
+    const handleDeleteClick = () => {
+        openModal({
+            title: '댓글을 삭제하시겠습니까?',
+            subTitle: '댓글을 삭제하면 답글이 모두 사라져요',
+            confirmLabel: '삭제',
+            cancelLabel: '취소',
+            onDeleteClick: () => {
+                onDelete(commentId);
+                openModal({
+                    title: '댓글이 삭제되었습니다',
+                    confirmLabel: '확인',
+                    onConfirmClick: () => {
+                        if (postId) {
+                            queryClient.invalidateQueries({
+                                queryKey: ['boardDetail', postId],
+                            });
+                        }
+                        closeModal();
+                    },
+                });
+            },
+            onCancelClick: closeModal,
+        });
+    };
+
+    // 수정 처리 (모달 통해 확인)
+    const onSubmit: SubmitHandler<FormData> = (data) => {
+        openModal({
+            title: '댓글을 수정하시겠습니까?',
+            confirmLabel: '수정',
+            cancelLabel: '취소',
+            onConfirmClick: () => {
+                onUpdate(someCommentId!, data.commentContent);
+                setIsEditing(false);
+                openModal({
+                    title: '댓글이 수정되었습니다',
+                    confirmLabel: '확인',
+                    onConfirmClick: () => {
+                        if (postId) {
+                            queryClient.invalidateQueries({
+                                queryKey: ['boardDetail', postId],
+                            });
+                        }
+                        closeModal();
+                    },
+                });
+            },
+            onCancelClick: closeModal,
+        });
     };
 
     const handleCancelClick = () => {
@@ -64,17 +122,17 @@ const Comment = ({
     return (
         <div className={`${isReply ? 'pl-8' : ''} flex w-full flex-col gap-2`}>
             <div className="flex h-fit w-full justify-between">
-                <div className="flex items-end justify-center gap-3">
-                    <div className="flex gap-1">
+                <div className="flex items-center justify-center gap-3">
+                    <div className="flex items-center gap-1">
                         <ProfileImage
                             userId={profileImage.userId}
-                            imgSrc={profileImage.imgSrc}
-                            userName={profileImage.userName}
+                            profileUri={profileImage.profileUri}
+                            nickname={name}
                             size={24}
                             addStyle="rounded-lg"
                         />
                         <span className="text-md font-bold">
-                            {profileImage.userName}
+                            {profileImage.nickname}
                         </span>
                     </div>
                     <span className="text-sm font-normal">{parsedDate}</span>
@@ -94,23 +152,36 @@ const Comment = ({
                         </>
                     ) : (
                         <>
-                            <button
-                                type="button"
-                                onClick={() => setIsEditing(true)}
-                            >
-                                수정
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => onDelete(commentId)}
-                            >
-                                삭제
-                            </button>
+                            {profileData?.nickname === name && (
+                                <button
+                                    type="button"
+                                    onClick={() => setIsEditing(true)}
+                                >
+                                    수정
+                                </button>
+                            )}
+                            {(profileData?.nickname === name ||
+                                profileData?.role === 'LEADER') && (
+                                <button
+                                    type="button"
+                                    onClick={handleDeleteClick}
+                                >
+                                    삭제
+                                </button>
+                            )}
+                            {onReply && profileData?.role !== 'GUEST' && (
+                                <button
+                                    type="button"
+                                    onClick={() => onReply(commentId)}
+                                >
+                                    답글
+                                </button>
+                            )}
                         </>
                     )}
                 </div>
             </div>
-            <div className="w-full">
+            <div className="mb-3 w-full">
                 {isEditing ? (
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <textarea

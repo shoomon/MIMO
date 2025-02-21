@@ -10,9 +10,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
 @NoArgsConstructor(access = PROTECTED)
 @Table(
         name = "team_board",
@@ -31,6 +34,7 @@ public class TeamBoard {
     @Column(length = 40, name = "board_name", nullable = false)
     private String boardName;
 
+    @Builder
     private TeamBoard(Long teamId, String boardName) {
         this.teamId = teamId;
         this.boardName = boardName;

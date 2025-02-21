@@ -1,12 +1,17 @@
 package com.bisang.backend.team.domain;
 
+import static com.bisang.backend.common.exception.ExceptionCode.INVALID_REQUEST;
+import static com.bisang.backend.common.exception.ExceptionCode.TEAM_MEMBER_RANGE;
 import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.CascadeType.PERSIST;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
+import static java.lang.Math.min;
 import static lombok.AccessLevel.PROTECTED;
 
 import java.time.LocalDateTime;
 
+import com.bisang.backend.common.exception.TeamException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -18,6 +23,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
+import org.apache.commons.lang3.Validate;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -30,11 +36,13 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 @Table(
-    name = "team",
-    indexes = {
-        @Index(name = "idx_team_area", columnList = "team_area_code, team_id desc"),
-        @Index(name = "idx_team_category", columnList = "team_category, team_id desc")
-    }
+        name = "team",
+        indexes = {
+            @Index(name = "idx_status_area_team", columnList = "private_status, team_area_code, team_id desc"),
+            @Index(name = "idx_status_category_team", columnList = "private_status, team_category, team_id desc"),
+            @Index(name = "idx_team_id_accountNumber", columnList = "team_id, team_account_number"),
+            @Index(name = "idx_team_round", columnList = "team_round")
+        }
 )
 public class Team {
     @Id @Column(name = "team_id")
@@ -53,7 +61,7 @@ public class Team {
     @Column(name = "short_description", length = 100, nullable = false)
     private String shortDescription;
 
-    @OneToOne(cascade = ALL, orphanRemoval = true)
+    @OneToOne(orphanRemoval = true)
     @JoinColumn(name = "team_description_id", referencedColumnName = "team_description_id")
     private TeamDescription description;
 
@@ -70,6 +78,9 @@ public class Team {
 
     @Column(name = "team_profile_uri")
     private String teamProfileUri;
+
+    @Column(name = "team_round")
+    private Long teamRound;
 
     @Enumerated(STRING)
     @Column(name = "team_area_code")
@@ -96,25 +107,37 @@ public class Team {
             TeamRecruitStatus recruitStatus,
             TeamPrivateStatus privateStatus,
             String teamProfileUri,
+            Long teamRound,
             Area areaCode,
             TeamCategory category,
             Long maxCapacity
     ) {
+        if (maxCapacity < 1 || maxCapacity > 1000) {
+            throw new TeamException(TEAM_MEMBER_RANGE);
+        }
         this.maxCapacity = maxCapacity;
         this.teamLeaderId = teamLeaderId;
         this.teamChatroomId = teamChatroomId;
+        String pattern = "^[a-zA-Z0-9가-힣 ]{1,30}$";
+        Validate.matchesPattern(name, pattern,
+            "모임 이름은 30자 이하의 영문, 숫자, 한글로 이루어져 있으며 ㅇㅇㅇ 같은 문자는 허용하지 않습니다.");
         this.name = name;
-        this.shortDescription = description.getDescription().substring(100);
+        int shortDescriptionLength = min(description.getDescription().length(), 97);
+        this.shortDescription = description.getDescription().substring(0, shortDescriptionLength) + "...";
         this.description = description;
         this.accountNumber = accountNumber;
         this.recruitStatus = recruitStatus;
         this.privateStatus = privateStatus;
         this.teamProfileUri = teamProfileUri;
+        this.teamRound = teamRound;
         this.areaCode = areaCode;
         this.category = category;
     }
 
     public void updateTeamName(String name) {
+        String pattern = "^[a-zA-Z0-9가-힣 ]{1,30}$";
+        Validate.matchesPattern(name, pattern,
+                "모임 이름은 30자 이하의 영문, 숫자, 한글로 이루어져 있으며 ㅇㅇㅇ 같은 문자는 허용하지 않습니다.");
         this.name = name;
     }
 
@@ -127,6 +150,9 @@ public class Team {
     }
 
     public void updateTeamProfileUri(String teamProfileUri) {
+        if (!teamProfileUri.startsWith("https://bisang-mimo-bucket.s3.ap-northeast-2.amazonaws.com/")) {
+            throw new IllegalArgumentException("이미지가 서버 내에 존재하지 않습니다. 이미지 업로드 후 다시 요청해주세요.");
+        }
         this.teamProfileUri = teamProfileUri;
     }
 
@@ -134,7 +160,16 @@ public class Team {
         this.areaCode = areaCode;
     }
 
-    public void updateShortDescription(String shortDescription) {
-        this.shortDescription = shortDescription;
+    public void updateDescription(String description) {
+        int shortDescriptionLength = min(this.description.getDescription().length(), 97);
+        this.shortDescription = this.description.getDescription().substring(0, shortDescriptionLength) + "...";
+    }
+
+    public void updateCategory(TeamCategory category) {
+        this.category = category;
+    }
+
+    public void updateTeamRound(Long teamRound) {
+        this.teamRound = teamRound;
     }
 }

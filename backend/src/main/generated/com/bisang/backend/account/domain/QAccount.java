@@ -1,4 +1,4 @@
-package com.bisang.backend.transaction.domain.account.domain;
+package com.bisang.backend.account.domain;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -33,8 +33,6 @@ public class QAccount extends EntityPathBase<Account> {
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> lastModifiedAt = _super.lastModifiedAt;
-
-    public final StringPath memo = createString("memo");
 
     public QAccount(String variable) {
         this(Account.class, forVariable(variable), INITS);

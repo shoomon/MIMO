@@ -8,7 +8,11 @@ export interface SearchProps {
 
 const SearchView = ({ handleSubmit, value, onChange }: SearchProps) => {
     return (
-        <form onSubmit={handleSubmit} method="GET" className="flex gap-2">
+        <form
+            onSubmit={handleSubmit}
+            method="GET"
+            className="flex justify-center gap-2"
+        >
             <label htmlFor="search">
                 <Icon type="svg" id="Search" />
             </label>
@@ -18,7 +22,7 @@ const SearchView = ({ handleSubmit, value, onChange }: SearchProps) => {
                 id="search"
                 value={value}
                 onChange={onChange}
-                className="w-[37.5rem] focus:outline-0"
+                className="w-full focus:outline-0"
             />
         </form>
     );

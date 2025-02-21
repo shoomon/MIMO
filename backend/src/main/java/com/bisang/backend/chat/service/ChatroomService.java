@@ -1,81 +1,99 @@
 package com.bisang.backend.chat.service;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import jakarta.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
 import com.bisang.backend.chat.controller.response.ChatroomResponse;
-import com.bisang.backend.chat.domain.ChatType;
 import com.bisang.backend.chat.domain.Chatroom;
 import com.bisang.backend.chat.domain.ChatroomStatus;
-import com.bisang.backend.chat.domain.ChatroomUser;
-import com.bisang.backend.chat.domain.redis.RedisChatMessage;
-import com.bisang.backend.chat.domain.redis.RedisTeamMember;
-import com.bisang.backend.chat.repository.ChatRepository;
+import com.bisang.backend.chat.repository.chatroom.ChatroomRepository;
+import com.bisang.backend.chat.repository.chatroomuser.ChatroomUserRepository;
+import com.bisang.backend.chat.repository.message.ChatMessageRepository;
 
 import lombok.RequiredArgsConstructor;
-
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ChatroomService {
 
-    private final ChatRepository repository;
-    private final ChatMessageService chatMessageService;
+    private final ChatMessageRepository chatMessageRepository;
+    private final ChatroomUserRepository chatroomUserRepository;
+    private final ChatroomRepository chatroomRepository;
+    private final ChatroomUserService chatroomUserService;
 
+    @Transactional
+    public void createChatroom(
+            Long userId,
+            Long teamId,
+            String nickname,
+            String title,
+            String profileUri,
+            ChatroomStatus status
+    ) {
+        Chatroom chatroom = Chatroom.createTeamChatroom(userId, teamId, title, profileUri, status);
 
-    public void createChatroom(Long userId, String nickname, String title, String profileUri, ChatroomStatus status) {
-        Chatroom chatroom = Chatroom.createChatroom(userId, title, profileUri, status);
-
-        repository.insertChatroom(chatroom);
-        //TODO: 팀 관련 정보 캐싱 바로 해버려? 알아서 될 듯? 아닌가
-
-        enterChatroom(chatroom.getId(), userId, nickname);
-    }
-
-    public void enterChatroom(Long teamId, Long userId, String nickname) {
-        ChatroomUser chatroomUser = ChatroomUser.createChatroomUser(teamId, userId, nickname, LocalDateTime.now());
-        //TODO: 이미 userId, teamId에 해당하는 멤버가 존재하면?
-        repository.insertJpaMemberUser(chatroomUser);
-
-        RedisChatMessage message = new RedisChatMessage(
-                chatroomUser.getId(),
-                userId,
-                "",
-                LocalDateTime.now(),
-                ChatType.ENTER
-        );
-        RedisTeamMember teamMember = new RedisTeamMember(chatroomUser.getId(), userId);
-
-        repository.insertRedisMemberUser(teamId, teamMember);
-        chatMessageService.broadcastMessage(teamId, message);
-    }
-
-    public boolean leaveChatroom(Long userId, Long teamId) {
-        Long teamUserId = repository.getTeamUserId(userId, teamId);
-        if (teamUserId == null) {
-            return false;
-        }
-
-        RedisChatMessage message = new RedisChatMessage(teamUserId, userId, "", LocalDateTime.now(), ChatType.LEAVE);
-        RedisTeamMember teamMember = new RedisTeamMember(teamUserId, userId);
-
-        repository.removeMember(teamId, teamMember);
-        repository.redisDeleteUserChatroom(userId, teamId);
-        chatMessageService.broadcastMessage(teamId, message);
-
-        return true;
+        chatroomRepository.insertJpaChatroom(chatroom);
+        chatroomUserService.enterChatroom(teamId, userId, nickname);
     }
 
     public List<ChatroomResponse> getChatroom(Long userId) {
-        List<Long> chatroom = repository.redisGetUserChatroom(userId);
+        List<Long> chatroom = chatroomRepository.getUserChatroom(userId);
 
         if (chatroom.isEmpty()) {
-            //TODO: DB 조회. 레디스에서 소실됐다는 의미임. 조회 후 레디스에도 넣어줘야함
+            return null;
         }
-        //TODO: 가져온 목록을 기반으로 채팅방 이름, 프로필 이미지, 마지막 채팅 등 가져오기
 
-        return null;
+        List<ChatroomResponse> chatroomResponse  = new ArrayList<>();
+        for (Long chatroomId : chatroom) {
+            Map<Object, Object> chatroomInfo = chatroomRepository.getChatroomInfo(chatroomId);
+            Map<String, Object> lastChat = chatMessageRepository.getLastChat(chatroomId);
+            Map<Object, Object> userInfo = chatroomUserRepository.getUserInfo(chatroomId, userId);
+
+            Long unreadCount = 0L;
+            try {
+                Double lastReadScore = chatroomUserRepository.getLastReadScore(chatroomId, userId);
+                Long lastReadChatId = chatroomUserRepository.getLastReadChatId(chatroomId, userId);
+                unreadCount = chatMessageRepository.calculateUnreadCount(chatroomId, lastReadScore, lastReadChatId);
+            } catch (NullPointerException e) {
+                log.error("lastReadScore가 없습니다");
+            }
+
+            Long lastChatDatetime = (Long)lastChat.get("lastDatetime");
+            LocalDateTime lastLocalDateTime
+                    = LocalDateTime.ofInstant(Instant.ofEpochMilli(lastChatDatetime), ZoneId.of("UTC"));
+
+            ChatroomResponse cr = new ChatroomResponse(chatroomId,
+                    (String)chatroomInfo.get("title"),
+                    (String)chatroomInfo.get("profileUri"),
+                    (String)lastChat.get("lastChat"),
+                    lastLocalDateTime,
+                    (String)userInfo.get("nickname"),
+                    unreadCount
+            );
+
+            chatroomResponse.add(cr);
+        }
+
+        return chatroomResponse;
+    }
+
+    public void updateChatroomProfileUri(Long teamId, String profileUri) {
+        Long chatroomId = chatroomRepository.getChatroomIdByteamId(teamId);
+        chatroomRepository.updateChatroomProfileUri(chatroomId, profileUri);
+    }
+
+    public void updateChatroomTitle(Long teamId, String chatroomTitle) {
+        Long chatroomId = chatroomRepository.getChatroomIdByteamId(teamId);
+        chatroomRepository.updateChatroomTitle(chatroomId, chatroomTitle);
     }
 }

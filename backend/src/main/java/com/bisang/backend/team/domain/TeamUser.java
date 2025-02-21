@@ -13,9 +13,11 @@ import jakarta.persistence.EntityListeners;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
+import org.apache.commons.lang3.Validate;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -30,7 +32,12 @@ import lombok.NoArgsConstructor;
 @Table(
         name = "team_user",
         uniqueConstraints = {
-            @UniqueConstraint(name = "UK_team_user", columnNames = {"team_id", "user_id"})
+            @UniqueConstraint(name = "UK_team_user", columnNames = {"team_id", "user_id"}),
+            @UniqueConstraint(name = "UK_team_nickname", columnNames = {"team_id", "nickname"})
+        },
+        indexes = {
+                @Index(name = "idx_user_team", columnList = "user_id, team_id desc"),
+                @Index(name = "idx_team_user", columnList = "team_id, user_id")
         }
 )
 public class TeamUser {
@@ -45,14 +52,14 @@ public class TeamUser {
     @Column(nullable = false)
     private Long teamId;
 
-    @Column(length = 30, nullable = false, unique = true)
+    @Column(length = 30, nullable = false)
     private String nickname;
 
     @Column(name = "team_user_role", nullable = false)
     @Enumerated(STRING)
     private TeamUserRole role;
 
-    @Column(name = "nofitication_status", nullable = false)
+    @Column(name = "notification_status", nullable = false)
     @Enumerated(STRING)
     private TeamNotificationStatus status;
 
@@ -68,6 +75,9 @@ public class TeamUser {
             TeamUserRole role,
             TeamNotificationStatus status
     ) {
+        String pattern = "^[a-zA-Z0-9가-힣]{1,30}$";
+        Validate.matchesPattern(nickname, pattern,
+            "모임 유저의 닉네임은 30자 이하의 영문, 숫자, 한글로 이루어져 있으며 ㅇㅇㅇ 같은 문자와 띄어쓰기는 허용하지 않습니다.");
         this.userId = userId;
         this.teamId = teamId;
         this.nickname = nickname;
@@ -118,6 +128,9 @@ public class TeamUser {
     }
 
     public void updateNickname(String nickname) {
+        String pattern = "^[a-zA-Z0-9가-힣]{1,30}$";
+        Validate.matchesPattern(nickname, pattern,
+                "모임 유저의 닉네임은 30자 이하의 영문, 숫자, 한글로 이루어져 있으며 ㅇㅇㅇ 같은 문자와 띄어쓰기는 허용하지 않습니다.");
         this.nickname = nickname;
     }
 

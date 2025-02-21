@@ -15,8 +15,12 @@ type Story = StoryObj<typeof meta>;
 
 export const del: Story = {
     args: {
-        action: 'delete',
-        onClick: () => alert('delete'),
+        action: 'confirm',
+        onClick: () => alert('confirm'),
+        htmlType: 'button',
+
+        disabled: false,
+        label: 'button',
     },
     name: 'Delete',
 };
@@ -25,13 +29,21 @@ export const confirm: Story = {
     args: {
         action: 'confirm',
         onClick: () => alert('confirm'),
+        htmlType: 'button',
+
+        disabled: false,
+        label: 'button',
     },
     name: 'Confirm',
 };
 export const cancel: Story = {
     args: {
-        action: 'cancel',
-        onClick: () => alert('cancel'),
+        action: 'confirm',
+        onClick: () => alert('confirm'),
+        htmlType: 'button',
+
+        disabled: false,
+        label: 'button',
     },
     name: 'Cancel',
 };

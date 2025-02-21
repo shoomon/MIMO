@@ -1,33 +1,35 @@
 import { Link } from 'react-router-dom';
 
 interface ProfileImageViewProps {
-    userName: string;
-    link: string;
-    imgSrc: string;
+    nickname: string;
+    link: string | null;
+    profileUri: string;
     size: number;
     addStyle?: string;
 }
 
 const ProfileImageView = ({
-    userName,
+    nickname,
     link,
-    imgSrc,
+    profileUri,
     size,
     addStyle,
 }: ProfileImageViewProps) => {
+    const Component = link ? Link : 'div';
+
     return (
-        <Link
-            to={link}
+        <Component
+            to={link ? link : ''}
             className={`overflow-hidden ${addStyle === undefined ? 'rounded-full' : addStyle}`}
             style={{ width: `${size}px`, height: `${size}px` }}
         >
             <img
-                src={imgSrc}
-                alt={`${userName} 프로필`}
-                className="object-contain"
+                src={profileUri}
+                alt={`${nickname} 프로필`}
+                className="object-cover"
                 style={{ width: `${size}px`, height: `${size}px` }}
             />
-        </Link>
+        </Component>
     );
 };
 
