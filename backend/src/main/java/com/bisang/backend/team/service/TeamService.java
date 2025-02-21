@@ -86,17 +86,18 @@ public class TeamService {
 
             // 팀 생성
             newTeam = Team.builder()
-                .teamLeaderId(leaderId)
-                .teamChatroomId(0L) // 추후 추가 필요, 챗룸 구현 이후
-                .name(name)
-                .description(teamDescription)
-                .accountNumber(accountNumber)
-                .recruitStatus(teamRecruitStatus)
-                .privateStatus(teamPrivateStatus)
-                .teamProfileUri(teamProfileUri)
-                .areaCode(Area.fromName(area))
-                .category(TeamCategory.fromName(teamCategory))
-                .maxCapacity(maxCapacity).build();
+                    .teamLeaderId(leaderId)
+                    .teamChatroomId(0L) // 추후 추가 필요, 챗룸 구현 이후
+                    .name(name)
+                    .description(teamDescription)
+                    .accountNumber(accountNumber)
+                    .recruitStatus(teamRecruitStatus)
+                    .privateStatus(teamPrivateStatus)
+                    .teamProfileUri(teamProfileUri)
+                    .teamRound(0L)
+                    .areaCode(Area.fromName(area))
+                    .category(TeamCategory.fromName(teamCategory))
+                    .maxCapacity(maxCapacity).build();
             teamJpaRepository.save(newTeam);
             // 프로필 이미지 저장, 기본 고양이, profile 있을 시 S3에 업로드 된 해당 프로필 이미지 경로
             profileImageRepository.save(createTeamProfile(newTeam.getId(), teamProfileUri));
@@ -108,9 +109,9 @@ public class TeamService {
 
             //기본 게시판 생성
             teamBoardJpaRepository.save(TeamBoard.builder()
-                .teamId(newTeam.getId())
-                .boardName("자유게시판")
-                .build()
+                    .teamId(newTeam.getId())
+                    .boardName("자유게시판")
+                    .build()
             );
 
             // 팀 유저 저장
@@ -119,12 +120,12 @@ public class TeamService {
 
             // 채팅 룸 생성
             chatroomService.createChatroom(
-                leaderId,
-                newTeam.getId(),
-                nickname,
-                name + "모임의 채팅방",
-                teamProfileUri,
-                GROUP
+                    leaderId,
+                    newTeam.getId(),
+                    nickname,
+                    name + "모임의 채팅방",
+                    teamProfileUri,
+                    GROUP
             );
         } catch (TeamException e) {
             if (!teamProfileUri.equals(CAT_IMAGE_URI)) {
@@ -150,8 +151,8 @@ public class TeamService {
         Long lastTeamId = hasNext ? teams.get(size - 1).teamId() : null;
         if (hasNext) {
             teams = teams.stream()
-                .limit(size)
-                .toList();
+                    .limit(size)
+                    .toList();
         }
         return new TeamInfosResponse(size, hasNext, lastTeamId, teams);
     }
@@ -165,8 +166,8 @@ public class TeamService {
         Long lastTeamId = hasNext ? teams.get(size - 1).teamId() : null;
         if (hasNext) {
             teams = teams.stream()
-                .limit(size)
-                .toList();
+                    .limit(size)
+                    .toList();
         }
         return new TeamInfosResponse(size, hasNext, lastTeamId, teams);
     }
@@ -222,7 +223,7 @@ public class TeamService {
                     teamTagJpaRepository.save(new TeamTag(team.getId(), category.getName()));
                 }
                 teamTagJpaRepository.findByTeamIdAndTagName(team.getId(), team.getCategory().getName())
-                    .ifPresent(teamTagJpaRepository::delete);
+                        .ifPresent(teamTagJpaRepository::delete);
                 team.updateCategory(category);
             }
 
@@ -232,7 +233,7 @@ public class TeamService {
                     teamTagJpaRepository.save(new TeamTag(team.getId(), areaCode.getName()));
                 }
                 teamTagJpaRepository.findByTeamIdAndTagName(team.getId(), team.getAreaCode().getName())
-                    .ifPresent(teamTagJpaRepository::delete);
+                        .ifPresent(teamTagJpaRepository::delete);
                 team.updateAreaCode(areaCode);
             }
 
@@ -305,7 +306,7 @@ public class TeamService {
 
     private TeamUser findTeamUser(Long teamId, Long userId) {
         return teamUserJpaRepository.findByTeamIdAndUserId(teamId, userId)
-            .orElseThrow(() -> new TeamException(INVALID_REQUEST));
+                .orElseThrow(() -> new TeamException(INVALID_REQUEST));
     }
 
     private Team findTeamById(Long teamId) {

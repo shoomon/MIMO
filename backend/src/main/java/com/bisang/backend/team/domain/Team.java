@@ -107,6 +107,7 @@ public class Team {
             TeamRecruitStatus recruitStatus,
             TeamPrivateStatus privateStatus,
             String teamProfileUri,
+            Long teamRound,
             Area areaCode,
             TeamCategory category,
             Long maxCapacity
@@ -128,6 +129,7 @@ public class Team {
         this.recruitStatus = recruitStatus;
         this.privateStatus = privateStatus;
         this.teamProfileUri = teamProfileUri;
+        this.teamRound = teamRound;
         this.areaCode = areaCode;
         this.category = category;
     }
