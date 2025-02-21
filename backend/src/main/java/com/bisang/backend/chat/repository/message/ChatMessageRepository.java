@@ -1,5 +1,6 @@
 package com.bisang.backend.chat.repository.message;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Collections;
@@ -51,21 +52,26 @@ public class ChatMessageRepository {
             Long messageId,
             Long enterMessageId
     ) {
+
+        if (messageId < 0) {
+            messageId = Long.MAX_VALUE;
+        }
+
         List<ChatMessage> messages = chatMessageJpaRepository
                 .getMessages(roomId, messageId, enterMessageId);
         List<RedisChatMessage> result = new LinkedList<>();
 
         int limit = Math.min(size, messages.size());
 
-        for (int i = limit - 1; i >= 0; i--) {
+        for (int i = 0; i < limit; i++) {
             ChatMessage chatMessage = messages.get(i);
 
             LocalDateTime createdAt = chatMessage.getCreatedAt();
             Long createdAtMilli = createdAt.atZone(ZoneId.of("UTC")).toInstant().toEpochMilli();
             RedisChatMessage redisChatMessage = new RedisChatMessage(
                     chatMessage.getId(),
+                    chatMessage.getChatroomId(),
                     chatMessage.getUserId(),
-                    chatMessage.getTeamUserId(),
                     chatMessage.getMessage(),
                     createdAtMilli,
                     chatMessage.getChatType()
@@ -98,11 +104,13 @@ public class ChatMessageRepository {
         if (chatMessage == null) {
             log.error("메시지가 하나도 존재하지 않습니다. db 문제");
             result.put("lastChat", "임시 채팅");
-            result.put("lastDatetime", LocalDateTime.now());
+            result.put("lastDatetime", Instant.now().toEpochMilli());
             return;
         }
         result.put("lastChat", chatMessage.getMessage());
-        result.put("lastDatetime", chatMessage.getCreatedAt());
+
+        Long createdAt = chatMessage.getCreatedAt().atZone(ZoneId.of("UTC")).toInstant().toEpochMilli();
+        result.put("lastDatetime", createdAt);
     }
 
     public Long calculateUnreadCount(Long chatroomId, Double lastReadScore, Long lastChatId) {
