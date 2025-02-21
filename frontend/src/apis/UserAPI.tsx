@@ -4,7 +4,6 @@ import {
     getTeamReviewResponse,
 } from '@/types/User';
 import { customFetch } from './customFetch';
-import { TagsResponse } from '@/types/Team';
 
 export const getMyAlarm = async (): Promise<UserAlarmsResponse> => {
     try {
@@ -126,6 +125,29 @@ export const addTag = async (teamId: string, tags: string[]): Promise<void> => {
         });
     } catch (error) {
         console.error('Error in addTag:', error);
+        throw error;
+    }
+};
+
+export const updateUserInfo = async (
+    nickname: string,
+    name: string,
+    profile?: File,
+): Promise<void> => {
+    try {
+        const formData = new FormData();
+        formData.append('nickname', nickname);
+        formData.append('name', name);
+        if (profile) {
+            formData.append('profile', profile);
+        }
+
+        await customFetch('/user', {
+            method: 'PUT',
+            body: formData,
+        });
+    } catch (error) {
+        console.error('Error in updateUserInfo:', error);
         throw error;
     }
 };

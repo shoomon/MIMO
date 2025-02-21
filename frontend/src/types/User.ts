@@ -35,3 +35,9 @@ export interface review {
     score: number;
     createAt: string;
 }
+
+export interface UserProfileRequest {
+    nickname: string;
+    name: string;
+    profile: File;
+}
