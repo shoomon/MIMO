@@ -59,9 +59,9 @@ const TeamMember = () => {
     const isLeader = myProfileData.role === 'LEADER';
 
     // LEADER면 최대 3개, 아니라면 전체 멤버를 표시
-    const displayedMembers = isLeader ? members.slice(0, 3) : members;
+    const displayedMembers = isLeader ? members.slice(0, 4) : members;
 
-    const displayedinvites = invites.slice(0, 3);
+    const displayedinvites = invites.slice(0, 4);
 
     return (
         <BaseLayout>

@@ -6,7 +6,6 @@ const meta = {
     title: 'Components/Molecules/MeetingInfo',
     component: MeetingInfo,
     argTypes: {
-        subTitle: { control: 'text' },
         title: { control: 'text' },
         reviewScore: { control: 'object' },
         tag: { control: 'object' },
@@ -34,7 +33,6 @@ const sampleTagList = [
 export const Default: Story = {
     args: {
         teamId: '123',
-        subTitle: 'Meeting Subtitle Sample',
         reviewScore: 0,
         reviewCount: 0,
         title: 'Meeting Title Sample',
