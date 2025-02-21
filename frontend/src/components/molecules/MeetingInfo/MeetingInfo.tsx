@@ -16,7 +16,6 @@ import { remainTeamReview } from '@/apis/UserAPI';
 
 export interface MeetingInfoProps {
     teamId: string;
-    subTitle: string;
     reviewScore: number;
     reviewCount: number;
     title: string;
@@ -38,7 +37,6 @@ type ModalType =
     | null;
 
 const MeetingInfo = ({
-    subTitle,
     title,
     tag,
     maxCapacity,
@@ -126,7 +124,6 @@ const MeetingInfo = ({
     return (
         <>
             <MeetingInfoView
-                subTitle={subTitle}
                 reviewScore={reviewScore}
                 reviewCount={reviewCount}
                 title={title}

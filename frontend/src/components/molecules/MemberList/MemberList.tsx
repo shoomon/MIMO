@@ -36,7 +36,6 @@ export interface MemberListProps {
 const MemberList = ({
     role,
     userInfo,
-    bio,
     joinDate,
     teamInviteId,
     teamUserId,
@@ -140,7 +139,6 @@ const MemberList = ({
         <MemberListView
             parsedDate={parsedDate}
             userInfo={userInfo}
-            bio={bio}
             userRoleElement={userRoleElement}
             mode={mode}
             targetRole={role || 'MEMBER'}
