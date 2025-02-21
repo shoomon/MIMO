@@ -41,7 +41,7 @@ const TeamMileagePay = () => {
                 <select
                     value={round}
                     onChange={handleChange}
-                    className="rounded-sm p-2"
+                    className="rounded-sm border-2 p-2"
                 >
                     <option value="1">1</option>
                     <option value="2">2</option>

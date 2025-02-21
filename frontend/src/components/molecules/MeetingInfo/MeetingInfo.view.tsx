@@ -13,7 +13,6 @@ import { useQuery } from '@tanstack/react-query';
 import { TagsResponse } from '@/types/Team';
 
 export interface MeetingInfoViewProps {
-    subTitle: string;
     reviewScore: number;
     reviewCount: number;
     title: string;
@@ -30,7 +29,6 @@ export interface MeetingInfoViewProps {
 }
 
 const MeetingInfoView = ({
-    subTitle,
     reviewScore,
     reviewCount,
     title,
@@ -142,7 +140,6 @@ const MeetingInfoView = ({
     return (
         <div className="flex w-full flex-col gap-1">
             {/* 상단 정보 */}
-            <span className="text-md font-normal">{subTitle}</span>
             <Link to={'review'}>
                 <RatingStar
                     reviewScore={reviewScore}
